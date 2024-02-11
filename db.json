@@ -1,0 +1,40 @@
+{
+	"events": [
+		{
+			"cid": 1,
+			"start": "2024-03-04T20:00",
+			"end": "2024-03-04T21:30",
+			"publish": "2024-01-01T00:00",
+			"unpublish": "2024-03-04T21:30",
+			"location": "St Boniface Church, Bonn",
+			"title": "Charity concert",
+			"shorttext": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+			"description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+			"image": "/src/lib/assets/music_xl.webp"
+		},
+		{
+			"cid": 2,
+			"start": "2024-05-01T11:00",
+			"end": "",
+			"publish": "2024-01-01T00:00",
+			"unpublish": "2024-05-01T12:00",
+			"location": "St Boniface Church, Bonn",
+			"title": "Charity concert",
+			"shorttext": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+			"description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. ",
+			"image": "/src/lib/assets/music_xl.webp"
+		},
+		{
+			"cid": 3,
+			"start": "2024-06-10T18:00",
+			"end": "",
+			"publish": "2024-01-01T00:00",
+			"unpublish": "2024-05-01T12:00",
+			"location": "St Boniface Church, Bonn",
+			"title": "Charity concert",
+			"shorttext": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+			"description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. ",
+			"image": "/src/lib/assets/music_xl.webp"
+		}
+	]
+}

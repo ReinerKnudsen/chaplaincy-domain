@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 	import EventCard from '$lib/event/Eventcard.svelte';
 	export let data;
 	const events = data.events;
@@ -11,4 +11,7 @@
 			<EventCard {event} />
 		{/each}
 	</div>
-</div>
+</div> -->
+
+<h1>Events</h1>
+<a href="/events/create">Create new event</a>

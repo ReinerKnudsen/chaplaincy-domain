@@ -1,7 +1,11 @@
 <script>
 	import { page } from '$app/stores';
 	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger } from 'flowbite-svelte';
+	import { isLoggedIn } from './stores/AuthStore';
+
 	$: activeUrl = $page.url.pathname;
+
+	console.log($isLoggedIn);
 </script>
 
 <Navbar class="sticky top-0 z-20 w-full border-b px-2 py-2.5 sm:px-4">
@@ -19,6 +23,9 @@
 		<NavLi href="/groups">Groups</NavLi>
 		<NavLi href="/events">Events</NavLi>
 		<NavLi href="/about">About us</NavLi>
+		{#if !$isLoggedIn}
+			<NavLi href="/login">Login</NavLi>
+		{/if}
 	</NavUl>
 </Navbar>
 

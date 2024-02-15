@@ -1,6 +1,7 @@
 <script>
 	import EventCard from '$lib/event/Eventcard.svelte';
 	export let data;
+
 	const events = data.events;
 </script>
 

@@ -1,5 +1,5 @@
 // AuthService.js
-import { auth } from '../firebaseConfig'; // Import Firebase auth instance
+import { auth } from '../firebase/firebaseConfig'; // Import Firebase auth instance
 import { authStore, credentials } from '$lib/stores/AuthStore'; // Import the user store
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
@@ -8,11 +8,6 @@ export async function signInExistingUser(email, password) {
 	try {
 		// Set loading state
 		authStore.update((store) => ({ ...store, loading: true, error: null }));
-
-		// Extract email and password from the user store
-		// const { email, password } = credentials;
-		console.log('Auth: ', auth);
-		console.log('Credentials: ', email, password);
 
 		// Sign in user with email and password
 		const userCredential = await signInWithEmailAndPassword(auth, email, password);

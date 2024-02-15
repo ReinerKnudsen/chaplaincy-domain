@@ -5,7 +5,7 @@
 	const events = data.events;
 </script>
 
-<div class="my-3 w-full px-20"></div>
+<div class="my-3 w-full px-20">HOMEPAGE!</div>
 
 <style>
 </style>

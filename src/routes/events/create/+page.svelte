@@ -3,7 +3,7 @@
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
 	import { addDoc } from 'firebase/firestore';
 	import { FormStore, resetForm } from '$lib/stores/FormStore';
-	import { UploadFile } from '$lib/components/UploadFile.svelte';
+	import UploadFile from '$lib/components/UploadFile.svelte';
 
 	let description = '';
 	let startdate;

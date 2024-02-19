@@ -1,0 +1,1 @@
+import{w as s}from"./index.313bzPyx.js";const l={user:null,loading:!1,error:null},a=s(l),o=()=>{a.set(l),t.set(!1),e.set({email:null,password:null})},e=s({email:null,password:null}),t=s(!1);export{a,e as c,t as i,o as u};

@@ -1,0 +1,237 @@
+{
+  ".svelte-kit/generated/server/internal.js": {
+    "file": "internal.js",
+    "src": ".svelte-kit/generated/server/internal.js",
+    "isEntry": true,
+    "imports": [
+      "_internal.js"
+    ]
+  },
+  "_AuthStore.js": {
+    "file": "chunks/AuthStore.js",
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "_Input.js": {
+    "file": "chunks/Input.js",
+    "imports": [
+      "_ssr.js",
+      "_names.js"
+    ]
+  },
+  "_Register.js": {
+    "file": "chunks/Register.js",
+    "imports": [
+      "_ssr.js"
+    ]
+  },
+  "_client.js": {
+    "file": "chunks/client.js",
+    "imports": [
+      "_exports.js"
+    ]
+  },
+  "_exports.js": {
+    "file": "chunks/exports.js"
+  },
+  "_firebaseConfig.js": {
+    "file": "chunks/firebaseConfig.js"
+  },
+  "_index.js": {
+    "file": "chunks/index.js",
+    "imports": [
+      "_ssr.js"
+    ]
+  },
+  "_internal.js": {
+    "file": "chunks/internal.js",
+    "imports": [
+      "_ssr.js"
+    ]
+  },
+  "_names.js": {
+    "file": "chunks/names.js"
+  },
+  "_ssr.js": {
+    "file": "chunks/ssr.js"
+  },
+  "_stores.js": {
+    "file": "chunks/stores.js",
+    "imports": [
+      "_ssr.js",
+      "_client.js"
+    ]
+  },
+  "node_modules/@sveltejs/kit/src/runtime/components/error.svelte": {
+    "file": "entries/fallbacks/error.svelte.js",
+    "src": "node_modules/@sveltejs/kit/src/runtime/components/error.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_stores.js"
+    ]
+  },
+  "node_modules/@sveltejs/kit/src/runtime/server/index.js": {
+    "file": "index.js",
+    "src": "node_modules/@sveltejs/kit/src/runtime/server/index.js",
+    "isEntry": true,
+    "imports": [
+      "_internal.js",
+      "_exports.js",
+      "_index.js"
+    ]
+  },
+  "src/routes/+layout.svelte": {
+    "file": "entries/pages/_layout.svelte.js",
+    "src": "src/routes/+layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_stores.js",
+      "_names.js",
+      "_index.js",
+      "_AuthStore.js",
+      "_firebaseConfig.js",
+      "_client.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_layout.2MNihGUW.css"
+    ]
+  },
+  "src/routes/+page.js": {
+    "file": "entries/pages/_page.js",
+    "src": "src/routes/+page.js",
+    "isEntry": true
+  },
+  "src/routes/+page.svelte": {
+    "file": "entries/pages/_page.svelte.js",
+    "src": "src/routes/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js"
+    ]
+  },
+  "src/routes/about/+page.server.js": {
+    "file": "entries/pages/about/_page.server.js",
+    "src": "src/routes/about/+page.server.js",
+    "isEntry": true
+  },
+  "src/routes/about/+page.svelte": {
+    "file": "entries/pages/about/_page.svelte.js",
+    "src": "src/routes/about/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js"
+    ]
+  },
+  "src/routes/activities/+page.server.js": {
+    "file": "entries/pages/activities/_page.server.js",
+    "src": "src/routes/activities/+page.server.js",
+    "isEntry": true
+  },
+  "src/routes/activities/+page.svelte": {
+    "file": "entries/pages/activities/_page.svelte.js",
+    "src": "src/routes/activities/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js"
+    ]
+  },
+  "src/routes/events/+page.svelte": {
+    "file": "entries/pages/events/_page.svelte.js",
+    "src": "src/routes/events/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js"
+    ]
+  },
+  "src/routes/events/[eventId]/+page.server.js": {
+    "file": "entries/pages/events/_eventId_/_page.server.js",
+    "src": "src/routes/events/[eventId]/+page.server.js",
+    "isEntry": true
+  },
+  "src/routes/events/[eventId]/+page.svelte": {
+    "file": "entries/pages/events/_eventId_/_page.svelte.js",
+    "src": "src/routes/events/[eventId]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js"
+    ]
+  },
+  "src/routes/events/create/+page.svelte": {
+    "file": "entries/pages/events/create/_page.svelte.js",
+    "src": "src/routes/events/create/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_Input.js",
+      "_firebaseConfig.js",
+      "_index.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.cTTlJKi2.css"
+    ]
+  },
+  "src/routes/groups/+page.server.js": {
+    "file": "entries/pages/groups/_page.server.js",
+    "src": "src/routes/groups/+page.server.js",
+    "isEntry": true
+  },
+  "src/routes/groups/+page.svelte": {
+    "file": "entries/pages/groups/_page.svelte.js",
+    "src": "src/routes/groups/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js"
+    ]
+  },
+  "src/routes/login/+page.svelte": {
+    "file": "entries/pages/login/_page.svelte.js",
+    "src": "src/routes/login/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_Register.js",
+      "_Input.js",
+      "_firebaseConfig.js",
+      "_AuthStore.js",
+      "_client.js"
+    ]
+  },
+  "src/routes/logout/+page.svelte": {
+    "file": "entries/pages/logout/_page.svelte.js",
+    "src": "src/routes/logout/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_firebaseConfig.js",
+      "_client.js"
+    ]
+  },
+  "src/routes/news/+page.server.js": {
+    "file": "entries/pages/news/_page.server.js",
+    "src": "src/routes/news/+page.server.js",
+    "isEntry": true
+  },
+  "src/routes/news/+page.svelte": {
+    "file": "entries/pages/news/_page.svelte.js",
+    "src": "src/routes/news/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js"
+    ]
+  },
+  "src/routes/register/+page.svelte": {
+    "file": "entries/pages/register/_page.svelte.js",
+    "src": "src/routes/register/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_Register.js",
+      "_Input.js",
+      "_firebaseConfig.js",
+      "_client.js"
+    ]
+  }
+}

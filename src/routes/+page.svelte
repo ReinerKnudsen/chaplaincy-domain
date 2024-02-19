@@ -7,5 +7,11 @@
 
 <div class="my-3 w-full px-20">HOMEPAGE!</div>
 
+<img
+	src="gs://chaplaincy-website-bncgn.appspot.com/diocese_in_europe_new.png"
+	alt="Diocese in Europe"
+	class="mx-auto"
+/>
+
 <style>
 </style>

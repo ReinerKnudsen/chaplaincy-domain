@@ -1,10 +1,9 @@
 <script>
 	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
-	import { fireStore } from '$lib/firebaseConfig';
-	import { collection, addDoc } from 'firebase/firestore';
+	import { eventsColRef } from '$lib/firebase/firebaseConfig';
+	import { addDoc } from 'firebase/firestore';
 	import { FormStore, resetForm } from '$lib/stores/FormStore';
-
-	const colRef = collection(fireStore, 'Events');
+	import { UploadFile } from '$lib/components/UploadFile.svelte';
 
 	let description = '';
 	let startdate;
@@ -30,15 +29,9 @@
 	};
 
 	const handleSubmit = () => {
-		addDoc(colRef, $FormStore).then(() => {
-			newEventForm.reset;
+		addDoc(eventsColRef, $FormStore).then(() => {
+			document.getElementsByClassName('form-container').reset();
 		});
-	};
-
-	const handleEmptyForm = () => {
-		document.getElementById('form-container').reset();
-		resetForm();
-		console.log(FormStore);
 	};
 </script>
 
@@ -46,7 +39,12 @@
 	<h1>Create new event</h1>
 
 	<!-- Titel -->
-	<form class="form-container" id="form-container" on:submit={handleSubmit}>
+	<form
+		class="form-container"
+		id="form-container"
+		enctype="multipart/form-data"
+		on:submit={handleSubmit}
+	>
 		<div>
 			<Label for="title" class="mb-2">Event Titel *</Label>
 			<Input
@@ -196,9 +194,14 @@
 			/>
 		</div>
 
+		<!-- File Upload -->
+		<div>
+			<UploadFile type="events" />
+		</div>
+
 		<!-- Buttons -->
-		<div class="buttons">
-			<Button color="light" on:click={handleEmptyForm}>Empty form</Button>
+		<div class="buttons col-span-2 mx-auto mt-10">
+			<Button type="reset" color="light">Empty form</Button>
 			<Button type="submit">Save event</Button>
 		</div>
 	</form>

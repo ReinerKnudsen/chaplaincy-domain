@@ -1,6 +1,7 @@
 import { getApps, initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, collection } from 'firebase/firestore';
+import { getStorage, ref } from 'firebase/storage';
 
 const firebaseConfig = {
 	apiKey: 'AIzaSyDzGsaVy4PHDvHQhNQj5fmcAaGm64bf_kY',
@@ -16,6 +17,20 @@ if (!getApps().length) {
 	initializeApp(firebaseConfig);
 }
 
+// Create auth, database and storage instances
 export const auth = getAuth();
-export const store = getFirestore();
-//export default firebase;
+export const database = getFirestore();
+const storage = getStorage();
+export const storageRef = ref(storage);
+
+// Create database references
+export const userColRef = collection(database, 'users');
+export const eventsColRef = collection(database, 'events');
+export const articlesColRef = collection(database, 'articles');
+
+// Create storage references
+export const userStoreRef = ref(storage, 'users');
+export const eventsStoreRef = ref(storage, 'events');
+export const articlesStoreRef = ref(storage, 'articles');
+export const docsStorageRef = ref(storage, 'documents');
+export const docsImagesRef = ref(storage, 'images');

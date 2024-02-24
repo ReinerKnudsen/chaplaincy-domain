@@ -33,14 +33,16 @@
 	<NavUl {activeUrl} class="cursor-pointer">
 		<NavLi href="/">Home</NavLi>
 		<NavLi href="/news">News</NavLi>
-		<NavLi href="/activities">Activities</NavLi>
-		<NavLi href="/groups">Groups</NavLi>
+		<!-- <NavLi href="/activities">Activities</NavLi> -->
 		<NavLi href="/events">Events</NavLi>
+		<NavLi href="/groups">Groups</NavLi>
 		<NavLi href="/about">About us</NavLi>
 		{#if !$isLoggedIn}
-			<NavLi href="/login">Register/Login</NavLi>
+			<NavLi href="/login">Register/Sign in</NavLi>
+			<NavLi on:click={handleLogout}>Sign out</NavLi>
 		{:else}
-			<NavLi on:click={handleLogout}>Logout</NavLi>
+			<NavLi href="/admin">Admin</NavLi>
+			<NavLi on:click={handleLogout}>Sign out</NavLi>
 		{/if}
 	</NavUl>
 </Navbar>

@@ -1,12 +1,12 @@
 <script>
-	import Sidebar from '../../lib/components/Sidebar.svelte';
+	import Sidebar from '$lib/components/Sidebar.svelte';
 </script>
 
 <div class="page-container">
 	<div class="sidebar col-span-1 ml-2 mt-8">
 		<Sidebar />
 	</div>
-	<div class="main-content p-5">
+	<div class="main-content col-span-5 p-5">
 		<slot />
 	</div>
 </div>

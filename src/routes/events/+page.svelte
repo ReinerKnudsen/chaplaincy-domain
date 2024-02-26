@@ -13,5 +13,7 @@
 	</div>
 </div> -->
 
-<h1>Events</h1>
-<a href="/events/create">Create new event</a>
+<div class="my-3 w-full px-20">
+	<h1>Events</h1>
+	On this page there will be a card for each event.
+</div>

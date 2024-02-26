@@ -4,6 +4,7 @@
 	import { addDoc } from 'firebase/firestore';
 	import { FormStore, resetForm } from '$lib/stores/FormStore';
 	import UploadFile from '$lib/components/UploadFile.svelte';
+	import { goto } from '$app/navigation';
 
 	let description = '';
 	let startdate;
@@ -31,6 +32,7 @@
 	const handleSubmit = () => {
 		addDoc(eventsColRef, $FormStore).then(() => {
 			document.getElementsByClassName('form-container').reset();
+			goto('/admin/eventsadmin');
 		});
 	};
 </script>
@@ -200,9 +202,14 @@
 		</div>
 
 		<!-- Buttons -->
-		<div class="buttons col-span-2 mx-auto mt-10">
-			<Button type="reset" color="light">Empty form</Button>
-			<Button type="submit">Save event</Button>
+		<div class="buttons col-span-2">
+			<div class="grid w-full grid-cols-3 gap-2">
+				<Button type="reset" color="light" on:click={() => goto('/admin/eventsadmin')}
+					>Cancel</Button
+				>
+				<Button type="reset" color="light">Empty form</Button>
+				<Button type="submit">Save event</Button>
+			</div>
 		</div>
 	</form>
 </div>

@@ -6,19 +6,17 @@ const initialAuthState = {
 	loading: false, // Loading state indicator
 	error: null // Error message (if any)
 };
-
-// Create writable store for authentication state
 export const authStore = writable(initialAuthState);
+
+const initialUserState = {
+	name: '',
+	role: ''
+};
+export const authUser = writable(initialUserState);
+export const isLoggedIn = writable(false);
 
 export const unloadUser = () => {
 	authStore.set(initialAuthState);
 	isLoggedIn.set(false);
-	credentials.set({ email: null, password: null });
+	authUser.set(initialUserState);
 };
-
-export const credentials = writable({
-	email: null,
-	password: null
-});
-
-export const isLoggedIn = writable(false);

@@ -39,7 +39,6 @@
 		<NavLi href="/about">About us</NavLi>
 		{#if !$isLoggedIn}
 			<NavLi href="/login">Register/Sign in</NavLi>
-			<NavLi on:click={handleLogout}>Sign out</NavLi>
 		{:else}
 			<NavLi href="/admin">Admin</NavLi>
 			<NavLi on:click={handleLogout}>Sign out</NavLi>

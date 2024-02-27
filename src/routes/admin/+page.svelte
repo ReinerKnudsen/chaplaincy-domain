@@ -2,6 +2,8 @@
 	import { page } from '$app/stores';
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { onMount } from 'svelte';
+	import { isLoggedIn } from '$lib/stores/AuthStore';
+	import { goto } from '$app/navigation';
 
 	onMount(() => {
 		$pathName = $page.url.pathname;

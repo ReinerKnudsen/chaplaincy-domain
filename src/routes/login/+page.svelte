@@ -1,19 +1,20 @@
-<script lang="ts">
+<script>
 	import { Section, Register } from 'flowbite-svelte-blocks';
 	import { Button, Checkbox, Label, Input } from 'flowbite-svelte';
 	import { signInExistingUser } from '../../lib/services/authService';
-	import { credentials, isLoggedIn } from '../../lib/stores/AuthStore';
+	import { authStore, isLoggedIn } from '../../lib/stores/AuthStore';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
+	let thisPassword = '';
+	let thisEmail = '';
 	onMount(() => {
-		document.getElementById('email').focus();
+		!isLoggedIn ? document.getElementById('email').focus() : null;
 	});
 
 	async function handleSubmit(event) {
-		const { email, password } = $credentials;
 		event.preventDefault();
-		let response = await signInExistingUser(email, password);
+		let response = await signInExistingUser(thisEmail, thisPassword);
 		if (!!response) {
 			isLoggedIn.set(true);
 			goto('/');
@@ -39,7 +40,7 @@
 							id="email"
 							placeholder="name@company.com"
 							autocomplete="username"
-							bind:value={$credentials.email}
+							bind:value={thisEmail}
 							required
 						/>
 					</Label>
@@ -51,7 +52,7 @@
 							placeholder="•••••"
 							autocomplete="current-password"
 							required
-							bind:value={$credentials.password}
+							bind:value={thisPassword}
 						/>
 					</Label>
 					<div class="flex items-start">

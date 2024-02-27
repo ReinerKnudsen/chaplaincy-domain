@@ -14,25 +14,26 @@
 		emailErr: '',
 		passwordErr: '',
 		confirmPasswordErr: '',
+		displayNameErr: '',
 		firstnameErr: '',
 		lastnameErr: ''
 	};
 
-	let firstname: String = '';
-	let lastname: String = '';
-	let city: String = '';
-	let email: String = '';
-	let password: String = '';
-	let confirmPassword: String = '';
-	let passwordError: Boolean = false;
+	let firstname: string = '';
+	let lastname: string = '';
+	let displayname: string = '';
+	let city: string = '';
+	let email: string = '';
+	let password: string = '';
+	let confirmPassword: string = '';
+	let passwordError: boolean = false;
 
 	const register = async (e) => {
-		console.log(e);
 		e.preventDefault();
 
 		// match password validation
 		if (confirmPassword === password) {
-			let response = await registerUser(email, password, firstname, lastname, city);
+			let response = await registerUser(email, password, firstname, lastname, city, displayname);
 			if (response) {
 				isLoggedIn.set(true);
 				goto('/');
@@ -49,13 +50,25 @@
 			<form class="flex flex-col space-y-6" on:submit={register}>
 				<h3 class="p-0 text-xl font-medium text-gray-900 dark:text-white">Create an new account</h3>
 				<Label class="space-y-2">
-					<span><strong>Your first name *</strong></span>
+					<span><strong>Your displayname *</strong></span>
+					<Input
+						type="text"
+						name="displayname"
+						id="displayname"
+						placeholder="your display name"
+						autocomplete="display-name"
+						bind:value={displayname}
+						required
+					/>
+				</Label>
+				<Label class="space-y-2">
+					<span><strong>Your firstname *</strong></span>
 					<Input
 						type="text"
 						name="firstname"
 						id="firstname"
 						placeholder="your first name"
-						autocomplete="given-name"
+						autocomplete="current-name"
 						bind:value={firstname}
 						required
 					/>

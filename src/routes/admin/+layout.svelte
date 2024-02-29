@@ -6,7 +6,7 @@
 	<div class="sidebar col-span-1 ml-2 mt-8">
 		<Sidebar />
 	</div>
-	<div class="main-content col-span-5 p-5">
+	<div class="main-content col-span-11 p-5">
 		<slot />
 	</div>
 </div>
@@ -14,6 +14,6 @@
 <style>
 	.page-container {
 		display: grid;
-		grid-template-columns: repeat(6, 1fr);
+		grid-template-columns: repeat(12, 1fr);
 	}
 </style>

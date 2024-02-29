@@ -42,18 +42,5 @@
 	</SidebarWrapper>
 </Sidebar>
 
-<!-- <div class="container">
-	<NavButton label={'Dashboard'} url={'/admin'} />
-	<NavButton label={'News'} url={'/admin/newsadmin'} />
-	<NavButton label={'Events'} url={'/admin/eventsadmin'} />
-	<NavButton label={'User'} url={'/admin/useradmin'} />
-	<NavButton label={'Settings'} url={'/admin/settings'} />
-</div> -->
-
 <style>
-	/* .container {
-		height: 100vh;
-		border-right: 1px solid #e5e5e5;
-		box-shadow: 2px 2px 2px #e5e5e5;
-	} */
 </style>

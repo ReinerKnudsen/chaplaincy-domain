@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 
 // Define the initial state of the form
-const initialFormState = {
+const initialEventState = {
 	title: '',
 	subtitle: '',
 	description: '',
@@ -16,13 +16,18 @@ const initialFormState = {
 	publishtime: null,
 	unpublishdate: null,
 	unpublishtime: null,
-	comments: ''
+	comments: '',
+	url: ''
 };
 
 // Create a writable store with the initial state
-export const FormStore = writable(initialFormState);
+export const EventStore = writable(initialEventState);
+
+// We store the document ID if we are working on a existing document; otherwise the ide will be empty
+export const docRef = writable('');
 
 // Function to reset the form store to its initial state
-export function resetForm() {
-	FormStore.set(initialFormState);
+export function resetEventStore() {
+	EventStore.set(initialEventState);
+	docRef.set('');
 }

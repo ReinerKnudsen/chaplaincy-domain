@@ -3,6 +3,12 @@ import { eventsColRef } from '$lib/firebase/firebaseConfig';
 
 export const load = async () => {
 	let snapshot = await getDocs(eventsColRef);
-	let events = snapshot.docs.map((events) => events.data());
+	let events = snapshot.docs.map((event) => {
+		return {
+			id: event.id,
+			data: event.data()
+		};
+	});
+	console.log(events);
 	return { events };
 };

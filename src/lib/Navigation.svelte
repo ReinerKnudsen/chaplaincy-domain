@@ -1,7 +1,7 @@
 <script>
 	import { page } from '$app/stores';
 	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger } from 'flowbite-svelte';
-	import { isLoggedIn, unloadUser } from './stores/AuthStore';
+	import { authStore, unloadUser } from './stores/AuthStore';
 	import { auth, imgStorageRef } from './firebase/firebaseConfig';
 	import { goto } from '$app/navigation';
 	import { signOut } from 'firebase/auth';
@@ -37,7 +37,7 @@
 		<NavLi href="/events">Events</NavLi>
 		<NavLi href="/groups">Groups</NavLi>
 		<NavLi href="/about">About us</NavLi>
-		{#if !$isLoggedIn}
+		{#if !$authStore.isLoggedIn}
 			<NavLi href="/login">Register/Sign in</NavLi>
 		{:else}
 			<NavLi href="/admin">Admin</NavLi>

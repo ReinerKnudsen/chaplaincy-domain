@@ -1,44 +1,62 @@
 <script>
 	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
-	import { eventsColRef } from '$lib/firebase/firebaseConfig';
-	import { addDoc } from 'firebase/firestore';
-	import { FormStore, resetForm } from '$lib/stores/FormStore';
+	import { eventsColRef, database } from '$lib/firebase/firebaseConfig';
+	import { addDoc, updateDoc } from 'firebase/firestore';
+	import { EventStore, resetEventStore, docRef } from '$lib/stores/FormStore';
 	import UploadFile from '$lib/components/UploadFile.svelte';
 	import { goto } from '$app/navigation';
-
-	let description = '';
-	let startdate;
-	let starttime;
-	let enddate;
-	let endtime;
-	let condition = '';
-	let location = '';
 
 	// Set the slugtext as the first 100 characters of the description text
 	let slugtext = '';
 	const handleCreateSlug = (e) => {
-		$FormStore.slug = $FormStore.description.slice(0, 100);
+		$EventStore.slug = $EventStore.description.slice(0, 100);
+	};
+
+	const cleanUpForm = () => {
+		resetEventStore();
+		goto('/admin/eventsadmin');
+	};
+
+	const updateEvent = async () => {
+		try {
+			await updateDoc($docRef, $EventStore); // Update document with eventData
+			console.log('Document successfully updated!');
+		} catch (error) {
+			console.error('Error updating document:', error);
+		}
+		cleanUpForm();
+	};
+
+	const saveNewEvent = async () => {
+		try {
+			await addDoc(eventsColRef, $EventStore);
+			console.log('Document successfully written!');
+		} catch (error) {
+			console.error('Error writing document:', error);
+		}
+		cleanUpForm();
 	};
 
 	// Automatically add or delete text from the "conditions"" field if the checkbox is checked or unchecked
 	const handleConditionChange = (e) => {
 		if (e.target.checked) {
-			condition = 'Entry is free, donations are welcome.';
+			$EventStore.condition = 'Entry is free, donations are welcome.';
 		} else {
-			condition = '';
+			$EventStore.condition = '';
 		}
 	};
 
-	const handleSubmit = () => {
-		addDoc(eventsColRef, $FormStore).then(() => {
-			document.getElementsByClassName('form-container').reset();
-			goto('/admin/eventsadmin');
-		});
+	const handleSubmit = async () => {
+		if ($docRef) {
+			updateEvent();
+		} else {
+			saveNewEvent();
+		}
 	};
 </script>
 
 <div class="form">
-	<h1>Create new event</h1>
+	<h1>{$docRef ? 'Edit event' : 'Create new event'}</h1>
 
 	<!-- Titel -->
 	<form
@@ -53,7 +71,7 @@
 				type="text"
 				id="title"
 				placeholder="Event Title"
-				bind:value={$FormStore.title}
+				bind:value={$EventStore.title}
 				required
 			/>
 			<!-- <div class="error">This field cannot be empty</div> -->
@@ -62,7 +80,7 @@
 		<!-- Sub Title -->
 		<div>
 			<Label for="subtitle" class="mb-2">Sub Title</Label>
-			<Input type="text" id="subtitle" placeholder="Sub Title" bind:value={$FormStore.subtitle} />
+			<Input type="text" id="subtitle" placeholder="Sub Title" bind:value={$EventStore.subtitle} />
 		</div>
 
 		<!-- Description -->
@@ -73,9 +91,11 @@
 				placeholder="Description text"
 				rows="8"
 				name="description"
-				bind:value={$FormStore.description}
+				bind:value={$EventStore.description}
 			/>
-			<p class="explanation text-right"><strong>{description.length}</strong> characters.</p>
+			<p class="explanation text-right">
+				<strong>{$EventStore.description.length}</strong> characters.
+			</p>
 		</div>
 
 		<!-- Slug -->
@@ -86,50 +106,63 @@
 				placeholder={slugtext}
 				rows="2"
 				name="slug"
-				bind:value={$FormStore.slug}
+				bind:value={$EventStore.slug}
 				maxlength="100"
 				required
 				on:focus={handleCreateSlug}
 			/>
-			<p class="explanation text-right"><strong>{slugtext.length} of 100 </strong> characters.</p>
+			<p class="explanation text-right">
+				<strong>{$EventStore.slug.length} of 100 </strong> characters.
+			</p>
 		</div>
 
 		<!-- Start date -->
 		<div>
 			<Label for="startdate" class="mb-2">Start Date *</Label>
-			<Input type="date" id="startdate" bind:value={$FormStore.startdate} required />
+			<Input type="date" id="startdate" bind:value={$EventStore.startdate} required />
 		</div>
 
 		<!-- Start time -->
 		<div>
-			<Label for="starttime" class="mb-2">Start Time *</Label>
-			<Input type="time" id="starttime" bind:value={$FormStore.starttime} required />
+			<Label class="mb-2">Start Time *</Label>
+			<Input
+				type="time"
+				id="starttime"
+				bind:value={$EventStore.starttime}
+				required
+				disabled={!$EventStore.startdate}
+			/>
 		</div>
 
 		<!-- End date -->
 		<div>
 			<Label for="enddate" class="mb-2">End Date</Label>
-			<Input type="date" id="enddate" bind:value={$FormStore.enddate} />
+			<Input type="date" id="enddate" bind:value={$EventStore.enddate} />
 		</div>
 
 		<!-- End time -->
 		<div>
-			<Label for="endtime" class="mb-2">End Time</Label>
-			<Input type="time" id="endtime" bind:value={$FormStore.endtime} />
+			<Label class="mb-2">End Time</Label>
+			<Input
+				type="time"
+				id="endtime"
+				bind:value={$EventStore.endtime}
+				disabled={!$EventStore.enddate}
+			/>
 		</div>
 
 		<!-- Location -->
 		<div class="form-area">
 			<div>
 				<Label for="Location" class="mb-2">Location *</Label>
-				<Input type="text" id="location" bind:value={$FormStore.location} required />
+				<Input type="text" id="location" bind:value={$EventStore.location} required />
 			</div>
 		</div>
 
 		<!-- Conditions -->
 		<div>
 			<Label for="conditions" class="mb-2">Conditions</Label>
-			<Input type="text" id="conditions" bind:value={$FormStore.condition} />
+			<Input type="text" id="conditions" bind:value={$EventStore.condition} />
 			<div class="mt-1 p-1">
 				<Checkbox
 					aria-describedby="helper-checkbox-text"
@@ -145,13 +178,18 @@
 		<!-- Publish date  -->
 		<div>
 			<Label for="publishdate" class="mb-2">Publish Date *</Label>
-			<Input type="date" id="publishdate" required bind:value={$FormStore.publishdate} />
+			<Input type="date" id="publishdate" required bind:value={$EventStore.publishdate} />
 		</div>
 
 		<!-- Publish time  -->
 		<div>
-			<Label for="publishtime" class="mb-2">Publish Time</Label>
-			<Input type="time" id="publishtime" bind:value={$FormStore.publishtime} />
+			<Label class="mb-2">Publish Time</Label>
+			<Input
+				type="time"
+				id="publishtime"
+				bind:value={$EventStore.publishtime}
+				disabled={!$EventStore.publishdate}
+			/>
 			<p class="explanation">
 				If you don't select a publish time, it will be set to midnight of the selected day.
 			</p>
@@ -164,7 +202,7 @@
 				type="date"
 				id="unpublishdate"
 				title="Select a date when the event shall be unpublished (optional)"
-				bind:value={$FormStore.unpublishdate}
+				bind:value={$EventStore.unpublishdate}
 			/>
 			<p class="explanation">
 				If you don't set a date and time here the event will automatically be unpublished at the
@@ -179,7 +217,8 @@
 				type="time"
 				id="unpublishtime"
 				title="Select a time when the event shall be unpublished. (optional) "
-				bind:value={$FormStore.unpublishtime}
+				bind:value={$EventStore.unpublishtime}
+				disabled={!$EventStore.unpublishdate}
 			/>
 		</div>
 
@@ -192,13 +231,13 @@
 				rows="8"
 				name="comments"
 				title="If there is anything people should need to know about this event? Put it here. (Parking instructions, public transport connections...)"
-				bind:value={$FormStore.comments}
+				bind:value={$EventStore.comments}
 			/>
 		</div>
 
 		<!-- File Upload -->
 		<div>
-			<UploadFile type="events" />
+			<UploadFile type="events" size={20000000} />
 		</div>
 
 		<!-- Buttons -->

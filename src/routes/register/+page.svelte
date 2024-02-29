@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { Section, Register } from 'flowbite-svelte-blocks';
 	import { Button, Checkbox, Label, Input } from 'flowbite-svelte';
-	import { isLoggedIn } from '../../lib/stores/AuthStore';
+	import { authStore } from '../../lib/stores/AuthStore';
 	import { registerUser } from '../../lib/services/authService';
 	import { goto } from '$app/navigation';
 
@@ -35,7 +35,6 @@
 		if (confirmPassword === password) {
 			let response = await registerUser(email, password, firstname, lastname, city, displayname);
 			if (response) {
-				isLoggedIn.set(true);
 				goto('/');
 			}
 		} else {

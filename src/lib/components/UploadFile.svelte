@@ -1,6 +1,7 @@
 <script>
 	import { Label } from 'flowbite-svelte';
 	import { storageRef } from '$lib/firebase/firebaseConfig';
+	import { EventStore } from '$lib/stores/FormStore';
 	import { ref } from 'firebase/storage';
 
 	export let type = '';
@@ -61,7 +62,7 @@
 			type="file"
 			class="hidden"
 			accept=".png,.jpg"
-			bind:files
+			bind:value={$EventStore.url}
 			on:change={checkFileSize}
 		/>
 	</label>

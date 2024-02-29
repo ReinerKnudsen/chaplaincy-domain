@@ -2,21 +2,20 @@
 	import { Section, Register } from 'flowbite-svelte-blocks';
 	import { Button, Checkbox, Label, Input } from 'flowbite-svelte';
 	import { signInExistingUser } from '../../lib/services/authService';
-	import { authStore, isLoggedIn } from '../../lib/stores/AuthStore';
+	import { authStore } from '../../lib/stores/AuthStore';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
 	let thisPassword = '';
 	let thisEmail = '';
 	onMount(() => {
-		!isLoggedIn ? document.getElementById('email').focus() : null;
+		!authStore.isLoggedIn ? document.getElementById('email').focus() : null;
 	});
 
 	async function handleSubmit(event) {
 		event.preventDefault();
 		let response = await signInExistingUser(thisEmail, thisPassword);
 		if (!!response) {
-			isLoggedIn.set(true);
 			goto('/');
 		} else {
 			console.log(response);
@@ -24,7 +23,7 @@
 	}
 </script>
 
-{#if $isLoggedIn}
+{#if $authStore.isLoggedIn}
 	<p>You are already logged in</p>
 {:else}
 	<Section name="login">

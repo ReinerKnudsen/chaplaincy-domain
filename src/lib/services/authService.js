@@ -18,7 +18,6 @@ export async function signInExistingUser(email, password) {
 		const userCredential = await signInWithEmailAndPassword(auth, email, password);
 		const authenticatedUser = userCredential.user;
 		const userDocRef = doc(userColRef, authenticatedUser.uid);
-
 		// get the user role from the user document
 		const snapshot = await getDoc(userDocRef);
 		if (snapshot.exists()) {
@@ -32,12 +31,23 @@ export async function signInExistingUser(email, password) {
 		}
 
 		// Update user store with authenticated user
-		authStore.set({ ...authStore, user: authenticatedUser, loading: false, error: null });
+		authStore.set({
+			...authStore,
+			user: authenticatedUser,
+			loading: false,
+			error: null,
+			isLoggedIn: true
+		});
 
 		return authenticatedUser; // Return authenticated user
 	} catch (error) {
 		console.log('Error: ', error.message);
-		authStore.update((store) => ({ ...store, loading: false, error: error.message }));
+		authStore.update((store) => ({
+			...store,
+			loading: false,
+			error: error.message,
+			isLoggedIn: false
+		}));
 		throw error;
 	}
 }
@@ -56,7 +66,13 @@ export async function registerUser(email, password, firstname, lastname, city, d
 		});
 
 		// Update user store with authenticated user
-		authStore.set({ ...authStore, user: authenticatedUser, loading: false, error: null });
+		authStore.set({
+			...authStore,
+			user: authenticatedUser,
+			loading: false,
+			error: null,
+			isLoggedIn: true
+		});
 
 		// Set the authUser store with the authenticated user
 		authUser.set({
@@ -80,7 +96,12 @@ export async function registerUser(email, password, firstname, lastname, city, d
 		return authenticatedUser; // Return authenticated user
 	} catch (error) {
 		console.log('Error: ', error.code);
-		authStore.update((store) => ({ ...store, loading: false, error: error.message }));
+		authStore.update((store) => ({
+			...store,
+			loading: false,
+			error: error.message,
+			isLoggedIn: false
+		}));
 		throw error;
 	}
 }
@@ -92,7 +113,12 @@ export function signOutUser() {
 		unloadUser();
 	} catch (error) {
 		console.log('Error: ', error.message);
-		authStore.update((store) => ({ ...store, loading: false, error: error.message }));
+		authStore.update((store) => ({
+			...store,
+			loading: false,
+			error: error.message,
+			isLoggedIn: false
+		}));
 		throw error;
 	}
 }
@@ -102,6 +128,6 @@ export function getCurrentUser() {
 	if (auth.currentUser) {
 		return auth.currentUser;
 	} else {
-		return undefined;
+		return null;
 	}
 }

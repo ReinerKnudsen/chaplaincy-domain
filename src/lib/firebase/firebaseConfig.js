@@ -12,13 +12,18 @@ const firebaseConfig = {
 	appId: '1:342698394076:web:21790dc7aa59f599a58f19'
 };
 
+let firebaseApp = null;
+
 // Initialize Firebase
 if (!getApps().length) {
-	initializeApp(firebaseConfig);
+	firebaseApp = initializeApp(firebaseConfig);
+} else {
+	firebaseApp = getApps()[0];
 }
 
 // Create auth, database and storage instances
-export const auth = getAuth();
+export const app = firebaseApp;
+export const auth = getAuth(firebaseApp);
 export const database = getFirestore();
 const storage = getStorage();
 export const storageRef = ref(storage);

@@ -2,6 +2,8 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import { pathName } from '$lib/stores/NavigationStore';
+	import { resetEventStore } from '$lib/stores/FormStore';
+	import { goto } from '$app/navigation';
 
 	import {
 		Table,
@@ -25,6 +27,12 @@
 	const handleSearchInput = (event) => {
 		console.log(event.target.value);
 	};
+
+	const handleClick = async () => {
+		console.log('Resetting store');
+		await resetEventStore();
+		goto('/admin/eventsadmin/create');
+	};
 </script>
 
 <div>
@@ -32,7 +40,7 @@
 	<div class="mb-6 grid grid-cols-12 gap-20">
 		<div class="col-span-9"><Search on:input={handleSearchInput} /></div>
 		<div class="col-span-3 justify-self-end">
-			<Button href="/admin/eventsadmin/create">Create Event</Button>
+			<Button on:click={handleClick}>Create Event</Button>
 		</div>
 	</div>
 
@@ -49,16 +57,16 @@
 				<span class="sr-only">Edit</span>
 			</TableHeadCell>
 		</TableHead>
-		<TableBody class="divide-y">
+		<TableBody>
 			{#each events as event}
 				<TableBodyRow>
 					<TableBodyCell class="!p-4">
 						<Checkbox />
 					</TableBodyCell>
-					<TableBodyCell>{event.title}</TableBodyCell>
-					<TableBodyCell>{event.date}</TableBodyCell>
-					<TableBodyCell>{event.location}</TableBodyCell>
-					<TableBodyCell>{event.slug}</TableBodyCell>
+					<TableBodyCell>{event.data.title}</TableBodyCell>
+					<TableBodyCell>{event.data.startdate}</TableBodyCell>
+					<TableBodyCell>{event.data.location}</TableBodyCell>
+					<TableBodyCell>{event.data.slug}</TableBodyCell>
 					<TableBodyCell>
 						<a
 							href="/admin/eventsadmin/{event.id}"

@@ -5,6 +5,7 @@
 	import { authStore } from '../../lib/stores/AuthStore';
 	import { registerUser } from '../../lib/services/authService';
 	import { goto } from '$app/navigation';
+	import { userStore } from '../../lib/stores/UserStore';
 
 	onMount(() => {
 		document.getElementById('firstname').focus();
@@ -19,11 +20,6 @@
 		lastnameErr: ''
 	};
 
-	let firstname: string = '';
-	let lastname: string = '';
-	let displayname: string = '';
-	let city: string = '';
-	let email: string = '';
 	let password: string = '';
 	let confirmPassword: string = '';
 	let passwordError: boolean = false;
@@ -33,7 +29,7 @@
 
 		// match password validation
 		if (confirmPassword === password) {
-			let response = await registerUser(email, password, firstname, lastname, city, displayname);
+			let response = await registerUser(password);
 			if (response) {
 				goto('/');
 			}
@@ -56,7 +52,7 @@
 						id="displayname"
 						placeholder="your display name"
 						autocomplete="display-name"
-						bind:value={displayname}
+						bind:value={$userStore.displayname}
 						required
 					/>
 				</Label>
@@ -68,7 +64,7 @@
 						id="firstname"
 						placeholder="your first name"
 						autocomplete="current-name"
-						bind:value={firstname}
+						bind:value={$userStore.firstname}
 						required
 					/>
 				</Label>
@@ -78,7 +74,7 @@
 						type="text"
 						name="lastname"
 						id="lastname"
-						bind:value={lastname}
+						bind:value={$userStore.lastname}
 						placeholder="your last name"
 						autocomplete="family-name"
 					/>
@@ -89,7 +85,7 @@
 						type="text"
 						name="city"
 						id="city"
-						bind:value={city}
+						bind:value={$userStore.city}
 						placeholder="where do you live?"
 						autocomplete="city"
 					/>
@@ -101,7 +97,7 @@
 						name="email"
 						id="email"
 						placeholder="name@company.com"
-						bind:value={email}
+						bind:value={$userStore.email}
 						autocomplete="email"
 						required
 					/>

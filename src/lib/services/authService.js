@@ -1,6 +1,7 @@
 // AuthService.js
 import { auth, userColRef } from '../firebase/firebaseConfig'; // Import Firebase auth instance
 import { authStore, authUser, unloadUser } from '$lib/stores/AuthStore'; // Import the user store
+import { userStore } from '$lib/stores/UserStore';
 import {
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
@@ -53,13 +54,13 @@ export async function signInExistingUser(email, password) {
 }
 
 // Register new user with email and password
-export async function registerUser(email, password, firstname, lastname, city, displayName) {
+export async function registerUser(password) {
 	try {
 		// Set loading state
 		authStore.update((store) => ({ ...store, loading: true, error: null }));
 
 		// Register user with email and password
-		const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+		const userCredential = await createUserWithEmailAndPassword(auth, $userStore.email, password);
 		const authenticatedUser = userCredential.user;
 		updateProfile(authenticatedUser, {
 			displayName: displayName

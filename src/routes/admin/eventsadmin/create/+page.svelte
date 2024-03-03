@@ -28,6 +28,10 @@
 	};
 
 	const saveNewEvent = async () => {
+		!$EventStore.publishtime && ($EventStore.publishtime = '09:00');
+		!$EventStore.unpublishdate && ($EventStore.unpublishdate = $EventStore.startdate);
+		!$EventStore.unpublishtime && ($EventStore.unpublishtime = $EventStore.starttime);
+
 		try {
 			await addDoc(eventsColRef, $EventStore);
 			console.log('Document successfully written!');
@@ -191,7 +195,7 @@
 				disabled={!$EventStore.publishdate}
 			/>
 			<p class="explanation">
-				If you don't select a publish time, it will be set to midnight of the selected day.
+				If you don't select a publish time, it will be set to 09:00 of the selected day.
 			</p>
 		</div>
 

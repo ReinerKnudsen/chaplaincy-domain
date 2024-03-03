@@ -4,6 +4,8 @@
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { resetEventStore } from '$lib/stores/FormStore';
 	import { goto } from '$app/navigation';
+	import { doc, deleteDoc, getDocs } from 'firebase/firestore';
+	import { eventsColRef } from '$lib/firebase/firebaseConfig';
 
 	import {
 		Table,
@@ -18,7 +20,19 @@
 	} from 'flowbite-svelte';
 
 	export let data;
-	const events = data.events;
+	let events = data.events;
+
+	export const loadDocs = async () => {
+		let snapshot = await getDocs(eventsColRef);
+		let events = snapshot.docs.map((event) => {
+			return {
+				id: event.id,
+				data: event.data()
+			};
+		});
+		console.log(events);
+		return { events };
+	};
 
 	onMount(() => {
 		$pathName = $page.url.pathname;
@@ -33,6 +47,11 @@
 		await resetEventStore();
 		goto('/admin/eventsadmin/create');
 	};
+
+	const handleDelete = async (id) => {
+		await deleteDoc(doc(eventsColRef, id));
+		events = events.filter((event) => event.id !== id);
+	};
 </script>
 
 <div>
@@ -46,7 +65,7 @@
 
 	<Table hoverable={true}>
 		<TableHead>
-			<TableHeadCell class="!p-4">
+			<TableHeadCell class="!p-4" hidden>
 				<Checkbox />
 			</TableHeadCell>
 			<TableHeadCell>Title</TableHeadCell>
@@ -60,7 +79,7 @@
 		<TableBody>
 			{#each events as event}
 				<TableBodyRow>
-					<TableBodyCell class="!p-4">
+					<TableBodyCell class="!p-4" hidden>
 						<Checkbox />
 					</TableBodyCell>
 					<TableBodyCell>{event.data.title}</TableBodyCell>
@@ -71,6 +90,11 @@
 						<a
 							href="/admin/eventsadmin/{event.id}"
 							class="font-medium text-primary-600 hover:underline dark:text-primary-500">Edit</a
+						>
+						|
+						<button
+							class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+							on:click={() => handleDelete(event.id)}>Delete</button
 						>
 					</TableBodyCell>
 				</TableBodyRow>

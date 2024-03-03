@@ -6,7 +6,7 @@ import {
 	createUserWithEmailAndPassword,
 	updateProfile
 } from 'firebase/auth';
-import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 // Set User data from user document
 const setUserData = (snapshot) => {
@@ -84,6 +84,7 @@ export async function registerUser(password) {
 		} catch (e) {
 			console.error('Error adding document: ', e);
 		}
+
 		return authenticatedUser; // Return authenticated user
 	} catch (error) {
 		console.log('Error: ', error.code);

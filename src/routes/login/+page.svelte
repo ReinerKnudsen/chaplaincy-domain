@@ -8,9 +8,12 @@
 
 	let thisPassword = '';
 	let thisEmail = '';
+	let error = '';
+
 	onMount(() => {
-		!authStore.isLoggedIn ? document.getElementById('email').focus() : null;
+		document.getElementById('email').focus();
 	});
+	$: error = authStore.error;
 
 	async function handleSubmit(event) {
 		event.preventDefault();
@@ -18,7 +21,7 @@
 		if (!!response) {
 			goto('/');
 		} else {
-			console.log(response);
+			error = 'Invalid email or password';
 		}
 	}
 </script>
@@ -54,6 +57,9 @@
 							bind:value={thisPassword}
 						/>
 					</Label>
+					<div class="error text-base font-semibold text-red-700" hidden={!error}>
+						{error}
+					</div>
 					<div class="flex items-start">
 						<Checkbox>Remember me</Checkbox>
 						<a href="/" class="ml-auto text-sm text-blue-700 hover:underline dark:text-blue-500"

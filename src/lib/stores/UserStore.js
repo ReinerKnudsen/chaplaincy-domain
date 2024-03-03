@@ -6,10 +6,10 @@ const initialUserState = {
 	displayname: '',
 	email: '',
 	role: '',
-	city: '',
-	isAdmin: false
+	city: ''
 };
 
+// The userStore holds the information of a user selected on the user admin page
 export const userStore = writable(initialUserState);
 
 export const resetUserStore = () => {

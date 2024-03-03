@@ -1,37 +1,40 @@
 // AuthService.js
 import { auth, userColRef } from '../firebase/firebaseConfig'; // Import Firebase auth instance
-import { authStore, authUser, unloadUser } from '$lib/stores/AuthStore'; // Import the user store
-import { userStore } from '$lib/stores/UserStore';
+import { authStore, unloadUser, authUser } from '$lib/stores/AuthStore'; // Import the user store
 import {
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
 	updateProfile
 } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+
+// Set User data from user document
+const setUserData = (snapshot) => {
+	authUser.set({
+		firstname: snapshot.data().firstname,
+		lastname: snapshot.data().lastname,
+		displayname: snapshot.data().displayname,
+		email: snapshot.data().email,
+		role: snapshot.data().role,
+		city: snapshot.data().city,
+		isAdmin: snapshot.data().role === 'admin'
+	});
+};
 
 // Function to sign in user with email and password
 export async function signInExistingUser(email, password) {
 	try {
 		// Set loading state
 		authStore.update((store) => ({ ...store, loading: true, error: null }));
-
-		// Sign in user with email and password
 		const userCredential = await signInWithEmailAndPassword(auth, email, password);
 		const authenticatedUser = userCredential.user;
 		const userDocRef = doc(userColRef, authenticatedUser.uid);
-		// get the user role from the user document
 		const snapshot = await getDoc(userDocRef);
 		if (snapshot.exists()) {
-			// set the authUser store with the authenticated user
-			authUser.set({
-				role: snapshot.data().role,
-				name: snapshot.data().firstname
-			});
+			setUserData(snapshot);
 		} else {
 			console.log('No such document!');
 		}
-
-		// Update user store with authenticated user
 		authStore.set({
 			...authStore,
 			user: authenticatedUser,
@@ -39,17 +42,15 @@ export async function signInExistingUser(email, password) {
 			error: null,
 			isLoggedIn: true
 		});
-
-		return authenticatedUser; // Return authenticated user
+		return authenticatedUser;
 	} catch (error) {
-		console.log('Error: ', error.message);
 		authStore.update((store) => ({
 			...store,
 			loading: false,
 			error: error.message,
 			isLoggedIn: false
 		}));
-		throw error;
+		console.log('Error: ', error.message);
 	}
 }
 
@@ -58,15 +59,11 @@ export async function registerUser(password) {
 	try {
 		// Set loading state
 		authStore.update((store) => ({ ...store, loading: true, error: null }));
-
-		// Register user with email and password
-		const userCredential = await createUserWithEmailAndPassword(auth, $userStore.email, password);
+		const userCredential = await createUserWithEmailAndPassword(auth, authUser.email, password);
 		const authenticatedUser = userCredential.user;
 		updateProfile(authenticatedUser, {
-			displayName: displayName
+			displayName: authUser.displayName
 		});
-
-		// Update user store with authenticated user
 		authStore.set({
 			...authStore,
 			user: authenticatedUser,
@@ -74,21 +71,14 @@ export async function registerUser(password) {
 			error: null,
 			isLoggedIn: true
 		});
-
-		// Set the authUser store with the authenticated user
-		authUser.set({
-			role: 'user',
-			name: firstname
-		});
-
-		// create user document in firestore
 		try {
 			const userDocRef = doc(userColRef, authenticatedUser.uid);
 			await setDoc(userDocRef, {
-				firstname: firstname,
-				lastname: lastname,
-				email: email,
-				city: city,
+				firstname: authUser.firstname,
+				lastname: authUser.lastname,
+				displayname: authUser.displayname,
+				email: authUser.email,
+				city: authUser.city,
 				role: 'user'
 			});
 		} catch (e) {

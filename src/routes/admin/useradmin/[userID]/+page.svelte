@@ -1,34 +1,43 @@
 <script>
 	import { page } from '$app/stores';
-	import { Label, Input, Select } from 'flowbite-svelte';
+	import { Label, Input, Select, Button } from 'flowbite-svelte';
 	import { userStore } from '$lib/stores/UserStore';
-	import { doc, setDoc, getDoc } from 'firebase/firestore';
+	import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 	import { userColRef } from '$lib/firebase/firebaseConfig';
+	import { goto } from '$app/navigation';
 
 	const userID = $page.params.userID;
-	console.log('useradmin/[userID]: userID: ', userID);
 
 	const userRoles = [
-		{ value: 'admin', name: 'Admin' },
 		{ value: 'user', name: 'User' },
-		{ value: 'editor', name: 'Editor' }
+		{ value: 'editor', name: 'Editor' },
+		{ value: 'admin', name: 'Admin' }
 	];
 
 	const loadUser = async () => {
 		const userDocRef = doc(userColRef, userID);
 		const snapshot = await getDoc(userDocRef);
 		if (snapshot.exists()) {
-			// set the authUser store with the authenticated user
-			console.log('Document data:', snapshot.data());
-			userStore.set(snapshot.data());
+			await userStore.set(snapshot.data());
 		} else {
 			console.log('No such document!');
 		}
 	};
 
-	loadUser().then(() => {
-		console.log('useradmin/[userID] Neuladen: userStore: ', $userStore);
-	});
+	loadUser();
+
+	const handleClick = async () => {
+		const userDocRef = doc(userColRef, userID);
+		await setDoc(userDocRef, {
+			firstname: $userStore.firstname,
+			lastname: $userStore.lastname,
+			displayname: $userStore.displayname,
+			email: $userStore.email,
+			city: $userStore.city,
+			role: $userStore.role
+		});
+		goto('/admin/useradmin');
+	};
 </script>
 
 <form>
@@ -42,12 +51,13 @@
 			<Input id="lastname" size="lg" placeholder="Last name" bind:value={$userStore.lastname} />
 		</div>
 		<div class="mb-6">
-			<Label for="displayname" class="mb-2 block">Display Name</Label>
+			<Label for="displayname" class="mb-2 block">Display Name *</Label>
 			<Input
 				id="displayname"
 				size="lg"
 				placeholder="Display name"
 				bind:value={$userStore.displayname}
+				required
 			/>
 		</div>
 		<div class="mb-6">
@@ -58,13 +68,17 @@
 			<Label for="city" class="mb-2 block">City</Label>
 			<Input id="city" size="lg" placeholder="city" bind:value={$userStore.city} />
 		</div>
-
 		<div class="mb-6">
 			<Label>
-				Select an option
-				<Select class="mt-2" items={userRoles} bind:value={$userStore.role} />
+				User role *
+				<Select class="mt-2" items={userRoles} bind:value={$userStore.role} required />
 			</Label>
 		</div>
+	</div>
+	<div class="mb-6 grid">
+		<Button type="submit" class=" w-40 justify-self-center align-middle" on:click={handleClick}
+			>Save</Button
+		>
 	</div>
 </form>
 

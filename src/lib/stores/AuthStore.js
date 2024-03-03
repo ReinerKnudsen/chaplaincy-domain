@@ -9,13 +9,19 @@ const initialAuthState = {
 };
 export const authStore = writable(initialAuthState);
 
-const initialUserState = {
-	name: '',
-	role: ''
+const initialAuthUserState = {
+	firstname: '',
+	lastname: '',
+	displayname: '',
+	email: '',
+	role: '',
+	city: '',
+	isAdmin: false
 };
-export const authUser = writable(initialUserState);
+// The authUser store holds the information of the authenticated user
+export const authUser = writable(initialAuthUserState);
 
 export const unloadUser = () => {
 	authStore.set(initialAuthState);
-	authUser.set(initialUserState);
+	authUser.set(initialAuthUserState);
 };

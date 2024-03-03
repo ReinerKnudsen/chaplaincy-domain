@@ -1,5 +1,5 @@
 <script>
-	import { authUser, authStore } from '../lib/stores/AuthStore';
+	import { authStore } from '../lib/stores/AuthStore';
 	import { getCurrentUser } from '../lib/services/authService';
 </script>
 

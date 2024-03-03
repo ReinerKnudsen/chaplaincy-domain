@@ -2,10 +2,9 @@
 	import { onMount } from 'svelte';
 	import { Section, Register } from 'flowbite-svelte-blocks';
 	import { Button, Checkbox, Label, Input } from 'flowbite-svelte';
-	import { authStore } from '../../lib/stores/AuthStore';
+	import { authStore, authUser } from '../../lib/stores/AuthStore';
 	import { registerUser } from '../../lib/services/authService';
 	import { goto } from '$app/navigation';
-	import { userStore } from '../../lib/stores/UserStore';
 
 	onMount(() => {
 		document.getElementById('firstname').focus();
@@ -52,7 +51,7 @@
 						id="displayname"
 						placeholder="your display name"
 						autocomplete="display-name"
-						bind:value={$userStore.displayname}
+						bind:value={$authUser.displayname}
 						required
 					/>
 				</Label>
@@ -64,7 +63,7 @@
 						id="firstname"
 						placeholder="your first name"
 						autocomplete="current-name"
-						bind:value={$userStore.firstname}
+						bind:value={$authUser.firstname}
 						required
 					/>
 				</Label>
@@ -74,7 +73,7 @@
 						type="text"
 						name="lastname"
 						id="lastname"
-						bind:value={$userStore.lastname}
+						bind:value={$authUser.lastname}
 						placeholder="your last name"
 						autocomplete="family-name"
 					/>
@@ -85,7 +84,7 @@
 						type="text"
 						name="city"
 						id="city"
-						bind:value={$userStore.city}
+						bind:value={$authUser.city}
 						placeholder="where do you live?"
 						autocomplete="city"
 					/>
@@ -97,7 +96,7 @@
 						name="email"
 						id="email"
 						placeholder="name@company.com"
-						bind:value={$userStore.email}
+						bind:value={$authUser.email}
 						autocomplete="email"
 						required
 					/>

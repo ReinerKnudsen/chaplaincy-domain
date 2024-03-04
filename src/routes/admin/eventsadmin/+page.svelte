@@ -22,18 +22,6 @@
 	export let data;
 	let events = data.events;
 
-	export const loadDocs = async () => {
-		let snapshot = await getDocs(eventsColRef);
-		let events = snapshot.docs.map((event) => {
-			return {
-				id: event.id,
-				data: event.data()
-			};
-		});
-		console.log(events);
-		return { events };
-	};
-
 	onMount(() => {
 		$pathName = $page.url.pathname;
 	});

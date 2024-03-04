@@ -20,14 +20,34 @@ const initialEventState = {
 	url: ''
 };
 
-// Create a writable store with the initial state
 export const EventStore = writable(initialEventState);
 
-// We store the document ID if we are working on a existing document; otherwise the ide will be empty
-export const docRef = writable('');
-
-// Function to reset the form store to its initial state
 export function resetEventStore() {
 	EventStore.set(initialEventState);
 	docRef.set('');
 }
+
+// News Store
+
+// Define the initial state of the form
+const initialNewsState = {
+	title: '',
+	text: '',
+	slug: '',
+	publishdate: null,
+	publishtime: null,
+	unpublishdate: null,
+	unpublishtime: null,
+	tags: [],
+	url: ''
+};
+
+export const NewsStore = writable(initialNewsState);
+
+export function resetNewsStore() {
+	NewsStore.set(initialNewsState);
+	docRef.set('');
+}
+
+// We store the document ID if we are working on a existing document; otherwise the ide will be empty
+export const docRef = writable('');

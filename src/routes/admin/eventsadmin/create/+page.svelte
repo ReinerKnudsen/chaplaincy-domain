@@ -12,6 +12,15 @@
 		$EventStore.slug = $EventStore.description.slice(0, 100);
 	};
 
+	// Automatically add or delete text from the "conditions"" field if the checkbox is checked or unchecked
+	const handleConditionChange = (e) => {
+		if (e.target.checked) {
+			$EventStore.condition = 'Entry is free, donations are welcome.';
+		} else {
+			$EventStore.condition = '';
+		}
+	};
+
 	const cleanUpForm = () => {
 		resetEventStore();
 		goto('/admin/eventsadmin');
@@ -41,16 +50,7 @@
 		cleanUpForm();
 	};
 
-	// Automatically add or delete text from the "conditions"" field if the checkbox is checked or unchecked
-	const handleConditionChange = (e) => {
-		if (e.target.checked) {
-			$EventStore.condition = 'Entry is free, donations are welcome.';
-		} else {
-			$EventStore.condition = '';
-		}
-	};
-
-	const handleSubmit = async () => {
+	const handleSubmit = () => {
 		if ($docRef) {
 			updateEvent();
 		} else {
@@ -208,6 +208,7 @@
 				title="Select a date when the event shall be unpublished (optional)"
 				bind:value={$EventStore.unpublishdate}
 			/>
+
 			<p class="explanation">
 				If you don't set a date and time here the event will automatically be unpublished at the
 				given start time.
@@ -251,7 +252,7 @@
 					>Cancel</Button
 				>
 				<Button type="reset" color="light">Empty form</Button>
-				<Button type="submit">Save event</Button>
+				<Button type="submit" disabled={$EventStore.length === 0}>Save event</Button>
 			</div>
 		</div>
 	</form>

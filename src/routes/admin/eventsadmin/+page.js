@@ -9,6 +9,5 @@ export const load = async () => {
 			data: event.data()
 		};
 	});
-	console.log(events);
 	return { events };
 };

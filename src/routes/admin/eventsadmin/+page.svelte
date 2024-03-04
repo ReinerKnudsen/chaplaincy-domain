@@ -1,10 +1,13 @@
 <script>
 	import { page } from '$app/stores';
+	import { writable } from 'svelte/store';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+
+	import { doc, deleteDoc, getDocs } from 'firebase/firestore';
+
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { resetEventStore } from '$lib/stores/FormStore';
-	import { goto } from '$app/navigation';
-	import { doc, deleteDoc, getDocs } from 'firebase/firestore';
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
 
 	import {
@@ -25,6 +28,39 @@
 	onMount(() => {
 		$pathName = $page.url.pathname;
 	});
+
+	// Sort table items
+	const sortKey = writable('title'); // default sort key
+	const sortDirection = writable(1); // default sort direction (ascending)
+	const sortItems = writable(events.slice()); // make a copy of the news array
+
+	// Define a function to sort the items
+	const sortTable = (key) => {
+		// If the same key is clicked, reverse the sort direction
+		if ($sortKey === key) {
+			sortDirection.update((val) => -val);
+		} else {
+			sortKey.set(key);
+			sortDirection.set(1);
+		}
+	};
+
+	$: {
+		const key = $sortKey;
+		const direction = $sortDirection;
+		const sorted = [...$sortItems].sort((a, b) => {
+			// since the data sits deeper in the news object we must dig deeper here
+			const aVal = a.data[key];
+			const bVal = b.data[key];
+			if (aVal < bVal) {
+				return -direction;
+			} else if (aVal > bVal) {
+				return direction;
+			}
+			return 0;
+		});
+		sortItems.set(sorted);
+	}
 
 	const handleSearchInput = (event) => {
 		console.log(event.target.value);
@@ -56,33 +92,38 @@
 			<TableHeadCell class="!p-4" hidden>
 				<Checkbox />
 			</TableHeadCell>
-			<TableHeadCell>Title</TableHeadCell>
-			<TableHeadCell>Date</TableHeadCell>
-			<TableHeadCell>Location</TableHeadCell>
+			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('title')}>Title</TableHeadCell
+			>
+			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('startdate')}
+				>Date</TableHeadCell
+			>
+			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('location')}
+				>Location</TableHeadCell
+			>
 			<TableHeadCell>Description</TableHeadCell>
 			<TableHeadCell>
 				<span class="sr-only">Edit</span>
 			</TableHeadCell>
 		</TableHead>
 		<TableBody>
-			{#each events as event}
+			{#each $sortItems as item}
 				<TableBodyRow>
 					<TableBodyCell class="!p-4" hidden>
 						<Checkbox />
 					</TableBodyCell>
-					<TableBodyCell>{event.data.title}</TableBodyCell>
-					<TableBodyCell>{event.data.startdate}</TableBodyCell>
-					<TableBodyCell>{event.data.location}</TableBodyCell>
-					<TableBodyCell>{event.data.slug}</TableBodyCell>
+					<TableBodyCell>{item.data.title}</TableBodyCell>
+					<TableBodyCell>{item.data.startdate}</TableBodyCell>
+					<TableBodyCell>{item.data.location}</TableBodyCell>
+					<TableBodyCell>{item.data.slug}</TableBodyCell>
 					<TableBodyCell>
 						<a
-							href="/admin/eventsadmin/{event.id}"
+							href="/admin/eventsadmin/{item.id}"
 							class="font-medium text-primary-600 hover:underline dark:text-primary-500">Edit</a
 						>
 						|
 						<button
 							class="font-medium text-primary-600 hover:underline dark:text-primary-500"
-							on:click={() => handleDelete(event.id)}>Delete</button
+							on:click={() => handleDelete(item.id)}>Delete</button
 						>
 					</TableBodyCell>
 				</TableBodyRow>

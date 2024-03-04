@@ -36,8 +36,6 @@ const initialNewsState = {
 	slug: '',
 	publishdate: null,
 	publishtime: null,
-	unpublishdate: null,
-	unpublishtime: null,
 	tags: [],
 	url: ''
 };

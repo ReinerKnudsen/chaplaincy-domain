@@ -1,6 +1,7 @@
 <script>
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { resetNewsStore } from '$lib/stores/FormStore';
 	import { goto } from '$app/navigation';
@@ -22,11 +23,43 @@
 
 	export let data;
 	let news = data.news;
-	console.log(news);
 
 	onMount(() => {
 		$pathName = $page.url.pathname;
 	});
+
+	// Sort table items
+	const sortKey = writable('title'); // default sort key
+	const sortDirection = writable(1); // default sort direction (ascending)
+	const sortItems = writable(news.slice()); // make a copy of the news array
+
+	// Define a function to sort the items
+	const sortTable = (key) => {
+		// If the same key is clicked, reverse the sort direction
+		if ($sortKey === key) {
+			sortDirection.update((val) => -val);
+		} else {
+			sortKey.set(key);
+			sortDirection.set(1);
+		}
+	};
+
+	$: {
+		const key = $sortKey;
+		const direction = $sortDirection;
+		const sorted = [...$sortItems].sort((a, b) => {
+			// since the data sits deeper in the news object we must dig deeper here
+			const aVal = a.data[key];
+			const bVal = b.data[key];
+			if (aVal < bVal) {
+				return -direction;
+			} else if (aVal > bVal) {
+				return direction;
+			}
+			return 0;
+		});
+		sortItems.set(sorted);
+	}
 
 	const handleSearchInput = (news) => {
 		console.log(news.target.value);
@@ -54,27 +87,30 @@
 
 	<Table hoverable={true}>
 		<TableHead>
-			<TableHeadCell class="!p-4" hidden>
+			<TableHeadCell class="!p-4">
 				<Checkbox />
 			</TableHeadCell>
-			<TableHeadCell>Title</TableHeadCell>
+			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('title')}>Title</TableHeadCell
+			>
 			<TableHeadCell>Description</TableHeadCell>
-			<TableHeadCell>Publish Date</TableHeadCell>
-			<TableHeadCell>Unpublish Date</TableHeadCell>
+			<TableHeadCell
+				class="
+				cursor-pointer"
+				on:click={() => sortTable('publishdate')}>Publish Date</TableHeadCell
+			>
 			<TableHeadCell>
 				<span class="sr-only">Edit</span>
 			</TableHeadCell>
 		</TableHead>
 		<TableBody>
-			{#each news as item}
+			{#each $sortItems as item}
 				<TableBodyRow>
-					<TableBodyCell class="!p-4" hidden>
+					<TableBodyCell class="!p-4">
 						<Checkbox />
 					</TableBodyCell>
 					<TableBodyCell>{item.data.title}</TableBodyCell>
 					<TableBodyCell>{item.data.slug}</TableBodyCell>
 					<TableBodyCell>{item.data.publishdate}</TableBodyCell>
-					<TableBodyCell>{item.data.unpublishdate}</TableBodyCell>
 					<TableBodyCell>
 						<a
 							href="/admin/newsadmin/{item.id}"

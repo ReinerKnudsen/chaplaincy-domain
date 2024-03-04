@@ -5,11 +5,11 @@
 	import { EventStore, resetEventStore, docRef } from '$lib/stores/FormStore';
 	import UploadFile from '$lib/components/UploadFile.svelte';
 	import { goto } from '$app/navigation';
+	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
 
-	// Set the slugtext as the first 100 characters of the description text
 	let slugtext = '';
-	const handleCreateSlug = (e) => {
-		$EventStore.slug = $EventStore.description.slice(0, 100);
+	const handleCreateSlug = () => {
+		$EventStore.slug = $EventStore.description.slice(0, MAX_SLUG_TEXT);
 	};
 
 	// Automatically add or delete text from the "conditions"" field if the checkbox is checked or unchecked
@@ -116,7 +116,7 @@
 				on:focus={handleCreateSlug}
 			/>
 			<p class="explanation text-right">
-				<strong>{$EventStore.slug.length} of 100 </strong> characters.
+				<strong>{$EventStore.slug.length} of {MAX_SLUG_TEXT} </strong> characters.
 			</p>
 		</div>
 

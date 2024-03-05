@@ -92,29 +92,32 @@
 			<TableHeadCell class="!p-4" hidden>
 				<Checkbox />
 			</TableHeadCell>
-			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('title')}>Title</TableHeadCell
+			<TableHeadCell class="cursor-pointer px-2" on:click={() => sortTable('title')}
+				>Title</TableHeadCell
 			>
-			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('startdate')}
+			<TableHeadCell class="cursor-pointer px-2" on:click={() => sortTable('startdate')}
 				>Date</TableHeadCell
 			>
-			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('location')}
+			<TableHeadCell class="cursor-pointer px-2" on:click={() => sortTable('location')}
 				>Location</TableHeadCell
 			>
-			<TableHeadCell>Description</TableHeadCell>
+			<TableHeadCell class="px-2 ">Description</TableHeadCell>
+			<TableHeadCell class="px-2 ">Author</TableHeadCell>
 			<TableHeadCell>
 				<span class="sr-only">Edit</span>
 			</TableHeadCell>
 		</TableHead>
 		<TableBody>
 			{#each $sortItems as item}
-				<TableBodyRow>
+				<TableBodyRow class="align-top">
 					<TableBodyCell class="!p-4" hidden>
 						<Checkbox />
 					</TableBodyCell>
-					<TableBodyCell>{item.data.title}</TableBodyCell>
-					<TableBodyCell>{item.data.startdate}</TableBodyCell>
-					<TableBodyCell>{item.data.location}</TableBodyCell>
-					<TableBodyCell>{item.data.slug}</TableBodyCell>
+					<TableBodyCell class="px-2 font-normal">{item.data.title}</TableBodyCell>
+					<TableBodyCell class="px-2 font-normal">{item.data.startdate}</TableBodyCell>
+					<TableBodyCell class="px-2 font-normal">{item.data.location}</TableBodyCell>
+					<TableBodyCell class="text-wrap px-2 font-normal">{item.data.slug}</TableBodyCell>
+					<TableBodyCell class="px-2 font-normal">{item.data.author}</TableBodyCell>
 					<TableBodyCell>
 						<a
 							href="/admin/eventsadmin/{item.id}"

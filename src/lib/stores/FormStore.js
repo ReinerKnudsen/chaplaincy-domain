@@ -17,7 +17,8 @@ const initialEventState = {
 	unpublishdate: null,
 	unpublishtime: null,
 	comments: '',
-	url: ''
+	url: '',
+	author: ''
 };
 
 export const EventStore = writable(initialEventState);
@@ -37,7 +38,8 @@ const initialNewsState = {
 	publishdate: null,
 	publishtime: null,
 	tags: [],
-	url: ''
+	url: '',
+	author: ''
 };
 
 export const NewsStore = writable(initialNewsState);

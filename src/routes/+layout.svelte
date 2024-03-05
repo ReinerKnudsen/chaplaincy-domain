@@ -8,7 +8,9 @@
 
 <Navigation />
 
-<slot />
+<div class="mb-10 ml-20 mt-10">
+	<slot />
+</div>
 
 <style>
 </style>

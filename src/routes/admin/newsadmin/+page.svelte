@@ -98,19 +98,25 @@
 				cursor-pointer"
 				on:click={() => sortTable('publishdate')}>Publish Date</TableHeadCell
 			>
+			<TableHeadCell
+				class="
+				cursor-pointer"
+				on:click={() => sortTable('author')}>Author</TableHeadCell
+			>
 			<TableHeadCell>
 				<span class="sr-only">Edit</span>
 			</TableHeadCell>
 		</TableHead>
 		<TableBody>
 			{#each $sortItems as item}
-				<TableBodyRow>
+				<TableBodyRow class="align-top">
 					<TableBodyCell class="!p-4">
 						<Checkbox />
 					</TableBodyCell>
-					<TableBodyCell>{item.data.title}</TableBodyCell>
-					<TableBodyCell>{item.data.slug}</TableBodyCell>
-					<TableBodyCell>{item.data.publishdate}</TableBodyCell>
+					<TableBodyCell class="font-normal">{item.data.title}</TableBodyCell>
+					<TableBodyCell class="text-wrap font-normal">{item.data.slug}</TableBodyCell>
+					<TableBodyCell class="font-normal">{item.data.publishdate}</TableBodyCell>
+					<TableBodyCell class="font-normal">{item.data.author}</TableBodyCell>
 					<TableBodyCell>
 						<a
 							href="/admin/newsadmin/{item.id}"

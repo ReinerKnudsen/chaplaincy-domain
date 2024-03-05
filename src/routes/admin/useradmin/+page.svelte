@@ -1,6 +1,8 @@
 <script>
-	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+	import { page } from '$app/stores';
+
 	import { pathName } from '$lib/stores/NavigationStore';
 	import {
 		Table,
@@ -20,7 +22,40 @@
 
 	export let data;
 	const users = data.users;
-	console.log(users);
+
+	// Sort table items
+	const sortKey = writable('displayname'); // default sort key
+	const sortDirection = writable(1); // default sort direction (ascending)
+	const sortItems = writable(users.slice()); // make a copy of the news array
+
+	// Define a function to sort the items
+	const sortTable = (key) => {
+		// If the same key is clicked, reverse the sort direction
+		if ($sortKey === key) {
+			sortDirection.update((val) => -val);
+		} else {
+			sortKey.set(key);
+			sortDirection.set(1);
+		}
+	};
+
+	$: {
+		const key = $sortKey;
+		const direction = $sortDirection;
+		const sorted = [...$sortItems].sort((a, b) => {
+			// since the data sits deeper in the news object we must dig deeper here
+			const aVal = a.data[key];
+			const bVal = b.data[key];
+			if (aVal < bVal) {
+				return -direction;
+			} else if (aVal > bVal) {
+				return direction;
+			}
+			return 0;
+		});
+		sortItems.set(sorted);
+	}
+
 	const handleClick = async () => {
 		return;
 	};
@@ -40,24 +75,32 @@
 			<TableHeadCell class="!p-4">
 				<Checkbox />
 			</TableHeadCell>
+			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('lastname')}
+				>Last Name</TableHeadCell
+			>
+			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('firstname')}
+				>First Name</TableHeadCell
+			>
 			<TableHeadCell>Email</TableHeadCell>
-			<TableHeadCell>First Name</TableHeadCell>
-			<TableHeadCell>Last Name</TableHeadCell>
-			<TableHeadCell>Display Name</TableHeadCell>
+			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('displayname')}
+				>Display Name</TableHeadCell
+			>
+			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('role')}>Role</TableHeadCell>
 			<TableHeadCell>
 				<span class="sr-only">Edit</span>
 			</TableHeadCell>
 		</TableHead>
 		<TableBody>
-			{#each users as user}
+			{#each $sortItems as user}
 				<TableBodyRow>
 					<TableBodyCell class="!p-4">
 						<Checkbox />
 					</TableBodyCell>
-					<TableBodyCell>{user.data.email}</TableBodyCell>
-					<TableBodyCell>{user.data.firstname}</TableBodyCell>
-					<TableBodyCell>{user.data.lastname}</TableBodyCell>
-					<TableBodyCell>{user.data.displayname}</TableBodyCell>
+					<TableBodyCell class="font-normal">{user.data.lastname}</TableBodyCell>
+					<TableBodyCell class="font-normal">{user.data.firstname}</TableBodyCell>
+					<TableBodyCell class="font-normal">{user.data.email}</TableBodyCell>
+					<TableBodyCell class="font-normal">{user.data.displayname}</TableBodyCell>
+					<TableBodyCell class="font-normal">{user.data.role}</TableBodyCell>
 					<TableBodyCell>
 						<a
 							href="/admin/useradmin/{user.id}"

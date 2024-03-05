@@ -1,16 +1,23 @@
 <script>
-	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
-	import { addDoc, updateDoc } from 'firebase/firestore';
-	import { newsColRef } from '$lib/firebase/firebaseConfig';
-	import { docRef } from '$lib/stores/FormStore';
-	import UploadFile from '$lib/components/UploadFile.svelte';
 	import { goto } from '$app/navigation';
+
+	import { addDoc, updateDoc } from 'firebase/firestore';
+
+	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
+
+	import { newsColRef } from '$lib/firebase/firebaseConfig';
+	import UploadFile from '$lib/components/UploadFile.svelte';
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
-	import { NewsStore, resetNewsStore } from '$lib/stores/FormStore';
+	import { docRef, NewsStore, resetNewsStore } from '$lib/stores/FormStore';
+	import { authUser } from '$lib/stores/AuthStore';
+
+	const author = $authUser.firstname + ' ' + $authUser.lastname;
+	$NewsStore.author = author;
 
 	const handleCreateSlug = () => {
 		$NewsStore.slug = $NewsStore.text.slice(0, MAX_SLUG_TEXT);
 	};
+
 	const cleanUpForm = () => {
 		resetNewsStore();
 		goto('/admin/newsadmin');
@@ -28,7 +35,7 @@
 
 	const saveNewItem = async () => {
 		!$NewsStore.publishtime && ($NewsStore.publishtime = '09:00');
-
+		!$NewsStore.author && ($NewsStore.author = author);
 		try {
 			await addDoc(newsColRef, $NewsStore);
 			console.log('Document successfully created!');
@@ -57,7 +64,7 @@
 		on:submit={handleSubmit}
 	>
 		<!-- Titel -->
-		<div class="col-span-2">
+		<div>
 			<Label for="title" class="mb-2">Event Titel *</Label>
 			<Input
 				type="text"
@@ -66,6 +73,12 @@
 				bind:value={$NewsStore.title}
 				required
 			/>
+		</div>
+
+		<!-- Author -->
+		<div>
+			<Label for="author" class="mb-2">Author</Label>
+			<Input type="text" id="author" bind:value={$NewsStore.author} disabled />
 		</div>
 
 		<!-- News text -->

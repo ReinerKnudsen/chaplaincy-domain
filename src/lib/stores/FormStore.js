@@ -17,7 +17,8 @@ const initialEventState = {
 	unpublishdate: null,
 	unpublishtime: null,
 	comments: '',
-	url: '',
+	image: '',
+	imagealt: '',
 	author: ''
 };
 
@@ -38,7 +39,8 @@ const initialNewsState = {
 	publishdate: null,
 	publishtime: null,
 	tags: [],
-	url: '',
+	image: '',
+	imagealt: '',
 	author: ''
 };
 

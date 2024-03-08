@@ -11,6 +11,9 @@
 	import { docRef, NewsStore, resetNewsStore } from '$lib/stores/FormStore';
 	import { authUser } from '$lib/stores/AuthStore';
 
+	let imageError;
+	let uploadedImage;
+	uploadedImage = $NewsStore.imageError;
 	const author = $authUser.firstname + ' ' + $authUser.lastname;
 	$NewsStore.author = author;
 
@@ -25,7 +28,7 @@
 
 	const updateItem = async () => {
 		try {
-			await updateDoc($docRef, $NewsStore); // Update document with eventData
+			await updateDoc($docRef, $NewsStore);
 			console.log('Document successfully updated!');
 		} catch (error) {
 			console.error('Error updating document:', error);
@@ -52,6 +55,37 @@
 			saveNewItem();
 		}
 	};
+
+	const convertBase64 = (file) => {
+		return new Promise((resolve, reject) => {
+			const fileReader = new FileReader();
+			fileReader.readAsDataURL(file);
+
+			fileReader.onload = () => {
+				resolve(fileReader.result);
+			};
+
+			fileReader.onerror = (error) => {
+				reject(error);
+			};
+		});
+	};
+
+	const uploadImage = async (event) => {
+		const file = event.target.files[0];
+		if (file) {
+			if (file.size > 300000) {
+				imageError = 'The image is too big.';
+				uploadedImage = '';
+				return;
+			} else {
+				imageError = null;
+			}
+			const base64 = await convertBase64(file);
+			uploadedImage = base64;
+			$NewsStore.image = base64;
+		}
+	};
 </script>
 
 <div class="form">
@@ -65,7 +99,7 @@
 	>
 		<!-- Titel -->
 		<div>
-			<Label for="title" class="mb-2">Event Titel *</Label>
+			<Label for="title" class="mb-2">News Titel *</Label>
 			<Input
 				type="text"
 				id="title"
@@ -101,7 +135,7 @@
 			<Label for="slug" class="mb-2">Short text (slug)</Label>
 			<Textarea
 				id="slug"
-				rows="2"
+				rows="3"
 				name="slug"
 				bind:value={$NewsStore.slug}
 				maxlength="MAX_SLUG_TEXT"
@@ -134,18 +168,47 @@
 		</div>
 
 		<!-- File Upload -->
-		<div>
-			<UploadFile type="events" size={20000000} />
+		<div class="grid grid-rows-2">
+			<div>
+				<label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white" for="file_input"
+					>Upload news image</label
+				>
+				<input
+					class="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
+					aria-describedby="file_input_help"
+					accept="image/png, image/jpeg, image/webp"
+					id="file_input"
+					type="file"
+					on:change={uploadImage}
+				/>
+				<p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">
+					PNG, JPG or WEBP (max. 800x400px, max. 300kB).
+				</p>
+				<span hidden={!imageError} class="text-sm font-semibold text-red-600">{imageError}</span>
+			</div>
+			<div class="container" hidden={!uploadedImage}>
+				<img src={uploadedImage} class="img h-24" id="avatar" alt="hochgeladenes bild" />
+			</div>
 		</div>
-		<div>&NonBreakingSpace;</div>
+
+		<div>
+			<Label class="mb-2">Alternative text</Label>
+			<Input
+				type="text"
+				id="imagealt"
+				bind:value={$NewsStore.imagealt}
+				disabled={!$NewsStore.image}
+			/>
+			<p class="explanation">
+				The alternative text helps people with screenreaders to understand the picture's content
+			</p>
+		</div>
 
 		<!-- Buttons -->
 		<div class="buttons col-span-2">
-			<div class="grid w-full grid-cols-3 gap-2">
-				<Button type="reset" color="light" on:click={() => goto('/admin/newsadmin')}>Cancel</Button>
-				<Button type="reset" color="light" disabled={docRef}>Empty form</Button>
-				<Button type="submit" disabled={$NewsStore.length === 0}>Save news</Button>
-			</div>
+			<Button type="reset" color="light" on:click={() => goto('/admin/newsadmin')}>Cancel</Button>
+			<Button type="reset" color="light" disabled={docRef}>Empty form</Button>
+			<Button type="submit" disabled={$NewsStore.length === 0}>Save news</Button>
 		</div>
 	</form>
 </div>
@@ -171,10 +234,11 @@
 	}
 	.buttons {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
-		align-items: end;
-		justify-content: end;
+		grid-template-columns: 1fr 1fr 1fr;
 		gap: 50px;
+		padding: 0 50px;
+		justify-content: space-between;
+		width: 100%;
 		padding: 0 50px;
 	}
 </style>

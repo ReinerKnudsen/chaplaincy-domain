@@ -1,12 +1,15 @@
 <script>
 	export let newsItem;
-	import picture from '$lib/assets/concert.jpg';
 </script>
 
 <div class=" my-5 grid grid-cols-3 rounded-2xl border border-slate-200 p-8 shadow-xl">
-	<div class="image col-span-1 my-auto">
+	<div class="image col-span-1 my-auto" hidden={!newsItem.data.image}>
 		<!-- Bild links  -->
-		<img class=" rounded-2xl" src={picture} alt="einText" />
+		<img
+			class=" rounded-2xl"
+			src={newsItem.data.image}
+			alt="this image was uploaded with the news"
+		/>
 	</div>
 	<div class="article col-span-2 ml-6 grid-rows-3">
 		<div class="row2 mb-4 text-2xl font-semibold">

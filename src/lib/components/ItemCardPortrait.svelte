@@ -1,11 +1,10 @@
 <script>
 	export let newsItem;
-	import picture from '$lib/assets/concert.jpg';
 </script>
 
 <div class="container my-5 grid grid-rows-2 rounded-2xl border border-slate-200 p-4 shadow-xl">
-	<div class="image max-h-32 w-full">
-		<img class="rounded-2xl" src={picture} alt="einText" />
+	<div class="image max-h-32 w-full" hidden={!newsItem.data.image}>
+		<img class="rounded-2xl" src={newsItem.data.image} alt="einText" />
 	</div>
 	<div class="grid grid-rows-5">
 		<div class="Title py-6 text-center text-3xl font-semibold">

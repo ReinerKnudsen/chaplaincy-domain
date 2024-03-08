@@ -1,13 +1,23 @@
 <script>
 	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
+	import { createEventDispatcher } from 'svelte';
 	import { eventsColRef, database } from '$lib/firebase/firebaseConfig';
 	import { addDoc, updateDoc } from 'firebase/firestore';
 	import { EventStore, resetEventStore, docRef } from '$lib/stores/FormStore';
-	import UploadFile from '$lib/components/UploadFile.svelte';
 	import { goto } from '$app/navigation';
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
+	import noImage from '../../../../lib/assets/upload-image.svg';
 
 	let slugtext = '';
+	// this is the error indicating the image is too big
+	let imageError;
+	let uploadedImage;
+	if ($EventStore.image) {
+		uploadedImage = $EventStore.image;
+	} else {
+		uploadedImage = noImage;
+	}
+
 	const handleCreateSlug = () => {
 		$EventStore.slug = $EventStore.description.slice(0, MAX_SLUG_TEXT);
 	};
@@ -57,6 +67,39 @@
 			saveNewEvent();
 		}
 	};
+
+	// ----------------------------------
+
+	const convertBase64 = (file) => {
+		return new Promise((resolve, reject) => {
+			const fileReader = new FileReader();
+			fileReader.readAsDataURL(file);
+
+			fileReader.onload = () => {
+				resolve(fileReader.result);
+			};
+
+			fileReader.onerror = (error) => {
+				reject(error);
+			};
+		});
+	};
+
+	const uploadImage = async (event) => {
+		const file = event.target.files[0];
+		if (file) {
+			if (file.size > 300000) {
+				imageError = 'The image is too big.';
+				uploadedImage = '';
+				return;
+			} else {
+				imageError = null;
+			}
+			const base64 = await convertBase64(file);
+			uploadedImage = base64;
+			$EventStore.image = base64;
+		}
+	};
 </script>
 
 <div class="form">
@@ -78,7 +121,6 @@
 				bind:value={$EventStore.title}
 				required
 			/>
-			<!-- <div class="error">This field cannot be empty</div> -->
 		</div>
 
 		<!-- Sub Title -->
@@ -108,7 +150,7 @@
 			<Textarea
 				id="slug"
 				placeholder={slugtext}
-				rows="2"
+				rows="3"
 				name="slug"
 				bind:value={$EventStore.slug}
 				maxlength="100"
@@ -233,7 +275,7 @@
 			<Textarea
 				id="comments"
 				placeholder="Comments"
-				rows="8"
+				rows="10"
 				name="comments"
 				title="If there is anything people should need to know about this event? Put it here. (Parking instructions, public transport connections...)"
 				bind:value={$EventStore.comments}
@@ -241,19 +283,50 @@
 		</div>
 
 		<!-- File Upload -->
-		<div>
-			<UploadFile type="events" size={20000000} />
+		<div class="grid grid-rows-2">
+			<div>
+				<!-- <UploadFile type="events" size={20000000} /> -->
+				<label class="mb-1 block text-sm font-medium text-gray-900 dark:text-white" for="file_input"
+					>Upload event image</label
+				>
+				<input
+					class="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
+					aria-describedby="file_input_help"
+					accept="image/png, image/jpeg, image/webp"
+					id="file_input"
+					type="file"
+					on:change={uploadImage}
+				/>
+				<p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">
+					PNG, JPG or WEBP (max. 800x400px, max. 300kB).
+				</p>
+				<span hidden={!imageError} class="text-sm font-semibold text-red-600">{imageError}</span>
+			</div>
+
+			<div class="grid grid-cols-3">
+				<div class="container col-span-1 mt-6">
+					<img src={uploadedImage} class="img h-24" id="avatar" alt="hochgeladenes bild" />
+				</div>
+				<div class="col-span-2">
+					<Label class="col-span-2 col-start-2 mb-2">Alternative text</Label>
+					<Input
+						type="text"
+						id="imagealt"
+						bind:value={$EventStore.imagealt}
+						disabled={!$EventStore.image}
+					/>
+					<p class="explanation">
+						The alternative text helps people with screenreaders to understand the picture's content
+					</p>
+				</div>
+			</div>
 		</div>
 
 		<!-- Buttons -->
-		<div class="buttons col-span-2">
-			<div class="grid w-full grid-cols-3 gap-2">
-				<Button type="reset" color="light" on:click={() => goto('/admin/eventsadmin')}
-					>Cancel</Button
-				>
-				<Button type="reset" color="light">Empty form</Button>
-				<Button type="submit" disabled={$EventStore.length === 0}>Save event</Button>
-			</div>
+		<div class="buttons">
+			<Button type="reset" color="light" on:click={() => goto('/admin/eventsadmin')}>Cancel</Button>
+			<Button type="reset" color="light">Empty form</Button>
+			<Button type="submit" disabled={$EventStore.length === 0}>Save event</Button>
 		</div>
 	</form>
 </div>
@@ -279,10 +352,11 @@
 	}
 	.buttons {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
-		align-items: end;
-		justify-content: end;
+		grid-template-columns: 1fr 1fr 1fr;
 		gap: 50px;
+		padding: 0 50px;
+		justify-content: space-between;
+		width: 100%;
 		padding: 0 50px;
 	}
 </style>

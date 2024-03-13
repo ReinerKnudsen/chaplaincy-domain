@@ -37,10 +37,12 @@
 		<NavLi href="/events">Events</NavLi>
 		<NavLi href="/groups">Groups</NavLi>
 		<NavLi href="/about">About us</NavLi>
+		{#if $authStore.isEditor}
+			<NavLi href="/admin">Admin</NavLi>
+		{/if}
 		{#if !$authStore.isLoggedIn}
 			<NavLi href="/login">Register/Sign in</NavLi>
 		{:else}
-			<NavLi href="/admin">Admin</NavLi>
 			<NavLi on:click={handleLogout}>Sign out</NavLi>
 		{/if}
 	</NavUl>

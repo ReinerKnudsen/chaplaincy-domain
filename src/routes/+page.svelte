@@ -1,12 +1,12 @@
 <script>
-	import { authStore } from '../lib/stores/AuthStore';
+	import { authStore, authUser } from '../lib/stores/AuthStore';
 	import { getCurrentUser } from '../lib/services/authService';
 </script>
 
 <div class="container">
 	{#if $authStore.isLoggedIn}
 		<div class="mt-3 pr-8 text-right">
-			{!getCurrentUser().displayName ? 'Gast' : getCurrentUser().displayName}
+			{!$authStore.firstname ? 'Gast' : $authStore.firstname}
 		</div>
 	{/if}
 	<div>

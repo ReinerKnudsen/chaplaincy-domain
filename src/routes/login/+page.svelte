@@ -19,7 +19,7 @@
 		event.preventDefault();
 		let response = await signInExistingUser(thisEmail, thisPassword);
 		if (!!response) {
-			goto('/');
+			$authStore.isEditor ? goto('/admin') : goto('/');
 		} else {
 			error = 'Invalid email or password';
 		}

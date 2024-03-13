@@ -1,28 +1,29 @@
-import { getApps, initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { deleteApp, getApps, getApp, initializeApp } from 'firebase/app';
+import { getAuth, setPersistence, inMemoryPersistence } from 'firebase/auth';
 import { getFirestore, collection } from 'firebase/firestore';
 import { getStorage, ref } from 'firebase/storage';
 
 const firebaseConfig = {
-	apiKey: 'AIzaSyDzGsaVy4PHDvHQhNQj5fmcAaGm64bf_kY',
-	authDomain: 'chaplaincy-website-bncgn.firebaseapp.com',
-	projectId: 'chaplaincy-website-bncgn',
-	storageBucket: 'chaplaincy-website-bncgn.appspot.com',
-	messagingSenderId: '342698394076',
-	appId: '1:342698394076:web:21790dc7aa59f599a58f19'
+	apiKey: import.meta.env.VITE_APIKEY,
+	authDomain: import.meta.env.VITE_AUTHDOMAIN,
+	projectId: import.meta.env.VITE_PROJECTID,
+	storageBucket: import.meta.env.VITE_STORAGEBUCKET,
+	messagingSenderId: import.meta.env.VITE_MESSAGINGSENDERID,
+	appId: import.meta.env.VITE_APPID
 };
 
-let firebaseApp = null;
+let firebaseApp;
 
 // Initialize Firebase
 if (!getApps().length) {
 	firebaseApp = initializeApp(firebaseConfig);
 } else {
-	firebaseApp = getApps()[0];
+	firebaseApp = getApp();
+	deleteApp(firebaseApp);
+	firebaseApp = initializeApp(firebaseConfig);
 }
 
 // Create auth, database and storage instances
-export const app = firebaseApp;
 export const auth = getAuth(firebaseApp);
 export const database = getFirestore();
 const storage = getStorage();

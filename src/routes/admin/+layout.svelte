@@ -3,13 +3,13 @@
 	import { onMount } from 'svelte';
 
 	import { auth } from '../../lib/firebase/firebaseConfig';
-	import { authStore } from '$lib/stores/AuthStore.js';
-	import { unloadUser } from '../../lib/stores/AuthStore';
+	import { unloadUser, authStore } from '../../lib/stores/AuthStore';
+	import { getUserDoc } from '../../lib/services/authService';
 
 	import Sidebar from '$lib/components/Sidebar.svelte';
 
 	onMount(() => {
-		// Check if user is authenticated
+		// Check if user is authenticate
 		const unsubscribe = auth.onAuthStateChanged((user) => {
 			if (user) {
 				getUserDoc(user.uid).then((doc) => {
@@ -30,22 +30,21 @@
 				unloadUser();
 			}
 		});
-		if (!authStore.user && !authStore.isLoading && window.location.pathname !== '/') {
+		console.log($authStore.user, '  /  ', $authStore.loading, '  /  ', window.location.pathname);
+		if (!$authStore.user && !$authStore.loading && window.location.pathname !== '/admin') {
 			window.location.href = '/login'; // Redirect to login page if not logged in
 		}
 	});
 </script>
 
-{#if !!authStore.user}
-	<div class="page-container">
-		<div class="sidebar col-span-1 ml-2 mt-8">
-			<Sidebar />
-		</div>
-		<div class="main-content col-span-11 p-5">
-			<slot />
-		</div>
+<div class="page-container">
+	<div class="sidebar col-span-1 ml-2 mt-8">
+		<Sidebar />
 	</div>
-{/if}
+	<div class="main-content col-span-11 p-5">
+		<slot />
+	</div>
+</div>
 
 <style>
 	.page-container {

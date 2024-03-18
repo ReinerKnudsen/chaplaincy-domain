@@ -58,7 +58,6 @@
 					{error}
 				</div>
 				<div class="flex items-start">
-					<Checkbox>Remember me</Checkbox>
 					<a href="/" class="ml-auto text-sm text-blue-700 hover:underline dark:text-blue-500"
 						>Forgot password?</a
 					>

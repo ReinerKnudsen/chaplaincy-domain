@@ -37,7 +37,7 @@
 		<NavLi href="/events">Events</NavLi>
 		<NavLi href="/groups">Groups</NavLi>
 		<NavLi href="/about">About us</NavLi>
-		{#if $authStore.isEditor}
+		{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
 			<NavLi href="/admin">Admin</NavLi>
 		{/if}
 		{#if !$authStore.isLoggedIn}

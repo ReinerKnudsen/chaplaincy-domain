@@ -1,7 +1,8 @@
 import { deleteApp, getApps, getApp, initializeApp } from 'firebase/app';
-import { getAuth, setPersistence, inMemoryPersistence } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { getFirestore, collection } from 'firebase/firestore';
 import { getStorage, ref } from 'firebase/storage';
+import { getFunctions } from 'firebase/functions';
 
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_APIKEY,
@@ -12,9 +13,9 @@ const firebaseConfig = {
 	appId: import.meta.env.VITE_APPID
 };
 
-let firebaseApp;
+export let firebaseApp;
 
-// Initialize Firebase
+//Initialize Firebase
 if (!getApps().length) {
 	firebaseApp = initializeApp(firebaseConfig);
 } else {
@@ -26,6 +27,7 @@ if (!getApps().length) {
 // Create auth, database and storage instances
 export const auth = getAuth(firebaseApp);
 export const database = getFirestore();
+export const functions = getFunctions();
 const storage = getStorage();
 export const storageRef = ref(storage);
 

@@ -9,12 +9,12 @@
 	import UploadFile from '$lib/components/UploadFile.svelte';
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
 	import { docRef, NewsStore, resetNewsStore } from '$lib/stores/FormStore';
-	import { authUser } from '$lib/stores/AuthStore';
+	import { authStore } from '$lib/stores/AuthStore';
 
 	let imageError;
 	let uploadedImage;
 	uploadedImage = $NewsStore.imageError;
-	const author = $authUser.firstname + ' ' + $authUser.lastname;
+	const author = $authStore.firstname + ' ' + $authStore.lastname;
 	$NewsStore.author = author;
 
 	const handleCreateSlug = () => {

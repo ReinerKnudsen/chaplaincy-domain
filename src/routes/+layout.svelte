@@ -7,30 +7,28 @@
 	import { doc, getDoc } from 'firebase/firestore';
 
 	import { userColRef, auth } from '../lib/firebase/firebaseConfig';
-	import { authStore, authUser, unloadUser } from '../lib/stores/AuthStore';
-	import { getUserDoc } from '../lib/services/authService';
+	import { authStore, unloadUser } from '../lib/stores/AuthStore';
+	import { getUserDoc, getUserRole } from '../lib/services/authService';
 	import Navigation from '../lib/Navigation.svelte';
 
 	onMount(() => {
 		if (!authStore.user) {
-			const unsubscribe = auth.onAuthStateChanged((user) => {
+			console.log('User laden');
+			const unsubscribe = auth.onAuthStateChanged(async (user) => {
 				if (user) {
-					console.log('User is logged in');
-					getUserDoc(user.uid).then((doc) => {
-						authStore.update((curr) => {
-							return {
-								...curr,
-								isLoggedIn: !!user,
-								isLoading: false,
-								firstname: doc.firstname,
-								lastname: doc.lastname,
-								role: doc.role,
-								isEditor: doc.role === 'editor' || doc.role === 'admin',
-								user: user
-							};
-						});
+					let role = await getUserRole(user);
+					let doc = await getUserDoc(user.uid);
+					authStore.update((curr) => {
+						return {
+							...curr,
+							user: user,
+							isLoggedIn: !!user,
+							isLoading: false,
+							firstname: doc.firstname,
+							lastname: doc.lastname,
+							role: role
+						};
 					});
-					console.log('AuthStore: ', $authStore);
 				} else {
 					unloadUser();
 				}

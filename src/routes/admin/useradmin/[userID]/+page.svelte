@@ -5,6 +5,7 @@
 	import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 	import { userColRef } from '$lib/firebase/firebaseConfig';
 	import { goto } from '$app/navigation';
+	import { setUserRole } from '$lib/services/authService';
 
 	const userID = $page.params.userID;
 
@@ -33,10 +34,13 @@
 			lastname: $userStore.lastname,
 			displayname: $userStore.displayname,
 			email: $userStore.email,
-			city: $userStore.city,
 			role: $userStore.role
 		});
 		goto('/admin/useradmin');
+	};
+
+	const handleMakeAdmin = async () => {
+		setUserRole(userID, 'admin');
 	};
 </script>
 
@@ -64,16 +68,16 @@
 			<Label for="email" class="mb-2 block">Email</Label>
 			<Input id="email" size="lg" placeholder="Email" bind:value={$userStore.email} disabled />
 		</div>
-		<div class="mb-6">
-			<Label for="city" class="mb-2 block">City</Label>
-			<Input id="city" size="lg" placeholder="city" bind:value={$userStore.city} />
-		</div>
-		<div class="mb-6">
+
+		<Button on:click={handleMakeAdmin} class="h-12 w-40 justify-self-center align-middle"
+			>Make Admin</Button
+		>
+		<!-- <div class="mb-6">
 			<Label>
 				User role *
 				<Select class="mt-2" items={userRoles} bind:value={$userStore.role} required />
 			</Label>
-		</div>
+		</div> -->
 	</div>
 	<div class="mb-6 grid">
 		<Button type="submit" class=" w-40 justify-self-center align-middle" on:click={handleClick}

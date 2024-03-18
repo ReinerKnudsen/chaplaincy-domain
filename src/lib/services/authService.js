@@ -1,24 +1,29 @@
-// AuthService.js
-import { auth, userColRef } from '../firebase/firebaseConfig'; // Import Firebase auth instance
-import { authStore, unloadUser, authUser, unloadAuthStore } from '$lib/stores/AuthStore'; // Import the user store
+import { functions, auth, userColRef } from '../firebase/firebaseConfig'; // Import Firebase auth instance
+import { authStore, unloadUser, unloadAuthStore } from '$lib/stores/AuthStore'; // Import the user store
 import {
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
 	updateProfile
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { httpsCallable } from 'firebase/functions';
 
-// Set User data from user document
-const setUserData = async (snapshot) => {
-	await authUser.set({
-		firstname: snapshot.data().firstname,
-		lastname: snapshot.data().lastname,
-		displayname: snapshot.data().displayname,
-		email: snapshot.data().email,
-		role: snapshot.data().role,
-		city: snapshot.data().city
+export async function setUserRole(uid, role) {
+	let addUserRole = httpsCallable(functions, 'addUserRole');
+	addUserRole({ uid: uid, role: role })
+		.then((result) => {
+			console.log('After role assignment: ', result);
+		})
+		.catch((err) => {
+			console.log(err.message);
+		});
+}
+
+export async function getUserRole(user) {
+	return user.getIdTokenResult().then((idTokenResult) => {
+		return idTokenResult.claims.role;
 	});
-};
+}
 
 export async function getUserDoc(uid) {
 	const userDocRef = doc(userColRef, uid);
@@ -26,7 +31,9 @@ export async function getUserDoc(uid) {
 	return snapshot.data();
 }
 
+//
 // Function to sign in user with email and password
+//
 export async function signInExistingUser(email, password) {
 	await unloadAuthStore();
 	try {
@@ -34,6 +41,8 @@ export async function signInExistingUser(email, password) {
 		authStore.update((store) => ({ ...store, loading: true, error: null }));
 		const userCredential = await signInWithEmailAndPassword(auth, email, password);
 		const authenticatedUser = userCredential.user;
+		const role = await getUserRole(authenticatedUser);
+		// Open the related user doc and set the user data
 		let data = await getUserDoc(authenticatedUser.uid);
 		authStore.set({
 			...authStore,
@@ -41,10 +50,9 @@ export async function signInExistingUser(email, password) {
 			loading: false,
 			error: null,
 			isLoggedIn: true,
+			role: role,
 			firstname: data.firstname,
-			lastname: data.lastname,
-			role: data.role,
-			isEditor: data.role === 'editor' || data.role === 'admin'
+			lastname: data.lastname
 		});
 		return authenticatedUser;
 	} catch (error) {
@@ -52,43 +60,44 @@ export async function signInExistingUser(email, password) {
 			...store,
 			loading: false,
 			error: error.message,
-			isLoggedIn: false,
-			isEditor: false
+			isLoggedIn: false
 		}));
 		console.log('Error: ', error.message);
 	}
 }
 
+//
 // Register new user with email and password
-export async function registerUser(password) {
+//
+
+export async function registerUser(newUser, password) {
 	try {
 		// Set loading state
 		authStore.update((store) => ({ ...store, loading: true, error: null }));
-		const userCredential = await createUserWithEmailAndPassword(auth, authUser.email, password);
+
+		const userCredential = await createUserWithEmailAndPassword(auth, newUser.email, password);
 		const authenticatedUser = userCredential.user;
 		updateProfile(authenticatedUser, {
-			displayName: authUser.displayName
+			displayName: newUser.displayName
 		});
+
+		// set new user role
+		await setUserRole({ uid: authenticatedUser.uid, role: 'user' });
 		authStore.set({
 			...authStore,
 			user: authenticatedUser,
 			loading: false,
 			error: null,
 			isLoggedIn: true,
-			isEditor: false,
-			firstname: authUser.firstname,
-			lastname: authUser.lastname,
-			role: 'user'
+			firstname: newUser.firstname,
+			lastname: newUser.lastname
 		});
+
 		try {
 			const userDocRef = doc(userColRef, authenticatedUser.uid);
 			await setDoc(userDocRef, {
-				firstname: authUser.firstname,
-				lastname: authUser.lastname,
-				displayname: authUser.displayname,
-				email: authUser.email,
-				city: authUser.city,
-				role: 'user'
+				firstname: newUser.firstname,
+				lastname: newUser.lastname
 			});
 		} catch (e) {
 			console.error('Error adding document: ', e);
@@ -100,14 +109,15 @@ export async function registerUser(password) {
 			...store,
 			loading: false,
 			error: error.message,
-			isLoggedIn: false,
-			isEditor: false
+			isLoggedIn: false
 		}));
 		throw error;
 	}
 }
 
+//
 // sign out user
+//
 export function signOutUser() {
 	try {
 		auth.signOut();
@@ -118,14 +128,15 @@ export function signOutUser() {
 			...store,
 			loading: false,
 			error: error.message,
-			isLoggedIn: false,
-			isEditor: false
+			isLoggedIn: false
 		}));
 		throw error;
 	}
 }
 
+//
 // get current user
+//
 export function getCurrentUser() {
 	if (auth.currentUser) {
 		return auth.currentUser;

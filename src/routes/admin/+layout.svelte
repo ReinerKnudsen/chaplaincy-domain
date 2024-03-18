@@ -4,37 +4,39 @@
 
 	import { auth } from '../../lib/firebase/firebaseConfig';
 	import { unloadUser, authStore } from '../../lib/stores/AuthStore';
-	import { getUserDoc } from '../../lib/services/authService';
+	import { getUserDoc, getUserRole } from '../../lib/services/authService';
 
 	import Sidebar from '$lib/components/Sidebar.svelte';
 
 	onMount(() => {
-		// Check if user is authenticate
-		const unsubscribe = auth.onAuthStateChanged((user) => {
-			if (user) {
-				getUserDoc(user.uid).then((doc) => {
+		if (!authStore.user) {
+			console.log('User laden');
+			const unsubscribe = auth.onAuthStateChanged(async (user) => {
+				if (user) {
+					let role = await getUserRole(user);
+					let doc = await getUserDoc(user.uid);
 					authStore.update((curr) => {
 						return {
 							...curr,
+							user: user,
 							isLoggedIn: !!user,
 							isLoading: false,
 							firstname: doc.firstname,
 							lastname: doc.lastname,
-							role: doc.role,
-							isEditor: doc.role === 'editor' || doc.role === 'admin',
-							user: user
+							role: role
 						};
 					});
-				});
-			} else {
-				unloadUser();
-			}
-		});
-		console.log($authStore.user, '  /  ', $authStore.loading, '  /  ', window.location.pathname);
-		if (!$authStore.user && !$authStore.loading && window.location.pathname !== '/admin') {
-			window.location.href = '/login'; // Redirect to login page if not logged in
+				} else {
+					unloadUser();
+				}
+			});
 		}
 	});
+	$: console.log('AuthStore', $authStore);
+
+	// if (!$authStore.user && !$authStore.loading && window.location.pathname === '/admin') {
+	// 	window.location.href = '/login'; // Redirect to login page if not logged in
+	// }
 </script>
 
 <div class="page-container">

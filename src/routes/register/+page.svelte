@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import { Section, Register } from 'flowbite-svelte-blocks';
 	import { Button, Checkbox, Label, Input } from 'flowbite-svelte';
-	import { authStore, authUser } from '../../lib/stores/AuthStore';
 	import { registerUser } from '../../lib/services/authService';
 	import { goto } from '$app/navigation';
 
@@ -23,12 +22,19 @@
 	let confirmPassword: string = '';
 	let passwordError: boolean = false;
 
+	let newUser = {
+		firstname: '',
+		lastname: '',
+		email: '',
+		displayname: ''
+	};
+
 	const register = async (e) => {
 		e.preventDefault();
 
 		// match password validation
 		if (confirmPassword === password) {
-			let response = await registerUser(password);
+			let response = await registerUser(newUser, password);
 			if (response) {
 				goto('/');
 			}
@@ -51,7 +57,7 @@
 						id="displayname"
 						placeholder="your display name"
 						autocomplete="display-name"
-						bind:value={$authUser.displayname}
+						bind:value={newUser.displayname}
 						required
 					/>
 				</Label>
@@ -63,7 +69,7 @@
 						id="firstname"
 						placeholder="your first name"
 						autocomplete="current-name"
-						bind:value={$authUser.firstname}
+						bind:value={newUser.firstname}
 						required
 					/>
 				</Label>
@@ -73,20 +79,9 @@
 						type="text"
 						name="lastname"
 						id="lastname"
-						bind:value={$authUser.lastname}
+						bind:value={newUser.lastname}
 						placeholder="your last name"
 						autocomplete="family-name"
-					/>
-				</Label>
-				<Label class="space-y-2">
-					<span>City</span>
-					<Input
-						type="text"
-						name="city"
-						id="city"
-						bind:value={$authUser.city}
-						placeholder="where do you live?"
-						autocomplete="city"
 					/>
 				</Label>
 				<Label class="space-y-2">
@@ -96,11 +91,12 @@
 						name="email"
 						id="email"
 						placeholder="name@company.com"
-						bind:value={$authUser.email}
+						bind:value={newUser.email}
 						autocomplete="email"
 						required
 					/>
 				</Label>
+
 				<Label class="space-y-2">
 					<span><strong>Your password * </strong></span>
 					<Input

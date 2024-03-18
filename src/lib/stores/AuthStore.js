@@ -15,31 +15,17 @@ const initialAuthState = {
 	loading: false, // Loading state indicator
 	error: null, // Error message (if any)
 	isLoggedIn: false,
-	isEditor: false,
+	role: '',
 	firstname: '',
-	lastname: '',
-	role: ''
+	lastname: ''
 };
 
 export const authStore = writable(initialAuthState);
 export const unloadAuthStore = () => {
 	authStore.set(initialAuthState);
 };
-
-const initialAuthUserState = {
-	firstname: '',
-	lastname: '',
-	displayname: '',
-	email: '',
-	role: '',
-	city: ''
-};
-// The authUser store holds the information of the authenticated user
-export const authUser = writable(initialAuthUserState);
-
 export const unloadUser = () => {
 	authStore.set(initialAuthState);
-	authUser.set(initialAuthUserState);
 };
 
 export const authHandlers = {

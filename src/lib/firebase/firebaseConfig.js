@@ -32,12 +32,12 @@ const storage = getStorage();
 export const storageRef = ref(storage);
 
 // Create database references
-export const userColRef = collection(database, 'users');
+//export const userColRef = collection(database, 'users');
 export const eventsColRef = collection(database, 'events');
 export const newsColRef = collection(database, 'news');
 
 // Create storage references
-export const userStoreRef = ref(storage, 'users');
+//export const userStoreRef = ref(storage, 'users');
 export const eventsStoreRef = ref(storage, 'events');
 export const articlesStoreRef = ref(storage, 'articles');
 export const docsStorageRef = ref(storage, 'documents');

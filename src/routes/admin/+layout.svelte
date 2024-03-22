@@ -4,7 +4,7 @@
 
 	import { auth } from '../../lib/firebase/firebaseConfig';
 	import { unloadUser, authStore } from '../../lib/stores/AuthStore';
-	import { getUserDoc, getUserRole } from '../../lib/services/authService';
+	import { /*getUserDoc,*/ getUserRole } from '../../lib/services/authService';
 
 	import Sidebar from '$lib/components/Sidebar.svelte';
 
@@ -14,15 +14,14 @@
 			const unsubscribe = auth.onAuthStateChanged(async (user) => {
 				if (user) {
 					let role = await getUserRole(user);
-					let doc = await getUserDoc(user.uid);
+					// let doc = await getUserDoc(user.uid);
 					authStore.update((curr) => {
 						return {
 							...curr,
 							user: user,
 							isLoggedIn: !!user,
 							isLoading: false,
-							firstname: doc.firstname,
-							lastname: doc.lastname,
+							name: user.displayName,
 							role: role
 						};
 					});

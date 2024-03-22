@@ -1,12 +1,15 @@
-import { functions, auth, userColRef } from '../firebase/firebaseConfig'; // Import Firebase auth instance
+import { functions, auth } from '../firebase/firebaseConfig'; // Import Firebase auth instance
 import { authStore, unloadUser, unloadAuthStore } from '$lib/stores/AuthStore'; // Import the user store
 import {
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
 	updateProfile
 } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
+
+// *****************************************************************************************
+// Set user role
+// *****************************************************************************************
 
 export async function setUserRole(uid, role) {
 	let addUserRole = httpsCallable(functions, 'addUserRole');
@@ -19,40 +22,67 @@ export async function setUserRole(uid, role) {
 		});
 }
 
+// *****************************************************************************************
+// Change user role
+// *****************************************************************************************
+
+export async function changeUserRole(email, role) {
+	let addUserRole = httpsCallable(functions, 'addUserRole');
+	addUserRole({ email: email, role: role })
+		.then((result) => {
+			console.log('After role assignment: ', result);
+		})
+		.catch((err) => {
+			console.log(err.message);
+		});
+}
+
+// *****************************************************************************************
+// Get user by ID
+// *****************************************************************************************
+
+export async function getUserByID(uid) {
+	try {
+		let getUserProfile = httpsCallable(functions, 'getUserProfile');
+		getUserProfile({ uid: uid })
+			.then((result) => {
+				return result;
+			})
+			.catch((err) => {
+				console.log(err.message);
+			});
+	} catch (error) {
+		console.log('Error: ', error.message);
+		throw error;
+	}
+}
+
 export async function getUserRole(user) {
 	return user.getIdTokenResult().then((idTokenResult) => {
 		return idTokenResult.claims.role;
 	});
 }
 
-export async function getUserDoc(uid) {
-	const userDocRef = doc(userColRef, uid);
-	const snapshot = await getDoc(userDocRef);
-	return snapshot.data();
-}
+// *****************************************************************************************
+// Sign in user with email and password
+// *****************************************************************************************
 
-//
-// Function to sign in user with email and password
-//
 export async function signInExistingUser(email, password) {
 	await unloadAuthStore();
 	try {
-		// Set loading state
 		authStore.update((store) => ({ ...store, loading: true, error: null }));
 		const userCredential = await signInWithEmailAndPassword(auth, email, password);
 		const authenticatedUser = userCredential.user;
 		const role = await getUserRole(authenticatedUser);
-		// Open the related user doc and set the user data
-		let data = await getUserDoc(authenticatedUser.uid);
+
 		authStore.set({
 			...authStore,
 			user: authenticatedUser,
+			name: authenticatedUser.displayName,
 			loading: false,
 			error: null,
 			isLoggedIn: true,
-			role: role,
-			firstname: data.firstname,
-			lastname: data.lastname
+			role: role
 		});
 		return authenticatedUser;
 	} catch (error) {
@@ -66,42 +96,46 @@ export async function signInExistingUser(email, password) {
 	}
 }
 
-//
+// *****************************************************************************************
+// Get all user profiles
+// *****************************************************************************************
+
+export async function getAllUserProfiles() {
+	let getAllUsers = httpsCallable(functions, 'getAllUsers');
+	getAllUsers()
+		.then((result) => {
+			return result;
+		})
+		.catch((err) => {
+			console.log(err.message);
+		});
+}
+
+// *****************************************************************************************
 // Register new user with email and password
-//
+// *****************************************************************************************
 
 export async function registerUser(newUser, password) {
 	try {
-		// Set loading state
 		authStore.update((store) => ({ ...store, loading: true, error: null }));
 
 		const userCredential = await createUserWithEmailAndPassword(auth, newUser.email, password);
 		const authenticatedUser = userCredential.user;
 		updateProfile(authenticatedUser, {
-			displayName: newUser.displayName
+			displayName: newUser.firstname + ' ' + newUser.lastname
 		});
 
-		// set new user role
 		await setUserRole({ uid: authenticatedUser.uid, role: 'user' });
 		authStore.set({
 			...authStore,
 			user: authenticatedUser,
+			name: authenticatedUser.displayName,
+			role: 'user',
 			loading: false,
 			error: null,
-			isLoggedIn: true,
-			firstname: newUser.firstname,
-			lastname: newUser.lastname
+			isLoggedIn: true
 		});
 
-		try {
-			const userDocRef = doc(userColRef, authenticatedUser.uid);
-			await setDoc(userDocRef, {
-				firstname: newUser.firstname,
-				lastname: newUser.lastname
-			});
-		} catch (e) {
-			console.error('Error adding document: ', e);
-		}
 		return authenticatedUser; // Return authenticated user
 	} catch (error) {
 		console.log('Error: ', error.code);
@@ -115,9 +149,50 @@ export async function registerUser(newUser, password) {
 	}
 }
 
-//
-// sign out user
-//
+// *****************************************************************************************
+// Update user profile
+// *****************************************************************************************
+
+export async function updateUserProfile(user) {
+	try {
+		// Set loading state
+		authStore.update((store) => ({ ...store, loading: true, error: null }));
+
+		const userCredential = await getUserByID(auth, user.uid);
+		const authenticatedUser = userCredential.user;
+		updateProfile(authenticatedUser, {
+			displayName: user.firstname + ' ' + user.lastname
+		});
+
+		// set new user role
+		await setUserRole({ uid: authenticatedUser.uid, role: 'user' });
+		authStore.set({
+			...authStore,
+			user: authenticatedUser,
+			name: authenticatedUser.displayName,
+			role: 'user',
+			loading: false,
+			error: null,
+			isLoggedIn: true
+		});
+
+		return authenticatedUser; // Return authenticated user
+	} catch (error) {
+		console.log('Error: ', error.code);
+		authStore.update((store) => ({
+			...store,
+			loading: false,
+			error: error.message,
+			isLoggedIn: false
+		}));
+		throw error;
+	}
+}
+
+// *****************************************************************************************
+// Sign out user
+// *****************************************************************************************
+
 export function signOutUser() {
 	try {
 		auth.signOut();
@@ -134,9 +209,10 @@ export function signOutUser() {
 	}
 }
 
-//
-// get current user
-//
+// *****************************************************************************************
+// Get current user
+// *****************************************************************************************
+
 export function getCurrentUser() {
 	if (auth.currentUser) {
 		return auth.currentUser;

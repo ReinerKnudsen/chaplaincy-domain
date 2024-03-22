@@ -16,8 +16,7 @@ const initialAuthState = {
 	error: null, // Error message (if any)
 	isLoggedIn: false,
 	role: '',
-	firstname: '',
-	lastname: ''
+	name: ''
 };
 
 export const authStore = writable(initialAuthState);

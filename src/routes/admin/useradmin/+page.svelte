@@ -2,116 +2,40 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
+	import { getAllUserProfiles, changeUserRole } from '$lib/services/authService';
+
+	import { Label, Select, Input, Button } from 'flowbite-svelte';
 
 	import { pathName } from '$lib/stores/NavigationStore';
-	import {
-		Table,
-		TableBody,
-		TableBodyCell,
-		TableBodyRow,
-		TableHead,
-		TableHeadCell,
-		Checkbox,
-		Search,
-		Button
-	} from 'flowbite-svelte';
 
-	onMount(() => {
-		$pathName = $page.url.pathname;
-	});
+	// onMount(() => {
+	// 	$pathName = $page.url.pathname;
+	// 	let allUsers = getAllUserProfiles();
+	// 	console.log(allUsers);
+	// });
 
-	export let data;
-	const users = data.users;
-
-	// Sort table items
-	const sortKey = writable('displayname'); // default sort key
-	const sortDirection = writable(1); // default sort direction (ascending)
-	const sortItems = writable(users.slice()); // make a copy of the news array
-
-	// Define a function to sort the items
-	const sortTable = (key) => {
-		// If the same key is clicked, reverse the sort direction
-		if ($sortKey === key) {
-			sortDirection.update((val) => -val);
-		} else {
-			sortKey.set(key);
-			sortDirection.set(1);
-		}
-	};
-
-	$: {
-		const key = $sortKey;
-		const direction = $sortDirection;
-		const sorted = [...$sortItems].sort((a, b) => {
-			// since the data sits deeper in the news object we must dig deeper here
-			const aVal = a.data[key];
-			const bVal = b.data[key];
-			if (aVal < bVal) {
-				return -direction;
-			} else if (aVal > bVal) {
-				return direction;
-			}
-			return 0;
-		});
-		sortItems.set(sorted);
-	}
+	let role;
+	let email;
+	let roles = [
+		{ value: 'user', name: 'User' },
+		{ value: 'editor', name: 'Editor' },
+		{ value: 'admin', name: 'Admin' }
+	];
 
 	const handleClick = async () => {
-		return;
+		console.log(email, role);
+		await changeUserRole(email, role);
 	};
 </script>
 
-<div>
-	<h1>User</h1>
-	<div class="mb-6 grid grid-cols-12 gap-20">
-		<!-- <div class="col-span-9"><Search on:input={handleSearchInput} /></div> -->
-		<!-- <div class="col-span-3 justify-self-end">
-			<Button on:click={handleClick}>Create Event</Button>
-		</div> -->
-	</div>
-
-	<Table hoverable={true}>
-		<TableHead>
-			<TableHeadCell class="!p-4">
-				<Checkbox />
-			</TableHeadCell>
-			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('lastname')}
-				>Last Name</TableHeadCell
-			>
-			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('firstname')}
-				>First Name</TableHeadCell
-			>
-			<TableHeadCell>Email</TableHeadCell>
-			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('displayname')}
-				>Display Name</TableHeadCell
-			>
-			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('role')}>Role</TableHeadCell>
-			<TableHeadCell>
-				<span class="sr-only">Edit</span>
-			</TableHeadCell>
-		</TableHead>
-		<TableBody>
-			{#each $sortItems as user}
-				<TableBodyRow>
-					<TableBodyCell class="!p-4">
-						<Checkbox />
-					</TableBodyCell>
-					<TableBodyCell class="font-normal">{user.data.lastname}</TableBodyCell>
-					<TableBodyCell class="font-normal">{user.data.firstname}</TableBodyCell>
-					<TableBodyCell class="font-normal">{user.data.email}</TableBodyCell>
-					<TableBodyCell class="font-normal">{user.data.displayname}</TableBodyCell>
-					<TableBodyCell class="font-normal">{user.data.role}</TableBodyCell>
-					<TableBodyCell>
-						<a
-							href="/admin/useradmin/{user.id}"
-							class="font-medium text-primary-600 hover:underline dark:text-primary-500">Edit</a
-						>
-					</TableBodyCell>
-				</TableBodyRow>
-			{/each}
-		</TableBody>
-	</Table>
+<div class="ml-11 flex w-6/12 flex-col justify-center">
+	<Label class="mb-7">
+		<span class="mb-4">Input email</span>
+		<Input type="email" placeholder="email" size="lg" bind:value={email} />
+	</Label>
+	<Label class="mb-7">
+		Select a role to assign
+		<Select class="mt-2" items={roles} bind:value={role} />
+	</Label>
+	<Button class="w-4/12" on:click={handleClick}>Set role</Button>
 </div>
-
-<style>
-</style>

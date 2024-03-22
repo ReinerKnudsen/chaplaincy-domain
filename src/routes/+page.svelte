@@ -6,7 +6,7 @@
 <div class="container">
 	{#if $authStore.isLoggedIn}
 		<div class="mt-3 pr-8 text-right">
-			{!$authStore.firstname ? 'Gast' : $authStore.firstname}
+			{!$authStore.name ? 'Gast' : $authStore.name} ({$authStore.role})
 		</div>
 	{/if}
 	<div>

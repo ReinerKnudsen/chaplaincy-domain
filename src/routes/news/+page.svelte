@@ -2,6 +2,7 @@
 	import { writable } from 'svelte/store';
 	import ItemCard from '../../lib/components/ItemCard.svelte';
 	import ItemCardPortrait from '../../lib/components/ItemCardPortrait.svelte';
+	import ItemCardFav from '../../lib/components/ItemCardFav.svelte';
 
 	export let data;
 	let news = data.news;
@@ -26,6 +27,8 @@
 			return 0;
 		});
 		sortItems.set(sorted);
+		const favNews = sorted[0];
+		console.log(favNews);
 	}
 </script>
 

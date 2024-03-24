@@ -24,14 +24,14 @@
 
 	const handleClick = async () => {
 		console.log(email, role);
-		await changeUserRole(email, role);
+		changeUserRole(email, role);
 	};
 </script>
 
 <div class="ml-11 flex w-6/12 flex-col justify-center">
 	<Label class="mb-7">
-		<span class="mb-4">Input email</span>
-		<Input type="email" placeholder="email" size="lg" bind:value={email} />
+		<span>Input email</span>
+		<Input class="mt-2" type="email" placeholder="email" size="lg" bind:value={email} />
 	</Label>
 	<Label class="mb-7">
 		Select a role to assign

@@ -28,7 +28,7 @@ if (!getApps().length) {
 export const auth = getAuth(firebaseApp);
 export const database = getFirestore();
 export const functions = getFunctions();
-const storage = getStorage();
+export const storage = getStorage();
 export const storageRef = ref(storage);
 
 // Create database references

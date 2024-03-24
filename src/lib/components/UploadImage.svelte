@@ -1,36 +1,49 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+	import { onMount } from 'svelte';
 
 	import { Button } from 'flowbite-svelte';
 	import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 	import { storage } from '$lib/firebase/firebaseConfig';
-	import { MAX_IMAGE_SIZE, STORAGE_URL } from '$lib/utils/constants';
+	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
+
+	export let imageUrl;
 
 	const dispatch = createEventDispatcher();
-
 	const authorizedExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
 
-	let imageUrl;
 	let selectedFile;
 	let downloadURL;
 	let moduleWidth = 'w-[400px]';
 
-	const handleFileChange = (event) => {
+	onMount(() => {
+		console.log('Image URL: ', imageUrl);
+		if (imageUrl) {
+			downloadURL = imageUrl;
+			console.log('Download URL: ', downloadURL);
+		}
+	});
+
+	if (imageUrl) {
+		downloadURL = imageUrl;
+		console.log('Download URL: ', downloadURL);
+	}
+
+	const handleFileChange = async (event) => {
 		selectedFile = event.target.files[0];
-	};
-
-	const resetInput = () => {
-		selectedFile = null;
-	};
-
-	const handleFormSubmit = async (event) => {
 		event.preventDefault();
 		const storageRef = ref(storage, 'images/' + selectedFile.name);
 		await uploadBytes(storageRef, selectedFile);
 		downloadURL = await getDownloadURL(storageRef);
-		disptach;
+		dispatch('upload', downloadURL);
 	};
+
+	const resetInput = () => {
+		selectedFile = null;
+		downloadURL = null;
+	};
+
 	// Sehr geil! Das geht. Allerdings kommt die DownloadURL zurück, die wir nicht brauchen können.
 	// Daher müssen wir uns eine eigene zusammenbasteln.
 
@@ -43,11 +56,11 @@
 	};
 </script>
 
-{#if !selectedFile}
+{#if !downloadURL}
 	<form class={moduleWidth}>
 		<label
 			class={moduleWidth +
-				'group flex h-[210px] flex-col rounded-lg border-4 bg-slate-300 p-10 text-center'}
+				'border-1 group flex h-[300px] flex-col rounded-lg bg-slate-100 p-10 text-center'}
 		>
 			<div class="flex h-full w-full flex-col items-center justify-center text-center">
 				<p class="pointer-none font-semibold text-gray-600">
@@ -62,16 +75,13 @@
 				on:change={handleFileChange}
 			/>
 		</label>
-		{#if selectedFile}
-			<div class="mt-5"><Button class="w-full" type="submit">Upload</Button></div>
-		{/if}
 	</form>
 {:else}
 	<div class={moduleWidth}>
-		<img class="w-full" src={URL.createObjectURL(selectedFile)} alt="selectedFile" />
+		<img class="w-full" src={downloadURL} alt="selectedFile" />
 	</div>
-	<div class={moduleWidth + ' mt-5 grid h-14 grid-cols-6 items-center rounded-md border-2'}>
-		<div class="col-span-4 pl-2">{selectedFile.name}</div>
+	<div class={moduleWidth + ' mt-1 grid h-14 grid-cols-6 items-center'}>
+		<div class="col-span-4 pl-2">{selectedFile ? selectedFile.name : ''}</div>
 		<div class="col-span-2 text-center">
 			<Button class="w-10/12" on:click={resetInput}>Change</Button>
 		</div>

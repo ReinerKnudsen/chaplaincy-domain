@@ -1,29 +1,23 @@
 <script>
-	import { getDoc, doc } from 'firebase/firestore';
-	import { page } from '$app/stores';
-	import { eventsColRef, database } from '$lib/firebase/firebaseConfig.js';
-	import { EventStore, docRef } from '$lib/stores/FormStore';
-	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+
+	import { doc, updateDoc } from 'firebase/firestore';
+	import { database } from '$lib/firebase/firebaseConfig.js';
+	import EventForm from '$lib/components/EventForm.svelte';
 
 	const eventID = $page.params.eventId;
-	docRef.set(doc(database, 'events', eventID));
+	const docRef = doc(database, 'events', eventID);
 
-	const fetchEventData = async () => {
+	const updateEvent = async (e) => {
 		try {
-			getDoc($docRef).then((docSnapshot) => {
-				if (docSnapshot.exists()) {
-					EventStore.set(docSnapshot.data()); // Populate eventData with document data
-				} else {
-					console.log('No such document!');
-				}
-			});
+			await updateDoc(docRef, e.detail);
 		} catch (error) {
-			console.error('Error fetching document:', error);
+			console.error('Error updating document:', error);
 		}
 	};
-	onMount(() => {
-		fetchEventData();
-		goto('/admin/eventsadmin/create');
-	});
 </script>
+
+<div>
+	<EventForm {eventID} on:update={updateEvent} />
+</div>

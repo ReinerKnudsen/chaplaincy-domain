@@ -1,11 +1,11 @@
 <script>
 	import '../app.pcss';
-	import Navigation from '../lib/Navigation.svelte';
+	import Navigation from '$lib/Navigation.svelte';
 	import { onMount } from 'svelte';
 
-	import { auth } from '../lib/firebase/firebaseConfig';
-	import { authStore, unloadUser } from '../lib/stores/AuthStore';
-	import { getUserRole, getCurrentUser } from '../lib/services/authService';
+	import { auth } from '$lib/firebase/firebaseConfig';
+	import { authStore, unloadUser } from '$lib/stores/AuthStore';
+	import { getUserRole } from '$lib/services/authService';
 
 	onMount(() => {
 		if (!authStore.user) {

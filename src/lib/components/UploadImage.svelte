@@ -14,49 +14,31 @@
 	const authorizedExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
 
 	let selectedFile;
-	let downloadURL;
 	let moduleWidth = 'w-[400px]';
-
-	onMount(() => {
-		console.log('Image URL: ', imageUrl);
-		if (imageUrl) {
-			downloadURL = imageUrl;
-			console.log('Download URL: ', downloadURL);
-		}
-	});
-
-	if (imageUrl) {
-		downloadURL = imageUrl;
-		console.log('Download URL: ', downloadURL);
-	}
+	let imageError;
 
 	const handleFileChange = async (event) => {
-		selectedFile = event.target.files[0];
-		event.preventDefault();
-		const storageRef = ref(storage, 'images/' + selectedFile.name);
-		await uploadBytes(storageRef, selectedFile);
-		downloadURL = await getDownloadURL(storageRef);
-		dispatch('upload', downloadURL);
+		imageError = '';
+		let selectedFile = event.target.files[0];
+		if (selectedFile.size > MAX_IMAGE_SIZE) {
+			imageError = 'The image is too big.';
+			selectedFile = '';
+		} else {
+			event.preventDefault();
+			const storageRef = ref(storage, 'images/' + selectedFile.name);
+			await uploadBytes(storageRef, selectedFile);
+			imageUrl = await getDownloadURL(storageRef);
+			dispatch('upload', imageUrl);
+		}
 	};
 
 	const resetInput = () => {
 		selectedFile = null;
-		downloadURL = null;
-	};
-
-	// Sehr geil! Das geht. Allerdings kommt die DownloadURL zurück, die wir nicht brauchen können.
-	// Daher müssen wir uns eine eigene zusammenbasteln.
-
-	const checkFileSize = (e) => {
-		e.preventDefault();
-		if (e.target.files[0].size > MAX_IMAGE_SIZE) {
-			alert('File is too big!');
-			files = null;
-		}
+		imageUrl = null;
 	};
 </script>
 
-{#if !downloadURL}
+{#if !imageUrl}
 	<form class={moduleWidth}>
 		<label
 			class={moduleWidth +
@@ -75,13 +57,19 @@
 				on:change={handleFileChange}
 			/>
 		</label>
+		<div class="mt-3 text-center text-sm">
+			(jpeg, jpg, png, webp, max {MAX_IMAGE_SIZE / 1000}KB)
+		</div>
+		{#if imageError}
+			<p class="mt-3 text-center text-sm text-red-500">{imageError}</p>
+		{/if}
 	</form>
 {:else}
 	<div class={moduleWidth}>
-		<img class="w-full" src={downloadURL} alt="selectedFile" />
+		<img class="w-full" src={imageUrl} alt="selectedFile" />
 	</div>
 	<div class={moduleWidth + ' mt-1 grid h-14 grid-cols-6 items-center'}>
-		<div class="col-span-4 pl-2">{selectedFile ? selectedFile.name : ''}</div>
+		<div class="col-span-4 pl-2"></div>
 		<div class="col-span-2 text-center">
 			<Button class="w-10/12" on:click={resetInput}>Change</Button>
 		</div>

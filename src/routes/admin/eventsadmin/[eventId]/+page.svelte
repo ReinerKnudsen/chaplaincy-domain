@@ -1,23 +1,14 @@
 <script>
-	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
-
-	import { doc, updateDoc } from 'firebase/firestore';
-	import { database } from '$lib/firebase/firebaseConfig.js';
 	import EventForm from '$lib/components/EventForm.svelte';
+	import { updateDoc } from 'firebase/firestore';
+	export let data;
 
-	const eventID = $page.params.eventId;
-	const docRef = doc(database, 'events', eventID);
-
-	const updateEvent = async (e) => {
-		try {
-			await updateDoc(docRef, e.detail);
-		} catch (error) {
-			console.error('Error updating document:', error);
-		}
+	const updateEvent = async (event) => {
+		await updateDoc(data.docRef, event.detail);
+		console.log('Event updated');
 	};
 </script>
 
 <div>
-	<EventForm {eventID} on:update={updateEvent} />
+	<EventForm thisEvent={data.newEvent} on:update={updateEvent} />
 </div>

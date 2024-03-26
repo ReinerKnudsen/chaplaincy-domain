@@ -1,15 +1,13 @@
 <script>
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { doc, getDoc } from 'firebase/firestore';
-
 	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
 
-	import { database } from '$lib/firebase/firebaseConfig';
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
 	import UploadImage from '$lib/components/UploadImage.svelte';
 
-	export let eventID;
+	export let thisEvent;
+	const dispatch = createEventDispatcher();
 
 	let slugtext;
 	let newEvent = {
@@ -32,36 +30,12 @@
 		imagealt: ''
 	};
 	let docRef;
-	let buttonText = 'Save event';
-	const dispatch = createEventDispatcher();
-	let eventImage = '';
+	let state = 'save';
 
-	if (eventID) {
-		docRef = doc(database, 'events', eventID);
-		buttonText = 'Update event';
+	if (thisEvent) {
+		newEvent = thisEvent;
+		state = 'update';
 	}
-
-	const fetchEventData = async () => {
-		try {
-			getDoc(docRef).then((docSnapshot) => {
-				if (docSnapshot.exists()) {
-					newEvent = docSnapshot.data();
-					eventImage = newEvent.image;
-					console.log(eventImage);
-				} else {
-					console.log('No such document!');
-				}
-			});
-		} catch (error) {
-			console.error('Error fetching document:', error);
-		}
-	};
-
-	onMount(() => {
-		if (docRef) {
-			fetchEventData();
-		}
-	});
 
 	const handleCreateSlug = () => {
 		newEvent.slug = newEvent.description.slice(0, MAX_SLUG_TEXT);
@@ -97,26 +71,23 @@
 		};
 	};
 
-	const handleSubmit = () => {
-		if (docRef) {
-			dispatch('update', newEvent);
-		} else {
-			!newEvent.publishtime && (newEvent.publishtime = '09:00');
-			!newEvent.unpublishdate && (newEvent.unpublishdate = newEvent.startdate);
-			!newEvent.unpublishtime && (newEvent.unpublishtime = newEvent.starttime);
-			dispatch('save', newEvent);
-			cleanUpForm();
-		}
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		!newEvent.publishtime && (newEvent.publishtime = '09:00');
+		!newEvent.unpublishdate && (newEvent.unpublishdate = newEvent.startdate);
+		!newEvent.unpublishtime && (newEvent.unpublishtime = newEvent.starttime);
+		dispatch(state, newEvent);
+		cleanUpForm();
+		goto('/admin/eventsadmin');
 	};
 
 	const assignImage = (e) => {
 		newEvent.image = e.detail;
-		eventImage = e.detail;
 	};
 </script>
 
 <div class="form">
-	<h1>{eventID ? 'Edit event' : 'Create new event'}</h1>
+	<h1>{state === 'update' ? 'Edit event' : 'Create new event'}</h1>
 
 	<!-- Titel -->
 	<form
@@ -291,17 +262,22 @@
 		</div>
 
 		<!-- Image -->
-		<div>
+		<div class="ml-20">
 			<Label class="mb-2">Upload image</Label>
-			<p>{eventImage}</p>
-			<UploadImage imageUrl={eventImage} on:upload={assignImage} />
+			{#if newEvent.image}
+				<UploadImage imageUrl={newEvent.image} on:upload={assignImage} />
+			{:else}
+				<UploadImage on:upload={assignImage} />
+			{/if}
 		</div>
 
 		<!-- Buttons -->
-		<div class="buttons col-span-2">
+		<div class="buttons col-span-2 mt-3">
 			<Button type="reset" color="light" on:click={() => goto('/admin/eventsadmin')}>Cancel</Button>
 			<Button type="reset" color="light">Empty form</Button>
-			<Button type="submit" disabled={newEvent.length === 0}>{buttonText}</Button>
+			<Button type="submit" disabled={newEvent.length === 0}
+				>{state === 'update' ? 'Update' : 'Save'} event</Button
+			>
 		</div>
 	</form>
 </div>

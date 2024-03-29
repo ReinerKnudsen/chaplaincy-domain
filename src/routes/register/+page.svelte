@@ -47,18 +47,6 @@
 		<div class="space-y-4 p-6 sm:p-8 md:space-y-6">
 			<form class="flex flex-col space-y-6" on:submit={register}>
 				<h3 class="p-0 text-xl font-medium text-gray-900 dark:text-white">Create an new account</h3>
-				<!-- <Label class="space-y-2">
-					<span><strong>Your displayname *</strong></span>
-					<Input
-						type="text"
-						name="displayname"
-						id="displayname"
-						placeholder="your display name"
-						autocomplete="display-name"
-						bind:value={newUser.displayname}
-						required
-					/>
-				</Label> -->
 				<Label class="space-y-2">
 					<span><strong>Your firstname *</strong></span>
 					<Input

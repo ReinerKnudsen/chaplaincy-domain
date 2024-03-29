@@ -6,6 +6,8 @@
 
 	export let data;
 	let news = data.news;
+	let favNews = news[0];
+	let newsItems = news.slice(1);
 
 	// Sort table items
 	const sortKey = writable('publishdate'); // default sort key
@@ -32,16 +34,12 @@
 	}
 </script>
 
-<h1>News in portrait</h1>
-<div class="mr-10 grid grid-cols-3 gap-5">
-	{#each $sortItems as newsItem}
-		<ItemCardPortrait {newsItem} />
-	{/each}
+<h1 class="mb-16 text-4xl font-semibold">News and notices</h1>
+<div class="mr-10">
+	<ItemCardFav newsItem={favNews} />
 </div>
-<hr class="my-10" />
-<h1>News in landscape</h1>
-<div class="mr-10 grid grid-cols-2 gap-5">
-	{#each $sortItems as newsItem}
+<div class=" grid grid-cols-2 gap-5">
+	{#each newsItems as newsItem}
 		<ItemCard {newsItem} />
 	{/each}
 </div>

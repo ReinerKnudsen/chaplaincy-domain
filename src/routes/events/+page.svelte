@@ -13,8 +13,13 @@
 	});
 </script>
 
-<h1 class="mb-16 text-4xl font-semibold">Events</h1>
-<div class=" grid grid-cols-2 gap-5">
+<h1 class="mb-10 text-4xl font-semibold">Events</h1>
+<p>Please find our upcoming events.</p>
+<p>
+	Make sure to join our mailing list if you want to be receive reminders and more details in your
+	inbox.
+</p>
+<div class="mb-10 grid grid-cols-2 gap-5">
 	{#each sortedEvents as event}
 		<EventCard item={event} />
 	{/each}

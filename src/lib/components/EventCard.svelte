@@ -3,10 +3,9 @@
 	console.log(item);
 </script>
 
-<div class="container my-2 rounded-2xl border border-slate-200 p-4 shadow-xl">
+<div class="container my-5 rounded-2xl border border-slate-200 p-4 shadow-xl">
 	<div class="main-content">
 		<div class="image">
-			<!-- Bild links  -->
 			<img class="image rounded-2xl" src={item.data.image} alt={item.data.imagealt} />
 		</div>
 		<div class="article">

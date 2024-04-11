@@ -1,7 +1,7 @@
 <script>
 </script>
 
-<div class="my-3 w-full px-20">
+<div class="my-3 w-full">
 	<h1>About us</h1>
 </div>
 

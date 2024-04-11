@@ -1,9 +1,5 @@
 <script>
-	// import { writable } from 'svelte/store';
-	import EventCard from '../../lib/components/EventCard.svelte';
-	// import ItemCardPortrait from '../../lib/components/ItemCardPortrait.svelte';
-	// import ItemCardFav from '../../lib/components/ItemCardFav.svelte';
-	// import { onMount } from 'svelte';
+	import EventCard from '$lib/components/EventCard.svelte';
 
 	export let data;
 	console.log(data);

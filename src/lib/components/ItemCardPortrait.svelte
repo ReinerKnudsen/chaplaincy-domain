@@ -43,7 +43,7 @@
 		padding-top: 10px;
 		text-align: right;
 		font-weight: 500;
-		color: rgb(28 100 242);
+		@apply text-link-primary;
 		align-content: space-around;
 	}
 </style>

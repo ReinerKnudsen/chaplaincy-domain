@@ -1,7 +1,9 @@
 <script>
-	import '../app.pcss';
+	import '/src/app.pcss';
 	import Navigation from '$lib/Navigation.svelte';
 	import { onMount } from 'svelte';
+
+	import '@fontsource-variable/raleway';
 
 	import { auth, firebaseApp } from '$lib/firebase/firebaseConfig';
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
@@ -27,13 +29,12 @@
 				}
 			});
 		}
-		console.log(firebaseApp, auth);
 	});
 </script>
 
 <Navigation />
 
-<div class="mx-20 mb-10 mt-10">
+<div class="mb-10 mt-10">
 	<slot />
 </div>
 

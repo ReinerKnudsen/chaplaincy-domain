@@ -71,7 +71,7 @@
 	.read-more {
 		text-align: right;
 		font-weight: 500;
-		@apply text-primary-700;
+		@apply text-link-primary;
 		align-content: space-around;
 		width: 100%;
 		padding: 0 40px 20px 0;

@@ -25,9 +25,6 @@
 <Navbar class="sticky top-0 z-20 w-full border-b px-2 py-2.5 sm:px-4">
 	<NavBrand href="/">
 		<img src={caplogo} class="me-3 h-6 sm:h-9" alt="Chaplaincy Logo" />
-		<span class="text-md self-center whitespace-nowrap font-semibold dark:text-white"
-			>Anglican Chaplaincy of Bonn and Cologne</span
-		>
 	</NavBrand>
 	<NavHamburger />
 	<NavUl {activeUrl} class="cursor-pointer">

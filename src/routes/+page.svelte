@@ -1,38 +1,70 @@
 <script>
-	import { authStore } from '../lib/stores/AuthStore';
+	import { onMount } from 'svelte';
+	import { STORAGE_IMAGES } from '$lib/utils/constants';
+
+	import ServiceCard from '$lib/components/ServiceCard.svelte';
+
+	import servicesData from '$lib/services.json';
+	// Manually convert the services object into an array
+	const servicesArray = Object.keys(servicesData).map((key) => servicesData[key]);
+	const ourServices = servicesArray[0];
+
+	let imageUrl;
+	onMount(() => {
+		imageUrl = `url(${STORAGE_IMAGES}heroes/mainhero.png)`;
+	});
 </script>
 
-<div class="container">
-	{#if $authStore.isLoggedIn}
-		<div class="mt-3 pr-8 text-right">
-			{!$authStore.name ? 'Gast' : $authStore.name} ({$authStore.role})
-		</div>
-	{/if}
-	<div>
-		<h3 class="text-lg">This is the homepage which is emtpy for now.</h3>
-		<div class="mb-5">
-			Please <a href="/register">register</a> with a new user or <a href="/login">sign in</a> to get
-			access to the
-			<strong>administration</strong> menu
-			<div class="my-5 text-lg">Below you see the current work status.</div>
-		</div>
-	</div>
-	<iframe
-		class="h-full w-full"
-		src="https://twelte.com/edit/f55fd9df699049919e97e5a6b8b08c61ec4828cf86574027bd1e0af6a90e47e0"
-		title="Embedded Twelte page"
-	></iframe>
+<div class="header-title">Anglican Chaplaincy of Bonn and Cologne</div>
+<div class="image-container" style="background-image: {imageUrl}"></div>
+<div class="services">
+	{#each ourServices as service}
+		<ServiceCard {service} />
+	{/each}
 </div>
 
 <style>
-	.container {
+	.header-title {
+		text-align: center;
+		font-size: 4rem;
 		width: 100vw;
-		margin: auto;
-		height: 200vh;
+		text-align: justify;
+		margin: 30px auto 30px 20px;
+	}
+
+	.image-container {
+		position: relative;
+		height: 300px;
+		background-size: cover;
+		background-position: center;
+		color: white;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+
+		margin: 20px 0;
 		pointer-events: none;
 		overflow: scroll;
 	}
-	a {
-		color: #3b82f6;
+
+	.title {
+		font-size: 3rem;
+		font-weight: bold;
+		margin-bottom: 10px;
+		text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+		color: whitesmoke;
+	}
+
+	.subtitle {
+		font-size: 1.5rem;
+	}
+
+	.services {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+		gap: 20px;
+		padding: 0 20px;
 	}
 </style>

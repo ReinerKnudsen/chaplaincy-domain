@@ -20,7 +20,7 @@
 	<div class="read-more">
 		<div class="justify-self-start text-slate-400">{item.data.author}</div>
 		<div class="justify-self-center text-slate-400">{item.data.startdate}</div>
-		<div class="justify-self-end font-medium text-primary-700">
+		<div class="justify-self-end font-medium text-link-primary">
 			<a href="/news/{item.id}">Read more...</a>
 		</div>
 	</div>

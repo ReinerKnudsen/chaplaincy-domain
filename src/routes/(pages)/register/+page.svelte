@@ -1,8 +1,8 @@
-<script lang="ts">
+<script>
 	import { onMount } from 'svelte';
 	import { Section, Register } from 'flowbite-svelte-blocks';
 	import { Button, Checkbox, Label, Input } from 'flowbite-svelte';
-	import { registerUser } from '../../lib/services/authService';
+	import { registerUser } from '$lib/services/authService';
 	import { goto } from '$app/navigation';
 
 	onMount(() => {
@@ -16,9 +16,9 @@
 		nameErr: ''
 	};
 
-	let password: string = '';
-	let confirmPassword: string = '';
-	let passwordError: boolean = false;
+	let password = '';
+	let confirmPassword = '';
+	let passwordError = false;
 
 	let newUser = {
 		firstname: '',

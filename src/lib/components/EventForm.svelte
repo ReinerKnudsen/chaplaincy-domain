@@ -1,6 +1,8 @@
 <script>
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { Timestamp } from 'firebase/firestore';
+	import { authStore } from '$lib/stores/AuthStore';
 	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
 
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
@@ -11,6 +13,7 @@
 
 	let slugtext;
 	let newEvent = {
+		author: $authStore.name,
 		title: '',
 		subtitle: '',
 		description: '',
@@ -23,8 +26,10 @@
 		condition: '',
 		publishdate: '',
 		publishtime: '',
+		publishDateTime: '',
 		unpublishdate: '',
 		unpublishtime: '',
+		unpublishDateTime: '',
 		comments: '',
 		image: '',
 		imagealt: ''
@@ -63,11 +68,14 @@
 			condition: '',
 			publishdate: '',
 			publishtime: '',
+			publishDateTime: '',
 			unpublishdate: '',
 			unpublishtime: '',
+			unpublishDateTime: '',
 			comments: '',
 			image: '',
-			imagealt: ''
+			imageAlt: '',
+			imageCredit: ''
 		};
 	};
 
@@ -76,6 +84,12 @@
 		!newEvent.publishtime && (newEvent.publishtime = '09:00');
 		!newEvent.unpublishdate && (newEvent.unpublishdate = newEvent.startdate);
 		!newEvent.unpublishtime && (newEvent.unpublishtime = newEvent.starttime);
+		const publishDateTime = new Date(newEvent.publishdate + 'T' + newEvent.publishtime);
+		console.log('Save  data: PublishDateTime ', publishDateTime);
+		newEvent.publishDateTime = Timestamp.fromDate(publishDateTime);
+		const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
+		console.log('Save  data: UnpublishDateTime ', unpublishDateTime);
+		newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
 		dispatch(state, newEvent);
 		cleanUpForm();
 		goto('/admin/eventsadmin');
@@ -249,7 +263,7 @@
 		</div>
 
 		<!-- Comments -->
-		<div>
+		<div class="col-span-2">
 			<Label for="comments" class="mb-2">Comments</Label>
 			<Textarea
 				id="comments"
@@ -269,6 +283,20 @@
 			{:else}
 				<UploadImage on:upload={assignImage} />
 			{/if}
+		</div>
+		<div class="imageMeta grid grid-cols-2">
+			<div class="imageAlt">
+				<div>
+					<Label for="imageAlt" class="mb-2">Image Alt text *</Label>
+					<Input type="text" id="imageAlt" bind:value={newEvent.imageAlt} required />
+				</div>
+			</div>
+			<div class="imageCaption">
+				<div>
+					<Label for="imageCaption" class="mb-2">Image caption</Label>
+					<Input type="text" id="imageCaption" bind:value={newEvent.imageCaption} />
+				</div>
+			</div>
 		</div>
 
 		<!-- Buttons -->

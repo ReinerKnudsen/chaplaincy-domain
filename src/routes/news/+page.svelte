@@ -40,7 +40,7 @@
 </div>
 <div class=" grid grid-cols-2 gap-5">
 	{#each newsItems as newsItem}
-		<ItemCard {newsItem} />
+		<ItemCard item={newsItem} />
 	{/each}
 </div>
 

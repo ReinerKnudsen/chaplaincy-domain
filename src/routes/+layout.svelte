@@ -3,7 +3,7 @@
 	import Navigation from '$lib/Navigation.svelte';
 	import { onMount } from 'svelte';
 
-	import { auth } from '$lib/firebase/firebaseConfig';
+	import { auth, firebaseApp } from '$lib/firebase/firebaseConfig';
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
 	import { getUserRole } from '$lib/services/authService';
 
@@ -27,6 +27,7 @@
 				}
 			});
 		}
+		console.log(firebaseApp, auth);
 	});
 </script>
 

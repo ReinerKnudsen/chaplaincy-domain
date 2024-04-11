@@ -10,11 +10,12 @@
 	export let thisItem;
 	const dispatch = createEventDispatcher();
 	const author = $authStore.name;
+	console.log($authStore);
 
 	let slugtext;
 	let newItem = {
 		title: '',
-		author: '',
+		author: author,
 		text: '',
 		slug: '',
 		publishdate: '',
@@ -32,7 +33,7 @@
 	}
 
 	const handleCreateSlug = () => {
-		newItem.slug = newItem.description.slice(0, MAX_SLUG_TEXT);
+		newItem.slug = newItem.text.slice(0, MAX_SLUG_TEXT);
 	};
 
 	const handleConditionChange = (e) => {

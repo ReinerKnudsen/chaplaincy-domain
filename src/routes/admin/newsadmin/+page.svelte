@@ -18,11 +18,14 @@
 		TableHead,
 		TableHeadCell,
 		Search,
-		Button
+		Button,
+		Modal
 	} from 'flowbite-svelte';
 
 	export let data;
 	let news = data.news;
+	let showModal = false;
+	let deleteID = '';
 
 	onMount(() => {
 		$pathName = $page.url.pathname;
@@ -71,10 +74,26 @@
 	};
 
 	const handleDelete = async (id) => {
+		console.log('Deleting Item');
 		await deleteDoc(doc(newsColRef, id));
 		news = news.filter((item) => item.id !== id);
 	};
+
+	const openModal = (id) => {
+		deleteID = id;
+		showModal = true;
+	};
 </script>
+
+<Modal bind:open={showModal} size="md" autoclose>
+	<div class="text-center">
+		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+			Do you really want to delete this item?
+		</h3>
+		<Button color="alternative">Cancel</Button>
+		<Button color="red" class="me-2" on:click={() => handleDelete()}>Delete</Button>
+	</div>
+</Modal>
 
 <div>
 	<h1>News</h1>
@@ -125,7 +144,7 @@
 						|
 						<button
 							class="font-medium text-primary-600 hover:underline dark:text-primary-500"
-							on:click={() => handleDelete(item.id)}>Delete</button
+							on:click={() => openModal(item.id)}>Delete</button
 						>
 					</TableBodyCell>
 				</TableBodyRow>

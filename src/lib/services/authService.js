@@ -11,6 +11,7 @@ import { httpsCallable } from 'firebase/functions';
 // Set user role
 // *****************************************************************************************
 
+// Refactor: Only make available to admins
 export async function setUserRole(uid, role) {
 	let addUserRole = httpsCallable(functions, 'addUserRole');
 	addUserRole({ uid: uid, role: role })
@@ -26,14 +27,16 @@ export async function setUserRole(uid, role) {
 // Change user role
 // *****************************************************************************************
 
+// Refactor: Only make available to admins
 export async function changeUserRole(email, role) {
 	let addUserRole = httpsCallable(functions, 'addUserRole');
+	console.log('Before role assignment: ', email, role);
 	addUserRole({ email: email, role: role })
 		.then((result) => {
 			console.log('After role assignment: ', result);
 		})
 		.catch((err) => {
-			console.log(err.message);
+			console.log('Error: ', err.message);
 		});
 }
 
@@ -100,6 +103,7 @@ export async function signInExistingUser(email, password) {
 // Get all user profiles
 // *****************************************************************************************
 
+// Refactor: Only make available to admins
 export async function getAllUserProfiles() {
 	let getAllUsers = httpsCallable(functions, 'getAllUsers');
 	getAllUsers()

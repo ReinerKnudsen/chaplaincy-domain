@@ -19,11 +19,14 @@
 		TableHeadCell,
 		Checkbox,
 		Search,
-		Button
+		Button,
+		Modal
 	} from 'flowbite-svelte';
 
 	export let data;
 	let events = data.events;
+	let showModal = false;
+	let deleteID = '';
 
 	onMount(() => {
 		$pathName = $page.url.pathname;
@@ -72,11 +75,29 @@
 		goto('/admin/eventsadmin/create');
 	};
 
-	const handleDelete = async (id) => {
-		await deleteDoc(doc(eventsColRef, id));
-		events = events.filter((event) => event.id !== id);
+	const handleDelete = async () => {
+		showModal = false;
+		await deleteDoc(doc(eventsColRef, deleteID));
+		events = events.filter((event) => event.id !== deleteID);
+
+		// Refactor: Enforce reload of list
+	};
+
+	const openModal = (id) => {
+		deleteID = id;
+		showModal = true;
 	};
 </script>
+
+<Modal bind:open={showModal} size="md" autoclose>
+	<div class="text-center">
+		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+			Do you really want to delete this item?
+		</h3>
+		<Button color="alternative">Cancel</Button>
+		<Button color="red" class="me-2" on:click={() => handleDelete()}>Delete</Button>
+	</div>
+</Modal>
 
 <div>
 	<h1>Events</h1>
@@ -98,10 +119,14 @@
 			<TableHeadCell class="cursor-pointer px-2" on:click={() => sortTable('startdate')}
 				>Date</TableHeadCell
 			>
+			<!-- <TableHeadCell class="px-2 ">Description</TableHeadCell> -->
+			<TableHeadCell class="cursor-pointer px-2" on:click={() => sortTable('publishdate')}
+				>Publish date</TableHeadCell
+			>
 			<TableHeadCell class="cursor-pointer px-2" on:click={() => sortTable('location')}
 				>Location</TableHeadCell
 			>
-			<TableHeadCell class="px-2 ">Description</TableHeadCell>
+
 			<TableHeadCell class="px-2 ">Author</TableHeadCell>
 			<TableHeadCell>
 				<span class="sr-only">Edit</span>
@@ -115,8 +140,10 @@
 					</TableBodyCell>
 					<TableBodyCell class="px-2 font-normal">{item.data.title}</TableBodyCell>
 					<TableBodyCell class="px-2 font-normal">{item.data.startdate}</TableBodyCell>
+					<TableBodyCell class="px-2 font-normal">{item.data.publishdate}</TableBodyCell>
 					<TableBodyCell class="px-2 font-normal">{item.data.location}</TableBodyCell>
-					<TableBodyCell class="text-wrap px-2 font-normal">{item.data.slug}</TableBodyCell>
+					<!--<TableBodyCell class="text-wrap px-2 font-normal">{item.data.slug}</TableBodyCell>-->
+
 					<TableBodyCell class="px-2 font-normal">{item.data.author}</TableBodyCell>
 					<TableBodyCell>
 						<a
@@ -126,7 +153,7 @@
 						|
 						<button
 							class="font-medium text-primary-600 hover:underline dark:text-primary-500"
-							on:click={() => handleDelete(item.id)}>Delete</button
+							on:click={() => openModal(item.id)}>Delete</button
 						>
 					</TableBodyCell>
 				</TableBodyRow>

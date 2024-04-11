@@ -1,13 +1,14 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
-//const app = admin.initializeApp();
+admin.initializeApp();
 
 // *****************************************************************************************
 // Add user role
 // *****************************************************************************************
 
 exports.addUserRole = functions.https.onCall(async (data, context) => {
+	console.log('Entered AddUserRole');
 	let user;
 	if (data.uid) {
 		user = await admin.auth().getUser(data.uid);

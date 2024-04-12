@@ -29,7 +29,7 @@
 <style>
 	.container {
 		padding: 10px;
-		border: 1px solid #cdcdcd;
+		border: 1px solid #efefef;
 		border-radius: 5px;
 	}
 

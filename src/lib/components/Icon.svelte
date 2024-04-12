@@ -4,7 +4,9 @@
 	import clock from '$lib/assets/icons/clock.svg?raw';
 	import left from '$lib/assets/icons/arrow-left.svg?raw';
 	import location from '$lib/assets/icons/location.svg?raw';
+	import news from '$lib/assets/icons/news.svg?raw';
 	import onsite from '$lib/assets/icons/people-roof.svg?raw';
+	import sheet from '$lib/assets/icons/sheet.svg?raw';
 	import tags from '$lib/assets/icons/tags.svg?raw';
 	import users_online from '$lib/assets/icons/users-online.svg?raw';
 
@@ -32,9 +34,17 @@
 			box: 24,
 			svg: location
 		},
+		news: {
+			box: 24,
+			svg: news
+		},
 		onsite: {
 			box: 24,
 			svg: onsite
+		},
+		sheet: {
+			box: 24,
+			svg: sheet
 		},
 		tags: {
 			box: 24,

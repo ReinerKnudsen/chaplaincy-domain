@@ -1,7 +1,6 @@
 <script>
 	import { formatDate } from '/src/utils/utils';
-	import Fa from 'svelte-fa';
-	import { faCalendar, faClock, faLocationDot } from '@fortawesome/free-solid-svg-icons';
+	import Icon from '$lib/components/Icon.svelte';
 
 	export let data;
 	const thisItem = data.thisItem;
@@ -13,8 +12,16 @@
 	</div>
 	<div class="news-data">
 		<div class="entry">
-			<Fa icon={faCalendar} />
+			<Icon name="calendar" />
 			{thisItem.publishdate}
+		</div>
+		<div class="entry">
+			<Icon name="author" />
+			{thisItem.author}
+		</div>
+		<div class="entry">
+			<Icon name="tags" />
+			{thisItem.tags}
 		</div>
 	</div>
 	<div class="news-image">
@@ -25,6 +32,7 @@
 	</div>
 </div>
 <div class="links">
+	<Icon name="left" />
 	<a href="/news">Take me back to overview</a>
 </div>
 
@@ -72,6 +80,13 @@
 		margin-bottom: 40px;
 	}
 
+	.links {
+		display: inline-flex;
+		gap: 10px;
+		align-items: center;
+		margin-top: 20px;
+		margin-bottom: 20px;
+	}
 	.links a {
 		text-decoration: underline;
 		font-weight: 600;

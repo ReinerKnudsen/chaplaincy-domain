@@ -1,15 +1,17 @@
 <script>
-	import { Fa } from 'svelte-fa';
-	import { faPeopleRoof, faUsersRectangle } from '@fortawesome/free-solid-svg-icons';
+	import Icon from '$lib/components/Icon.svelte';
 
 	export let service;
-	console.log(service);
 </script>
 
 <div class="container">
 	<div class="card">
 		<div class="icon">
-			<Fa icon={service.icon === 'people' ? faPeopleRoof : faUsersRectangle} class="text-5xl" />
+			<Icon
+				name={service.icon === 'people' ? 'onsite' : 'users_online'}
+				width="3rem"
+				height="3rem"
+			/>
 		</div>
 		<div class="content">
 			<h3 class="my-0">{service.name}</h3>

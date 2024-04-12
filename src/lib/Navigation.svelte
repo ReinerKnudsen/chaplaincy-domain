@@ -1,8 +1,8 @@
 <script>
 	import { page } from '$app/stores';
 	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger } from 'flowbite-svelte';
-	import { authStore, unloadUser } from './stores/AuthStore';
-	import { auth, imgStorageRef } from './firebase/firebaseConfig';
+	import { authStore, unloadUser } from '$lib/stores/AuthStore';
+	import { auth, imgStorageRef } from '$lib/firebase/firebaseConfig';
 	import { goto } from '$app/navigation';
 	import { signOut } from 'firebase/auth';
 	import caplogo from '$lib/assets/chaplaincy_logo.png';

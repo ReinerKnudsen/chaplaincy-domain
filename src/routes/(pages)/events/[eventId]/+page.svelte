@@ -1,7 +1,8 @@
 <script>
 	import { formatDate } from '/src/utils/utils';
-	import Fa from 'svelte-fa';
-	import { faCalendar, faClock, faLocationDot } from '@fortawesome/free-solid-svg-icons';
+	// import Fa from 'svelte-fa/dist/fa.svelte';
+	// import { faCalendar, faClock, faLocationDot } from '@fortawesome/free-solid-svg-icons';
+	import Icon from '$lib/components/Icon.svelte';
 
 	export let data;
 	const thisEvent = data.thisEvent;
@@ -13,16 +14,16 @@
 	</div>
 	<div class="event-data">
 		<div class="entry">
-			<Fa icon={faCalendar} />
+			<Icon name="calendar" />
 			{thisEvent.startdate}
 		</div>
 		<div class="entry">
-			<Fa icon={faClock} />
+			<Icon name="clock" />
 			{thisEvent.starttime}
 		</div>
 		<div class="entry">
 			<!-- Refactor: Add link to location document -->
-			<Fa icon={faLocationDot} />
+			<Icon name="location" />
 			{thisEvent.location}
 		</div>
 	</div>

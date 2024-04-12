@@ -4,6 +4,7 @@
 
 	import ServiceCard from '$lib/components/ServiceCard.svelte';
 
+	import mainhero from '$lib/assets/mainhero.webp';
 	import servicesData from '$lib/services.json';
 	// Manually convert the services object into an array
 	const servicesArray = Object.keys(servicesData).map((key) => servicesData[key]);
@@ -11,12 +12,12 @@
 
 	let imageUrl;
 	onMount(() => {
-		imageUrl = `url(${STORAGE_IMAGES}heroes/mainhero.png)`;
+		//imageUrl = `url(${STORAGE_IMAGES}heroes/mainhero.png)`;
 	});
 </script>
 
 <div class="header-title">Anglican Chaplaincy of Bonn and Cologne</div>
-<div class="image-container" style="background-image: {imageUrl}"></div>
+<div class="image-container" style="background-image:{mainhero}"></div>
 <div class="services">
 	{#each ourServices as service}
 		<ServiceCard {service} />
@@ -43,7 +44,6 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-
 		margin: 20px 0;
 		pointer-events: none;
 		overflow: scroll;

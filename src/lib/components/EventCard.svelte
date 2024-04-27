@@ -1,6 +1,5 @@
 <script>
 	export let item;
-	console.log(item);
 </script>
 
 <div class="container my-5 rounded-2xl border border-slate-200 p-4 shadow-xl">
@@ -10,7 +9,7 @@
 		</div>
 		<div class="article">
 			<div class="mb-4 text-2xl font-semibold">
-				<a href="/news/{item.id}">{item.data.title}</a>
+				<a href="/events/{item.id}">{item.data.title}</a>
 			</div>
 			<div class="mb-4">
 				{item.data.slug}
@@ -30,7 +29,7 @@
 	.container {
 		display: grid;
 		grid-template-columns: minmax(3fr 1fr);
-		height: 250px;
+		height: 300px;
 	}
 
 	.main-content {

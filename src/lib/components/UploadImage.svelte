@@ -65,13 +65,16 @@
 		{/if}
 	</form>
 {:else}
-	<div class={moduleWidth}>
+	<div class="image-container">
 		<img class="w-full" src={imageUrl} alt="selectedFile" />
-	</div>
-	<div class={moduleWidth + ' mt-1 grid h-14 grid-cols-6 items-center'}>
-		<div class="col-span-4 pl-2"></div>
 		<div class="col-span-2 text-center">
-			<Button class="w-10/12" on:click={resetInput}>Change</Button>
+			<Button class="mt-5 w-6/12" on:click={resetInput}>Change</Button>
 		</div>
 	</div>
 {/if}
+
+<style>
+	.image-container {
+		width: 400px;
+	}
+</style>

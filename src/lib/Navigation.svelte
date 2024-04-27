@@ -24,7 +24,7 @@
 
 <Navbar class="sticky top-0 z-20 w-full border-b px-2 py-2.5 sm:px-4">
 	<NavBrand href="/">
-		<img src={caplogo} class="me-3 h-6 sm:h-9" alt="Chaplaincy Logo" />
+		<img src={caplogo} class="me-3 sm:h-9" alt="Chaplaincy Logo" />
 	</NavBrand>
 	<NavHamburger />
 	<NavUl {activeUrl} class="cursor-pointer">
@@ -33,6 +33,7 @@
 		<!-- <NavLi href="/activities">Activities</NavLi> -->
 		<NavLi href="/events">Events</NavLi>
 		<NavLi href="/groups">Groups</NavLi>
+		<NavLi href="/prayers">Pray with us</NavLi>
 		<NavLi href="/about">About us</NavLi>
 		{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
 			<NavLi href="/admin">Admin</NavLi>

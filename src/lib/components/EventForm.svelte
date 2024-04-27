@@ -276,25 +276,36 @@
 		</div>
 
 		<!-- Image -->
-		<div class="ml-20">
-			<Label class="mb-2">Upload image</Label>
+		<div>
 			{#if newEvent.image}
+				<Label class="mb-2">Uploaded image</Label>
 				<UploadImage imageUrl={newEvent.image} on:upload={assignImage} />
 			{:else}
+				<Label class="mb-2">Upload image</Label>
 				<UploadImage on:upload={assignImage} />
 			{/if}
 		</div>
-		<div class="imageMeta grid grid-cols-2">
+		<div class="imageMeta">
 			<div class="imageAlt">
 				<div>
 					<Label for="imageAlt" class="mb-2">Image Alt text *</Label>
-					<Input type="text" id="imageAlt" bind:value={newEvent.imageAlt} required />
+					<Input
+						type="text"
+						id="imageAlt"
+						bind:value={newEvent.imageAlt}
+						disabled={!newEvent.image}
+						required
+					/>
+					<p class="explanation">
+						This text helps interpreting the image for visually impaired users.
+					</p>
 				</div>
 			</div>
-			<div class="imageCaption">
+			<div class="imageCaption mt-10">
 				<div>
 					<Label for="imageCaption" class="mb-2">Image caption</Label>
 					<Input type="text" id="imageCaption" bind:value={newEvent.imageCaption} />
+					<p class="explanation">This text will be displayed below the image.</p>
 				</div>
 			</div>
 		</div>

@@ -2,7 +2,6 @@
 	import EventCard from '$lib/components/EventCard.svelte';
 
 	export let data;
-	console.log(data);
 	let events = data.events;
 	const sortedEvents = events.sort((a, b) => {
 		return new Date(a.data.startdate) - new Date(b.data.startdate);

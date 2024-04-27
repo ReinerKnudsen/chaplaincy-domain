@@ -10,7 +10,6 @@
 	export let thisItem;
 	const dispatch = createEventDispatcher();
 	const author = $authStore.name;
-	console.log($authStore);
 
 	let slugtext;
 	let newItem = {
@@ -21,7 +20,8 @@
 		publishdate: '',
 		publishtime: '',
 		image: '',
-		imagealt: '',
+		imageAlt: '',
+		imageCaption: '',
 		tags: ''
 	};
 	let docRef;
@@ -53,7 +53,8 @@
 			publishdate: '',
 			publishtime: '',
 			image: '',
-			imagealt: '',
+			imageAlt: '',
+			imageCaption: '',
 			tags: ''
 		};
 	};
@@ -149,18 +150,42 @@
 
 		<!-- File Upload -->
 		<div>
-			{#if state === 'update'}
-				<UploadImage imgUrl={newItem.image} on:upload={assignImage} />
+			{#if newItem.image}
+				<Label class="mb-2">Uploaded image</Label>
+				<UploadImage imageUrl={newItem.image} on:upload={assignImage} />
 			{:else}
+				<Label class="mb-2">Upload image</Label>
 				<UploadImage on:upload={assignImage} />
 			{/if}
 		</div>
-		<div>
-			<Label class="mb-2">Alternative text</Label>
-			<Input type="text" id="imagealt" bind:value={newItem.imagealt} disabled={!newItem.image} />
-			<p class="explanation">
-				The alternative text helps people with screenreaders to understand the picture's content
-			</p>
+		<div class="imageMeta">
+			<div class="imageAlt">
+				<div>
+					<Label for="imageAlt" class="mb-2">Image Alt text *</Label>
+					<Input
+						type="text"
+						id="imageAlt"
+						bind:value={newItem.imageAlt}
+						disabled={!newItem.image}
+						required
+					/>
+					<p class="explanation">
+						This text helps interpreting the image for visually impaired users.
+					</p>
+				</div>
+			</div>
+			<div class="imageCaption mt-10">
+				<div>
+					<Label for="imageCaption" class="mb-2">Image caption</Label>
+					<Input
+						type="text"
+						id="imageCaption"
+						bind:value={newItem.imageCaption}
+						disabled={!newItem.image}
+					/>
+					<p class="explanation">This text will be displayed below the image.</p>
+				</div>
+			</div>
 		</div>
 
 		<!-- Buttons -->

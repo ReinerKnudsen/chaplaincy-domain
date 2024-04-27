@@ -1,6 +1,5 @@
 <script>
 	export let item;
-	console.log(item);
 </script>
 
 <div class="container my-5 rounded-2xl border border-slate-200 p-8 shadow-xl">

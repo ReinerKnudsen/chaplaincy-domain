@@ -106,9 +106,6 @@
 
 	<Table hoverable={true}>
 		<TableHead>
-			<TableHeadCell class="!p-4">
-				<Checkbox />
-			</TableHeadCell>
 			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('title')}>Title</TableHeadCell
 			>
 			<TableHeadCell>Description</TableHeadCell>
@@ -129,9 +126,6 @@
 		<TableBody>
 			{#each $sortItems as item}
 				<TableBodyRow class="align-top">
-					<TableBodyCell class="!p-4">
-						<Checkbox />
-					</TableBodyCell>
 					<TableBodyCell class="font-normal">{item.data.title}</TableBodyCell>
 					<TableBodyCell class="text-wrap font-normal">{item.data.slug}</TableBodyCell>
 					<TableBodyCell class="font-normal">{item.data.publishdate}</TableBodyCell>

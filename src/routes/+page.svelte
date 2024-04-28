@@ -184,18 +184,6 @@
 		overflow: scroll;
 	}
 
-	.title {
-		font-size: 3rem;
-		font-weight: bold;
-		margin-bottom: 10px;
-		text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-		color: whitesmoke;
-	}
-
-	.subtitle {
-		font-size: 1.5rem;
-	}
-
 	.services {
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr 1fr;

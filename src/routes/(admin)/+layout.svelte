@@ -1,7 +1,7 @@
 <script>
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
-	import Navigation from '$lib/Navigation.svelte';
+	import Navigation from '$lib/components/Navigation.svelte';
 
 	import { auth } from '$lib/firebase/firebaseConfig';
 	import { unloadUser, authStore } from '$lib/stores/AuthStore';

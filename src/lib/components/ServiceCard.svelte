@@ -4,7 +4,7 @@
 	export let service;
 </script>
 
-<div class="container">
+<div class="container shadow-xl">
 	<div class="card">
 		<div class="icon">
 			<Icon

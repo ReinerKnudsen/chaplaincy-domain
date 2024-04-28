@@ -9,6 +9,11 @@
 	import sheet from '$lib/assets/icons/sheet.svg?raw';
 	import tags from '$lib/assets/icons/tags.svg?raw';
 	import users_online from '$lib/assets/icons/users-online.svg?raw';
+	import chevron_down from '$lib/assets/icons/chevron-down.svg?raw';
+	import churchnearyou from '$lib/assets/icons/churchnearyou.svg?raw';
+	import email from '$lib/assets/icons/email.svg?raw';
+	import facebook from '$lib/assets/icons/facebook.svg?raw';
+	import twitter from '$lib/assets/icons/twitter.svg?raw';
 
 	export let name;
 	export let width = '1rem';
@@ -25,6 +30,22 @@
 		clock: {
 			box: 24,
 			svg: clock
+		},
+		chevronDown: {
+			box: 24,
+			svg: chevron_down
+		},
+		churchnearyou: {
+			box: 24,
+			svg: churchnearyou
+		},
+		email: {
+			box: 24,
+			svg: email
+		},
+		facebook: {
+			box: 24,
+			svg: facebook
 		},
 		left: {
 			box: 24,
@@ -49,6 +70,10 @@
 		tags: {
 			box: 24,
 			svg: tags
+		},
+		twitter: {
+			box: 24,
+			svg: twitter
 		},
 		users_online: {
 			box: 24,

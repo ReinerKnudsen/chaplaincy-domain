@@ -1,6 +1,7 @@
 <script>
 	import '/src/app.pcss';
-	import Navigation from '$lib/Navigation.svelte';
+	import Navigation from '$lib/components/Navigation.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 	import { onMount } from 'svelte';
 
 	import '@fontsource-variable/raleway';
@@ -37,6 +38,8 @@
 <div class="mb-10 mt-10">
 	<slot />
 </div>
+
+<Footer />
 
 <style>
 </style>

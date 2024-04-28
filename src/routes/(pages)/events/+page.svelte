@@ -8,7 +8,15 @@
 	});
 </script>
 
-<h1 class="mb-10 text-4xl font-semibold">Events</h1>
+<div class="page-header mb-20">
+	<div class="page-header-image grid h-[150px] grid-cols-1 items-center">
+		<div class="page-title pl-10 text-5xl font-semibold text-white">Events</div>
+	</div>
+	<div class="text-right text-sm">
+		Image by: <a href="https://unsplash.com/@gkumar2175" target="_blank">Gaurav Kumar</a>
+	</div>
+</div>
+
 <p>Please find our upcoming events.</p>
 <p>
 	Make sure to join our mailing list if you want to be receive reminders and more details in your
@@ -21,4 +29,16 @@
 </div>
 
 <style>
+	.page-header a {
+		color: #2986cc;
+		font-weight: 600;
+	}
+
+	.page-header-image {
+		background-image: url('https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fstock%2Fevents.jpeg?alt=media&token=7b530e23-9825-477f-9fef-587beee93406');
+		background-position: center;
+		background-repeat: no-repeat;
+		position: relative;
+		background-size: cover;
+	}
 </style>

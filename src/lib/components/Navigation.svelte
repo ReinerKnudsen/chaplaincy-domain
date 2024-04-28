@@ -1,6 +1,17 @@
 <script>
 	import { page } from '$app/stores';
-	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger } from 'flowbite-svelte';
+	import {
+		Navbar,
+		NavBrand,
+		NavLi,
+		NavUl,
+		NavHamburger,
+		Dropdown,
+		DropdownDivider,
+		DropdownItem
+	} from 'flowbite-svelte';
+	import Icon from '$lib/components/Icon.svelte';
+
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
 	import { auth, imgStorageRef } from '$lib/firebase/firebaseConfig';
 	import { goto } from '$app/navigation';
@@ -34,7 +45,14 @@
 		<NavLi href="/events">Events</NavLi>
 		<NavLi href="/groups">Groups</NavLi>
 		<NavLi href="/prayers">Pray with us</NavLi>
-		<NavLi href="/about">About us</NavLi>
+		<NavLi class="cursor-pointer">About us</NavLi>
+		<Dropdown class=" z20 w-44">
+			<DropdownItem href="/about">Who we are</DropdownItem>
+			<DropdownItem href="/about/responsibilities">Responsibilities</DropdownItem>
+			<DropdownItem href="/about/safeguarding">Safeguarding</DropdownItem>
+			<DropdownDivider />
+			<DropdownItem href="/about/contact">Get in touch</DropdownItem>
+		</Dropdown>
 		{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
 			<NavLi href="/admin">Admin</NavLi>
 		{/if}

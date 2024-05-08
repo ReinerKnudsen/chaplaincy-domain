@@ -20,18 +20,49 @@
 	onMount(() => {
 		//imageUrl = `url(${STORAGE_IMAGES}heroes/mainhero.png)`;
 	});
+
+	const header = 'text-2xl text-justify w-full px-5 font-semibold';
+	const headerLg = 'lg:text-4xl lg:px-10 lg:py-2';
+	const headerXl = 'xl:text-6xl xl:px-10 xl:py-5';
+	const subTitle = 'text-xl text-justify w-full px-5 py-3 ';
+	const subTitleLg = 'lg:text-2xl lg:px-10 lg:py-2';
+	const subTitleXl = 'xl:text-4xl xl:px-10 xl:py-5';
+	const sectionHeader = 'text-2xl text-justify w-full px-5 pt-5 pb-2 font-semibold';
+	const sectionHeaderLg = 'lg:text-3xl lg:px-10 lg:pt-14 lg:pt-5 lg:pb-10';
+	const sectionHeaderXl = 'xl:text-4xl xl:px-10 xl:pt-20 xl:pt-5 xl:pb-10';
+	const container = 'mb-5';
+	const containerLg = 'lg:mb-10';
+	const containerXl = 'xl:mb-10';
+	const services = 'px-5 py-5 grid grid-cols-2 gap-2';
+	const servicesLg = 'lg:grid-cols-2 lg:gap-10 lg:px-10 ';
+	const servicesXL = 'xl:grid xl:grid-cols-4 xl:gap-14 xl:px-5 ';
+	const itemContainer = 'grid grid-cols-1 grid-flow-row';
+	const itemContainerLg = 'lg:px-10 grid grid-cols-2 gap-5';
+	const itemContainerXL = 'xl:px-10 grid grid-cols-2 gap-5';
+
+	/*
+
+
+
+	*/
 </script>
 
-<div class="header-title">Anglican Chaplaincy of Bonn and Cologne</div>
-<div class="sub-title">St. Boniface, Bonn and All Saints, Cologne</div>
+<div class={`page-title ${header} ${headerLg} ${headerXl}`}>
+	Anglican Chaplaincy of Bonn and Cologne
+</div>
+<div class={`sub-title ${subTitle} ${subTitleLg} ${subTitleXl} `}>
+	St. Boniface, Bonn and All Saints, Cologne
+</div>
 <div class="image-container">
 	<img src={mainhero} alt="main hero" />
 </div>
 
 <!-- Section: Service Times -->
-<div class="section-header">Our regular worship services</div>
-<div class="container mb-10">
-	<div class="services">
+<div class={`sectionHeader ${sectionHeader} ${sectionHeaderLg} ${sectionHeaderXl}`}>
+	Our regular worship services
+</div>
+<div class={`container ${container} ${containerLg} ${containerXl}`}>
+	<div class={`services ${services} ${servicesLg} ${servicesXL}`}>
 		{#each ourServices as service}
 			<ServiceCard {service} />
 		{/each}
@@ -40,9 +71,11 @@
 <hr class="mx-auto w-[80%]" />
 
 <!-- News -->
-<div class="section-header">News and Notices</div>
-<div class="container mb-10">
-	<div class="mx-10 grid grid-cols-2 gap-5">
+<div class={`sectionHeader ${sectionHeader} ${sectionHeaderLg} ${sectionHeaderXl}`}>
+	News and Notices
+</div>
+<div class={`container ${container} ${containerLg} ${containerXl}`}>
+	<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
 		{#each data.news as item}
 			<ItemCard {item} />
 		{/each}
@@ -126,13 +159,6 @@
 		font-weight: 600;
 	}
 
-	.section-header {
-		font-size: 2rem;
-		line-height: 2.5rem;
-		font-weight: 600;
-		margin: 40px 0 0 40px;
-	}
-
 	.circle {
 		width: 60px;
 		height: 60px;
@@ -145,32 +171,9 @@
 		top: -30px;
 	}
 
-	.item-container {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		justify-items: center;
-		padding-left: 40px;
-		padding-right: 40px;
-		gap: 20px;
-	}
-
-	.header-title {
-		font-size: 4rem;
-		width: 100vw;
-		text-align: justify;
-		margin: 30px auto 20px 20px;
-	}
-
-	.sub-title {
-		font-size: 2rem;
-		width: 100vw;
-		text-align: justify;
-		margin: 0px auto 30px 20px;
-	}
-
 	.image-container {
 		position: relative;
-		height: 300px;
+		max-height: 300px;
 		background-size: cover;
 		background-position: center;
 		color: white;
@@ -179,16 +182,18 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		margin: 20px 0;
+		margin: 0px;
+		width: 100%;
 		pointer-events: none;
 		overflow: scroll;
 	}
 
-	.services {
+	.item-container {
 		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr;
-		gap: 60px;
-		padding: 0 20px;
-		margin: 30px 20px;
+		grid-template-columns: 1fr 1fr;
+		justify-items: center;
+		padding-left: 40px;
+		padding-right: 40px;
+		gap: 20px;
 	}
 </style>

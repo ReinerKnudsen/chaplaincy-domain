@@ -1,79 +1,37 @@
 <script>
 	export let newsItem;
+
+	const container =
+		'mx-auto mb-10 grid max-h-[300px] grid-cols-2 gap-5 rounded-2xl border border-slate-200 bg-slate-300 p-4 shadow-xl';
+	const containerLg =
+		'mx-auto mb-10 grid max-h-[500px] grid-cols-2 gap-5 rounded-2xl border border-slate-200 bg-slate-300 p-4 shadow-xl';
+	const containerXl =
+		'mx-auto mb-10 grid max-h-[500px] grid-cols-2 gap-5 rounded-2xl border border-slate-200 bg-slate-300 p-4 shadow-xl';
+	const imageLg = 'lg:max-h-[400px]';
+	const imageXl = 'xl:max-h-[400px]';
 </script>
 
-<div class="container rounded-2xl border border-slate-200 p-8 shadow-xl">
-	<div class="">
-		<img class="image" src={newsItem.data.image} alt="darstellung fuer diesen Beitrag" />
+<div class={`container ${container} ${containerLg} ${containerXl}`}>
+	<div class="place-content-center">
+		<img
+			class={`image ${imageLg} ${imageXl}`}
+			src={newsItem.data.image}
+			alt="darstellung fuer diesen Beitrag"
+		/>
 	</div>
-	<div class="text-area">
-		<div class="headline">
+	<div class="text-area mr-auto flex flex-col justify-between gap-2 bg-white p-2">
+		<div class="headline text-left text-lg font-semibold">
 			{newsItem.data.title}
 		</div>
-		<div class="metadata">
+		<div class="metadata text-right text-xs text-slate-400">
 			<span>{newsItem.data.author}, {newsItem.data.publishdate}</span>
 		</div>
-		<div class="news-text">{newsItem.data.slug}</div>
-		<div class="read-more">
+		<div class="news-text min-h-[50%] text-left text-base">{newsItem.data.slug}</div>
+		<div class="read-more text-right text-sm font-medium text-link-primary">
 			<a href="/news/{newsItem.id}">Read more...</a>
 		</div>
 	</div>
 </div>
 
 <style>
-	.container {
-		display: flex;
-
-		flex-direction: row;
-		flex-wrap: nowrap;
-		max-height: 500px;
-		@apply mx-auto;
-		padding: 30px;
-		background: #f1f1f1f2;
-		margin-bottom: 100px;
-	}
-	.text-area {
-		background: white;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		gap: 20px;
-		margin-right: auto;
-		max-width: 50%;
-	}
-
-	.headline {
-		text-align: left;
-		font-size: 1.8rem;
-		line-height: 2.5rem;
-		font-weight: 700;
-		padding: 20px 0 10px 0;
-		margin-left: 40px;
-	}
-
-	.image {
-		height: 100%;
-	}
-
-	.metadata {
-		text-align: right;
-		margin-right: 40px;
-		color: rgb(148 163 184);
-	}
-
-	.news-text {
-		text-align: left;
-		font-size: 1.4rem;
-		line-height: 1.8rem;
-		padding: 20px 40px;
-		min-height: 50%;
-	}
-	.read-more {
-		text-align: right;
-		font-weight: 500;
-		@apply text-link-primary;
-		align-content: space-around;
-		width: 100%;
-		padding: 0 40px 20px 0;
-	}
 </style>

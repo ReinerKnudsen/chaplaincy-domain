@@ -35,12 +35,12 @@
 </script>
 
 <h1 class="mb-16 text-4xl font-semibold">News and notices</h1>
-<div class="mr-10">
+<div>
 	<ItemCardFav newsItem={favNews} />
 </div>
 <div class=" grid grid-cols-2 gap-5">
 	{#each newsItems as newsItem}
-		<ItemCard item={newsItem} />
+		<ItemCard item={newsItem} kind="news" />
 	{/each}
 </div>
 

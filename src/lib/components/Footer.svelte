@@ -18,8 +18,8 @@
 					Resources
 				</h2>
 				<FooterLinkGroup>
-					<FooterLink liClass="mb-4" href="/">Flowbite</FooterLink>
-					<FooterLink liClass="mb-4" href="/">Tailwind CSS</FooterLink>
+					<FooterLink liClass="mb-4" href="/">Newsletter Archive</FooterLink>
+					<FooterLink liClass="mb-4" href="/">Image Gallery</FooterLink>
 				</FooterLinkGroup>
 			</div>
 			<div>
@@ -27,8 +27,9 @@
 					Follow us
 				</h2>
 				<FooterLinkGroup>
-					<FooterLink liClass="mb-4" href="/">GitHub</FooterLink>
-					<FooterLink liClass="mb-4" href="/">Discord</FooterLink>
+					<FooterLink liClass="mb-4" href="/">Twitter</FooterLink>
+					<FooterLink liClass="mb-4" href="/">Facebook</FooterLink>
+					<FooterLink liClass="mb-4" href="/">Instagram</FooterLink>
 				</FooterLinkGroup>
 			</div>
 			<div>

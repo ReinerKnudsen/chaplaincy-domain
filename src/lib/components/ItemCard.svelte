@@ -1,10 +1,11 @@
 <script>
 	export let item;
+	export let kind;
 </script>
 
-<div class="container my-5 rounded-2xl border border-slate-200 p-8 shadow-xl">
+<div class="container my-5 rounded-2xl border border-slate-200 px-4 py-8 shadow-xl">
 	<div class="head-line mb-4 py-2 text-xl font-semibold">
-		<a href="/news/{item.id}">{item.data.title}</a>
+		<a href="/{kind}}/{item.id}">{item.data.title}</a>
 	</div>
 	<div class="main-content">
 		<div class="image">
@@ -18,9 +19,11 @@
 	</div>
 	<div class="read-more">
 		<div class="justify-self-start text-slate-400">{item.data.author}</div>
-		<div class="justify-self-center text-slate-400">{item.data.publishdate}</div>
+		<div class="justify-self-center text-slate-400">
+			{kind === 'news' ? item.data.publishdate : item.data.startdate}
+		</div>
 		<div class="justify-self-end font-medium text-link-primary">
-			<a href="/news/{item.id}">Read more...</a>
+			<a href="/{kind}/{item.id}">Read more...</a>
 		</div>
 	</div>
 </div>
@@ -37,8 +40,6 @@
 		grid-template-rows: 2;
 		column-gap: 20px;
 		align-items: start;
-	}
-	.image {
 	}
 
 	.article {

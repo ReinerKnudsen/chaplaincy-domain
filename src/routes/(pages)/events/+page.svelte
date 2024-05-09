@@ -1,5 +1,5 @@
 <script>
-	import EventCard from '$lib/components/EventCard.svelte';
+	import ItemCard from '$lib/components/ItemCard.svelte';
 
 	export let data;
 	let events = data.events;
@@ -24,7 +24,7 @@
 </p>
 <div class="mb-10 grid grid-cols-2 gap-5">
 	{#each sortedEvents as event}
-		<EventCard item={event} />
+		<ItemCard item={event} kind="events" />
 	{/each}
 </div>
 

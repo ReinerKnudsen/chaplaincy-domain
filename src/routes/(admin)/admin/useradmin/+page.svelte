@@ -2,17 +2,23 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { page } from '$app/stores';
-	import { getAllUserProfiles, changeUserRole } from '$lib/services/authService';
+	import { changeUserRole, listAllUsers } from '$lib/services/authService';
+	import { httpsCallable } from 'firebase/functions';
 
-	import { Label, Select, Input, Button } from 'flowbite-svelte';
+	import {
+		Label,
+		Select,
+		Input,
+		Button,
+		Table,
+		TableBody,
+		TableHead,
+		TableBodyRow,
+		TableHeadCell,
+		TableBodyCell
+	} from 'flowbite-svelte';
 
 	import { pathName } from '$lib/stores/NavigationStore';
-
-	// onMount(() => {
-	// 	$pathName = $page.url.pathname;
-	// 	let allUsers = getAllUserProfiles();
-	// 	console.log(allUsers);
-	// });
 
 	let role;
 	let email;
@@ -21,6 +27,12 @@
 		{ value: 'editor', name: 'Editor' },
 		{ value: 'admin', name: 'Admin' }
 	];
+	let userList = [];
+
+	onMount(async () => {
+		userList = await listAllUsers();
+		console.log(userList);
+	});
 
 	const handleClick = async () => {
 		console.log(email, role);
@@ -28,7 +40,30 @@
 	};
 </script>
 
-<div class="ml-11 flex w-6/12 flex-col justify-center">
+<Table hoverable={true}>
+	<TableHead>
+		<TableHeadCell>Display Name</TableHeadCell>
+		<TableHeadCell>email</TableHeadCell>
+		<TableHeadCell>Role</TableHeadCell>
+	</TableHead>
+	<TableBody>
+		{#each userList as user}
+			<TableBodyRow class="align-top">
+				<TableBodyCell class="font-normal">{user.displayName}</TableBodyCell>
+				<TableBodyCell class="font-normal">{user.email}</TableBodyCell>
+				<TableBodyCell class="font-normal"
+					>{#if user.customClaims}
+						{user.customClaims.role}
+					{:else}
+						-
+					{/if}</TableBodyCell
+				>
+			</TableBodyRow>
+		{/each}
+	</TableBody>
+</Table>
+
+<div class="ml-11 mt-20 flex w-6/12 flex-col justify-center">
 	<Label class="mb-7">
 		<span>Input email</span>
 		<Input class="mt-2" type="email" placeholder="email" size="lg" bind:value={email} />

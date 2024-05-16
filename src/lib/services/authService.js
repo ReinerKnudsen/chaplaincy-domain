@@ -24,6 +24,20 @@ export async function setUserRole(uid, role) {
 }
 
 // *****************************************************************************************
+// List all users (only for admins)
+// *****************************************************************************************
+
+const listAllUsersFunction = httpsCallable(functions, 'listUsers');
+export const listAllUsers = async () => {
+	try {
+		const result = await listAllUsersFunction();
+		return result.data.users;
+	} catch (error) {
+		console.error('Error listing users:', error);
+	}
+};
+
+// *****************************************************************************************
 // Change user role
 // *****************************************************************************************
 
@@ -104,7 +118,7 @@ export async function signInExistingUser(email, password) {
 // *****************************************************************************************
 
 // Refactor: Only make available to admins
-export async function getAllUserProfiles() {
+export async function getAllUsers() {
 	let getAllUsers = httpsCallable(functions, 'getAllUsers');
 	getAllUsers()
 		.then((result) => {

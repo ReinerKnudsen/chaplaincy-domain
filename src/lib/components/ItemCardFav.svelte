@@ -9,6 +9,7 @@
 		'mx-auto mb-10 grid max-h-[500px] grid-cols-2 gap-5 rounded-2xl border border-slate-200 bg-slate-300 p-4 shadow-xl';
 	const imageLg = 'lg:max-h-[400px]';
 	const imageXl = 'xl:max-h-[400px]';
+	n;
 </script>
 
 <div class={`container ${container} ${containerLg} ${containerXl}`}>

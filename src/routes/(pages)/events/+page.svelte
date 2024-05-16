@@ -8,7 +8,7 @@
 	});
 </script>
 
-<div class="page-header mb-20">
+<div class="page-header mb-10">
 	<div class="page-header-image grid h-[150px] grid-cols-1 items-center">
 		<div class="page-title pl-10 text-5xl font-semibold text-white">Events</div>
 	</div>

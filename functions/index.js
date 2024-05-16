@@ -85,3 +85,28 @@ exports.getAllUsers = functions.https.onRequest((req, res) => {
 		})
 		.catch((error) => console.log(error));
 });
+
+// *****************************************************************************************
+// List all users
+// *****************************************************************************************
+exports.listUsers = functions.https.onCall((data, context) => {
+	// Check if the user is an admin.
+	if (context.auth.token.role !== 'admin') {
+		return { error: 'Only admins can list users' };
+	}
+
+	return admin
+		.auth()
+		.listUsers()
+		.then((listUsersResult) => {
+			let users = [];
+			listUsersResult.users.forEach((userRecord) => {
+				users.push(userRecord.toJSON());
+			});
+			return { users: users };
+		})
+		.catch((error) => {
+			console.log('Error listing users:', error);
+			return { error: 'Error listing users' };
+		});
+});

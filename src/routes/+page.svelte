@@ -9,13 +9,15 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import servicesData from '$lib/services.json';
 	// Manually convert the services object into an array
-	const servicesArray = Object.keys(servicesData).map((key) => servicesData[key]);
-	const ourServices = servicesArray[0];
 
+	const servicesArray = servicesData.services.map((service) => {
+		if (service.place_address) {
+			service.place_address = service.place_address.replace(/\n/g, '<br>');
+		}
+		return service;
+	});
 	export let data;
-	console.log(data);
 
-	let imageUrl;
 	onMount(() => {
 		//imageUrl = `url(${STORAGE_IMAGES}heroes/mainhero.png)`;
 	});
@@ -23,18 +25,17 @@
 	const header = 'text-2xl text-justify w-full px-5 font-semibold';
 	const headerLg = 'lg:text-4xl lg:px-10 lg:py-2';
 	const headerXl = 'xl:text-6xl xl:px-10 xl:py-5';
-	const subTitle = 'text-xl text-justify w-full px-5 py-3 ';
+	const subTitle = 'text-lg text-justify w-full px-5 py-3 ';
 	const subTitleLg = 'lg:text-2xl lg:px-10 lg:py-2';
 	const subTitleXl = 'xl:text-4xl xl:px-10 xl:py-5';
-	const sectionHeader = 'text-2xl text-justify w-full px-5 py-6 font-semibold';
-	const sectionHeaderLg = 'lg:text-3xl lg:px-10 lg:pt-10';
-	const sectionHeaderXl = 'xl:text-4xl xl:px-10 xl:pt-14 ';
+	const sectionHeader = 'text-xl text-justify w-full px-5 pt-4 font-semibold';
+	const sectionHeaderMd = 'md:text-3xl md:px-10 md:pt-10 md:py-3';
+	const sectionHeaderXl = 'xl:text-4xl xl:px-10 xl:pt-14 xl:py-5 ';
 	const container = 'mb-5';
 	const containerLg = 'lg:mb-10';
-	const containerXl = 'xl:mb-10';
-	const services = 'px-5 py-5 grid grid-cols-2 gap-2';
-	const servicesLg = 'lg:grid-cols-2 lg:gap-10 lg:px-10 ';
-	const servicesXL = 'xl:grid xl:grid-cols-4 xl:gap-14 xl:px-5 ';
+	const services = 'px-5 py-5 grid grid-cols-1 gap-5';
+	const servicesMd = 'md:grid-cols-2 md:gap-8 md:px-10 ';
+	const servicesXL = 'xl:grid xl:grid-cols-4 xl:gap-8 xl:px-5 ';
 	const itemContainer = 'px-5 grid grid-cols-1';
 	const itemContainerLg = 'lg:px-10 lg:grid lg:grid-cols-2 lg:gap-5';
 	const itemContainerXL = 'xl:px-10 xl:grid xl:grid-cols-2 xl:gap-5';
@@ -54,12 +55,12 @@
 </div>
 
 <!-- Section: Service Times -->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderLg} ${sectionHeaderXl}`}>
+<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
 	Our regular worship services
 </div>
-<div class={`container ${container} ${containerLg} ${containerXl}`}>
-	<div class={`services ${services} ${servicesLg} ${servicesXL}`}>
-		{#each ourServices as service}
+<div class={`container ${container} ${containerLg}`}>
+	<div class={`services ${services} ${servicesMd} ${servicesXL}`}>
+		{#each servicesArray as service}
 			<ServiceCard {service} />
 		{/each}
 	</div>
@@ -67,10 +68,10 @@
 <hr class="mx-auto w-[80%]" />
 
 <!-- News -->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderLg} ${sectionHeaderXl}`}>
+<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
 	News and Notices
 </div>
-<div class={`container ${container} ${containerLg} ${containerXl}`}>
+<div class={`container ${container} ${containerLg}`}>
 	<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
 		{#each data.news as item}
 			<ItemCard {item} kind="news" />
@@ -83,10 +84,10 @@
 <hr class="mx-auto w-[80%]" />
 
 <!-- Section: Events 	-->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderLg} ${sectionHeaderXl}`}>
+<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
 	Upcoming Events
 </div>
-<div class={`container ${container} ${containerLg} ${containerXl}`}>
+<div class={`container ${container} ${containerLg}`}>
 	<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
 		{#if data.events.length > 0}
 			{#each data.events as event}
@@ -104,7 +105,7 @@
 </div>
 <hr class="mx-auto w-[80%]" />
 <!-- About us -->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderLg} ${sectionHeaderXl}`}>Who we are</div>
+<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Who we are</div>
 <div class="single-post">
 	<div class="more-link">
 		<a class="cool-link" href="/about">Learn more</a>
@@ -112,7 +113,7 @@
 </div>
 
 <!-- Safeguarding -->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderLg} ${sectionHeaderXl}`}>
+<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
 	Safeguarding
 </div>
 <div class="single-post">
@@ -122,9 +123,9 @@
 </div>
 
 <div class="downloads">
-	<h2 class={`sectionHeader ${sectionHeader} ${sectionHeaderLg} ${sectionHeaderXl}`}>Downloads</h2>
+	<h2 class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Downloads</h2>
 </div>
-<div class={`container ${container} ${containerLg} ${containerXl}`}>
+<div class={`container ${container} ${containerLg}`}>
 	<!--<div
 		class={`download-container ${downloadContainer} ${downloadContainerLg} ${downloadContainerXL}`}
 	>-->

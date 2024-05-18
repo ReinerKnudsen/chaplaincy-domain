@@ -33,7 +33,7 @@
 	};
 </script>
 
-<Navbar class="sticky top-0 z-20 w-full border-b px-2 py-2.5 sm:px-4">
+<Navbar class="sticky top-0 w-full border-b px-2 py-5 sm:px-4">
 	<NavBrand href="/">
 		<img src={caplogo} class="me-3 sm:h-9" alt="Chaplaincy Logo" />
 	</NavBrand>

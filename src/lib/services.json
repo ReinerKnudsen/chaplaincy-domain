@@ -8,7 +8,7 @@
 			"kind": "Eucharist",
 			"subtitle": "Holy Communion",
 			"place_church": "St. Paulus Church",
-			"place_address": "Siegburger Str. 75, Bonn-Beuel",
+			"place_address": "Siegburger Str. 75, \nBonn-Beuel",
 			"url": "https://www.openstreetmap.org/?mlat=50.74153&mlon=7.13235#map=19/50.74153/7.13235"
 		},
 		{
@@ -19,7 +19,7 @@
 			"kind": "Eucharist",
 			"subtitle": "Holy Communion",
 			"place_church": "All Saints Church",
-			"place_address": "Bonner Str./Lindenallee, Cologne",
+			"place_address": "Bonner Str./Lindenallee, \nCologne",
 			"url": "https://www.openstreetmap.org/?mlat=50.89432&mlon=6.96776#map=19/50.89432/6.96776"
 		},
 		{
@@ -41,7 +41,7 @@
 			"kind": "Evening Prayer",
 			"subtitle": "Bible Study",
 			"place_church": "All Saints Church",
-			"place_address": "Bonner Str./Lindenallee, Cologne",
+			"place_address": "Bonner Str./Lindenallee, \nCologne",
 			"url": "https://www.openstreetmap.org/?mlat=50.89432&mlon=6.96776#map=19/50.89432/6.96776"
 		}
 		

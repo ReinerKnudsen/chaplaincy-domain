@@ -35,7 +35,7 @@
 
 <Navigation />
 
-<div class="my-5 lg:my-10 xl:my-10">
+<div class="md:my-10 xl:my-10">
 	<slot />
 </div>
 

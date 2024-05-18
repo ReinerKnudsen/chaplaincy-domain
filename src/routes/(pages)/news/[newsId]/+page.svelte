@@ -4,92 +4,41 @@
 
 	export let data;
 	const thisItem = data.thisItem;
+
+	/*
+	
+	*/
 </script>
 
-<div class="container">
-	<div class="headline">
+<div class="container mb-10">
+	<div class="headline my-5 text-xl font-semibold md:text-3xl xl:text-4xl">
 		{thisItem.title}
 	</div>
-	<div class="news-data">
-		<div class="entry">
+	<div class="news-data mb-5 grid gap-1 text-sm md:flex md:gap-8 md:text-lg">
+		<div class="entry flex items-center gap-2">
 			<Icon name="calendar" />
 			{thisItem.publishdate}
 		</div>
-		<div class="entry">
+		<div class="entry flex items-center gap-2">
 			<Icon name="author" />
 			{thisItem.author}
 		</div>
-		<div class="entry">
+		<div class="entry flex items-center gap-3">
 			<Icon name="tags" />
 			{thisItem.tags}
 		</div>
 	</div>
-	<div class="news-image">
-		<img src={thisItem.image} alt={thisItem.title} />
+	<div class="news-image mb-5 w-full overflow-hidden rounded-xl md:mb-10">
+		<img class="object-cover" src={thisItem.image} alt={thisItem.title} />
 	</div>
-	<div class="news-description">
+	<div class="news-description mb-10 text-lg md:text-xl md:leading-8 lg:text-2xl lg:leading-10">
 		{thisItem.text}
 	</div>
 </div>
-<div class="links">
+<div class="links my-5 flex items-center gap-5">
 	<Icon name="left" />
-	<a href="/news">Take me back to overview</a>
+	<a class="font-semibold text-link-primary" href="/news">Take me back to overview</a>
 </div>
 
 <style>
-	.container {
-		margin-bottom: 40px;
-		width: 80%;
-	}
-	.headline {
-		font-size: 2rem;
-		line-height: 2.5rem;
-		font-weight: 600;
-		margin: 20px 0;
-	}
-
-	.news-data {
-		display: inline-flex;
-		gap: 30px;
-		margin-bottom: 40px;
-	}
-
-	.news-data .entry {
-		display: inline-flex;
-		gap: 10px;
-		align-items: center;
-	}
-
-	.news-image {
-		width: 100%;
-		height: 300px;
-		overflow: hidden;
-		border-radius: 10px;
-		margin-bottom: 40px;
-	}
-
-	.news-image img {
-		width: 100%;
-		object-fit: cover; /* Crop the image to fill its container */
-		height: 100%; /* Maintain the fixed height of 500px */
-	}
-
-	.news-description {
-		font-size: 1.5rem;
-		line-height: 2rem;
-		margin-bottom: 40px;
-	}
-
-	.links {
-		display: inline-flex;
-		gap: 10px;
-		align-items: center;
-		margin-top: 20px;
-		margin-bottom: 20px;
-	}
-	.links a {
-		text-decoration: underline;
-		font-weight: 600;
-		@apply text-link-primary;
-	}
 </style>

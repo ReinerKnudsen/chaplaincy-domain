@@ -45,6 +45,7 @@
 		<TableHeadCell>Display Name</TableHeadCell>
 		<TableHeadCell>email</TableHeadCell>
 		<TableHeadCell>Role</TableHeadCell>
+		<TableHeadCell>Actions</TableHeadCell>
 	</TableHead>
 	<TableBody>
 		{#each userList as user}
@@ -58,6 +59,7 @@
 						-
 					{/if}</TableBodyCell
 				>
+				<TableBodyCell>...</TableBodyCell>
 			</TableBodyRow>
 		{/each}
 	</TableBody>

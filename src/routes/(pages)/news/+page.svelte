@@ -1,7 +1,6 @@
 <script>
 	import { writable } from 'svelte/store';
 	import ItemCard from '$lib/components/ItemCard.svelte';
-	import ItemCardPortrait from '$lib/components/ItemCardPortrait.svelte';
 	import ItemCardFav from '$lib/components/ItemCardFav.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 

@@ -3,88 +3,42 @@
 	// import Fa from 'svelte-fa/dist/fa.svelte';
 	// import { faCalendar, faClock, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 	import Icon from '$lib/components/Icon.svelte';
+	import * as formats from '../../formats.js';
 
 	export let data;
 	const thisEvent = data.thisEvent;
 </script>
 
-<div class="container">
-	<div class="headline">
+<div class={`container ${formats.container}`}>
+	<div class={`headline ${formats.headline}`}>
 		{thisEvent.title}
 	</div>
-	<div class="event-data">
-		<div class="entry">
+	<div class={`event-data ${formats.itemMetaData}`}>
+		<div class={`entry ${formats.itemMetaDataEntry}`}>
 			<Icon name="calendar" />
 			{thisEvent.startdate}
 		</div>
-		<div class="entry">
+		<div class={`entry ${formats.itemMetaDataEntry}`}>
 			<Icon name="clock" />
 			{thisEvent.starttime}
 		</div>
-		<div class="entry">
+		<div class={`entry ${formats.itemMetaDataEntry}`}>
 			<!-- Refactor: Add link to location document -->
 			<Icon name="location" />
 			{thisEvent.location}
 		</div>
 	</div>
-	<div class="event-image">
-		<img src={thisEvent.image} alt={thisEvent.title} />
+	<div class={`event-image ${formats.itemImageContainer}`}>
+		<img class={formats.itemImage} src={thisEvent.image} alt={thisEvent.title} />
 	</div>
-	<div class="event-description">
+	<div class={`event-description ${formats.itemDescription}`}>
 		{thisEvent.description}
 	</div>
 </div>
-<div class="links">
-	<a href="/events">Take me back to events</a>
+<div class={`back-link ${formats.backLink}`}>
+	<Icon name="left" />
+	<a class={formats.aLink} href="/news">Take me back to overview</a>
 </div>
 
 <style>
-	.container {
-		margin-bottom: 40px;
-		width: 80%;
-	}
-	.headline {
-		font-size: 2rem;
-		line-height: 2.5rem;
-		font-weight: 600;
-		margin: 20px 0;
-	}
-
-	.event-data {
-		display: inline-flex;
-		gap: 30px;
-		margin-bottom: 40px;
-	}
-
-	.event-data .entry {
-		display: inline-flex;
-		gap: 10px;
-		align-items: center;
-	}
-
-	.event-image {
-		width: 100%;
-		height: 300px;
-		overflow: hidden;
-		border-radius: 10px;
-		margin-bottom: 40px;
-	}
-
-	.event-image img {
-		width: 100%;
-		object-fit: cover; /* Crop the image to fill its container */
-		height: 100%; /* Maintain the fixed height of 500px */
-	}
-
-	.event-description {
-		font-size: 1.5rem;
-		line-height: 2rem;
-		margin-bottom: 40px;
-	}
-
-	.links a {
-		text-decoration: underline;
-		font-weight: 600;
-		@apply text-link-primary;
-	}
 </style>

@@ -7,7 +7,6 @@ export async function load({ params }) {
 	const docSnapshot = await getDoc(docRef);
 	if (docSnapshot.exists()) {
 		const thisEvent = docSnapshot.data();
-		console.log(thisEvent);
 		return { thisEvent, docRef };
 	} else {
 		console.log('No such document!');

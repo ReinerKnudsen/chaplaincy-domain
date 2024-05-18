@@ -1,6 +1,7 @@
 <script>
 	import { formatDate } from '/src/utils/utils';
 	import Icon from '$lib/components/Icon.svelte';
+	import * as formats from '../../formats.js';
 
 	export let data;
 	const thisItem = data.thisItem;
@@ -10,34 +11,34 @@
 	*/
 </script>
 
-<div class="container mb-10">
-	<div class="headline my-5 text-xl font-semibold md:text-3xl xl:text-4xl">
+<div class={`container ${formats.container}`}>
+	<div class={`headline ${formats.headline}`}>
 		{thisItem.title}
 	</div>
-	<div class="news-data mb-5 grid gap-1 text-sm md:flex md:gap-8 md:text-lg">
-		<div class="entry flex items-center gap-2">
+	<div class={`news-data ${formats.itemMetaData}`}>
+		<div class={`entry ${formats.itemMetaDataEntry}`}>
 			<Icon name="calendar" />
 			{thisItem.publishdate}
 		</div>
-		<div class="entry flex items-center gap-2">
+		<div class={`entry ${formats.itemMetaDataEntry}`}>
 			<Icon name="author" />
 			{thisItem.author}
 		</div>
-		<div class="entry flex items-center gap-3">
+		<div class={`entry ${formats.itemMetaDataEntry}`}>
 			<Icon name="tags" />
 			{thisItem.tags}
 		</div>
 	</div>
-	<div class="news-image mb-5 w-full overflow-hidden rounded-xl md:mb-10">
-		<img class="object-cover" src={thisItem.image} alt={thisItem.title} />
+	<div class={`news-image ${formats.itemImageContainer}`}>
+		<img class={formats.itemImage} src={thisItem.image} alt={thisItem.title} />
 	</div>
-	<div class="news-description mb-10 text-lg md:text-xl md:leading-8 lg:text-2xl lg:leading-10">
+	<div class={`news-description ${formats.itemDescription}`}>
 		{thisItem.text}
 	</div>
 </div>
-<div class="links my-5 flex items-center gap-5">
+<div class={`back-link ${formats.backLink}`}>
 	<Icon name="left" />
-	<a class="font-semibold text-link-primary" href="/news">Take me back to overview</a>
+	<a class={formats.aLink} href="/news">Take me back to overview</a>
 </div>
 
 <style>

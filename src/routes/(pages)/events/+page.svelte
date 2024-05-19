@@ -7,7 +7,6 @@
 	const sortedEvents = events.sort((a, b) => {
 		return new Date(a.data.startdate) - new Date(b.data.startdate);
 	});
-	console.log(events);
 
 	const headerData = {
 		title: 'Events',

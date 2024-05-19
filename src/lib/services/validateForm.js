@@ -14,7 +14,6 @@ export function validateEventData() {
 	const event = EventStore;
 	let formErrors;
 
-	console.log('Validating EventData');
 	if (new Date(event.startdate) > new Date()) {
 		formErrors.push({
 			field: 'startdate',
@@ -22,7 +21,6 @@ export function validateEventData() {
 		});
 	}
 	if (new Date(event.enddate) < new Date(event.startdate)) {
-		console.log('End Date is before Start Date');
 		formErrors.push({
 			field: 'enddate',
 			message: 'The end date cannot be before the start date'
@@ -68,6 +66,5 @@ export function validateEventData() {
 			message: 'The unpublish time cannot be before the publish time'
 		});
 	}
-	console.log('FormErrors', formErrors);
 	return formErrors;
 }

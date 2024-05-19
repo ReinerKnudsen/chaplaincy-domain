@@ -2,13 +2,11 @@
 	import { formatDate } from '/src/utils/utils';
 	import Icon from '$lib/components/Icon.svelte';
 	import * as formats from '../../formats.js';
+	import { ChevronSortSolid } from 'flowbite-svelte-icons';
 
 	export let data;
 	const thisItem = data.thisItem;
-
-	/*
-	
-	*/
+	thisItem.text = thisItem.text.replace(/\n/g, '<br />');
 </script>
 
 <div class={`container ${formats.container}`}>
@@ -33,7 +31,7 @@
 		<img class={formats.itemImage} src={thisItem.image} alt={thisItem.title} />
 	</div>
 	<div class={`news-description ${formats.itemDescription}`}>
-		{thisItem.text}
+		{@html thisItem.text}
 	</div>
 </div>
 <div class={`back-link ${formats.backLink}`}>

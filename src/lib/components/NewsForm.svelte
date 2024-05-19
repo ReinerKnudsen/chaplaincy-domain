@@ -104,6 +104,7 @@
 				rows="8"
 				name="news-text"
 				bind:value={newItem.text}
+				wrap="hard"
 			/>
 			<p class="explanation text-right">
 				<strong>{newItem.text.length}</strong> characters.

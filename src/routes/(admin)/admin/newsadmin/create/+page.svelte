@@ -8,7 +8,6 @@
 	const saveNewItem = async (e) => {
 		try {
 			await addDoc(newsColRef, e.detail);
-			console.log('Document successfully written!');
 			goto('/admin/newsadmin');
 		} catch (error) {
 			console.error('Error writing document:', error);

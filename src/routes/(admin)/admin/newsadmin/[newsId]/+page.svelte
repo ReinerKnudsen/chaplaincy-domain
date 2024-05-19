@@ -5,7 +5,6 @@
 
 	const updateNews = async (event) => {
 		await updateDoc(data.docRef, event.detail);
-		console.log('News updated');
 	};
 </script>
 

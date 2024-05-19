@@ -44,7 +44,6 @@ export const listAllUsers = async () => {
 // Refactor: Only make available to admins
 export async function changeUserRole(email, role) {
 	let addUserRole = httpsCallable(functions, 'addUserRole');
-	console.log('Before role assignment: ', email, role);
 	addUserRole({ email: email, role: role })
 		.then((result) => {
 			console.log('After role assignment: ', result);
@@ -111,22 +110,6 @@ export async function signInExistingUser(email, password) {
 		}));
 		console.log('Error: ', error.message);
 	}
-}
-
-// *****************************************************************************************
-// Get all user profiles
-// *****************************************************************************************
-
-// Refactor: Only make available to admins
-export async function getAllUsers() {
-	let getAllUsers = httpsCallable(functions, 'getAllUsers');
-	getAllUsers()
-		.then((result) => {
-			return result;
-		})
-		.catch((err) => {
-			console.log(err.message);
-		});
 }
 
 // *****************************************************************************************

@@ -30,7 +30,6 @@
 		});
 		sortItems.set(sorted);
 		const favNews = sorted[0];
-		console.log(favNews);
 	}
 
 	const headerData = {

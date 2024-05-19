@@ -9,7 +9,6 @@
 	const saveNewEvent = async (e) => {
 		try {
 			await addDoc(eventsColRef, e.detail);
-			console.log('Document successfully written!');
 			goto('/admin/eventsadmin');
 		} catch (error) {
 			console.error('Error writing document:', error);

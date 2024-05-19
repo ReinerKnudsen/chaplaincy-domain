@@ -8,15 +8,12 @@ admin.initializeApp();
 // *****************************************************************************************
 
 exports.addUserRole = functions.https.onCall(async (data, context) => {
-	console.log('Entered AddUserRole');
 	let user;
 	if (data.uid) {
 		user = await admin.auth().getUser(data.uid);
 	} else if (data.email) {
-		console.log('Email (add user role): ', data.email);
 		user = await admin.auth().getUserByEmail(data.email);
 	}
-	console.log('User (add user role): ', user);
 	await admin.auth().setCustomUserClaims(user.uid, { role: data.role });
 	return {
 		message: `Success! User now has the role ${data.role}.`
@@ -66,24 +63,6 @@ exports.updateUserProfile = functions.https.onCall(async (data, context) => {
 	} catch (error) {
 		return error;
 	}
-});
-
-// *****************************************************************************************
-// Get all users
-// *****************************************************************************************
-
-exports.getAllUsers = functions.https.onRequest((req, res) => {
-	const maxResults = 20; // optional arg.
-
-	admin
-		.auth()
-		.listUsers(maxResults)
-		.then((userRecords) => {
-			userRecords.users.forEach((user) => console.log(user.toJSON()));
-			res.end('Retrieved users list successfully.');
-			return userRecords;
-		})
-		.catch((error) => console.log(error));
 });
 
 // *****************************************************************************************

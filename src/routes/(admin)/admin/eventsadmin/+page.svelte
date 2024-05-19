@@ -70,7 +70,6 @@
 	};
 
 	const handleClick = async () => {
-		console.log('Resetting store');
 		await resetEventStore();
 		goto('/admin/eventsadmin/create');
 	};

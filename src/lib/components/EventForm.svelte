@@ -85,10 +85,8 @@
 		!newEvent.unpublishdate && (newEvent.unpublishdate = newEvent.startdate);
 		!newEvent.unpublishtime && (newEvent.unpublishtime = newEvent.starttime);
 		const publishDateTime = new Date(newEvent.publishdate + 'T' + newEvent.publishtime);
-		console.log('Save  data: PublishDateTime ', publishDateTime);
 		newEvent.publishDateTime = Timestamp.fromDate(publishDateTime);
 		const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
-		console.log('Save  data: UnpublishDateTime ', unpublishDateTime);
 		newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
 		dispatch(state, newEvent);
 		cleanUpForm();
@@ -136,6 +134,7 @@
 				rows="8"
 				name="description"
 				bind:value={newEvent.description}
+				wrap="hard"
 			/>
 			<p class="explanation text-right">
 				<strong>{newEvent.description.length}</strong> characters.

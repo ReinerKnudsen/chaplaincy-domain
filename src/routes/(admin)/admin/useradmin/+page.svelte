@@ -31,11 +31,9 @@
 
 	onMount(async () => {
 		userList = await listAllUsers();
-		console.log(userList);
 	});
 
 	const handleClick = async () => {
-		console.log(email, role);
 		changeUserRole(email, role);
 	};
 </script>

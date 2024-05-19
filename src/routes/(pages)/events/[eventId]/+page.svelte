@@ -7,6 +7,8 @@
 
 	export let data;
 	const thisEvent = data.thisEvent;
+
+	thisEvent.description = thisEvent.description.replace(/\n/g, '<br />');
 </script>
 
 <div class={`container ${formats.container}`}>
@@ -32,7 +34,7 @@
 		<img class={formats.itemImage} src={thisEvent.image} alt={thisEvent.title} />
 	</div>
 	<div class={`event-description ${formats.itemDescription}`}>
-		{thisEvent.description}
+		{@html thisEvent.description}
 	</div>
 </div>
 <div class={`back-link ${formats.backLink}`}>

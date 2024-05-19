@@ -74,7 +74,6 @@
 	};
 
 	const handleDelete = async (id) => {
-		console.log('Deleting Item');
 		await deleteDoc(doc(newsColRef, id));
 		news = news.filter((item) => item.id !== id);
 	};

@@ -31,21 +31,42 @@
 				console.error('Error logging out:', error);
 			});
 	};
+
+	const textSizeMenu = 'text-xl';
 </script>
 
-<Navbar class="sticky top-0 w-full border-b px-2 py-5 sm:px-4">
+<nav
+	class="z-999 sticky top-0 flex h-full min-h-28 w-full items-center rounded-b-2xl border-b bg-white-primary px-2 align-middle shadow-xl sm:px-4"
+>
+	<a href="/" class="mr-4">
+		<img src={caplogo} alt="Chaplaincy Logo" class="h-8" />
+	</a>
+	<ul class="flex space-x-4">
+		<li><a href="/" class="text-xl">Home</a></li>
+		<li><a href="/news" class="text-xl">News</a></li>
+		<li><a href="/events" class="text-xl">Events</a></li>
+		<li><a href="/groups" class="text-xl">Groups</a></li>
+		<li><a href="/prayers" class="text-xl">Pray with us</a></li>
+		<li><a href="/about" class="text-xl">About us</a></li>
+		<!-- Add more links as needed -->
+	</ul>
+</nav>
+
+<Navbar
+	class="z-999 sticky top-0 flex h-full min-h-28 w-full items-center  rounded-b-2xl border-b bg-white-primary px-2 align-middle shadow-xl sm:px-4"
+>
 	<NavBrand href="/">
 		<img src={caplogo} class="me-3 sm:h-9" alt="Chaplaincy Logo" />
 	</NavBrand>
 	<NavHamburger />
 	<NavUl {activeUrl} class="cursor-pointer">
-		<NavLi href="/">Home</NavLi>
-		<NavLi href="/news">News</NavLi>
-		<!-- <NavLi href="/activities">Activities</NavLi> -->
-		<NavLi href="/events">Events</NavLi>
-		<NavLi href="/groups">Groups</NavLi>
-		<NavLi href="/prayers">Pray with us</NavLi>
-		<NavLi class="cursor-pointer">About us</NavLi>
+		<NavLi class={textSizeMenu} href="/">Home</NavLi>
+		<NavLi class={textSizeMenu} href="/news">News</NavLi>
+		<!-- <NavLi class={textSizeMenu} href="/activities">Activities</NavLi> -->
+		<NavLi class={textSizeMenu} href="/events">Events</NavLi>
+		<NavLi class={textSizeMenu} href="/groups">Groups</NavLi>
+		<NavLi class={textSizeMenu} href="/prayers">Pray with us</NavLi>
+		<NavLi class={textSizeMenu}>About us</NavLi>
 		<Dropdown class=" z20 w-44">
 			<DropdownItem href="/about">Who we are</DropdownItem>
 			<DropdownItem href="/about/responsibilities">Responsibilities</DropdownItem>
@@ -54,12 +75,12 @@
 			<DropdownItem href="/about/contact">Get in touch</DropdownItem>
 		</Dropdown>
 		{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
-			<NavLi href="/admin">Admin</NavLi>
+			<NavLi class={textSizeMenu} href="/admin">Admin</NavLi>
 		{/if}
 		{#if !$authStore.isLoggedIn}
-			<NavLi href="/login">Register/Sign in</NavLi>
+			<NavLi class={textSizeMenu} href="/login">Register/Sign in</NavLi>
 		{:else}
-			<NavLi on:click={handleLogout}>Sign out</NavLi>
+			<NavLi class={textSizeMenu} on:click={handleLogout}>Sign out</NavLi>
 		{/if}
 	</NavUl>
 </Navbar>

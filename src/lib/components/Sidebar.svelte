@@ -5,9 +5,9 @@
 
 	$: activeUrl = $page.url.pathname;
 	let activeClass =
-		'flex items-center p-2 text-base font-normal text-primary-900 bg-primary-200 dark:bg-primary-700 rounded-lg dark:text-white hover:bg-primary-100 dark:hover:bg-gray-700';
+		'flex items-center p-2 text-lg font-semibold text-white-primary bg-primary-100 dark:bg-primary-700 rounded-lg dark:text-white hover:bg-primary-60 dark:hover:bg-gray-700';
 	let nonActiveClass =
-		'flex items-center p-2 text-base font-normal text-green-900 rounded-lg dark:text-white hover:bg-green-100 dark:hover:bg-green-700';
+		'flex items-center p-2 text-lg font-normal text-green-900 rounded-lg dark:text-white hover:bg-primary-20 dark:hover:bg-green-700';
 </script>
 
 <Sidebar {activeUrl} {activeClass} {nonActiveClass}>

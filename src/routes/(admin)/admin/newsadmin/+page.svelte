@@ -96,10 +96,20 @@
 
 <div>
 	<h1>News</h1>
-	<div class="mb-6 grid grid-cols-12 gap-20">
-		<div class="col-span-9"><Search on:input={handleSearchInput} /></div>
+	<div class="mb-6 grid grid-cols-12 gap-2 lg:gap-20">
+		<div class="col-span-9">
+			<input
+				class="w-full rounded-lg"
+				placeholder="Search (not yet active)"
+				type="text"
+				on:input={handleSearchInput}
+			/>
+		</div>
 		<div class="col-span-3 justify-self-end">
-			<Button on:click={handleCreateNew}>Create News</Button>
+			<Button
+				on:click={handleCreateNew}
+				class="bg-primary-100 text-lg font-semibold text-white-primary">Create News</Button
+			>
 		</div>
 	</div>
 
@@ -132,11 +142,11 @@
 					<TableBodyCell>
 						<a
 							href="/admin/newsadmin/{item.id}"
-							class="font-medium text-primary-600 hover:underline dark:text-primary-500">Edit</a
+							class="text-primary-600 dark:text-primary-500 font-medium hover:underline">Edit</a
 						>
 						|
 						<button
-							class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+							class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
 							on:click={() => openModal(item.id)}>Delete</button
 						>
 					</TableBodyCell>

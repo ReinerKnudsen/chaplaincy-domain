@@ -186,8 +186,7 @@
 	}
 
 	.image-container {
-		position: relative;
-		max-height: 300px;
+		max-height: 400px;
 		background-size: cover;
 		background-position: center;
 		color: white;

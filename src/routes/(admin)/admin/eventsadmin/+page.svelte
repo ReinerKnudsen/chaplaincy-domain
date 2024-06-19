@@ -78,18 +78,23 @@
 </script>
 
 <Modal bind:open={showModal} size="md" autoclose>
-	<div class="text-center">
+	<div class="rounded-xl bg-white-primary p-10 text-center">
 		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-			Do you really want to delete this item?
+			Deleting an item can not be undone.
+			<p><strong>Do you really want to delete this item?</strong></p>
 		</h3>
-		<Button color="alternative">Cancel</Button>
-		<Button color="red" class="me-2" on:click={() => handleDelete()}>Delete</Button>
+		<div class="flex justify-between px-36">
+			<Button color="alternative">Cancel</Button>
+			<Button color="red" class=" me-2 text-white-primary" on:click={() => handleDelete()}
+				>Delete</Button
+			>
+		</div>
 	</div>
 </Modal>
 
 <div>
 	<h1>Events</h1>
-	<div class="mb-6 grid grid-cols-12 gap-2 lg:gap-20">
+	<div class="mb-6 grid grid-cols-12 items-center gap-2 lg:gap-20">
 		<div class="col-span-9">
 			<input
 				class="w-full rounded-lg"
@@ -104,57 +109,39 @@
 			>
 		</div>
 	</div>
+
 	<div class="w-full overflow-scroll">
-		<table class="z-0 w-full text-left text-sm text-gray-500 dark:text-gray-400">
-			<thead
-				class="bg-white-primary text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400"
-			>
+		<table>
+			<thead>
 				<tr>
-					<th class="cursor-pointer px-2 py-3" onclick={() => sortTable('title')}>Title</th>
-					<th class="cursor-pointer px-2 py-3" onclick={() => sortTable('startdate')}>Date</th>
-					<!-- <th class="py-3 ">Description</th> -->
-					<th class="cursor-pointer px-2 py-3" onclick={() => sortTable('publishdate')}
-						>Publish date</th
-					>
-					<th class="cursor-pointer px-2 py-3" onclick={() => sortTable('location')}>Location</th>
-					<th class="cursor-pointer px-2 py-3">Author</th>
-					<th class="px-2 py-3">Edit</th>
+					<th on:click={() => sortTable('title')}>Title</th>
+					<th on:click={() => sortTable('startdate')}>Date</th>
+					<th on:click={() => sortTable('publishdate')}>Publish date</th>
+					<th on:click={() => sortTable('location')}>Location</th>
+					<th on:click={() => sortTable('author')}>Author</th>
+					<th>Edit</th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each $sortItems as item}
-					<tr
-						class="bg-white border-b last:border-b-0 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
-						on:click={goto(`/admin/eventsadmin/${item.id}`)}
-					>
-						<td class="!p-4" hidden>
-							<input type="checkbox" />
-						</td>
-						<td class="dark:text-white whitespace-nowrap px-2 py-4 font-normal text-gray-900"
-							>{item.data.title}</td
-						>
-						<td class="dark:text-white whitespace-nowrap px-2 py-4 font-normal text-gray-900"
-							>{item.data.startdate}</td
-						>
-						<td class="dark:text-white whitespace-nowrap px-2 py-4 font-normal text-gray-900"
-							>{item.data.publishdate}</td
-						>
-						<td class="dark:text-white whitespace-nowrap px-2 py-4 font-normal text-gray-900"
-							>{item.data.location}</td
-						>
-						<td class="dark:text-white whitespace-nowrap px-2 py-4 font-normal text-gray-900"
-							>{item.data.author}</td
-						>
-						<td class="dark:text-white whitespace-nowrap px-2 py-4 font-medium text-gray-900">
-							<button
-								class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-								on:click={() => goto('/admin/eventsadmin/' + item.id)}>Edit</button
-							>
-							|
-							<button
-								class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-								on:click={() => openModal(item.id)}>Delete</button
-							>
+					<tr>
+						<td>{item.data.title}</td>
+						<td>{item.data.startdate}</td>
+						<td>{item.data.publishdate}</td>
+						<td>{item.data.location}</td>
+						<td>{item.data.author}</td>
+						<td>
+							<div class="flex justify-between">
+								<button
+									class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+									on:click={() => goto('/admin/eventsadmin/' + item.id)}>Edit</button
+								>
+								|
+								<button
+									class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+									on:click={() => openModal(item.id)}>Delete</button
+								>
+							</div>
 						</td>
 					</tr>
 				{/each}
@@ -164,4 +151,49 @@
 </div>
 
 <style>
+	table {
+		display: grid;
+		border-collapse: collapse;
+		min-width: 100%;
+		grid-template-columns:
+			minmax(150px, 2.5fr)
+			minmax(130px, 1fr)
+			minmax(130px, 1fr)
+			minmax(150px, 2fr)
+			minmax(150px, 1fr)
+			minmax(100px, 1fr);
+	}
+	thead,
+	tbody,
+	tr {
+		display: contents;
+	}
+
+	th {
+		cursor: pointer;
+		background-color: white;
+		font-size: 0.875rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		text-align: left;
+		padding-top: 0.8rem;
+		padding-bottom: 0.8rem;
+		padding-left: 0.5rem;
+	}
+	th,
+	td {
+		font-size: 0.875rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		@apply text-slate-600;
+	}
+
+	td {
+		padding-top: 1.2rem;
+		padding-bottom: 1.2rem;
+		padding-left: 0.5rem;
+		@apply border-b border-slate-300;
+	}
 </style>

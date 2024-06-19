@@ -102,14 +102,9 @@
 	<h1>{state === 'update' ? 'Edit event' : 'Create new event'}</h1>
 
 	<!-- Titel -->
-	<form
-		class="form-container"
-		id="form-container"
-		enctype="multipart/form-data"
-		on:submit={handleSubmit}
-	>
+	<form id="form-container" enctype="multipart/form-data" on:submit={handleSubmit}>
 		<div>
-			<Label for="title" class="mb-2">Event Titel *</Label>
+			<Label for="title" class="mb-2 mt-5 text-xl font-semibold">Event Titel *</Label>
 			<Input
 				type="text"
 				id="title"
@@ -121,13 +116,13 @@
 
 		<!-- Sub Title -->
 		<div>
-			<Label for="subtitle" class="mb-2">Sub Title</Label>
+			<Label for="subtitle" class="mb-2 mt-5 text-xl font-semibold">Sub Title</Label>
 			<Input type="text" id="subtitle" placeholder="Sub Title" bind:value={newEvent.subtitle} />
 		</div>
 
 		<!-- Description -->
 		<div>
-			<Label for="description" class="mb-2">Description *</Label>
+			<Label for="description" class="mb-2 mt-5 text-xl font-semibold">Description *</Label>
 			<Textarea
 				id="description"
 				placeholder="Description text"
@@ -143,7 +138,7 @@
 
 		<!-- Slug -->
 		<div>
-			<Label for="slug" class="mb-2">Short description (slug)</Label>
+			<Label for="slug" class="mb-2 mt-5 text-xl font-semibold">Short description (slug)</Label>
 			<Textarea
 				id="slug"
 				placeholder={slugtext}
@@ -161,13 +156,13 @@
 
 		<!-- Start date -->
 		<div>
-			<Label for="startdate" class="mb-2">Start Date *</Label>
+			<Label for="startdate" class="mb-2 mt-5 text-xl font-semibold">Start Date *</Label>
 			<Input type="date" id="startdate" bind:value={newEvent.startdate} required />
 		</div>
 
 		<!-- Start time -->
 		<div>
-			<Label class="mb-2">Start Time *</Label>
+			<Label class="mb-2 mt-5 text-xl font-semibold">Start Time *</Label>
 			<Input
 				type="time"
 				id="starttime"
@@ -179,27 +174,27 @@
 
 		<!-- End date -->
 		<div>
-			<Label for="enddate" class="mb-2">End Date</Label>
+			<Label for="enddate" class="mb-2 mt-5 text-xl font-semibold">End Date</Label>
 			<Input type="date" id="enddate" bind:value={newEvent.enddate} />
 		</div>
 
 		<!-- End time -->
 		<div>
-			<Label class="mb-2">End Time</Label>
+			<Label class="mb-2 mt-5 text-xl font-semibold">End Time</Label>
 			<Input type="time" id="endtime" bind:value={newEvent.endtime} disabled={!newEvent.enddate} />
 		</div>
 
 		<!-- Location -->
 		<div class="form-area">
 			<div>
-				<Label for="Location" class="mb-2">Location *</Label>
+				<Label for="Location" class="mb-2 mt-5 text-xl font-semibold">Location *</Label>
 				<Input type="text" id="location" bind:value={newEvent.location} required />
 			</div>
 		</div>
 
 		<!-- Conditions -->
 		<div>
-			<Label for="conditions" class="mb-2">Conditions</Label>
+			<Label for="conditions" class="mb-2 mt-5 text-xl font-semibold">Conditions</Label>
 			<Input type="text" id="conditions" bind:value={newEvent.condition} />
 			<div class="mt-1 p-1">
 				<Checkbox
@@ -215,13 +210,13 @@
 
 		<!-- Publish date  -->
 		<div>
-			<Label for="publishdate" class="mb-2">Publish Date *</Label>
+			<Label for="publishdate" class="mb-2 mt-5 text-xl font-semibold">Publish Date *</Label>
 			<Input type="date" id="publishdate" required bind:value={newEvent.publishdate} />
 		</div>
 
 		<!-- Publish time  -->
 		<div>
-			<Label class="mb-2">Publish Time</Label>
+			<Label class="mb-2 mt-5 text-xl font-semibold">Publish Time</Label>
 			<Input
 				type="time"
 				id="publishtime"
@@ -235,7 +230,7 @@
 
 		<!-- Unpublish Date -->
 		<div>
-			<Label for="unpublishdate" class="mb-2">Unpublish Date</Label>
+			<Label for="unpublishdate" class="mb-2 mt-5 text-xl font-semibold">Unpublish Date</Label>
 			<Input
 				type="date"
 				id="unpublishdate"
@@ -251,7 +246,7 @@
 
 		<!-- Unpublish Time -->
 		<div>
-			<Label for="unpublishtime" class="mb-2">Unpublish Time</Label>
+			<Label for="unpublishtime" class="mb-2 mt-5 text-xl font-semibold">Unpublish Time</Label>
 			<Input
 				type="time"
 				id="unpublishtime"
@@ -263,7 +258,7 @@
 
 		<!-- Comments -->
 		<div class="col-span-2">
-			<Label for="comments" class="mb-2">Comments</Label>
+			<Label for="comments" class="mb-2 mt-5 text-xl font-semibold">Comments</Label>
 			<Textarea
 				id="comments"
 				placeholder="Comments"

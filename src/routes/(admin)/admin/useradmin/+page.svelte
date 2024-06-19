@@ -28,9 +28,11 @@
 		{ value: 'admin', name: 'Admin' }
 	];
 	let userList = [];
+	let loading = true;
 
 	onMount(async () => {
 		userList = await listAllUsers();
+		loading = false;
 	});
 
 	const handleClick = async () => {
@@ -38,31 +40,41 @@
 	};
 </script>
 
-<Table hoverable={true}>
-	<TableHead>
-		<TableHeadCell>Display Name</TableHeadCell>
-		<TableHeadCell>email</TableHeadCell>
-		<TableHeadCell>Role</TableHeadCell>
-		<TableHeadCell>Actions</TableHeadCell>
-	</TableHead>
-	<TableBody>
-		{#each userList as user}
-			<TableBodyRow class="align-top">
-				<TableBodyCell class="font-normal">{user.displayName}</TableBodyCell>
-				<TableBodyCell class="font-normal">{user.email}</TableBodyCell>
-				<TableBodyCell class="font-normal"
-					>{#if user.customClaims}
-						{user.customClaims.role}
-					{:else}
-						-
-					{/if}</TableBodyCell
-				>
-				<TableBodyCell>...</TableBodyCell>
-			</TableBodyRow>
-		{/each}
-	</TableBody>
-</Table>
-
+{#if loading}
+	<div class="text-xl font-semibold">Loading user data...</div>
+{:else}
+	<table>
+		<thead>
+			<tr>
+				<th>Display Name</th>
+				<th>email</th>
+				<th>Role</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{#each userList as user}
+				<tr>
+					<td>{user.displayName}</td>
+					<td>{user.email}</td>
+					<td>
+						{#if user.customClaims}
+							{user.customClaims.role}
+						{:else}
+							-
+						{/if}
+					</td>
+					<td>
+						<a
+							href="/admin/useradmin/{user.uid}"
+							class="text-primary-600 dark:text-primary-500 font-medium hover:underline">Edit</a
+						>
+					</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+{/if}
 <div class="ml-11 mt-20 flex w-6/12 flex-col justify-center">
 	<Label class="mb-7">
 		<span>Input email</span>
@@ -74,3 +86,49 @@
 	</Label>
 	<Button class="w-4/12" on:click={handleClick}>Set role</Button>
 </div>
+
+<style>
+	table {
+		display: grid;
+		border-collapse: collapse;
+		min-width: 100%;
+		grid-template-columns:
+			minmax(150px, 1fr)
+			minmax(150px, 1fr)
+			minmax(150px, 1fr)
+			minmax(150px, 1fr);
+	}
+	thead,
+	tbody,
+	tr {
+		display: contents;
+	}
+
+	th {
+		cursor: pointer;
+		background-color: white;
+		font-size: 0.875rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		text-align: left;
+		padding-top: 0.8rem;
+		padding-bottom: 0.8rem;
+		padding-left: 0.5rem;
+	}
+	th,
+	td {
+		font-size: 0.875rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		@apply text-slate-600;
+	}
+
+	td {
+		padding-top: 1.2rem;
+		padding-bottom: 1.2rem;
+		padding-left: 0.5rem;
+		@apply border-b border-slate-300;
+	}
+</style>

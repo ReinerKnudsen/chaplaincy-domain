@@ -85,18 +85,23 @@
 </script>
 
 <Modal bind:open={showModal} size="md" autoclose>
-	<div class="text-center">
+	<div class="rounded-xl bg-white-primary p-10 text-center">
 		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-			Do you really want to delete this item?
+			Deleting an item can not be undone.
+			<p><strong>Do you really want to delete this item?</strong></p>
 		</h3>
-		<Button color="alternative">Cancel</Button>
-		<Button color="red" class="me-2" on:click={() => handleDelete()}>Delete</Button>
+		<div class="flex justify-between px-36">
+			<Button color="alternative">Cancel</Button>
+			<Button color="red" class=" me-2 text-white-primary" on:click={() => handleDelete()}
+				>Delete</Button
+			>
+		</div>
 	</div>
 </Modal>
 
 <div>
 	<h1>News</h1>
-	<div class="mb-6 grid grid-cols-12 gap-2 lg:gap-20">
+	<div class="mb-6 grid grid-cols-12 items-center gap-2 lg:gap-20">
 		<div class="col-span-9">
 			<input
 				class="w-full rounded-lg"
@@ -113,48 +118,87 @@
 		</div>
 	</div>
 
-	<Table hoverable={true}>
-		<TableHead>
-			<TableHeadCell class="cursor-pointer" on:click={() => sortTable('title')}>Title</TableHeadCell
-			>
-			<TableHeadCell>Description</TableHeadCell>
-			<TableHeadCell
-				class="
-				cursor-pointer"
-				on:click={() => sortTable('publishdate')}>Publish Date</TableHeadCell
-			>
-			<TableHeadCell
-				class="
-				cursor-pointer"
-				on:click={() => sortTable('author')}>Author</TableHeadCell
-			>
-			<TableHeadCell>
-				<span class="sr-only">Edit</span>
-			</TableHeadCell>
-		</TableHead>
-		<TableBody>
-			{#each $sortItems as item}
-				<TableBodyRow class="align-top">
-					<TableBodyCell class="font-normal">{item.data.title}</TableBodyCell>
-					<TableBodyCell class="text-wrap font-normal">{item.data.slug}</TableBodyCell>
-					<TableBodyCell class="font-normal">{item.data.publishdate}</TableBodyCell>
-					<TableBodyCell class="font-normal">{item.data.author}</TableBodyCell>
-					<TableBodyCell>
-						<a
-							href="/admin/newsadmin/{item.id}"
-							class="text-primary-600 dark:text-primary-500 font-medium hover:underline">Edit</a
-						>
-						|
-						<button
-							class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-							on:click={() => openModal(item.id)}>Delete</button
-						>
-					</TableBodyCell>
-				</TableBodyRow>
-			{/each}
-		</TableBody>
-	</Table>
+	<div class="w-full overflow-scroll">
+		<table>
+			<thead>
+				<tr>
+					<th on:click={() => sortTable('title')}>Title</th>
+					<th on:click={() => sortTable('text')}>News Text</th>
+					<th on:click={() => sortTable('publishdate')}>Publish date</th>
+					<th on:click={() => sortTable('author')}>Author</th>
+					<th>Edit</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each $sortItems as item}
+					<tr>
+						<td>{item.data.title}</td>
+						<td>{item.data.text}</td>
+						<td>{item.data.publishdate}</td>
+						<td>{item.data.author}</td>
+						<td>
+							<div class="flex justify-between">
+								<button
+									class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+									on:click={() => goto('/admin/newsadmin/' + item.id)}>Edit</button
+								>
+								|
+								<button
+									class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+									on:click={() => openModal(item.id)}>Delete</button
+								>
+							</div>
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
 </div>
 
 <style>
+	table {
+		display: grid;
+		border-collapse: collapse;
+		min-width: 100%;
+		grid-template-columns:
+			minmax(150px, 3fr)
+			minmax(150px, 4fr)
+			minmax(130px, 1fr)
+			minmax(150px, 1fr)
+			minmax(100px, 1fr);
+	}
+	thead,
+	tbody,
+	tr {
+		display: contents;
+	}
+
+	th {
+		cursor: pointer;
+		background-color: white;
+		font-size: 0.875rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		text-align: left;
+		padding-top: 0.8rem;
+		padding-bottom: 0.8rem;
+		padding-left: 0.5rem;
+	}
+	th,
+	td {
+		font-size: 0.875rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		@apply text-slate-600;
+	}
+
+	td {
+		padding-top: 1.2rem;
+		padding-bottom: 1.2rem;
+		padding-left: 0.5rem;
+		@apply border-b border-slate-300;
+	}
 </style>

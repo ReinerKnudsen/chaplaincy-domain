@@ -54,9 +54,16 @@ exports.updateUserProfile = functions.https.onCall(async (data, context) => {
 	try {
 		const user = await admin.auth().getUser(data.uid);
 		await admin.auth().updateUser(user.uid, {
-			displayName: data.displayName,
+			displayName: data.firstname + '_' + data.lastname,
 			email: data.email
 		});
+		await admin
+			.auth()
+			.setCustomUserClaims(user.uid, {
+				firstname: data.firstname,
+				lastname: data.lastname,
+				role: data.role
+			});
 		return {
 			message: `Success! User profile updated.`
 		};

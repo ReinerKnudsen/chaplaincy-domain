@@ -1,5 +1,6 @@
 import { functions, auth } from '../firebase/firebaseConfig'; // Import Firebase auth instance
 import { authStore, unloadUser, unloadAuthStore } from '$lib/stores/AuthStore'; // Import the user store
+import { userStore } from '../stores/UserStore';
 import {
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
@@ -60,12 +61,13 @@ export async function changeUserRole(email, role) {
 export async function getUserByID(uid) {
 	try {
 		let getUserProfile = httpsCallable(functions, 'getUserProfile');
-		getUserProfile({ uid: uid })
+		return await getUserProfile({ uid: uid })
 			.then((result) => {
-				return result;
+				return result.data.user;
 			})
 			.catch((err) => {
 				console.log(err.message);
+				throw err; // It's usually better to re-throw the error so it can be handled by the caller
 			});
 	} catch (error) {
 		console.log('Error: ', error.message);
@@ -123,7 +125,7 @@ export async function registerUser(newUser, password) {
 		const userCredential = await createUserWithEmailAndPassword(auth, newUser.email, password);
 		const authenticatedUser = userCredential.user;
 		updateProfile(authenticatedUser, {
-			displayName: newUser.firstname + ' ' + newUser.lastname
+			displayName: newUser.firstname + '_' + newUser.lastname
 		});
 
 		await setUserRole({ uid: authenticatedUser.uid, role: 'user' });
@@ -155,37 +157,19 @@ export async function registerUser(newUser, password) {
 // *****************************************************************************************
 
 export async function updateUserProfile(user) {
+	// User = firstname, lastname, email, role
 	try {
-		// Set loading state
-		authStore.update((store) => ({ ...store, loading: true, error: null }));
-
-		const userCredential = await getUserByID(auth, user.uid);
-		const authenticatedUser = userCredential.user;
-		updateProfile(authenticatedUser, {
-			displayName: user.firstname + ' ' + user.lastname
-		});
-
-		// set new user role
-		await setUserRole({ uid: authenticatedUser.uid, role: 'user' });
-		authStore.set({
-			...authStore,
-			user: authenticatedUser,
-			name: authenticatedUser.displayName,
-			role: 'user',
-			loading: false,
-			error: null,
-			isLoggedIn: true
-		});
-
-		return authenticatedUser; // Return authenticated user
+		let updateUserProfile = httpsCallable(functions, 'updateUserProfile');
+		return await updateUserProfile(user)
+			.then((result) => {
+				return result;
+			})
+			.catch((err) => {
+				console.log(err.message);
+				throw err; // It's usually better to re-throw the error so it can be handled by the caller
+			});
 	} catch (error) {
-		console.log('Error: ', error.code);
-		authStore.update((store) => ({
-			...store,
-			loading: false,
-			error: error.message,
-			isLoggedIn: false
-		}));
+		console.log('Error: ', error.message);
 		throw error;
 	}
 }

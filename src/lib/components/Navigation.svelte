@@ -32,55 +32,159 @@
 			});
 	};
 
+	let showDropdown = false;
+	const toggleDropdown = () => {
+		showDropdown = !showDropdown;
+	};
+
 	const textSizeMenu = 'text-xl';
 </script>
 
 <nav
-	class="z-999 sticky top-0 flex h-full min-h-28 w-full items-center rounded-b-2xl border-b bg-white-primary px-2 align-middle shadow-xl sm:px-4"
+	class="z-999 sticky top-0 flex h-full min-h-28 w-full items-center divide-gray-100 rounded-b-2xl border-b border-gray-100 bg-white-primary px-2 py-2.5 align-middle text-gray-700 shadow-xl dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 sm:px-4"
 >
-	<a href="/" class="mr-4">
-		<img src={caplogo} alt="Chaplaincy Logo" class="h-8" />
-	</a>
-	<ul class="flex space-x-4">
-		<li><a href="/" class="text-xl">Home</a></li>
-		<li><a href="/news" class="text-xl">News</a></li>
-		<li><a href="/events" class="text-xl">Events</a></li>
-		<li><a href="/groups" class="text-xl">Groups</a></li>
-		<li><a href="/prayers" class="text-xl">Pray with us</a></li>
-		<li><a href="/about" class="text-xl">About us</a></li>
-		<!-- Add more links as needed -->
-	</ul>
+	<div class="container mx-auto flex flex-wrap items-center justify-between">
+		<a href="/" class="flex items-center">
+			<img class="me-3 sm:h-9" src={caplogo} alt="Chaplaincy Logo" />
+		</a>
+		<button
+			type="button"
+			class="m-0.5 ms-3 whitespace-normal rounded-lg p-1.5 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:hover:bg-gray-600 md:hidden"
+			aria-label="Open main menu"
+			><span class="sr-only">Open main menu</span>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				role="button"
+				tabindex="0"
+				width="24"
+				height="24"
+				class="h-6 w-6 shrink-0"
+				aria-label="bars 3"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="2"
+			>
+				<path
+					stroke="currentColor"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M4 6h16M4 12h16M4 18h16"
+				></path>
+			</svg></button
+		>
+		<div class="w-full cursor-pointer md:block md:w-auto" hidden="true">
+			<ul
+				class="mt-4 flex flex-col p-4 text-primary-100 md:mt-0 md:flex-row md:space-x-8 md:text-sm md:font-medium"
+			>
+				<li>
+					<a
+						href="/"
+						class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
+						>Home</a
+					>
+				</li>
+				<li>
+					<a
+						href="/news"
+						class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
+						>News</a
+					>
+				</li>
+				<li>
+					<a
+						href="/events"
+						class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
+						>Events</a
+					>
+				</li>
+				<li>
+					<a
+						href="/groups"
+						class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
+						>Groups</a
+					>
+				</li>
+				<li>
+					<a
+						href="/prayers"
+						class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
+						>Pray with us</a
+					>
+				</li>
+				<li class="group relative">
+					<a href="" class="text-xl" on:click|preventDefault={toggleDropdown}>About us</a>
+					{#if showDropdown}
+						<div
+							class="absolute left-0 mt-2 w-48 rounded-md bg-white-primary shadow-lg ring-1 ring-black ring-opacity-5"
+						>
+							<div
+								class="py-1"
+								role="menu"
+								aria-orientation="vertical"
+								aria-labelledby="options-menu"
+							>
+								<a
+									href="/about"
+									class="block px-4 py-2 text-sm text-primary-100 hover:bg-gray-100 hover:text-gray-900"
+									role="menuitem"
+									on:click={toggleDropdown}>Who we are</a
+								>
+								<a
+									href="/about/responsibilities"
+									class="block px-4 py-2 text-sm text-primary-100 hover:bg-gray-100 hover:text-gray-900"
+									role="menuitem"
+									on:click={toggleDropdown}>Responsibilities</a
+								>
+								<a
+									href="/about/safeguarding"
+									class="block px-4 py-2 text-sm text-primary-100 hover:bg-gray-100 hover:text-gray-900"
+									role="menuitem"
+									on:click={toggleDropdown}>Safeguarding</a
+								>
+								<a
+									href="/about/contact"
+									class="block px-4 py-2 text-sm text-primary-100 hover:bg-gray-100 hover:text-gray-900"
+									role="menuitem"
+									on:click={toggleDropdown}>Get in touch</a
+								>
+							</div>
+						</div>
+					{/if}
+				</li>
+				{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
+					<li>
+						<a
+							href="/admin"
+							class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
+							>Admin</a
+						>
+					</li>
+				{/if}
+				{#if !$authStore.isLoggedIn}
+					<li>
+						<a
+							href="/login"
+							class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
+							>Register/Sign in</a
+						>
+					</li>
+				{:else}
+					<li>
+						<button
+							class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
+							on:click={handleLogout}>Sign out</button
+						>
+						<!--<div
+							role="link"
+							href=""
+							class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
+							on:click={handleLogout}
+						>
+							Sign out
+						</div>-->
+					</li>
+				{/if}
+			</ul>
+		</div>
+	</div>
 </nav>
-
-<Navbar
-	class="z-999 sticky top-0 flex h-full min-h-28 w-full items-center  rounded-b-2xl border-b bg-white-primary px-2 align-middle shadow-xl sm:px-4"
->
-	<NavBrand href="/">
-		<img src={caplogo} class="me-3 sm:h-9" alt="Chaplaincy Logo" />
-	</NavBrand>
-	<NavHamburger />
-	<NavUl {activeUrl} class="cursor-pointer">
-		<NavLi class={textSizeMenu} href="/">Home</NavLi>
-		<NavLi class={textSizeMenu} href="/news">News</NavLi>
-		<!-- <NavLi class={textSizeMenu} href="/activities">Activities</NavLi> -->
-		<NavLi class={textSizeMenu} href="/events">Events</NavLi>
-		<NavLi class={textSizeMenu} href="/groups">Groups</NavLi>
-		<NavLi class={textSizeMenu} href="/prayers">Pray with us</NavLi>
-		<NavLi class={textSizeMenu}>About us</NavLi>
-		<Dropdown class=" z20 w-44">
-			<DropdownItem href="/about">Who we are</DropdownItem>
-			<DropdownItem href="/about/responsibilities">Responsibilities</DropdownItem>
-			<DropdownItem href="/about/safeguarding">Safeguarding</DropdownItem>
-			<DropdownDivider />
-			<DropdownItem href="/about/contact">Get in touch</DropdownItem>
-		</Dropdown>
-		{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
-			<NavLi class={textSizeMenu} href="/admin">Admin</NavLi>
-		{/if}
-		{#if !$authStore.isLoggedIn}
-			<NavLi class={textSizeMenu} href="/login">Register/Sign in</NavLi>
-		{:else}
-			<NavLi class={textSizeMenu} on:click={handleLogout}>Sign out</NavLi>
-		{/if}
-	</NavUl>
-</Navbar>

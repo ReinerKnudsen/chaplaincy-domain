@@ -23,8 +23,8 @@
 	});
 
 	const header = 'text-2xl text-justify w-full px-5 font-semibold';
-	const headerLg = 'lg:text-4xl lg:px-10 lg:py-2';
-	const headerXl = 'xl:text-6xl xl:px-10 xl:py-5';
+	const headerLg = 'lg:text-4xl lg:px-10 lg:py-4';
+	const headerXl = 'xl:text-6xl xl:px-10 xl:py-6';
 	const subTitle = 'text-lg text-justify w-full px-5 py-3 ';
 	const subTitleLg = 'lg:text-2xl lg:px-10 lg:py-2';
 	const subTitleXl = 'xl:text-4xl xl:px-10 xl:py-5';

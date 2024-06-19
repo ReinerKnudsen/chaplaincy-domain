@@ -42,7 +42,7 @@
 	<form class={moduleWidth}>
 		<label
 			class={moduleWidth +
-				'border-1 group flex h-[300px] flex-col rounded-lg bg-slate-100 p-10 text-center'}
+				'border-1 group flex h-[300px] flex-col rounded-lg bg-slate-100 p-10 text-center '}
 		>
 			<div class="flex h-full w-full flex-col items-center justify-center text-center">
 				<p class="pointer-none font-semibold text-gray-600">

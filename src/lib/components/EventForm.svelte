@@ -98,13 +98,12 @@
 	};
 </script>
 
-<div class="form">
-	<h1>{state === 'update' ? 'Edit event' : 'Create new event'}</h1>
-
-	<!-- Titel -->
-	<form id="form-container" enctype="multipart/form-data" on:submit={handleSubmit}>
+<div class="form bg-white-primary">
+	<h1 class="mx-10">{state === 'update' ? 'Edit event' : 'Create new event'}</h1>
+	<form class="mx-10" enctype="multipart/form-data" on:submit={handleSubmit}>
+		<!-- Titel -->
 		<div>
-			<Label for="title" class="mb-2 mt-5 text-xl font-semibold">Event Titel *</Label>
+			<Label for="title" class="mb-2 mt-8 text-xl font-semibold">Event Titel *</Label>
 			<Input
 				type="text"
 				id="title"
@@ -116,13 +115,20 @@
 
 		<!-- Sub Title -->
 		<div>
-			<Label for="subtitle" class="mb-2 mt-5 text-xl font-semibold">Sub Title</Label>
+			<Label for="subtitle" class="mb-2 mt-8 text-xl font-semibold">Sub Title</Label>
 			<Input type="text" id="subtitle" placeholder="Sub Title" bind:value={newEvent.subtitle} />
 		</div>
 
 		<!-- Description -->
 		<div>
-			<Label for="description" class="mb-2 mt-5 text-xl font-semibold">Description *</Label>
+			<div class="flex-rows flex justify-between">
+				<Label for="description" class="mb-2 mt-8 self-center text-xl font-semibold"
+					>Description *</Label
+				>
+				<p class="self-end text-right text-base">
+					<strong>{newEvent.description.length}</strong> characters.
+				</p>
+			</div>
 			<Textarea
 				id="description"
 				placeholder="Description text"
@@ -131,14 +137,18 @@
 				bind:value={newEvent.description}
 				wrap="hard"
 			/>
-			<p class="explanation text-right">
-				<strong>{newEvent.description.length}</strong> characters.
-			</p>
 		</div>
 
 		<!-- Slug -->
 		<div>
-			<Label for="slug" class="mb-2 mt-5 text-xl font-semibold">Short description (slug)</Label>
+			<div class="flex-rows flex justify-between">
+				<Label for="slug" class="mb-2 mt-8 self-center text-xl font-semibold"
+					>Short description (slug)</Label
+				>
+				<p class="self-end text-right text-base">
+					<strong>{newEvent.slug.length} of {MAX_SLUG_TEXT} </strong> characters.
+				</p>
+			</div>
 			<Textarea
 				id="slug"
 				placeholder={slugtext}
@@ -149,20 +159,17 @@
 				required
 				on:focus={handleCreateSlug}
 			/>
-			<p class="explanation text-right">
-				<strong>{newEvent.slug.length} of {MAX_SLUG_TEXT} </strong> characters.
-			</p>
 		</div>
 
 		<!-- Start date -->
 		<div>
-			<Label for="startdate" class="mb-2 mt-5 text-xl font-semibold">Start Date *</Label>
+			<Label for="startdate" class="mb-2 mt-8 text-xl font-semibold">Start Date *</Label>
 			<Input type="date" id="startdate" bind:value={newEvent.startdate} required />
 		</div>
 
 		<!-- Start time -->
 		<div>
-			<Label class="mb-2 mt-5 text-xl font-semibold">Start Time *</Label>
+			<Label class="mb-2 mt-8 text-xl font-semibold">Start Time *</Label>
 			<Input
 				type="time"
 				id="starttime"
@@ -174,27 +181,27 @@
 
 		<!-- End date -->
 		<div>
-			<Label for="enddate" class="mb-2 mt-5 text-xl font-semibold">End Date</Label>
+			<Label for="enddate" class="mb-2 mt-8 text-xl font-semibold">End Date</Label>
 			<Input type="date" id="enddate" bind:value={newEvent.enddate} />
 		</div>
 
 		<!-- End time -->
 		<div>
-			<Label class="mb-2 mt-5 text-xl font-semibold">End Time</Label>
+			<Label class="mb-2 mt-8 text-xl font-semibold">End Time</Label>
 			<Input type="time" id="endtime" bind:value={newEvent.endtime} disabled={!newEvent.enddate} />
 		</div>
 
 		<!-- Location -->
 		<div class="form-area">
 			<div>
-				<Label for="Location" class="mb-2 mt-5 text-xl font-semibold">Location *</Label>
+				<Label for="Location" class="mb-2 mt-8 text-xl font-semibold">Location *</Label>
 				<Input type="text" id="location" bind:value={newEvent.location} required />
 			</div>
 		</div>
 
 		<!-- Conditions -->
 		<div>
-			<Label for="conditions" class="mb-2 mt-5 text-xl font-semibold">Conditions</Label>
+			<Label for="conditions" class="mb-2 mt-8 text-xl font-semibold">Conditions</Label>
 			<Input type="text" id="conditions" bind:value={newEvent.condition} />
 			<div class="mt-1 p-1">
 				<Checkbox
@@ -210,13 +217,13 @@
 
 		<!-- Publish date  -->
 		<div>
-			<Label for="publishdate" class="mb-2 mt-5 text-xl font-semibold">Publish Date *</Label>
+			<Label for="publishdate" class="mb-2 mt-8 text-xl font-semibold">Publish Date *</Label>
 			<Input type="date" id="publishdate" required bind:value={newEvent.publishdate} />
 		</div>
 
 		<!-- Publish time  -->
 		<div>
-			<Label class="mb-2 mt-5 text-xl font-semibold">Publish Time</Label>
+			<Label class="mb-2 mt-8 text-xl font-semibold">Publish Time</Label>
 			<Input
 				type="time"
 				id="publishtime"
@@ -230,7 +237,7 @@
 
 		<!-- Unpublish Date -->
 		<div>
-			<Label for="unpublishdate" class="mb-2 mt-5 text-xl font-semibold">Unpublish Date</Label>
+			<Label for="unpublishdate" class="mb-2 mt-8 text-xl font-semibold">Unpublish Date</Label>
 			<Input
 				type="date"
 				id="unpublishdate"
@@ -246,7 +253,7 @@
 
 		<!-- Unpublish Time -->
 		<div>
-			<Label for="unpublishtime" class="mb-2 mt-5 text-xl font-semibold">Unpublish Time</Label>
+			<Label for="unpublishtime" class="mb-2 mt-8 text-xl font-semibold">Unpublish Time</Label>
 			<Input
 				type="time"
 				id="unpublishtime"
@@ -258,7 +265,7 @@
 
 		<!-- Comments -->
 		<div class="col-span-2">
-			<Label for="comments" class="mb-2 mt-5 text-xl font-semibold">Comments</Label>
+			<Label for="comments" class="mb-2 mt-8 text-xl font-semibold">Comments</Label>
 			<Textarea
 				id="comments"
 				placeholder="Comments"
@@ -272,17 +279,17 @@
 		<!-- Image -->
 		<div>
 			{#if newEvent.image}
-				<Label class="mb-2">Uploaded image</Label>
+				<Label class="mb-2 mt-8 text-xl font-semibold">Uploaded image</Label>
 				<UploadImage imageUrl={newEvent.image} on:upload={assignImage} />
 			{:else}
-				<Label class="mb-2">Upload image</Label>
+				<Label class="mb-2 mt-8 text-xl font-semibold">Upload image</Label>
 				<UploadImage on:upload={assignImage} />
 			{/if}
 		</div>
 		<div class="imageMeta">
 			<div class="imageAlt">
 				<div>
-					<Label for="imageAlt" class="mb-2">Image Alt text *</Label>
+					<Label for="imageAlt" class="mb-2 mt-8 text-xl font-semibold">Image Alt text *</Label>
 					<Input
 						type="text"
 						id="imageAlt"
@@ -297,7 +304,7 @@
 			</div>
 			<div class="imageCaption mt-10">
 				<div>
-					<Label for="imageCaption" class="mb-2">Image caption</Label>
+					<Label for="imageCaption" class="mb-2 mt-8 text-xl font-semibold">Image caption</Label>
 					<Input type="text" id="imageCaption" bind:value={newEvent.imageCaption} />
 					<p class="explanation">This text will be displayed below the image.</p>
 				</div>
@@ -305,7 +312,7 @@
 		</div>
 
 		<!-- Buttons -->
-		<div class="buttons col-span-2 mt-3">
+		<div class="buttons col-span-2 mb-20 mt-10">
 			<Button type="reset" color="light" on:click={() => goto('/admin/eventsadmin')}>Cancel</Button>
 			<Button type="reset" color="light">Empty form</Button>
 			<Button type="submit" disabled={newEvent.length === 0}
@@ -319,17 +326,11 @@
 
 <style>
 	.form {
-		margin: 40px auto;
-		padding: 20px 20px;
 		max-width: 90%;
 		border: 1px solid #eaeaea;
 		border-radius: 20px;
 	}
-	.form-container {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 30px 20px;
-	}
+
 	.explanation {
 		margin: 10px 4px;
 		font-size: 0.8rem;

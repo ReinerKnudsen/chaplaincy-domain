@@ -10,6 +10,7 @@
 	import tags from '$lib/assets/icons/tags.svg?raw';
 	import users_online from '$lib/assets/icons/users-online.svg?raw';
 	import chevron_down from '$lib/assets/icons/chevron-down.svg?raw';
+	import chevron_up from '$lib/assets/icons/chevron-up.svg?raw';
 	import churchnearyou from '$lib/assets/icons/churchnearyou.svg?raw';
 	import email from '$lib/assets/icons/email.svg?raw';
 	import facebook from '$lib/assets/icons/facebook.svg?raw';
@@ -34,6 +35,10 @@
 		chevronDown: {
 			box: 24,
 			svg: chevron_down
+		},
+		chevronUp: {
+			box: 24,
+			svg: chevron_up
 		},
 		churchnearyou: {
 			box: 24,

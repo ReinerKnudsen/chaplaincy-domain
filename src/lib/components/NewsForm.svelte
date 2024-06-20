@@ -2,6 +2,8 @@
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
+	import { marked } from 'marked';
+	import Icon from '$lib/components/Icon.svelte';
 
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
 	import { authStore } from '$lib/stores/AuthStore';
@@ -26,21 +28,32 @@
 	};
 	let docRef;
 	let state = 'save';
+	let isVisible = { help: false, preview: false };
+
+	const cellPadding = 'py-2 pl-5';
+	const cellFormat = {
+		one: 'border-b font-mono',
+		two: 'border-b border-l pb-1 pl-5',
+		three: 'border-b border-l-4 pb-1 pl-5 font-mono',
+		four: 'border-b border-l pb-1 pl-5'
+	};
 
 	if (thisItem) {
 		newItem = thisItem;
 		state = 'update';
 	}
 
-	const handleCreateSlug = () => {
-		newItem.slug = newItem.text.slice(0, MAX_SLUG_TEXT);
-	};
+	$: {
+		let slugCache = marked.parse(newItem.text).replace(/<[^>]*>/g, '');
+		newItem.slug = slugCache.slice(0, MAX_SLUG_TEXT);
+	}
 
-	const handleConditionChange = (e) => {
-		if (e.target.checked) {
-			newItem.condition = 'Entry is free, donations are welcome.';
-		} else {
-			newItem.condition = '';
+	const toggleSection = (view) => {
+		console.log('toggle section');
+		if (view === 'help') {
+			isVisible.help = !isVisible.help;
+		} else if (view === 'preview') {
+			isVisible.preview = !isVisible.preview;
 		}
 	};
 
@@ -74,30 +87,25 @@
 	};
 </script>
 
-<div class="form">
-	<h1>{thisItem ? 'Edit news item' : 'Create news item'}</h1>
+<div class="form bg-white-primary">
+	<h1 class="">{thisItem ? 'Edit news item' : 'Create news item'}</h1>
 
-	<form
-		class="form-container"
-		id="form-container"
-		enctype="multipart/form-data"
-		on:submit={handleSubmit}
-	>
+	<form id="form-container" enctype="multipart/form-data" on:submit={handleSubmit}>
 		<!-- Titel -->
 		<div>
-			<Label for="title" class="mb-2">News Titel *</Label>
+			<Label for="title" class="mb-2 mt-8 text-xl font-semibold">News Titel *</Label>
 			<Input type="text" id="title" placeholder="News Title" bind:value={newItem.title} required />
 		</div>
 
 		<!-- Author -->
 		<div>
-			<Label for="author" class="mb-2">Author</Label>
+			<Label for="author" class="mb-2 mt-8 text-xl font-semibold">Author</Label>
 			<Input type="text" id="author" bind:value={newItem.author} disabled />
 		</div>
 
 		<!-- News text -->
 		<div>
-			<Label for="news-text" class="mb-2">News text *</Label>
+			<Label for="news-text" class="mb-2 mt-8 text-xl font-semibold">News text *</Label>
 			<Textarea
 				id="news-text"
 				placeholder="News text"
@@ -110,10 +118,76 @@
 				<strong>{newItem.text.length}</strong> characters.
 			</p>
 		</div>
+		<!-- Help text -->
+
+		<div class="mt-2 border border-green-40">
+			<div class="flex w-full flex-row flex-nowrap items-center justify-between">
+				<Button class="h-12 w-full text-lg font-semibold" on:click={() => toggleSection('help')}
+					>Formatting help</Button
+				>
+				<Button class="text-lg font-semibold" on:click={() => toggleSection('help')}>
+					{#if isVisible.help}
+						<Icon name="chevronUp" width="18px" height="18px" />
+					{:else}
+						<Icon name="chevronDown" width="18px" height="18px" />
+					{/if}
+				</Button>
+			</div>
+			{#if isVisible.help}
+				<div id="helpContainer" class="h-64 bg-green-50">
+					<div class=" grid grid-cols-4">
+						<div class="s row-start-1 border-b bg-slate-300 py-2 pl-5 font-semibold">Format</div>
+						<div class="border-b border-l bg-slate-300 py-2 pl-5 font-semibold">Description</div>
+						<div
+							class="border-b border-l-4 border-l-slate-400 bg-slate-300 py-2 pl-5 font-semibold"
+						>
+							Format
+						</div>
+						<div class="border-b border-l bg-slate-300 py-2 pl-5 font-semibold">Description</div>
+						<div class={`row-start-2 ${cellPadding} ${cellFormat.one}`}>*text*</div>
+						<div class={`${cellPadding} ${cellFormat.two}`}><em>italic text</em></div>
+						<div class={`${cellPadding} ${cellFormat.three}`}>**text**</div>
+						<div class={`${cellPadding} ${cellFormat.four}`}><strong>bold text</strong></div>
+						<div class={`row-start-3 ${cellPadding} ${cellFormat.one}`}># Headline</div>
+						<div class={`${cellPadding} ${cellFormat.two}`}>Headline 1</div>
+						<div class={`${cellPadding} ${cellFormat.three}`}>## Headline</div>
+						<div class={`${cellPadding} ${cellFormat.four}`}>Headline 2</div>
+						<div class={`row-start-4 ${cellPadding} ${cellFormat.one}`}>### Headline</div>
+						<div class={`${cellPadding} ${cellFormat.two}`}>Headline 3</div>
+						<div class={`${cellPadding} ${cellFormat.three}`}>#### Headline</div>
+						<div class={`${cellPadding} ${cellFormat.four}`}>Headline 4</div>
+					</div>
+				</div>
+			{/if}
+		</div>
+
+		<!-- Preview -->
+		<div class="mt-2 border border-green-40">
+			<div class="flex h-12 w-full flex-row flex-nowrap items-center justify-between">
+				<Button class="w-full text-lg font-semibold" on:click={() => toggleSection('preview')}
+					>Preview</Button
+				>
+				<Button class="text-lg font-semibold" on:click={() => toggleSection('preview')}>
+					{#if isVisible.preview}
+						<Icon name="chevronUp" width="18px" height="18px" />
+					{:else}
+						<Icon name="chevronDown" width="18px" height="18px" />
+					{/if}
+				</Button>
+			</div>
+			{#if isVisible.preview}
+				<div id="helpContainer" class="h-72 overflow-scroll bg-green-50 px-4">
+					{@html marked.parse(newItem.text)}
+				</div>
+				<div class="text-center text-sm">
+					This preview provides a rough estimate how your text will look on the website.
+				</div>
+			{/if}
+		</div>
 
 		<!-- Slug -->
 		<div>
-			<Label for="slug" class="mb-2">Short text (slug)</Label>
+			<Label for="slug" class="mb-2 mt-8 text-xl font-semibold">Short text (slug)</Label>
 			<Textarea
 				id="slug"
 				rows="3"
@@ -121,7 +195,6 @@
 				bind:value={newItem.slug}
 				maxlength="MAX_SLUG_TEXT"
 				required
-				on:focus={handleCreateSlug}
 			/>
 			<p class="explanation text-right">
 				<strong>{newItem.slug.length} of {MAX_SLUG_TEXT} </strong> characters.
@@ -130,14 +203,14 @@
 
 		<!-- Publish date  -->
 		<div>
-			<Label for="publishdate" class="mb-2">Publish Date *</Label>
+			<Label for="publishdate" class="mb-2 mt-8 text-xl font-semibold">Publish Date *</Label>
 			<Input type="date" id="publishdate" required bind:value={newItem.publishdate} />
 			<p class="explanation">If you don't select a publish date, it will be set to today.</p>
 		</div>
 
 		<!-- Publish time  -->
 		<div>
-			<Label class="mb-2">Publish Time</Label>
+			<Label class="mb-2 mt-8 text-xl font-semibold">Publish Time</Label>
 			<Input
 				type="time"
 				id="publishtime"
@@ -152,17 +225,17 @@
 		<!-- File Upload -->
 		<div>
 			{#if newItem.image}
-				<Label class="mb-2">Uploaded image</Label>
+				<Label class="mb-2 mt-8 text-xl font-semibold">Uploaded image</Label>
 				<UploadImage imageUrl={newItem.image} on:upload={assignImage} />
 			{:else}
-				<Label class="mb-2">Upload image</Label>
+				<Label class="mb-2 mt-8 text-xl font-semibold">Upload image</Label>
 				<UploadImage on:upload={assignImage} />
 			{/if}
 		</div>
 		<div class="imageMeta">
 			<div class="imageAlt">
 				<div>
-					<Label for="imageAlt" class="mb-2">Image Alt text *</Label>
+					<Label for="imageAlt" class="mb-2 mt-8 text-xl font-semibold">Image Alt text *</Label>
 					<Input
 						type="text"
 						id="imageAlt"
@@ -177,7 +250,7 @@
 			</div>
 			<div class="imageCaption mt-10">
 				<div>
-					<Label for="imageCaption" class="mb-2">Image caption</Label>
+					<Label for="imageCaption" class="mb-2 mt-8 text-xl font-semibold">Image caption</Label>
 					<Input
 						type="text"
 						id="imageCaption"

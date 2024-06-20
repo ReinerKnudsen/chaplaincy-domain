@@ -51,6 +51,20 @@ const config = {
 				},
 				link: {
 					primary: 'rgba(100, 18, 129, 1)'
+				},
+				green: {
+					100: 'rgba(7, 153, 158,1)',
+					80: 'rgba(7, 153, 158,0.8)',
+					60: 'rgba(7, 153, 158,0.6)',
+					40: 'rgba(7, 153, 158,0.4)',
+					20: 'rgba(7, 153, 158,0.2)'
+				},
+				black: {
+					100: 'rgba(0,0,0,1)',
+					80: 'rgba(0,0,0,0.8)',
+					60: 'rgba(0,0,0,0.6)',
+					40: 'rgba(0,0,0,0.4)',
+					20: 'rgba(0,0,0,0.2)'
 				}
 			}
 		},
@@ -94,6 +108,16 @@ const config = {
 				'Segoe UI Emoji',
 				'Segoe UI Symbol',
 				'Noto Color Emoji'
+			],
+			mono: [
+				'ui-monospace',
+				'SFMono-Regular',
+				'Menlo',
+				'Monaco',
+				'Consolas',
+				'Liberation Mono',
+				'Courier New',
+				'monospace'
 			]
 		}
 	}

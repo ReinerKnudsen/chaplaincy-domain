@@ -43,10 +43,10 @@
 		state = 'update';
 	}
 
-	$: {
+	const createSlug = () => {
 		let slugCache = marked.parse(newItem.text).replace(/<[^>]*>/g, '');
 		newItem.slug = slugCache.slice(0, MAX_SLUG_TEXT);
-	}
+	};
 
 	const toggleSection = (view) => {
 		console.log('toggle section');
@@ -105,7 +105,14 @@
 
 		<!-- News text -->
 		<div>
-			<Label for="news-text" class="mb-2 mt-8 text-xl font-semibold">News text *</Label>
+			<div class="flex flex-row justify-between">
+				<Label for="news-text" class="mb-2 mt-8 self-center text-xl font-semibold"
+					>News text *</Label
+				>#
+				<p class="explanation self-end text-right">
+					<strong>{newItem.text.length}</strong> characters.
+				</p>
+			</div>
 			<Textarea
 				id="news-text"
 				placeholder="News text"
@@ -114,9 +121,6 @@
 				bind:value={newItem.text}
 				wrap="hard"
 			/>
-			<p class="explanation text-right">
-				<strong>{newItem.text.length}</strong> characters.
-			</p>
 		</div>
 		<!-- Help text -->
 
@@ -187,7 +191,14 @@
 
 		<!-- Slug -->
 		<div>
-			<Label for="slug" class="mb-2 mt-8 text-xl font-semibold">Short text (slug)</Label>
+			<div class="flex flex-row justify-between">
+				<Label for="slug" class="mb-2 mt-8 self-center text-xl font-semibold"
+					>Short text (slug)</Label
+				>
+				<p class="explanation self-end text-right">
+					<strong>{newItem.slug.length} of {MAX_SLUG_TEXT} </strong> characters.
+				</p>
+			</div>
 			<Textarea
 				id="slug"
 				rows="3"
@@ -196,9 +207,9 @@
 				maxlength="MAX_SLUG_TEXT"
 				required
 			/>
-			<p class="explanation text-right">
-				<strong>{newItem.slug.length} of {MAX_SLUG_TEXT} </strong> characters.
-			</p>
+			<div class="mt-2 flex justify-end">
+				<Button class=" bg-primary-100 text-white-primary">Change slug text</Button>
+			</div>
 		</div>
 
 		<!-- Publish date  -->
@@ -263,7 +274,7 @@
 		</div>
 
 		<!-- Buttons -->
-		<div class="buttons col-span-2">
+		<div class="buttons col-span-2 mb-20 mt-10">
 			<Button
 				class="font-semibold"
 				type="reset"

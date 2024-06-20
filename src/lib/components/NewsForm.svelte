@@ -264,10 +264,19 @@
 
 		<!-- Buttons -->
 		<div class="buttons col-span-2">
-			<Button type="reset" color="light" on:click={() => goto('/admin/newsadmin')}>Cancel</Button>
-			<Button type="reset" color="light" disabled={docRef}>Empty form</Button>
-			<Button type="submit" disabled={newItem.length === 0}
-				>{state === 'update' ? 'Update' : 'Save'} news</Button
+			<Button
+				class="font-semibold"
+				type="reset"
+				color="light"
+				on:click={() => goto('/admin/newsadmin')}>Cancel</Button
+			>
+			<Button class="bg-black-40 text-white-primary" type="reset" color="light" disabled={docRef}
+				>Empty form</Button
+			>
+			<Button
+				class="bg-primary-100  font-semibold text-white-primary"
+				type="submit"
+				disabled={newItem.length === 0}>{state === 'update' ? 'Update' : 'Save'} news</Button
 			>
 		</div>
 	</form>

@@ -1,19 +1,18 @@
 <script>
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { marked } from 'marked';
+
 	import { Timestamp } from 'firebase/firestore';
 	import { authStore } from '$lib/stores/AuthStore';
-	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
-	import Icon from '$lib/components/Icon.svelte';
 
-	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
+	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
+	import SlugText from './SlugText.svelte';
+	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadImage from '$lib/components/UploadImage.svelte';
 
 	export let thisEvent;
 	const dispatch = createEventDispatcher();
 
-	let slugtext;
 	let newEvent = {
 		author: $authStore.name,
 		title: '',
@@ -36,17 +35,12 @@
 		image: '',
 		imagealt: ''
 	};
-	let docRef;
+
 	let state = 'save';
-	let isVisible = { help: false, preview: false };
 
 	if (thisEvent) {
 		newEvent = thisEvent;
 		state = 'update';
-	}
-	$: {
-		let slugCache = marked.parse(newEvent.description).replace(/<[^>]*>/g, '');
-		newEvent.slug = slugCache.slice(0, MAX_SLUG_TEXT);
 	}
 
 	const handleConditionChange = (e) => {
@@ -54,15 +48,6 @@
 			newEvent.condition = 'Entry is free, donations are welcome.';
 		} else {
 			newEvent.condition = '';
-		}
-	};
-
-	const toggleSection = (view) => {
-		console.log('toggle section');
-		if (view === 'help') {
-			isVisible.help = !isVisible.help;
-		} else if (view === 'preview') {
-			isVisible.preview = !isVisible.preview;
 		}
 	};
 
@@ -159,93 +144,8 @@
 			/>
 		</div>
 
-		<!-- Help text -->
-
-		<div class="mt-2 border border-green-40">
-			<div class="flex w-full flex-row flex-nowrap items-center justify-between">
-				<Button class="h-12 w-full text-lg font-semibold" on:click={() => toggleSection('help')}
-					>Formatting help</Button
-				>
-				<Button class="text-lg font-semibold" on:click={() => toggleSection('help')}>
-					{#if isVisible.help}
-						<Icon name="chevronUp" width="18px" height="18px" />
-					{:else}
-						<Icon name="chevronDown" width="18px" height="18px" />
-					{/if}
-				</Button>
-			</div>
-			{#if isVisible.help}
-				<div id="helpContainer" class="h-64 bg-green-50">
-					<div class=" grid grid-cols-4">
-						<div class="s row-start-1 border-b bg-slate-300 py-2 pl-5 font-semibold">Format</div>
-						<div class="border-b border-l bg-slate-300 py-2 pl-5 font-semibold">Description</div>
-						<div
-							class="border-b border-l-4 border-l-slate-400 bg-slate-300 py-2 pl-5 font-semibold"
-						>
-							Format
-						</div>
-						<div class="border-b border-l bg-slate-300 py-2 pl-5 font-semibold">Description</div>
-						<div class={`row-start-2 ${cellPadding} ${cellFormat.one}`}>*text*</div>
-						<div class={`${cellPadding} ${cellFormat.two}`}><em>italic text</em></div>
-						<div class={`${cellPadding} ${cellFormat.three}`}>**text**</div>
-						<div class={`${cellPadding} ${cellFormat.four}`}><strong>bold text</strong></div>
-						<div class={`row-start-3 ${cellPadding} ${cellFormat.one}`}># Headline</div>
-						<div class={`${cellPadding} ${cellFormat.two}`}>Headline 1</div>
-						<div class={`${cellPadding} ${cellFormat.three}`}>## Headline</div>
-						<div class={`${cellPadding} ${cellFormat.four}`}>Headline 2</div>
-						<div class={`row-start-4 ${cellPadding} ${cellFormat.one}`}>### Headline</div>
-						<div class={`${cellPadding} ${cellFormat.two}`}>Headline 3</div>
-						<div class={`${cellPadding} ${cellFormat.three}`}>#### Headline</div>
-						<div class={`${cellPadding} ${cellFormat.four}`}>Headline 4</div>
-					</div>
-				</div>
-			{/if}
-		</div>
-
-		<!-- Preview -->
-		<div class="mt-2 border border-green-40">
-			<div class="flex h-12 w-full flex-row flex-nowrap items-center justify-between">
-				<Button class="w-full text-lg font-semibold" on:click={() => toggleSection('preview')}
-					>Preview</Button
-				>
-				<Button class="text-lg font-semibold" on:click={() => toggleSection('preview')}>
-					{#if isVisible.preview}
-						<Icon name="chevronUp" width="18px" height="18px" />
-					{:else}
-						<Icon name="chevronDown" width="18px" height="18px" />
-					{/if}
-				</Button>
-			</div>
-			{#if isVisible.preview}
-				<div id="helpContainer" class="h-72 overflow-scroll bg-green-50 px-4">
-					{@html marked.parse(newEvent.description)}
-				</div>
-				<div class="text-center text-sm">
-					This preview provides a rough estimate how your text will look on the website.
-				</div>
-			{/if}
-		</div>
-
-		<!-- Slug -->
-		<div>
-			<div class="flex-rows flex justify-between">
-				<Label for="slug" class="mb-2 mt-8 self-center text-xl font-semibold"
-					>Short description (slug)</Label
-				>
-				<p class="self-end text-right text-base">
-					<strong>{newEvent.slug.length} of {MAX_SLUG_TEXT} </strong> characters.
-				</p>
-			</div>
-			<Textarea
-				id="slug"
-				placeholder={slugtext}
-				rows="3"
-				name="slug"
-				bind:value={newEvent.slug}
-				maxlength="MAX_SLUG_TEXT"
-				required
-			/>
-		</div>
+		<MarkdownHelp text={newEvent.description} />
+		<SlugText text={newEvent.description} />
 
 		<!-- Start date -->
 		<div>

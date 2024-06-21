@@ -4,9 +4,7 @@
 	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
 	import SlugText from './SlugText.svelte';
 	import MarkdownHelp from './MarkdownHelp.svelte';
-	import { marked } from 'marked';
 
-	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
 	import { authStore } from '$lib/stores/AuthStore';
 	import UploadImage from '$lib/components/UploadImage.svelte';
 

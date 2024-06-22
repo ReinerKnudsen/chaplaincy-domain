@@ -44,7 +44,7 @@
 <PageHeader {headerData} textStyle="white" />
 
 <div class=" flex flex-col">
-	<ItemCardFav newsItem={favNews} />
+	<ItemCardFav item={favNews} kind="news" />
 	<div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
 		{#each newsItems as newsItem}
 			<ItemCard item={newsItem} kind="news" />

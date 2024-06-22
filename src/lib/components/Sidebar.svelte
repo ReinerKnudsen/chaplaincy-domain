@@ -33,7 +33,7 @@
 					<UserSolid class="h-5 w-5" />
 				</svelte:fragment> -->
 			</SidebarItem>
-			<SidebarItem label="Settings" href="/admin/settings">
+			<SidebarItem label="" href="/admin/settings">
 				<!-- <svelte:fragment slot="icon">
 					<ArrowRightToBracketSolid class="h-5 w-5" />
 				</svelte:fragment> -->

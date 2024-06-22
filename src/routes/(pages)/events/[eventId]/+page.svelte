@@ -1,14 +1,12 @@
 <script>
-	import { formatDate } from '/src/utils/utils';
-	// import Fa from 'svelte-fa/dist/fa.svelte';
-	// import { faCalendar, faClock, faLocationDot } from '@fortawesome/free-solid-svg-icons';
+	import { marked } from 'marked';
 	import Icon from '$lib/components/Icon.svelte';
 	import * as formats from '../../formats.js';
 
 	export let data;
 	const thisEvent = data.thisEvent;
 
-	thisEvent.description = thisEvent.description.replace(/\n/g, '<br />');
+	thisEvent.description = marked.parse(thisEvent.description); //.replace(/\n/g, '<br />');
 </script>
 
 <div class={`container ${formats.container}`}>

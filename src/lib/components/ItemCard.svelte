@@ -8,19 +8,15 @@
 	const containerXL = 'xl:bg-white';
 	const mainContent = 'justify-between';
 	const mainContentMd = 'md:flex md:flex-row md:gap-5';
-
-	/*
-
-*/
 </script>
 
 <div class={`container ${containerSM} ${containerLG} ${containerXL}`}>
 	<div class="head-line mb-4 py-2 text-xl font-semibold">
-		<a href="/{kind}}/{item.id}">{item.data.title}</a>
+		<a href="/{kind}/{item.id}">{item.data.title}</a>
 	</div>
 	<div class={`main-content ${mainContent} ${mainContentMd}`}>
 		<div class="image mb-5 min-w-[40%]">
-			<img class="image rounded-2xl" src={item.data.image} alt={item.data.imagealt} />
+			<img class="image rounded-2xl" src={item.data.image} alt={item.data.imageAlt} />
 		</div>
 		<div class="article">
 			<div class="mb-4">

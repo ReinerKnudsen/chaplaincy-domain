@@ -1,9 +1,7 @@
 <script>
-	import { formatDate } from '/src/utils/utils';
 	import { marked } from 'marked';
 	import Icon from '$lib/components/Icon.svelte';
 	import * as formats from '../../formats.js';
-	import { ChevronSortSolid } from 'flowbite-svelte-icons';
 
 	export let data;
 	const thisItem = data.thisItem;

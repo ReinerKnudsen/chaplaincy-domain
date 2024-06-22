@@ -33,7 +33,7 @@
 		unpublishDateTime: '',
 		comments: '',
 		image: '',
-		imagealt: ''
+		imageAlt: ''
 	};
 
 	let state = 'save';

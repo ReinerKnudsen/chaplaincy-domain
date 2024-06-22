@@ -41,7 +41,7 @@
 	};
 </script>
 
-<PageHeader {headerData} />
+<PageHeader {headerData} textStyle="white" />
 
 <div class=" flex flex-col">
 	<ItemCardFav newsItem={favNews} />

@@ -47,12 +47,17 @@
 		};
 	};
 
+	const handleSlugChange = (e) => {
+		newItem.slug = e.detail;
+	};
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (state === 'save') {
 			!newItem.publishdate && (newItem.publishdate = new Date());
 			!newItem.publishtime && (newItem.publishtime = '09:00');
 		}
+		console.log(state);
 		dispatch(state, newItem);
 		goto('/admin/newsadmin');
 	};
@@ -99,7 +104,7 @@
 		</div>
 
 		<MarkdownHelp text={newItem.text} />
-		<SlugText text={newItem.text} on:slugChange={(e) => (newItem.slug = e.detail.slugText)} />
+		<SlugText text={newItem.text} slugText={newItem.slug} on:slugChange={handleSlugChange} />
 
 		<!-- Publish date  -->
 		<div>

@@ -17,7 +17,7 @@
 	};
 </script>
 
-<PageHeader {headerData} />
+<PageHeader {headerData} textStyle="white" />
 
 <p>Please find our upcoming events.</p>
 <p>

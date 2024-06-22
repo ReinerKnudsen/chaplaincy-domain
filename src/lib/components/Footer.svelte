@@ -43,7 +43,7 @@
 	</div>
 	<hr class="my-6 border-gray-200 dark:border-gray-700 sm:mx-auto lg:my-8" />
 	<div class=" pl-8 pr-8 sm:flex sm:items-center sm:justify-between">
-		<FooterCopyright href="/" by="Flowbite™" />
+		<FooterCopyright href="/" by="Sleepy Panda " />
 		<div class="mt-4 flex space-x-6 sm:mt-0 sm:justify-center rtl:space-x-reverse">
 			<FooterIcon href="https://www.facebook.com/AnglicanBonnCologne/">
 				<Icon

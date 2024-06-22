@@ -4,7 +4,7 @@
 	export let data;
 
 	const updateNews = async (event) => {
-		await updateDoc(data.docRef, event.detail);
+		let result = await updateDoc(data.docRef, event.detail);
 	};
 </script>
 

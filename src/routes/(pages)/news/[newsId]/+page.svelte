@@ -1,12 +1,13 @@
 <script>
 	import { formatDate } from '/src/utils/utils';
+	import { marked } from 'marked';
 	import Icon from '$lib/components/Icon.svelte';
 	import * as formats from '../../formats.js';
 	import { ChevronSortSolid } from 'flowbite-svelte-icons';
 
 	export let data;
 	const thisItem = data.thisItem;
-	thisItem.text = thisItem.text.replace(/\n/g, '<br />');
+	thisItem.text = marked.parse(thisItem.text); //.replace(/\n/g, '<br />');
 </script>
 
 <div class={`container ${formats.container}`}>

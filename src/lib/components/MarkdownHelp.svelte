@@ -16,7 +16,6 @@
 	};
 
 	const toggleSection = (view) => {
-		console.log('toggle section');
 		if (view === 'help') {
 			isVisible.help = !isVisible.help;
 		} else if (view === 'preview') {
@@ -28,8 +27,8 @@
 <!-- Help text -->
 
 <div class="mt-2 border border-green-40">
-	<div class="flex w-full flex-row flex-nowrap items-center justify-between">
-		<Button class="h-12 w-full text-lg font-semibold" on:click={() => toggleSection('help')}
+	<div class="flex w-full flex-row flex-nowrap items-center justify-between bg-green-50">
+		<Button class="h-8 w-full text-lg font-semibold" on:click={() => toggleSection('help')}
 			>Formatting help</Button
 		>
 		<Button class="text-lg font-semibold" on:click={() => toggleSection('help')}>
@@ -68,8 +67,8 @@
 
 <!-- Preview -->
 <div class="mt-2 border border-green-40">
-	<div class="flex h-12 w-full flex-row flex-nowrap items-center justify-between">
-		<Button class="w-full text-lg font-semibold" on:click={() => toggleSection('preview')}
+	<div class="flex w-full flex-row flex-nowrap items-center justify-between bg-green-50">
+		<Button class="h-8 w-full text-lg font-semibold" on:click={() => toggleSection('preview')}
 			>Preview</Button
 		>
 		<Button class="text-lg font-semibold" on:click={() => toggleSection('preview')}>
@@ -81,10 +80,12 @@
 		</Button>
 	</div>
 	{#if isVisible.preview}
-		<div id="helpContainer" class="h-72 overflow-scroll bg-green-50 px-4 py-4">
-			{@html marked.parse(text)}
+		<div class="h-72 overflow-scroll bg-green-50 px-4">
+			<div class="scale-[0.8]">
+				{@html marked.parse(text)}
+			</div>
 		</div>
-		<div class="text-center text-sm">
+		<div class="py-1 text-center text-sm">
 			This preview provides a rough estimate how your text will look on the website.
 		</div>
 	{/if}

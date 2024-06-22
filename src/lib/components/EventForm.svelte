@@ -37,6 +37,13 @@
 	};
 
 	let state = 'save';
+	let hasImage = false;
+
+	$: if (newEvent.image) {
+		hasImage = true;
+	} else {
+		hasImage = false;
+	}
 
 	if (thisEvent) {
 		newEvent = thisEvent;
@@ -82,6 +89,10 @@
 		two: 'border-b border-l pb-1 pl-5',
 		three: 'border-b border-l-4 pb-1 pl-5 font-mono',
 		four: 'border-b border-l pb-1 pl-5'
+	};
+
+	const handleSlugChange = (e) => {
+		newEvent.slug = e.detail;
 	};
 
 	const handleSubmit = (e) => {
@@ -137,7 +148,7 @@
 			<Textarea
 				id="description"
 				placeholder="Description text"
-				rows="8"
+				rows="14"
 				name="description"
 				bind:value={newEvent.description}
 				wrap="hard"
@@ -145,13 +156,18 @@
 		</div>
 
 		<MarkdownHelp text={newEvent.description} />
-		<SlugText text={newEvent.description} />
+		<SlugText
+			text={newEvent.description}
+			slugText={newEvent.slug}
+			on:slugChange={handleSlugChange}
+		/>
 
 		<!-- Start date -->
 		<div>
 			<Label for="startdate" class="mb-2 mt-8 text-xl font-semibold">Start Date *</Label>
 			<Input type="date" id="startdate" bind:value={newEvent.startdate} required />
 		</div>
+		<p class="explanation">Please enter all dates as dd mm yyyy.</p>
 
 		<!-- Start time -->
 		<div>
@@ -264,25 +280,20 @@
 
 		<!-- Image -->
 		<div>
-			{#if newEvent.image}
-				<Label class="mb-2 mt-8 text-xl font-semibold">Uploaded image</Label>
-				<UploadImage imageUrl={newEvent.image} on:upload={assignImage} />
-			{:else}
-				<Label class="mb-2 mt-8 text-xl font-semibold">Upload image</Label>
-				<UploadImage on:upload={assignImage} />
-			{/if}
+			<Label class="mb-2 mt-8 text-xl font-semibold">Image</Label>
+			<div class="flex items-center justify-center">
+				{#if newEvent.image}
+					<UploadImage imageUrl={newEvent.image} on:upload={assignImage} />
+				{:else}
+					<UploadImage on:upload={assignImage} />
+				{/if}
+			</div>
 		</div>
-		<div class="imageMeta">
+		<div class="imageMeta" hidden={!hasImage}>
 			<div class="imageAlt">
 				<div>
-					<Label for="imageAlt" class="mb-2 mt-8 text-xl font-semibold">Image Alt text *</Label>
-					<Input
-						type="text"
-						id="imageAlt"
-						bind:value={newEvent.imageAlt}
-						disabled={!newEvent.image}
-						required
-					/>
+					<Label class="mb-2 mt-8 text-xl font-semibold">Image Alt text *</Label>
+					<Input type="text" id="imageAlt" bind:value={newEvent.imageAlt} required={hasImage} />
 					<p class="explanation">
 						This text helps interpreting the image for visually impaired users.
 					</p>

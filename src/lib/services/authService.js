@@ -1,6 +1,7 @@
-import { functions, auth } from '../firebase/firebaseConfig'; // Import Firebase auth instance
-import { authStore, unloadUser, unloadAuthStore } from '$lib/stores/AuthStore'; // Import the user store
-import { userStore } from '../stores/UserStore';
+import { functions, auth, database } from '../firebase/firebaseConfig';
+import { authStore, unloadUser, unloadAuthStore } from '$lib/stores/AuthStore';
+import { doc, setDoc } from 'firebase/firestore';
+
 import {
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
@@ -14,8 +15,9 @@ import { httpsCallable } from 'firebase/functions';
 
 // Refactor: Only make available to admins
 export async function setUserRole(uid, role) {
-	let addUserRole = httpsCallable(functions, 'addUserRole');
-	addUserRole({ uid: uid, role: role })
+	let setUserRole = httpsCallable(functions, 'setUserRole');
+	console.log({ uid: uid, role: role });
+	setUserRole({ uid: uid, role: role })
 		.then((result) => {
 			console.log('After role assignment: ', result);
 		})
@@ -124,11 +126,32 @@ export async function registerUser(newUser, password) {
 
 		const userCredential = await createUserWithEmailAndPassword(auth, newUser.email, password);
 		const authenticatedUser = userCredential.user;
+
+		// We set the displayName in the user object
 		updateProfile(authenticatedUser, {
-			displayName: newUser.firstname + '_' + newUser.lastname
+			displayName: newUser.displayName
 		});
 
-		await setUserRole({ uid: authenticatedUser.uid, role: 'user' });
+		// Set user role
+		await setUserRole(authenticatedUser.uid, 'user');
+
+		// Create user profile in Firestore
+		try {
+			const userDocRef = doc(database, 'users', authenticatedUser.uid);
+			await setDoc(
+				userDocRef,
+				{
+					firstname: newUser.firstname,
+					lastname: newUser.lastname,
+					email: newUser.email,
+					displayName: newUser.displayName
+				},
+				{ merge: true }
+			);
+		} catch (error) {
+			console.log('Error: ', error.message);
+		}
+
 		authStore.set({
 			...authStore,
 			user: authenticatedUser,

@@ -5,9 +5,10 @@
 	import { createEventDispatcher } from 'svelte';
 
 	export let text: string = '';
+	export let slugText: string = '';
 
 	let editSlug: boolean = false;
-	let slugText: string = '';
+
 	const dispatch = createEventDispatcher();
 
 	const handleChangeSlug = () => {

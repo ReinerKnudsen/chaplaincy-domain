@@ -29,7 +29,8 @@ export const unloadUser = () => {
 
 export const authHandlers = {
 	login: async (email, password) => {
-		await signInWithEmailAndPassword(auth, email, password);
+		let authenticatedUser = await signInWithEmailAndPassword(auth, email, password);
+		return authenticatedUser;
 	},
 	signup: async (email, password) => {
 		await createUserWithEmailAndPassword(auth, email, password);

@@ -1,24 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
-	import { page } from '$app/stores';
 	import { changeUserRole, listAllUsers } from '$lib/services/authService';
-	import { httpsCallable } from 'firebase/functions';
-
-	import {
-		Label,
-		Select,
-		Input,
-		Button,
-		Table,
-		TableBody,
-		TableHead,
-		TableBodyRow,
-		TableHeadCell,
-		TableBodyCell
-	} from 'flowbite-svelte';
-
-	import { pathName } from '$lib/stores/NavigationStore';
 
 	let role;
 	let email;
@@ -34,10 +16,6 @@
 		userList = await listAllUsers();
 		loading = false;
 	});
-
-	const handleClick = async () => {
-		changeUserRole(email, role);
-	};
 </script>
 
 {#if loading}
@@ -75,17 +53,6 @@
 		</tbody>
 	</table>
 {/if}
-<div class="ml-11 mt-20 flex w-6/12 flex-col justify-center">
-	<Label class="mb-7">
-		<span>Input email</span>
-		<Input class="mt-2" type="email" placeholder="email" size="lg" bind:value={email} />
-	</Label>
-	<Label class="mb-7">
-		Select a role to assign
-		<Select class="mt-2" items={roles} bind:value={role} />
-	</Label>
-	<Button class="w-4/12" on:click={handleClick}>Set role</Button>
-</div>
 
 <style>
 	table {

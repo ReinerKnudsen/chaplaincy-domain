@@ -40,22 +40,6 @@
 			</SidebarItem>
 		</SidebarGroup>
 	</SidebarWrapper>
-	{#if $page.url.pathname.includes('create')}
-		<div class="mt-10 bg-slate-100 py-2 pl-7 text-slate-600">
-			<h4>Using the editor</h4>
-			<div class="text-sm">
-				<p class="mb-2">This is how to use the editor:</p>
-				<p class="mb-2">
-					Add <b>line breaks</b> as required. The text will be displayed as it shown in the editor.
-				</p>
-				<p class="mb2">Enclose text in &lt;b&gt; and &lt;/b&gt; to print <b>bold</b> text.</p>
-				<pre class="mb-2">&lt;b&gt;bold text&lt;/b&gt;</pre>
-				<p class="mb2">Enclose text in &lt;i&gt; and &lt;/i&gt; to print <i>italic</i> text.</p>
-				<pre class="mb-2">&lt;i&gt;italic text&lt;/i&gt;</pre>
-				<p class="mb-2"></p>
-			</div>
-		</div>
-	{/if}
 </Sidebar>
 
 <style>

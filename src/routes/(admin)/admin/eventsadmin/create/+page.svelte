@@ -7,6 +7,7 @@
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
 
 	const saveNewEvent = async (e) => {
+		console.log('In page: ', e.detail);
 		try {
 			await addDoc(eventsColRef, e.detail);
 			goto('/admin/eventsadmin');

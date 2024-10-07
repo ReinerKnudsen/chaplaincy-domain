@@ -21,10 +21,18 @@
 			<Icon name="author" />
 			{thisItem.author}
 		</div>
-		<div class={`entry ${formats.itemMetaDataEntry}`}>
-			<Icon name="tags" />
-			{thisItem.tags}
-		</div>
+		{#if thisItem.tags}
+			<div class={`entry ${formats.itemMetaDataEntry}`}>
+				<Icon name="tags" />
+				{thisItem.tags}
+			</div>
+		{/if}
+		{#if thisItem.imageCaption}
+			<div class={`entry ${formats.itemMetaDataEntry}`}>
+				<Icon name="camera" />
+				{thisItem.imageCaption}
+			</div>
+		{/if}
 	</div>
 	<div class={`news-image ${formats.itemImageContainer}`}>
 		<img class={formats.itemImage} src={thisItem.image} alt={thisItem.title} />

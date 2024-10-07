@@ -1,6 +1,7 @@
 <script>
 	import author from '$lib/assets/icons/author.svg?raw';
 	import calendar from '$lib/assets/icons/calendar.svg?raw';
+	import camera from '$lib/assets/icons/camera.svg?raw';
 	import clock from '$lib/assets/icons/clock.svg?raw';
 	import left from '$lib/assets/icons/arrow-left.svg?raw';
 	import location from '$lib/assets/icons/location.svg?raw';
@@ -27,6 +28,10 @@
 		calendar: {
 			box: 24,
 			svg: calendar
+		},
+		camera: {
+			box: 24,
+			svg: camera
 		},
 		clock: {
 			box: 24,

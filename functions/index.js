@@ -1,3 +1,8 @@
+/* eslint-disable object-curly-spacing */
+/* eslint-disable quotes */
+/* eslint-disable no-tabs */
+/* eslint-disable indent */
+/* eslint-disable max-len */
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
@@ -46,7 +51,7 @@ exports.setUserRole = functions.https.onCall(async (data, context) => {
 // Get user profile
 // *****************************************************************************************
 
-exports.getUserProfile = functions.https.onCall(async (data, context) => {
+exports.getUserProfile = functions.https.onCall(async (data) => {
 	try {
 		const user = await admin.auth().getUser(data.uid);
 		return {
@@ -54,7 +59,7 @@ exports.getUserProfile = functions.https.onCall(async (data, context) => {
 				uid: user.uid,
 				email: user.email,
 				displayName: user.displayName,
-				role: user.customClaims?.role
+				role: user.customClaims.role
 				// add any other user properties you want to return
 			}
 		};
@@ -67,7 +72,7 @@ exports.getUserProfile = functions.https.onCall(async (data, context) => {
 // Update user profile
 // *****************************************************************************************
 
-exports.updateUserProfile = functions.https.onCall(async (data, context) => {
+exports.updateUserProfile = functions.https.onCall(async (data) => {
 	// update (depending on the updated data in "data")
 	// - name
 	// - email
@@ -103,7 +108,7 @@ exports.listUsers = functions.https.onCall((data, context) => {
 		.auth()
 		.listUsers()
 		.then((listUsersResult) => {
-			let users = [];
+			const users = [];
 			listUsersResult.users.forEach((userRecord) => {
 				users.push(userRecord.toJSON());
 			});
@@ -113,4 +118,22 @@ exports.listUsers = functions.https.onCall((data, context) => {
 			console.log('Error listing users:', error);
 			return { error: 'Error listing users' };
 		});
+});
+
+// *****************************************************************************************
+// Create new user without password and initiate password reset
+// *****************************************************************************************
+exports.createUser = functions.https.onCall(async (data) => {
+	try {
+		const user = await admin.auth().createUser({
+			email: data.email,
+			displayName: data.displayName
+		});
+		await admin.auth().setCustomUserClaims(user.uid, {
+			role: data.role
+		});
+		return user;
+	} catch (error) {
+		throw new functions.https.HttpsError('internal', error.message, error);
+	}
 });

@@ -62,12 +62,12 @@
 				>
 			</div>
 			<Button type="submit" class="w-full bg-primary-80 text-white-primary">Sign in</Button>
-			<p class="text-sm font-light text-gray-500 dark:text-gray-400">
+			<!--<p class="text-sm font-light text-gray-500 dark:text-gray-400">
 				Don’t have an account yet? <a
 					href="/register"
 					class="text-primary-600 dark:text-primary-500 font-medium hover:underline">Sign up</a
 				>
-			</p>
+			</p> -->
 		</form>
 	</div>
 </div>

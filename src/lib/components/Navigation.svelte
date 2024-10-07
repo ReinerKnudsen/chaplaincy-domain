@@ -115,7 +115,7 @@
 					<a href="" class="text-xl" on:click|preventDefault={toggleDropdown}>About us</a>
 					{#if showDropdown}
 						<div
-							class="absolute left-0 mt-2 w-48 rounded-md bg-white-primary shadow-lg ring-1 ring-black ring-opacity-5"
+							class="ring-black absolute left-0 mt-2 w-48 rounded-md bg-white-primary shadow-lg ring-1 ring-opacity-5"
 						>
 							<div
 								class="py-1"
@@ -165,7 +165,7 @@
 						<a
 							href="/login"
 							class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-							>Register/Sign in</a
+							>Sign in</a
 						>
 					</li>
 				{:else}

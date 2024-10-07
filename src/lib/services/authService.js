@@ -16,7 +16,6 @@ import { httpsCallable } from 'firebase/functions';
 // Refactor: Only make available to admins
 export async function setUserRole(uid, role) {
 	let setUserRole = httpsCallable(functions, 'setUserRole');
-	console.log({ uid: uid, role: role });
 	setUserRole({ uid: uid, role: role })
 		.then((result) => {
 			console.log('After role assignment: ', result);
@@ -84,6 +83,20 @@ export async function getUserRole(user) {
 }
 
 // *****************************************************************************************
+// Create new with email, displayName and role
+// *****************************************************************************************
+
+export async function createNewUser({ email, displayName, role }) {
+	try {
+		let createUser = httpsCallable(functions, 'createUser');
+		const newUser = await createUser({ email, displayName, role });
+		console.log(newUser);
+	} catch (error) {
+		console.log("Couldn't create user ", error);
+	}
+}
+
+// *****************************************************************************************
 // Sign in user with email and password
 // *****************************************************************************************
 
@@ -120,20 +133,24 @@ export async function signInExistingUser(email, password) {
 // Register new user with email and password
 // *****************************************************************************************
 
-export async function registerUser(newUser, password) {
+export async function registerUser({ email, displayName, firstname, lastname, role }, password) {
 	try {
 		authStore.update((store) => ({ ...store, loading: true, error: null }));
 
-		const userCredential = await createUserWithEmailAndPassword(auth, newUser.email, password);
-		const authenticatedUser = userCredential.user;
+		if (password) {
+			const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+			const authenticatedUser = userCredential.user;
 
-		// We set the displayName in the user object
-		updateProfile(authenticatedUser, {
-			displayName: newUser.displayName
-		});
+			// We set the displayName in the user object
+			updateProfile(authenticatedUser, {
+				displayName: displayName
+			});
 
-		// Set user role
-		await setUserRole(authenticatedUser.uid, 'user');
+			// Set user role
+			if (role) {
+				await setUserRole(authenticatedUser.uid, role);
+			}
+		}
 
 		// Create user profile in Firestore
 		try {
@@ -141,10 +158,10 @@ export async function registerUser(newUser, password) {
 			await setDoc(
 				userDocRef,
 				{
-					firstname: newUser.firstname,
-					lastname: newUser.lastname,
-					email: newUser.email,
-					displayName: newUser.displayName
+					firstname: firstname,
+					lastname: lastname,
+					email: email,
+					displayName: displayName
 				},
 				{ merge: true }
 			);

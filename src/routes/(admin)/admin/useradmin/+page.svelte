@@ -1,6 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 	import { changeUserRole, listAllUsers } from '$lib/services/authService';
+	import { Button } from 'flowbite-svelte';
+	import { goto } from '$app/navigation';
 
 	let role;
 	let email;
@@ -16,6 +18,10 @@
 		userList = await listAllUsers();
 		loading = false;
 	});
+
+	const handleCreateUser = () => {
+		goto('/admin/useradmin/create');
+	};
 </script>
 
 {#if loading}
@@ -52,6 +58,13 @@
 			{/each}
 		</tbody>
 	</table>
+	<div class="mt-10">
+		<Button
+			type="button"
+			class="w-3/12 bg-primary-80 text-white-primary"
+			on:click={handleCreateUser}>Create user</Button
+		>
+	</div>
 {/if}
 
 <style>

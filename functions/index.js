@@ -8,13 +8,6 @@ admin.initializeApp();
 // *****************************************************************************************
 
 exports.setUserRole = functions.https.onCall(async (data, context) => {
-	if (!context.auth) {
-		throw new functions.https.HttpsError(
-			'unauthenticated',
-			'The function must be called while authenticated.'
-		);
-	}
-
 	try {
 		let user;
 		if (data.uid) {
@@ -27,7 +20,6 @@ exports.setUserRole = functions.https.onCall(async (data, context) => {
 				'Must provide a valid UID or email.'
 			);
 		}
-		console.log('User identified: ', user);
 		if (!data.role) {
 			throw new functions.https.HttpsError('invalid-argument', 'Must provide a role to assign.');
 		}
@@ -113,4 +105,22 @@ exports.listUsers = functions.https.onCall((data, context) => {
 			console.log('Error listing users:', error);
 			return { error: 'Error listing users' };
 		});
+});
+
+// *****************************************************************************************
+// Create new user without password and initiate password reset
+// *****************************************************************************************
+exports.createUser = functions.https.onCall(async (data, context) => {
+	try {
+		const user = await admin.auth().createUser({
+			email: data.email,
+			displayName: data.displayName
+		});
+		await admin.auth().setCustomUserClaims(user.uid, {
+			role: data.role
+		});
+		return user;
+	} catch (error) {
+		throw new functions.https.HttpsError('internal', error.message, error);
+	}
 });

@@ -161,6 +161,7 @@
 						id="imageCaption"
 						bind:value={newItem.imageCaption}
 						disabled={!newItem.image}
+						placeholder="Image by "
 					/>
 					<p class="explanation">This text will be displayed below the image.</p>
 				</div>

@@ -302,7 +302,13 @@
 			<div class="imageCaption mt-10">
 				<div>
 					<Label for="imageCaption" class="mb-2 mt-8 text-xl font-semibold">Image caption</Label>
-					<Input type="text" id="imageCaption" bind:value={newEvent.imageCaption} />
+					<Input
+						type="text"
+						id="imageCaption"
+						bind:value={newEvent.imageCaption}
+						disabled={!newEvent.image}
+						placeholder="Image by "
+					/>
 					<p class="explanation">This text will be displayed below the image.</p>
 				</div>
 			</div>

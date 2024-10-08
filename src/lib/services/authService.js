@@ -5,7 +5,8 @@ import { doc, setDoc } from 'firebase/firestore';
 import {
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
-	updateProfile
+	updateProfile,
+	sendPasswordResetEmail
 } from 'firebase/auth';
 import { httpsCallable } from 'firebase/functions';
 
@@ -86,11 +87,38 @@ export async function getUserRole(user) {
 // Create new with email, displayName and role
 // *****************************************************************************************
 
-export async function createNewUser({ email, displayName, role }) {
+export async function createNewUser({ email, displayName, role, firstname, lastname }) {
+	console.log('Parameters: ', email, displayName, role, firstname, lastname);
 	try {
 		let createUser = httpsCallable(functions, 'createUser');
 		const newUser = await createUser({ email, displayName, role });
+		const uid = newUser.data.uid;
 		console.log(newUser);
+
+		// Create user profile in Firestore
+		console.log('Create user profile in Firestore: ', database, uid);
+		try {
+			const userDocRef = doc(database, 'users', uid);
+			await setDoc(
+				userDocRef,
+				{
+					firstname: firstname,
+					lastname: lastname,
+					email: email,
+					displayName: displayName
+				},
+				{ merge: true }
+			);
+		} catch (error) {
+			console.log('Error: ', error);
+		}
+		const BASE_URL = import.meta.env.VITE_BASE_URL;
+		const actionCodeSettings = {
+			url: `${BASE_URL}/passwordreset`,
+			handleCodeInApp: true
+		};
+		await sendPasswordResetEmail(auth, newUser.data.email, actionCodeSettings);
+		return newUser;
 	} catch (error) {
 		console.log("Couldn't create user ", error);
 	}
@@ -136,13 +164,13 @@ export async function signInExistingUser(email, password) {
 export async function registerUser({ email, displayName, firstname, lastname, role }, password) {
 	try {
 		authStore.update((store) => ({ ...store, loading: true, error: null }));
-
+		let authenticatedUser;
 		if (password) {
 			const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-			const authenticatedUser = userCredential.user;
+			authenticatedUser = userCredential.user;
 
 			// We set the displayName in the user object
-			updateProfile(authenticatedUser, {
+			await updateProfile(authenticatedUser, {
 				displayName: displayName
 			});
 

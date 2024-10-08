@@ -1,12 +1,27 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import type { User } from '../../../../../lib/types';
 	import { Button, Label, Input, Select } from 'flowbite-svelte';
-	import { registerUser } from '../../../../../lib/services/authService';
+	import { createNewUser } from '../../../../../lib/services/authService';
 
-	onMount(() => {
-		document.getElementById('firstname').focus();
-	});
+	type User = {
+		firstname: string;
+		lastname: string;
+		email: string;
+		displayName: string;
+		uid: string;
+		role: string;
+	};
+
+	let initUser: User = {
+		firstname: '',
+		lastname: '',
+		email: '',
+		displayName: '',
+		uid: '',
+		role: ''
+	};
 
 	let errorObject = {
 		emailErr: '',
@@ -22,19 +37,20 @@
 		{ value: 'admin', name: 'Admin' }
 	];
 
-	let newUser: User = {
-		firstname: '',
-		lastname: '',
-		email: '',
-		displayName: '',
-		uid: '',
-		role: ''
+	let newUser = initUser;
+
+	onMount(() => {
+		document.getElementById('firstname').focus();
+	});
+
+	const resetForm = () => {
+		newUser = initUser;
 	};
 
 	const create = async (e) => {
 		e.preventDefault();
-		const user = await registerUser(newUser, 'initialPW01265');
-		console.log('Zurück auf der Seite ', user);
+		const user = await createNewUser(newUser);
+		goto('/admin/useradmin');
 	};
 </script>
 

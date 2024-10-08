@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import type { User } from '../../../../../lib/types';
 	import { Button, Label, Input, Select } from 'flowbite-svelte';
-	import { registerUser } from '../../../../../lib/services/authService';
+	import { createNewUser } from '../../../../../lib/services/authService';
 
 	type User = {
 		firstname: string;
@@ -48,9 +49,8 @@
 
 	const create = async (e) => {
 		e.preventDefault();
-		const user = await registerUser(newUser, 'initialPW01265');
-		console.log('Zurück auf der Seite ', user);
-		resetForm();
+		const user = await createNewUser(newUser);
+		goto('/admin/useradmin');
 	};
 </script>
 

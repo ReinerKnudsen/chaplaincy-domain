@@ -86,11 +86,35 @@ export async function getUserRole(user) {
 // Create new with email, displayName and role
 // *****************************************************************************************
 
-export async function createNewUser({ email, displayName, role }) {
+export async function createNewUser({ email, displayName, role, firstname, lastname }) {
 	try {
 		let createUser = httpsCallable(functions, 'createUser');
 		const newUser = await createUser({ email, displayName, role });
-		console.log(newUser);
+
+		// We set the displayName in the user object
+		updateProfile(newUser, {
+			displayName: displayName,
+			email: newUser.email
+		});
+
+		// Create user profile in Firestore
+		try {
+			const userDocRef = doc(database, 'users', newUser.uid);
+			await setDoc(
+				userDocRef,
+				{
+					firstname: firstname,
+					lastname: lastname,
+					email: email,
+					displayName: displayName
+				},
+				{ merge: true }
+			);
+		} catch (error) {
+			console.log('Error: ', error.message);
+		}
+
+		return newUser;
 	} catch (error) {
 		console.log("Couldn't create user ", error);
 	}

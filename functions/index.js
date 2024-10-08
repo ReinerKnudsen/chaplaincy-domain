@@ -65,23 +65,20 @@ exports.getUserProfile = functions.https.onCall(async (data) => {
 // *****************************************************************************************
 
 exports.updateUserProfile = functions.https.onCall(async (data) => {
-	// update (depending on the updated data in "data")
-	// - name
-	// - email
-	// - role
-
 	try {
 		const user = await admin.auth().getUser(data.uid);
 		await admin.auth().updateUser(user.uid, {
 			displayName: data.displayName,
 			email: data.email
 		});
-		await admin.auth().setCustomUserClaims(user.uid, {
-			role: data.role
-		});
-		return {
-			message: `Success! User profile updated.`
-		};
+		if (data.role) {
+			await admin.auth().setCustomUserClaims(user.uid, {
+				role: data.role
+			});
+			return {
+				message: `Success! User profile updated.`
+			};
+		}
 	} catch (error) {
 		return error;
 	}

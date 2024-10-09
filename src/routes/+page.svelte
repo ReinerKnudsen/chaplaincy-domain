@@ -5,6 +5,8 @@
 	import ServiceCard from '$lib/components/ServiceCard.svelte';
 	import ItemCard from '../lib/components/ItemCard.svelte';
 
+	import { authStore } from '$lib/stores/AuthStore';
+
 	import mainhero from '$lib/assets/mainhero.webp';
 	import Icon from '$lib/components/Icon.svelte';
 	import servicesData from '$lib/services.json';
@@ -16,10 +18,13 @@
 		}
 		return service;
 	});
+
 	export let data;
 
-	onMount(() => {
-		//imageUrl = `url(${STORAGE_IMAGES}heroes/mainhero.png)`;
+	$: authStore.subscribe((store) => {
+		if (store.user) {
+			console.log('User: ', store.user.uid);
+		}
 	});
 
 	const header = 'text-2xl text-justify w-full px-5 font-semibold';

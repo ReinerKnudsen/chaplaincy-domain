@@ -14,6 +14,26 @@ import { httpsCallable } from 'firebase/functions';
 // Set user role
 // *****************************************************************************************
 
+export async function changeUserRoleFetch(uid, role) {
+	const response = await fetch(
+		'https://us-central1-chaplaincy-website-bncgn.cloudfunctions.net/changeUserRole',
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ uid: uid, role: role })
+		}
+	);
+
+	if (response.ok) {
+		const result = await response.json();
+		console.log('After role assignment: ', result);
+	} else {
+		console.log('Error setting role:', response.statusText);
+	}
+}
+
 // Refactor: Only make available to admins
 export async function setUserRole(uid, role) {
 	let setUserRole = httpsCallable(functions, 'setUserRole');
@@ -77,6 +97,9 @@ export async function getUserByID(uid) {
 	}
 }
 
+// *****************************************************************************************
+// Get user role
+// *****************************************************************************************
 export async function getUserRole(user) {
 	return user.getIdTokenResult().then((idTokenResult) => {
 		return idTokenResult.claims.role;
@@ -86,7 +109,6 @@ export async function getUserRole(user) {
 // *****************************************************************************************
 // Create new with email, displayName and role
 // *****************************************************************************************
-
 export async function createNewUser({ email, displayName, role, firstname, lastname }) {
 	console.log('Parameters: ', email, displayName, role, firstname, lastname);
 	try {

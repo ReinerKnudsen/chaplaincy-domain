@@ -24,7 +24,6 @@
 
 	$: authStore.subscribe((store) => {
 		user = store;
-		console.log('Navigation', user);
 	});
 
 	const handleLogout = () => {

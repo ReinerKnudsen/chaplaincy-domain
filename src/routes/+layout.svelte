@@ -2,26 +2,40 @@
 	import '/src/app.pcss';
 	import Navigation from '$lib/components/Navigation.svelte';
 	import Footer from '$lib/components/Footer.svelte';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	import '@fontsource-variable/raleway';
 
-	import { auth, firebaseApp } from '$lib/firebase/firebaseConfig';
+	import { getAuth, onAuthStateChanged } from 'firebase/auth';
+	import { firebaseApp } from '$lib/firebase/firebaseConfig';
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
 	import { getUserRole } from '$lib/services/authService';
 
+	let unsubscribe;
+
+	const auth = getAuth();
+
+	const clearUser = () => {
+		unloadUser();
+	};
+
+	$: if (authStore.user) {
+		console.log('User: ', authStore.user);
+	}
+
+	/** Wir initialisieren den AuthStateListener */
 	onMount(() => {
 		if (!authStore.user) {
-			const unsubscribe = auth.onAuthStateChanged(async (user) => {
+			unsubscribe = onAuthStateChanged(auth, async (user) => {
 				if (user) {
-					let role = await getUserRole(user);
+					const role = await getUserRole(user);
 					authStore.update((curr) => {
 						return {
 							...curr,
 							user: user,
 							isLoggedIn: !!user,
 							isLoading: false,
-							name: user.displayName,
+							name: user.displayName || 'no-name',
 							role: role
 						};
 					});
@@ -29,6 +43,12 @@
 					unloadUser();
 				}
 			});
+		}
+	});
+
+	onDestroy(() => {
+		if (unsubscribe) {
+			unsubscribe();
 		}
 	});
 </script>

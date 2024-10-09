@@ -37,7 +37,6 @@ export const newsColRef = collection(database, 'news');
 export const userCollectionReference = collection(database, 'users');
 
 // Create storage references
-//export const userStoreRef = ref(storage, 'users');
 export const eventsStoreRef = ref(storage, 'events');
 export const articlesStoreRef = ref(storage, 'articles');
 export const docsStorageRef = ref(storage, 'documents');

@@ -18,7 +18,14 @@
 	import { signOut } from 'firebase/auth';
 	import caplogo from '$lib/assets/chaplaincy_logo.png';
 
+	let user;
+
 	$: activeUrl = $page.url.pathname;
+
+	$: authStore.subscribe((store) => {
+		user = store;
+		console.log('Navigation', user);
+	});
 
 	const handleLogout = () => {
 		signOut(auth)

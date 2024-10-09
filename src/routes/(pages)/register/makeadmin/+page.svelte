@@ -2,12 +2,18 @@
 	import { authStore } from '$lib/stores/AuthStore';
 	import { changeUserRole } from '$lib/services/authService';
 	import { Button } from 'flowbite-svelte';
+	import { goto } from '$app/navigation';
+
+	const isEnabled = import.meta.env.VITE_ENABLE_MAKEADMIN === 'true';
+	console.log('isEnabled', isEnabled);
+	if (!isEnabled) {
+		goto('/');
+	}
 
 	let auth;
 
 	$: authStore.subscribe((store) => {
 		auth = store;
-		console.log(auth);
 	});
 
 	const setAdminRole = async (email) => {
@@ -22,7 +28,6 @@
 			}
 		);
 		const data = await response.text();
-		console.log(data); // Gibt die Antwort der Cloud Function aus
 	};
 
 	const makeadmin = () => {

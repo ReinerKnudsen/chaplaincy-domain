@@ -19,12 +19,13 @@
 		return service;
 	});
 
+	let user;
+
 	export let data;
 
 	$: authStore.subscribe((store) => {
-		if (store.user) {
-			console.log('User: ', store.user.uid);
-		}
+		user = store.user;
+		console.log(user);
 	});
 
 	const header = 'text-2xl text-justify w-full px-5 font-semibold';

@@ -1,5 +1,0 @@
-import{s as n,t as i,d as p,i as m,n as l,f as c}from"../chunks/scheduler.B2j_u3VX.js";import{S as f,i as d,c as h,b as g,m as u,t as _,a as y,d as $}from"../chunks/index.gBPXUQn8.js";import{P as b}from"../chunks/PageHeader.D7aM7TKc.js";function v(r){let a,t,o;return a=new b({props:{headerData:r[0],textStlye:"white"}}),{c(){h(a.$$.fragment),t=i(`
-
-This page will provide both a list of prayers for this week and a form to ask for prayers.`)},l(e){g(a.$$.fragment,e),t=p(e,`
-
-This page will provide both a list of prayers for this week and a form to ask for prayers.`)},m(e,s){u(a,e,s),m(e,t,s),o=!0},p:l,i(e){o||(_(a.$$.fragment,e),o=!0)},o(e){y(a.$$.fragment,e),o=!1},d(e){e&&c(t),$(a,e)}}}function w(r){return[{title:"Prayers",photoName:"Milada Vigerova",photoUrl:"https://unsplash.com/@milada_vigerova",imageUrl:"https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fstock%2Fprayer.jpg?alt=media&token=d2840015-356f-43dc-8408-19637a86e9bd"}]}class D extends f{constructor(a){super(),d(this,a,w,v,n,{})}}export{D as component};

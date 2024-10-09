@@ -6,7 +6,7 @@
 	import { database } from '$lib/firebase/firebaseConfig';
 
 	import { Label, Input, Select, Button } from 'flowbite-svelte';
-	import { setUserRole, updateUserProfile } from '$lib/services/authService';
+	import { updateUserProfile } from '$lib/services/authService';
 	import { onMount } from 'svelte';
 
 	const userID = $page.params.userID;
@@ -44,12 +44,10 @@
 		goto('/admin/useradmin');
 	};
 
-	const handleSetRole = async () => {
-		setUserRole(userID, 'admin');
-	};
+	const handleSetRole = async () => {};
 </script>
 
-<form>
+<form on:submit|preventDefault={handleSave}>
 	<div class="mb-6 grid gap-6 md:grid-cols-2">
 		<div class="mb-6">
 			<Label for="firstname" class="mb-2 block">First Name</Label>
@@ -80,13 +78,13 @@
 	</div>
 	<div class="mx-[25%] mb-6 flex flex-row justify-between">
 		<Button
+			type="button"
 			class="w-40 justify-self-center bg-primary-100 align-middle text-white-primary"
 			on:click={handleCancel}>Cancel</Button
 		>
 		<Button
 			type="submit"
-			class="w-40 justify-self-center bg-primary-100 align-middle text-white-primary"
-			on:click={handleSave}>Save</Button
+			class="w-40 justify-self-center bg-primary-100 align-middle text-white-primary">Save</Button
 		>
 	</div>
 </form>

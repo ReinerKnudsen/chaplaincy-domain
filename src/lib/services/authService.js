@@ -11,22 +11,6 @@ import {
 import { httpsCallable } from 'firebase/functions';
 
 // *****************************************************************************************
-// Set user role
-// *****************************************************************************************
-
-// Refactor: Only make available to admins
-export async function setUserRole(uid, role) {
-	let setUserRole = httpsCallable(functions, 'setUserRole');
-	setUserRole({ uid: uid, role: role })
-		.then((result) => {
-			console.log('After role assignment: ', result);
-		})
-		.catch((err) => {
-			console.log(err.message);
-		});
-}
-
-// *****************************************************************************************
 // List all users (only for admins)
 // *****************************************************************************************
 
@@ -46,7 +30,7 @@ export const listAllUsers = async () => {
 
 // Refactor: Only make available to admins
 export async function changeUserRole(email, role) {
-	let addUserRole = httpsCallable(functions, 'addUserRole');
+	let addUserRole = httpsCallable(functions, 'setUserRole');
 	addUserRole({ email: email, role: role })
 		.then((result) => {
 			console.log('After role assignment: ', result);
@@ -77,6 +61,9 @@ export async function getUserByID(uid) {
 	}
 }
 
+// *****************************************************************************************
+// Get user role
+// *****************************************************************************************
 export async function getUserRole(user) {
 	return user.getIdTokenResult().then((idTokenResult) => {
 		return idTokenResult.claims.role;
@@ -86,7 +73,6 @@ export async function getUserRole(user) {
 // *****************************************************************************************
 // Create new with email, displayName and role
 // *****************************************************************************************
-
 export async function createNewUser({ email, displayName, role, firstname, lastname }) {
 	console.log('Parameters: ', email, displayName, role, firstname, lastname);
 	try {

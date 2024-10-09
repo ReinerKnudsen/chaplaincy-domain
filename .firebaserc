@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "chaplaincy-website-bncgn"
-  }
+    "default": "chaplaincy-website-bncgn",
+    "prod": "chaplaincy-website-prod"
+  },
+  "targets": {},
+  "etags": {}
 }

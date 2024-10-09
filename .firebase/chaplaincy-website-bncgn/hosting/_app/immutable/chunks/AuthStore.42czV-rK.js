@@ -1,1 +1,0 @@
-import"./index-219c3cac.UombHsWy.js";import{w as a}from"./index.dXv7nqs0.js";import"./firebaseConfig.hXLAg77p.js";const t={user:null,loading:!1,error:null,isLoggedIn:!1,role:"",name:""},o=a(t),l=()=>{o.set(t)},n=()=>{o.set(t)};export{o as a,n as b,l as u};

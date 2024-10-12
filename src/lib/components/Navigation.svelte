@@ -20,6 +20,8 @@
 
 	let user;
 
+	console.log('Navigation loaded :', new Date());
+
 	$: activeUrl = $page.url.pathname;
 
 	$: authStore.subscribe((store) => {

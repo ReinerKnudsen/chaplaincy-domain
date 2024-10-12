@@ -13,6 +13,8 @@
 
 	let unsubscribe;
 
+	console.log('Layout loaded :', new Date());
+
 	const auth = getAuth();
 
 	const clearUser = () => {

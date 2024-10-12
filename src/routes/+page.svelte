@@ -6,6 +6,8 @@
 	import ItemCard from '../lib/components/ItemCard.svelte';
 
 	import { authStore } from '$lib/stores/AuthStore';
+	import { query, getDocs, where, orderBy, limit } from 'firebase/firestore';
+	import { newsColRef, eventsColRef } from '$lib/firebase/firebaseConfig';
 
 	import mainhero from '$lib/assets/mainhero.webp';
 	import Icon from '$lib/components/Icon.svelte';
@@ -20,8 +22,62 @@
 	});
 
 	let user;
+	let loading = true;
+	let news = [];
+	let events = [];
 
-	export let data;
+	const loadEvents = async () => {
+		const today = new Date();
+		try {
+			const a = query(
+				eventsColRef,
+				where('publishDateTime', '<', today),
+				where('unpublishDateTime', '>', today),
+				orderBy('publishDateTime', 'asc')
+				//limit(2)
+			);
+			let snapshot2 = await getDocs(a);
+			if (snapshot2.exists) {
+				events = snapshot2.docs.map((item) => {
+					return {
+						id: item.id,
+						data: item.data()
+					};
+				});
+				return events;
+			} else {
+				console.log('No matching documents.');
+			}
+		} catch (err) {
+			console.log('Error while loading events:', err);
+		}
+	};
+
+	const loadNews = async () => {
+		try {
+			const q = query(newsColRef, orderBy('publishdate', 'desc'), limit(2));
+			let snapshot = await getDocs(q);
+			if (snapshot.exists) {
+				news = snapshot.docs.map((item) => {
+					return {
+						id: item.id,
+						data: item.data()
+					};
+				});
+				return news;
+			} else {
+				console.log('No matching documents.');
+			}
+		} catch (err) {
+			console.log('Error while loading news:', err);
+		}
+	};
+
+	onMount(async () => {
+		let result = await loadEvents();
+		let result2 = await loadNews();
+		loading = false;
+	});
 
 	$: authStore.subscribe((store) => {
 		user = store.user;
@@ -36,9 +92,9 @@
 	const sectionHeader = 'text-xl text-justify w-full px-5 pt-4 font-semibold';
 	const sectionHeaderMd = 'md:text-3xl md:px-10 md:pt-10 md:py-3';
 	const sectionHeaderXl = 'xl:text-4xl xl:px-10 xl:pt-14 xl:py-5 ';
-	const container = 'mb-5';
+	const container = 'mb-5 w-full';
 	const containerLg = 'lg:mb-10';
-	const services = 'px-5 py-5 grid grid-cols-1 gap-5';
+	const services = 'px-5 py-5 flex flex-row gap-5 w-full';
 	const servicesMd = 'md:grid-cols-2 md:gap-8 md:px-10 ';
 	const servicesXL = 'xl:grid xl:grid-cols-4 xl:gap-8 xl:px-5 ';
 	const itemContainer = 'px-5 grid grid-cols-1';
@@ -49,108 +105,116 @@
 	const downloadContainerXL = 'xl:grid xl:grid-cols-4 xl:justify-items-center xl:px-5';
 </script>
 
-<div class={`page-title ${header} ${headerLg} ${headerXl}`}>
-	Anglican Chaplaincy of Bonn and Cologne
-</div>
-<div class={`sub-title ${subTitle} ${subTitleLg} ${subTitleXl} `}>
-	St. Boniface, Bonn and All Saints, Cologne
-</div>
-<div class="image-container">
-	<img src={mainhero} alt="main hero" />
-</div>
-
-<!-- Section: Service Times -->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
-	Our regular worship services
-</div>
-<div class={`container ${container} ${containerLg}`}>
-	<div class={`services ${services} ${servicesMd} ${servicesXL}`}>
-		{#each servicesArray as service}
-			<ServiceCard {service} />
-		{/each}
+{#if loading}
+	<div>loading...</div>
+{:else}
+	<div class={`page-title ${header} ${headerLg} ${headerXl}`}>
+		Anglican Chaplaincy of Bonn and Cologne
 	</div>
-</div>
-<hr class="mx-auto w-[80%]" />
-
-<!-- News -->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
-	News and Notices
-</div>
-<div class={`container ${container} ${containerLg}`}>
-	<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
-		{#each data.news as item}
-			<ItemCard {item} kind="news" />
-		{/each}
+	<div class={`sub-title ${subTitle} ${subTitleLg} ${subTitleXl} `}>
+		St. Boniface, Bonn and All Saints, Cologne
 	</div>
-	<div class="more-link mb-8">
-		<a class="cool-link" href="/news">See all news articles</a>
+	<div class="image-container">
+		<img src={mainhero} alt="main hero" />
 	</div>
-</div>
-<hr class="mx-auto w-[80%]" />
 
-<!-- Section: Events 	-->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
-	Upcoming Events
-</div>
-<div class={`container ${container} ${containerLg}`}>
-	<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
-		{#if data.events.length > 0}
-			{#each data.events as event}
-				<ItemCard item={event} kind="events" />
+	<!-- Section: Service Times -->
+	<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
+		Our regular worship services
+	</div>
+	<div class="mb-5 w-full lg:mb-10">
+		<div class={`services ${services} ${servicesMd} ${servicesXL}`}>
+			{#each servicesArray as service}
+				<ServiceCard {service} />
 			{/each}
-		{:else}
-			<p>Currently there are no events scheduled</p>
+		</div>
+	</div>
+	<hr class="mx-auto w-[80%]" />
+
+	<!-- News -->
+	<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
+		News and Notices
+	</div>
+	<div class="mb-5 w-full lg:mb-10">
+		<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
+			{#each news as item}
+				<ItemCard {item} kind="news" />
+			{/each}
+		</div>
+		<div class="more-link mb-8">
+			<a class="cool-link" href="/news">See all news articles</a>
+		</div>
+	</div>
+	<hr class="mx-auto w-[80%]" />
+
+	<!-- Section: Events 	-->
+	<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
+		Upcoming Events
+	</div>
+	<div class="mb-5 w-full lg:mb-10">
+		<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
+			{#if events.length > 0}
+				{#each events as event}
+					<ItemCard item={event} kind="events" />
+				{/each}
+			{:else}
+				<p>Currently there are no events scheduled</p>
+			{/if}
+		</div>
+		{#if events.length > 1}
+			<div class="more-link mb-8">
+				<a class="cool-link" href="/news">See all events</a>
+			</div>
 		{/if}
 	</div>
-	{#if data.events.length > 1}
-		<div class="more-link mb-8">
-			<a class="cool-link" href="/news">See all events</a>
+	<hr class="mx-auto w-[80%]" />
+	<!-- About us -->
+	<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
+		Who we are
+	</div>
+	<div class="single-post">
+		<div class="more-link">
+			<a class="cool-link" href="/about">Learn more</a>
 		</div>
-	{/if}
-</div>
-<hr class="mx-auto w-[80%]" />
-<!-- About us -->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Who we are</div>
-<div class="single-post">
-	<div class="more-link">
-		<a class="cool-link" href="/about">Learn more</a>
 	</div>
-</div>
 
-<!-- Safeguarding -->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
-	Safeguarding
-</div>
-<div class="single-post">
-	<div class="more-link">
-		<a class="cool-link" href="/about">Learn more</a>
+	<!-- Safeguarding -->
+	<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
+		Safeguarding
 	</div>
-</div>
+	<div class="single-post">
+		<div class="more-link">
+			<a class="cool-link" href="/about">Learn more</a>
+		</div>
+	</div>
 
-<div class="downloads">
-	<h2 class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Downloads</h2>
-</div>
-<div class={`container ${container} ${containerLg}`}>
-	<!--<div
+	<div class="downloads">
+		<h2 class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
+			Downloads
+		</h2>
+	</div>
+	<div class="mb-5 w-full lg:mb-10">
+		<!--<div
 		class={`download-container ${downloadContainer} ${downloadContainerLg} ${downloadContainerXL}`}
 	>-->
-	<div
-		class={`download-container ${downloadContainer} ${downloadContainerLg} ${downloadContainerXL}`}
-	>
-		<div class="download-item mt-10">
-			Weekly Sheet
-			<div class="circle">
-				<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
+		<div
+			class={`download-container ${downloadContainer} ${downloadContainerLg} ${downloadContainerXL}`}
+		>
+			<div class="download-item mt-10">
+				Weekly Sheet
+				<div class="circle">
+					<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
+				</div>
 			</div>
-		</div>
-		<div class="download-item mt-10">
-			Newsletter
-			<div class="circle">
-				<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
+			<div class="download-item mt-10">
+				Newsletter
+				<div class="circle">
+					<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+{/if}
 
 <style>
 	.more-link {

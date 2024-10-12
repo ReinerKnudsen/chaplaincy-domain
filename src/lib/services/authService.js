@@ -10,6 +10,8 @@ import {
 } from 'firebase/auth';
 import { httpsCallable } from 'firebase/functions';
 
+console.log('AuthService loaded');
+
 // *****************************************************************************************
 // List all users (only for admins)
 // *****************************************************************************************

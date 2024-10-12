@@ -26,7 +26,7 @@
 			await confirmPasswordReset(auth, oobCode, newPassword);
 			goto('/login');
 		} catch (error) {
-			console.log('Fehler: ', error.message);
+			console.log('Error - could not reset password: ', error.message);
 		}
 	};
 

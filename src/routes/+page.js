@@ -45,15 +45,3 @@ export const load = async () => {
 		console.log('Error while loading events:', err);
 	}
 };
-
-/** Gib mal die enviroment variablen aus. */
-
-let env = {
-	APIKEY: import.meta.env.VITE_APIKEY,
-	AUTHDOMAIN: import.meta.env.VITE_AUTHDOMAIN,
-	PROJECTID: import.meta.env.VITE_PROJECTID,
-	APPID: import.meta.env.VITE_APPID,
-	BASE_URL: import.meta.env.VITE_BASE_URL
-};
-
-console.log(env);

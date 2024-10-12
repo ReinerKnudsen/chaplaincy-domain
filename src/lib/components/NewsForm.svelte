@@ -57,7 +57,6 @@
 			!newItem.publishdate && (newItem.publishdate = new Date());
 			!newItem.publishtime && (newItem.publishtime = '09:00');
 		}
-		console.log(state);
 		dispatch(state, newItem);
 		goto('/admin/newsadmin');
 	};

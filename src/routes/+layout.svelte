@@ -19,10 +19,6 @@
 		unloadUser();
 	};
 
-	$: if (authStore.user) {
-		console.log('User: ', authStore.user);
-	}
-
 	/** Wir initialisieren den AuthStateListener */
 	onMount(() => {
 		if (!authStore.user) {

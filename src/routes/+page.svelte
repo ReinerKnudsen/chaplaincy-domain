@@ -25,7 +25,6 @@
 
 	$: authStore.subscribe((store) => {
 		user = store.user;
-		console.log(user);
 	});
 
 	const header = 'text-2xl text-justify w-full px-5 font-semibold';

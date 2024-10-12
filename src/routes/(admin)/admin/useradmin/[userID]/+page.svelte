@@ -29,13 +29,17 @@
 	});
 
 	const handleSave = async () => {
-		const result = await updateUserProfile(user);
-		if (result) {
-			updateDoc(docRef, {
-				firstname: user.firstname,
-				lastname: user.lastname,
-				displayName: user.displayName
-			});
+		try {
+			const result = await updateUserProfile(user);
+			if (result) {
+				updateDoc(docRef, {
+					firstname: user.firstname,
+					lastname: user.lastname,
+					displayName: user.displayName
+				});
+			}
+		} catch (error) {
+			console.log("Couldn't update user profile: ", error);
 		}
 		goto('/admin/useradmin');
 	};

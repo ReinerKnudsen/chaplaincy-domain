@@ -26,16 +26,15 @@
 		user = store;
 	});
 
-	const handleLogout = () => {
-		signOut(auth)
-			.then(() => {
-				goto('/');
-				console.log('User signed out');
-				unloadUser();
-			})
-			.catch((error) => {
-				console.error('Error logging out:', error);
-			});
+	const handleLogout = async () => {
+		try {
+			awaitsignOut(auth);
+			goto('/');
+			console.log('User signed out');
+			unloadUser();
+		} catch (error) {
+			console.error('Error signing out:', error);
+		}
 	};
 
 	let showDropdown = false;

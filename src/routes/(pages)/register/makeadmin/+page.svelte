@@ -5,7 +5,7 @@
 	import { goto } from '$app/navigation';
 
 	const isEnabled = import.meta.env.VITE_ENABLE_MAKEADMIN === 'true';
-	console.log('isEnabled', isEnabled);
+
 	if (!isEnabled) {
 		goto('/');
 	}

@@ -5,6 +5,6 @@ export async function load({ params }) {
 		const user = await getUserByID(params.userID);
 		return { user };
 	} catch (error) {
-		console.log("Couldn't load user:", error);
+		console.log('Could not load user:', error);
 	}
 }

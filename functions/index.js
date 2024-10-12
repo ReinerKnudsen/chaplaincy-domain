@@ -40,7 +40,7 @@ exports.setAdminRole = functions.https.onRequest(async (req, res) => {
 				return res.status(500).send(error.message);
 			}
 		} catch (error) {
-			console.log(error);
+			console.log('Error in setAdminRole: ', error);
 		}
 	});
 });

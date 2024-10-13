@@ -14,20 +14,26 @@
 
 	$: authStore.subscribe((store) => {
 		auth = store;
+		console.log(auth.user);
 	});
 
 	const setAdminRole = async (email) => {
-		const response = await fetch(
-			'https://us-central1-chaplaincy-website-bncgn.cloudfunctions.net/setAdminRole',
-			{
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ email: email })
-			}
-		);
-		const data = await response.text();
+		try {
+			const response = await fetch(
+				'https://us-central1-chaplaincy-website-bncgn.cloudfunctions.net/setAdminRole',
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ email: email })
+				}
+			);
+			const data = await response.text();
+			console.log(data);
+		} catch (error) {
+			console.log('Error making user admin: ', error);
+		}
 	};
 
 	const makeadmin = () => {

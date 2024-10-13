@@ -1,0 +1,91 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "CurrentEvents",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "publishdate",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishtime",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "unpublishdate",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "unpublishtime",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "publishdate",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishDateTime",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "unpublishDateTime",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "publishdate",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "unpublishdate",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "publishDateTime",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "unpublishDateTime",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "startdate",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publishDateTime",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "unpublishDateTime",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

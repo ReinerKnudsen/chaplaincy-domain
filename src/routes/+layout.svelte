@@ -13,6 +13,8 @@
 
 	let unsubscribe;
 
+	console.log('Layout loaded :', new Date());
+
 	const auth = getAuth();
 
 	const clearUser = () => {
@@ -32,7 +34,7 @@
 							isLoggedIn: !!user,
 							isLoading: false,
 							name: user.displayName || 'no-name',
-							role: role,
+							role: role
 						};
 					});
 				} else {

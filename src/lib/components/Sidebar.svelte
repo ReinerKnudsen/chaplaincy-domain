@@ -1,7 +1,11 @@
 <script>
 	import { page } from '$app/stores';
+	import { authStore } from '$lib/stores/AuthStore';
+
 	import NavButton from './NavButton.svelte';
 	import { Sidebar, SidebarGroup, SidebarItem, SidebarWrapper } from 'flowbite-svelte';
+
+	let userRole = $authStore.role;
 
 	$: activeUrl = $page.url.pathname;
 	let activeClass =
@@ -28,17 +32,21 @@
 					<MailBoxSolid class="h-5 w-5" />
 				</svelte:fragment> -->
 			</SidebarItem>
-			<SidebarItem label="User" href="/admin/useradmin">
-				<!-- <svelte:fragment slot="icon">
+		</SidebarGroup>
+		{#if userRole === 'admin'}
+			<SidebarGroup>
+				<SidebarItem label="User" href="/admin/useradmin">
+					<!-- <svelte:fragment slot="icon">
 					<UserSolid class="h-5 w-5" />
 				</svelte:fragment> -->
-			</SidebarItem>
-			<SidebarItem label="" href="/admin/settings">
-				<!-- <svelte:fragment slot="icon">
+				</SidebarItem>
+				<SidebarItem label="" href="/admin/settings">
+					<!-- <svelte:fragment slot="icon">
 					<ArrowRightToBracketSolid class="h-5 w-5" />
 				</svelte:fragment> -->
-			</SidebarItem>
-		</SidebarGroup>
+				</SidebarItem>
+			</SidebarGroup>
+		{/if}
 	</SidebarWrapper>
 </Sidebar>
 

@@ -25,6 +25,17 @@ export const listAllUsers = async () => {
 };
 
 // *****************************************************************************************
+// Count Admin Users
+// *****************************************************************************************
+export async function countAdmins() {
+	let countAdminUsers = httpsCallable(functions, 'getCountOfAdmins');
+
+	const numberOfAdmins = await countAdminUsers();
+	console.log('countAdminUsers: ', numberOfAdmins.data);
+	return numberOfAdmins.data;
+}
+
+// *****************************************************************************************
 // Change user role
 // *****************************************************************************************
 

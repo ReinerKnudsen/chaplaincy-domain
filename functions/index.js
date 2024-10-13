@@ -132,3 +132,12 @@ exports.createUser = functions.https.onCall(async (data) => {
 		throw new functions.https.HttpsError('internal', error.message, error);
 	}
 });
+
+exports.getCountOfAdmins = functions.https.onCall(async (data, context) => {
+	if (context.auth.token.role !== 'admin') {
+		throw new functions.https.HttpsError('permission-denied', 'Only admins can access this data');
+	}
+	const admins = await admin.auth().listUsers(1000);
+	const adminCount = admins.users.filter((user) => user.customClaims.role === 'admin').length;
+	return adminCount;
+});

@@ -25,6 +25,8 @@
 		{ value: 'admin', name: 'Admin' },
 	];
 
+	$: console.log(currentUser, data.user);
+
 	onMount(async () => {
 		const doc = await getDoc(docRef);
 		currentUser = {

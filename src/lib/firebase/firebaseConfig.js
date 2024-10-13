@@ -4,27 +4,13 @@ import { getFirestore, collection } from 'firebase/firestore';
 import { getStorage, ref } from 'firebase/storage';
 import { getFunctions } from 'firebase/functions';
 
-// const firebaseConfig = {
-// 	apiKey: import.meta.env.VITE_APIKEY,
-// 	authDomain: import.meta.env.VITE_AUTHDOMAIN,
-// 	projectId: import.meta.env.VITE_PROJECTID,
-// 	storageBucket: import.meta.env.VITE_STORAGEBUCKET,
-// 	messagingSenderId: import.meta.env.VITE_MESSAGINGSENDERID,
-// 	appId: import.meta.env.VITE_APPID
-// };
-
 const firebaseConfig = {
-	apiKey: 'AIzaSyDzGsaVy4PHDvHQhNQj5fmcAaGm64bf_kY',
-
-	authDomain: 'chaplaincy-website-bncgn.firebaseapp.com',
-
-	projectId: 'chaplaincy-website-bncgn',
-
-	storageBucket: 'chaplaincy-website-bncgn.appspot.com',
-
-	messagingSenderId: '342698394076',
-
-	appId: '1:342698394076:web:21790dc7aa59f599a58f19',
+	apiKey: import.meta.env.VITE_APIKEY,
+	authDomain: import.meta.env.VITE_AUTHDOMAIN,
+	projectId: import.meta.env.VITE_PROJECTID,
+	storageBucket: import.meta.env.VITE_STORAGEBUCKET,
+	messagingSenderId: import.meta.env.VITE_MESSAGINGSENDERID,
+	appId: import.meta.env.VITE_APPID
 };
 
 export let firebaseApp;

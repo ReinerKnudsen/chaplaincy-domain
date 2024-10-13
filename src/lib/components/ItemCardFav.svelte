@@ -1,6 +1,4 @@
 <script>
-	/** Item: The item to be displayed
-	 * kind: 'news' or 'event'	*/
 	export let item;
 	export let kind;
 

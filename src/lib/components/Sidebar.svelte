@@ -5,7 +5,11 @@
 	import NavButton from './NavButton.svelte';
 	import { Sidebar, SidebarGroup, SidebarItem, SidebarWrapper } from 'flowbite-svelte';
 
-	let userRole = $authStore.role;
+	let userRole;
+
+	$: authStore.subscribe((store) => {
+		userRole = store.role;
+	});
 
 	$: activeUrl = $page.url.pathname;
 	let activeClass =
@@ -34,13 +38,13 @@
 			</SidebarItem>
 		</SidebarGroup>
 		{#if userRole === 'admin'}
-			<SidebarGroup>
-				<SidebarItem label="User" href="/admin/useradmin">
+			<SidebarGroup class="mt-4  border-t-2">
+				<SidebarItem class="mt-2" label="User" href="/admin/useradmin">
 					<!-- <svelte:fragment slot="icon">
 					<UserSolid class="h-5 w-5" />
 				</svelte:fragment> -->
 				</SidebarItem>
-				<SidebarItem label="" href="/admin/settings">
+				<SidebarItem label="Settings" href="/admin/settings">
 					<!-- <svelte:fragment slot="icon">
 					<ArrowRightToBracketSolid class="h-5 w-5" />
 				</svelte:fragment> -->

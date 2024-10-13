@@ -20,10 +20,6 @@
 
 	let user;
 
-	console.log('Navigation loaded :', new Date());
-
-	$: activeUrl = $page.url.pathname;
-
 	$: authStore.subscribe((store) => {
 		user = store;
 	});
@@ -43,8 +39,6 @@
 	const toggleDropdown = () => {
 		showDropdown = !showDropdown;
 	};
-
-	const textSizeMenu = 'text-xl';
 </script>
 
 <nav

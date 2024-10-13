@@ -31,7 +31,6 @@ export async function countAdmins() {
 	let countAdminUsers = httpsCallable(functions, 'getCountOfAdmins');
 
 	const numberOfAdmins = await countAdminUsers();
-	console.log('countAdminUsers: ', numberOfAdmins.data);
 	return numberOfAdmins.data;
 }
 

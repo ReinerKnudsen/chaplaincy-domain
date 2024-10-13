@@ -1,6 +1,10 @@
 <script>
+	/** Item: The item to be displayed
+	 * kind: 'news' or 'event'	*/
 	export let item;
 	export let kind;
+
+	console.log('ItemCard: ', item, kind);
 
 	const containerSM =
 		'sm:grid-col-1 my-5 grid rounded-2xl border border-slate-200 px-4 py-8 shadow-xl';

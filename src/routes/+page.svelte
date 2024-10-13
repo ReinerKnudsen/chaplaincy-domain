@@ -6,7 +6,7 @@
 	import ItemCard from '../lib/components/ItemCard.svelte';
 
 	import { authStore } from '$lib/stores/AuthStore';
-	import { query, getDocs, where, orderBy, limit } from 'firebase/firestore';
+	import { query, getDocs, where, orderBy, limit, Timestamp } from 'firebase/firestore';
 	import { newsColRef, eventsColRef } from '$lib/firebase/firebaseConfig';
 
 	import mainhero from '$lib/assets/mainhero.webp';
@@ -29,19 +29,19 @@
 	const loadEvents = async () => {
 		const today = new Date();
 		try {
-			const a = query(
+			const eventsQuery = query(
 				eventsColRef,
-				where('publishDateTime', '<', today),
-				where('unpublishDateTime', '>', today),
-				orderBy('publishDateTime', 'asc')
-				//limit(2)
+				where('publishDateTime', '<', Timestamp.fromDate(today)),
+				where('unpublishDateTime', '>', Timestamp.fromDate(today)),
+				orderBy('startdate', 'asc'),
+				limit(4),
 			);
-			let snapshot2 = await getDocs(a);
-			if (snapshot2.exists) {
-				events = snapshot2.docs.map((item) => {
+			let snapshot = await getDocs(eventsQuery);
+			if (!snapshot.empty) {
+				events = snapshot.docs.map((item) => {
 					return {
 						id: item.id,
-						data: item.data()
+						data: item.data(),
 					};
 				});
 				return events;
@@ -55,13 +55,13 @@
 
 	const loadNews = async () => {
 		try {
-			const q = query(newsColRef, orderBy('publishdate', 'desc'), limit(2));
+			const q = query(newsColRef, orderBy('publishdate', 'desc'), limit(4));
 			let snapshot = await getDocs(q);
-			if (snapshot.exists) {
+			if (!snapshot.empty) {
 				news = snapshot.docs.map((item) => {
 					return {
 						id: item.id,
-						data: item.data()
+						data: item.data(),
 					};
 				});
 				return news;
@@ -74,8 +74,11 @@
 	};
 
 	onMount(async () => {
+		console.log('eventsColRef: ', eventsColRef._path.segments[0]);
 		let result = await loadEvents();
+		console.log('result: ', result);
 		let result2 = await loadNews();
+		console.log('news: ', result2);
 		loading = false;
 	});
 

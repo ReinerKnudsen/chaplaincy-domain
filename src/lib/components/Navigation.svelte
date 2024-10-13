@@ -8,7 +8,7 @@
 		NavHamburger,
 		Dropdown,
 		DropdownDivider,
-		DropdownItem
+		DropdownItem,
 	} from 'flowbite-svelte';
 	import Icon from '$lib/components/Icon.svelte';
 
@@ -30,7 +30,7 @@
 
 	const handleLogout = async () => {
 		try {
-			awaitsignOut(auth);
+			await signOut(auth);
 			goto('/');
 			console.log('User signed out');
 			unloadUser();

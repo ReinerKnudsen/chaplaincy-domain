@@ -6,11 +6,9 @@ import {
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
 	updateProfile,
-	sendPasswordResetEmail
+	sendPasswordResetEmail,
 } from 'firebase/auth';
 import { httpsCallable } from 'firebase/functions';
-
-console.log('AuthService loaded');
 
 // *****************************************************************************************
 // List all users (only for admins)
@@ -30,12 +28,12 @@ export const listAllUsers = async () => {
 // Change user role
 // *****************************************************************************************
 
-// Refactor: Only make available to admins
 export async function changeUserRole(email, role) {
-	let addUserRole = httpsCallable(functions, 'setUserRole');
+	let addUserRole = httpsCallable(functions, 'changeUserRole');
 	addUserRole({ email: email, role: role })
 		.then((result) => {
-			console.log('After role assignment: ', result);
+			console.log('After role assignment: ', result.data);
+			return result.data;
 		})
 		.catch((err) => {
 			console.log('Error: ', err.message);
@@ -67,9 +65,18 @@ export async function getUserByID(uid) {
 // Get user role
 // *****************************************************************************************
 export async function getUserRole(user) {
-	return user.getIdTokenResult().then((idTokenResult) => {
-		return idTokenResult.claims.role;
-	});
+	if (user) {
+		try {
+			return user.getIdTokenResult().then((idTokenResult) => {
+				return idTokenResult.claims.role;
+			});
+		} catch (error) {
+			console.log('Error: user not logged indent', error.message);
+		}
+	} else {
+		console.log('Error: must provide a user object');
+		return null;
+	}
 }
 
 // *****************************************************************************************
@@ -90,9 +97,9 @@ export async function createNewUser({ email, displayName, role, firstname, lastn
 					firstname: firstname,
 					lastname: lastname,
 					email: email,
-					displayName: displayName
+					displayName: displayName,
 				},
-				{ merge: true }
+				{ merge: true },
 			);
 		} catch (error) {
 			console.log('Error: ', error);
@@ -100,7 +107,7 @@ export async function createNewUser({ email, displayName, role, firstname, lastn
 		const BASE_URL = import.meta.env.VITE_BASE_URL;
 		const actionCodeSettings = {
 			url: `${BASE_URL}/passwordreset`,
-			handleCodeInApp: true
+			handleCodeInApp: true,
 		};
 		await sendPasswordResetEmail(auth, newUser.data.email, actionCodeSettings);
 		return newUser;
@@ -118,6 +125,9 @@ export async function signInExistingUser(email, password) {
 	try {
 		authStore.update((store) => ({ ...store, loading: true, error: null }));
 		const userCredential = await signInWithEmailAndPassword(auth, email, password);
+		if (!userCredential.user) {
+			return;
+		}
 		const authenticatedUser = userCredential.user;
 		const role = await getUserRole(authenticatedUser);
 
@@ -128,7 +138,7 @@ export async function signInExistingUser(email, password) {
 			loading: false,
 			error: null,
 			isLoggedIn: true,
-			role: role
+			role: role,
 		});
 		return authenticatedUser;
 	} catch (error) {
@@ -136,7 +146,7 @@ export async function signInExistingUser(email, password) {
 			...store,
 			loading: false,
 			error: error.message,
-			isLoggedIn: false
+			isLoggedIn: false,
 		}));
 		console.log('Error: ', error.message);
 	}
@@ -156,12 +166,12 @@ export async function registerUser({ email, displayName, firstname, lastname, ro
 
 			// We set the displayName in the user object
 			await updateProfile(authenticatedUser, {
-				displayName: displayName
+				displayName: displayName,
 			});
 
 			// Set user role
 			if (role) {
-				await setUserRole(authenticatedUser.uid, role);
+				await changeUserRole(authenticatedUser.uid, role);
 			}
 		}
 
@@ -174,9 +184,9 @@ export async function registerUser({ email, displayName, firstname, lastname, ro
 					firstname: firstname,
 					lastname: lastname,
 					email: email,
-					displayName: displayName
+					displayName: displayName,
 				},
-				{ merge: true }
+				{ merge: true },
 			);
 		} catch (error) {
 			console.log('Error: ', error.message);
@@ -189,7 +199,7 @@ export async function registerUser({ email, displayName, firstname, lastname, ro
 			role: 'user',
 			loading: false,
 			error: null,
-			isLoggedIn: true
+			isLoggedIn: true,
 		});
 
 		return authenticatedUser; // Return authenticated user
@@ -199,7 +209,7 @@ export async function registerUser({ email, displayName, firstname, lastname, ro
 			...store,
 			loading: false,
 			error: error.message,
-			isLoggedIn: false
+			isLoggedIn: false,
 		}));
 		throw error;
 	}
@@ -241,7 +251,7 @@ export function signOutUser() {
 			...store,
 			loading: false,
 			error: error.message,
-			isLoggedIn: false
+			isLoggedIn: false,
 		}));
 		throw error;
 	}

@@ -18,33 +18,6 @@ exports.testCORS = functions.https.onRequest((req, res) => {
 // Make user admin
 // *****************************************************************************************
 
-exports.setAdminRole = functions.https.onRequest(async (req, res) => {
-	// Überprüfen, ob es eine POST-Anfrage ist
-	cors(req, res, async () => {
-		try {
-			if (req.method !== 'POST') {
-				return res.status(400).send('Only POST requests are accepted');
-			}
-			// Email-Adresse aus der Anfrage entnehmen
-			const email = req.body.email;
-			if (!email) {
-				return res.status(400).send('Email is required');
-			}
-			try {
-				const user = await admin.auth().getUserByEmail(email);
-				// Benutzerrolle setzen (Admin)
-				await admin.auth().setCustomUserClaims(user.uid, { role: 'Admin' });
-
-				return res.status(200).send(`Success! ${email} is now an Admin.`);
-			} catch (error) {
-				return res.status(500).send(error.message);
-			}
-		} catch (error) {
-			console.log('Error in setAdminRole: ', error);
-		}
-	});
-});
-
 exports.changeUserRole = functions.https.onRequest((req, res) => {
 	cors(req, res, async () => {
 		try {
@@ -73,44 +46,6 @@ exports.changeUserRole = functions.https.onRequest((req, res) => {
 });
 
 // *****************************************************************************************
-// Add user role
-// *****************************************************************************************
-
-exports.setUserRole = functions.https.onCall(async (data, context) => {
-	return new Promise((resolve, reject) => {
-		cors(async (req, res) => {
-			try {
-				let user;
-				if (data.uid) {
-					user = await admin.auth().getUser(data.uid);
-				} else if (data.email) {
-					user = await admin.auth().getUserByEmail(data.email);
-				} else {
-					throw new functions.https.HttpsError(
-						'invalid-argument',
-						'Must provide a valid UID or email.'
-					);
-				}
-				if (!data.role) {
-					throw new functions.https.HttpsError(
-						'invalid-argument',
-						'Must provide a role to assign.'
-					);
-				}
-
-				await admin.auth().setCustomUserClaims(user.uid, { role: data.role });
-				return {
-					message: `Success! User now has the role ${data.role}.`
-				};
-			} catch (error) {
-				console.error('Error setting user role:', error);
-				throw new functions.https.HttpsError('internal', 'Failed to set user role.', error);
-			}
-		})(data, context);
-	});
-});
-
-// *****************************************************************************************
 // Get user profile
 // *****************************************************************************************
 
@@ -122,9 +57,9 @@ exports.getUserProfile = functions.https.onCall(async (data) => {
 				uid: user.uid,
 				email: user.email,
 				displayName: user.displayName,
-				role: user.customClaims.role
+				role: user.customClaims.role,
 				// add any other user properties you want to return
-			}
+			},
 		};
 	} catch (error) {
 		throw new functions.https.HttpsError('internal', error.message, error);
@@ -140,14 +75,14 @@ exports.updateUserProfile = functions.https.onCall(async (data) => {
 		const user = await admin.auth().getUser(data.uid);
 		await admin.auth().updateUser(user.uid, {
 			displayName: data.displayName,
-			email: data.email
+			email: data.email,
 		});
 		if (data.role) {
 			await admin.auth().setCustomUserClaims(user.uid, {
-				role: data.role
+				role: data.role,
 			});
 			return {
-				message: `Success! User profile updated.`
+				message: `Success! User profile updated.`,
 			};
 		}
 	} catch (error) {
@@ -187,10 +122,10 @@ exports.createUser = functions.https.onCall(async (data) => {
 	try {
 		const user = await admin.auth().createUser({
 			email: data.email,
-			displayName: data.displayName
+			displayName: data.displayName,
 		});
 		await admin.auth().setCustomUserClaims(user.uid, {
-			role: data.role
+			role: data.role,
 		});
 		return user;
 	} catch (error) {

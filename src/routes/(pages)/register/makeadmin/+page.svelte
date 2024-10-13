@@ -18,22 +18,7 @@
 	});
 
 	const setAdminRole = async (email) => {
-		try {
-			const response = await fetch(
-				'https://us-central1-chaplaincy-website-bncgn.cloudfunctions.net/setAdminRole',
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({ email: email })
-				}
-			);
-			const data = await response.text();
-			console.log(data);
-		} catch (error) {
-			console.log('Error making user admin: ', error);
-		}
+		result = await changeUserRole(email, 'admin');
 	};
 
 	const makeadmin = () => {

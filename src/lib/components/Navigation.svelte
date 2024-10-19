@@ -1,28 +1,14 @@
 <script>
-  import { onMount } from "svelte";
-  import { page } from "$app/stores";
-  import {
-    Navbar,
-    NavBrand,
-    NavLi,
-    NavUl,
-    NavHamburger,
-    Dropdown,
-    DropdownDivider,
-    DropdownItem,
-  } from "flowbite-svelte";
-  import Icon from "$lib/components/Icon.svelte";
-
   import { authStore, unloadUser } from "$lib/stores/AuthStore";
   import { auth, settingsColRef } from "$lib/firebase/firebaseConfig";
-  import { doc, getDoc } from "firebase/firestore";
   import { goto } from "$app/navigation";
   import { signOut } from "firebase/auth";
   import caplogo from "$lib/assets/chaplaincy_logo.png";
 
+  import { page } from "$app/stores";
+  import NavigationItem from "$lib/components/NavigationItem.svelte";
+
   let user;
-  export let routes;
-  let additionalRoutes = routes.value;
 
   $: activeUrl = $page.url.pathname;
 
@@ -85,29 +71,11 @@
       <ul
         class="mt-4 flex flex-col p-4 text-primary-100 md:mt-0 md:flex-row md:space-x-8 md:text-sm md:font-medium"
       >
-        <li>
-          <a
-            href="/"
-            class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-            >Home</a
-          >
-        </li>
-        <li>
-          <a
-            href="/news"
-            class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-            >News</a
-          >
-        </li>
-        <li>
-          <a
-            href="/events"
-            class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-            >Events</a
-          >
-        </li>
-        {#each additionalRoutes as route}
-          <li>
+        <NavigationItem url="/" label="Home" />
+        <NavigationItem url="/news" label="News" />
+        <NavigationItem url="/events" label="Events" />
+        <NavigationItem url="/groups" label="Groups" />
+        <NavigationItem url="/activities" label="Activities" />
         <li class="group relative">
           <a href="" class="text-xl" on:click|preventDefault={toggleDropdown}
             >About us</a

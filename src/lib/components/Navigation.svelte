@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from "svelte";
   import { page } from "$app/stores";
   import {
     Navbar,
@@ -13,12 +14,15 @@
   import Icon from "$lib/components/Icon.svelte";
 
   import { authStore, unloadUser } from "$lib/stores/AuthStore";
-  import { auth, imgStorageRef } from "$lib/firebase/firebaseConfig";
+  import { auth, settingsColRef } from "$lib/firebase/firebaseConfig";
+  import { doc, getDoc } from "firebase/firestore";
   import { goto } from "$app/navigation";
   import { signOut } from "firebase/auth";
   import caplogo from "$lib/assets/chaplaincy_logo.png";
 
   let user;
+  export let routes;
+  let additionalRoutes = routes.value;
 
   $: activeUrl = $page.url.pathname;
 
@@ -102,20 +106,8 @@
             >Events</a
           >
         </li>
-        <li>
-          <a
-            href="/groups"
-            class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-            >Groups</a
-          >
-        </li>
-        <li>
-          <a
-            href="/prayers"
-            class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-            >Pray with us</a
-          >
-        </li>
+        {#each additionalRoutes as route}
+          <li>
         <li class="group relative">
           <a href="" class="text-xl" on:click|preventDefault={toggleDropdown}
             >About us</a

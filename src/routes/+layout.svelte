@@ -12,6 +12,8 @@
   import { getUserRole } from "$lib/services/authService";
 
   let unsubscribe;
+  export let data;
+  const routes = data.routes;
 
   const auth = getAuth();
 
@@ -50,7 +52,7 @@
   });
 </script>
 
-<Navigation />
+<Navigation {routes} />
 
 <div class=" md:my-10 xl:my-10">
   <slot />

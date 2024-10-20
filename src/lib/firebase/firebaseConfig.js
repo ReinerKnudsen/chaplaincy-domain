@@ -36,6 +36,7 @@ export const eventsColRef = collection(database, 'events');
 export const newsColRef = collection(database, 'news');
 export const userCollectionReference = collection(database, 'users');
 export const settingsColRef = collection(database, 'settings');
+export const imageColRef = collection(database, 'images');
 
 // Create storage references
 export const eventsStoreRef = ref(storage, 'events');

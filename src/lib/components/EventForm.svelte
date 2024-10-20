@@ -1,19 +1,23 @@
-<script>
+<script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 
-	import { Timestamp } from 'firebase/firestore';
+	import { Timestamp, doc, setDoc } from 'firebase/firestore';
+	import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 	import { authStore } from '$lib/stores/AuthStore';
+
+	import type { Event } from '$lib/types/Event';
+	import { database, storage } from '$lib/firebase/firebaseConfig';
 
 	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
 	import SlugText from './SlugText.svelte';
 	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadImage from '$lib/components/UploadImage.svelte';
 
-	export let thisEvent;
+	export let thisEvent: Event;
 	const dispatch = createEventDispatcher();
 
-	let newEvent = {
+	const defaultEvent: Event = {
 		author: $authStore.name,
 		title: '',
 		subtitle: '',
@@ -33,11 +37,13 @@
 		unpublishDateTime: '',
 		comments: '',
 		image: '',
-		imageAlt: ''
+		imageAlt: '',
 	};
 
-	let state = 'save';
+	let newEvent: Event = defaultEvent;
+	let mode = 'save';
 	let hasImage = false;
+	let selectedImage: FileList;
 
 	$: if (newEvent.image) {
 		hasImage = true;
@@ -47,7 +53,7 @@
 
 	if (thisEvent) {
 		newEvent = thisEvent;
-		state = 'update';
+		mode = 'update';
 	}
 
 	const handleConditionChange = (e) => {
@@ -58,44 +64,41 @@
 		}
 	};
 
-	const cleanUpForm = () => {
-		newEvent = {
-			title: '',
-			subtitle: '',
-			description: '',
-			slug: '',
-			startdate: '',
-			starttime: '',
-			enddate: '',
-			endtime: '',
-			location: '',
-			condition: '',
-			publishdate: '',
-			publishtime: '',
-			publishDateTime: '',
-			unpublishdate: '',
-			unpublishtime: '',
-			unpublishDateTime: '',
-			comments: '',
-			image: '',
-			imageAlt: '',
-			imageCredit: ''
-		};
-	};
-
 	const cellPadding = 'py-2 pl-5';
 	const cellFormat = {
 		one: 'border-b font-mono',
 		two: 'border-b border-l pb-1 pl-5',
 		three: 'border-b border-l-4 pb-1 pl-5 font-mono',
-		four: 'border-b border-l pb-1 pl-5'
+		four: 'border-b border-l pb-1 pl-5',
 	};
 
 	const handleSlugChange = (e) => {
 		newEvent.slug = e.detail;
 	};
 
-	const handleSubmit = (e) => {
+	const handleImageChange = async (e) => {
+		selectedImage = e.detail;
+	};
+
+	/** Upload the image and create a reference in the "images" collection*/
+	const uploadImage = async () => {
+		const storageRef = ref(storage, 'images/' + selectedImage.name);
+		try {
+			await uploadBytes(storageRef, selectedImage);
+			let imageUrl = await getDownloadURL(storageRef);
+			await setDoc(doc(database, 'images', selectedImage.name), {
+				name: selectedImage.name,
+				url: imageUrl,
+				createdAt: new Date(),
+			});
+			newEvent.image = imageUrl;
+			return imageUrl;
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		!newEvent.publishtime && (newEvent.publishtime = '09:00');
 		!newEvent.unpublishdate && (newEvent.unpublishdate = newEvent.startdate);
@@ -104,18 +107,15 @@
 		newEvent.publishDateTime = Timestamp.fromDate(publishDateTime);
 		const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
 		newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
-		dispatch(state, newEvent);
-		cleanUpForm();
+		await uploadImage();
+		dispatch(mode, newEvent);
+		newEvent = defaultEvent;
 		goto('/admin/eventsadmin');
-	};
-
-	const assignImage = (e) => {
-		newEvent.image = e.detail;
 	};
 </script>
 
 <div class="form bg-white-primary">
-	<h1 class="mx-10">{state === 'update' ? 'Edit event' : 'Create new event'}</h1>
+	<h1 class="mx-10">{mode === 'update' ? 'Edit event' : 'Create new event'}</h1>
 	<form class="mx-10" enctype="multipart/form-data" on:submit={handleSubmit}>
 		<!-- Titel -->
 		<div>
@@ -283,9 +283,9 @@
 			<Label class="mb-2 mt-8 text-xl font-semibold">Image</Label>
 			<div class="flex items-center justify-center">
 				{#if newEvent.image}
-					<UploadImage imageUrl={newEvent.image} on:upload={assignImage} />
+					<UploadImage imageUrl={newEvent.image} on:imageChange={handleImageChange} />
 				{:else}
-					<UploadImage on:upload={assignImage} />
+					<UploadImage on:imageChange={handleImageChange} />
 				{/if}
 			</div>
 		</div>
@@ -326,7 +326,7 @@
 			<Button
 				class="bg-primary-100  font-semibold text-white-primary"
 				type="submit"
-				disabled={newEvent.length === 0}>{state === 'update' ? 'Update' : 'Save'} event</Button
+				disabled={newEvent.length === 0}>{mode === 'update' ? 'Update' : 'Save'} event</Button
 			>
 		</div>
 	</form>

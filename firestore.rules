@@ -10,6 +10,10 @@ service cloud.firestore {
     match /news/{document} {
       allow read: if true;
     }
+    // Allow read access to all documents in the "news" collection
+    match /settings/{document} {
+      allow read: if true;
+    }
     
     // Allow users to red, write their own documents
      match /users/{userId} {
@@ -27,6 +31,9 @@ service cloud.firestore {
    match /users/{document} {
       allow read, write: if request.auth.token.role == 'admin';
       }
-    
+    // Allow admins to perform ANY operation on ANY file
+  	match /{document=**} {
+    	allow read, write, delete: if request.auth.token.role == 'admin';
+    	}
   }
 }

@@ -4,6 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { signOut } from 'firebase/auth';
 	import caplogo from '$lib/assets/chaplaincy_logo.png';
+	import { menu as menuItems } from '$lib/data/data.json';
 
 	import type { MenuItem } from '$lib/types';
 
@@ -28,25 +29,6 @@
 			console.error('Error signing out:', error);
 		}
 	};
-
-	const menuItems: MenuItem[] = [
-		{
-			title: 'Who we are',
-			url: '/about/',
-		},
-		{
-			title: 'Responsibilities',
-			url: '/about/responsibilities',
-		},
-		{
-			title: 'Safeguarding',
-			url: '/about/safeguarding',
-		},
-		{
-			title: 'Get in touch',
-			url: '/about/contact',
-		},
-	];
 
 	const textSizeMenu = 'text-xl';
 </script>

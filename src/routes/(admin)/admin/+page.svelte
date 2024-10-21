@@ -4,24 +4,16 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { getAuth, onAuthStateChanged } from 'firebase/auth';
+	import { authStore } from '$lib/stores/AuthStore';
 
 	let auth = getAuth();
+	let role;
 
-	onMount(() => {
-		$pathName = $page.url.pathname;
-
-		onAuthStateChanged(auth, (user) => {
-			if (user) {
-				user.getIdTokenResult().then((idTokenResult) => {
-					if (!['admin', 'editor'].includes(idTokenResult.claims.role)) {
-						goto('/');
-					}
-				});
-			} else {
-				goto('/');
-			}
-		});
+	$: authStore.subscribe((store) => {
+		role = store.role;
 	});
+
+	onMount(() => {});
 </script>
 
 <div class="w-100 ml-3">
@@ -34,8 +26,9 @@
 
 		<h2 class="mb-4 mt-6 text-xl font-bold">Article Management</h2>
 		<div>Articles list and management options go here.</div>
-
-		<h2 class="mb-4 mt-6 text-xl font-bold">User Management</h2>
-		<div>User list and management options go here.</div>
+		{#if role === 'admin'}
+			<h2 class="mb-4 mt-6 text-xl font-bold">User Management</h2>
+			<div>User list and management options go here.</div>
+		{/if}
 	</div>
 </div>

@@ -1,7 +1,6 @@
 <script>
-	import { Section, Register } from 'flowbite-svelte-blocks';
-	import { Button, Checkbox, Label, Input } from 'flowbite-svelte';
-	import { signInExistingUser, changeUserRole } from '$lib/services/authService';
+	import { Button, Label, Input } from 'flowbite-svelte';
+	import { signInExistingUser } from '$lib/services/authService';
 	import { authStore } from '$lib/stores/AuthStore';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';

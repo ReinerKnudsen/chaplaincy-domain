@@ -1,11 +1,12 @@
-<script>
-	import { createEventDispatcher } from 'svelte';
+<script lang="ts">
+	import { createEventDispatcher, onDestroy } from 'svelte';
 	import { onMount } from 'svelte';
 
 	import { Button } from 'flowbite-svelte';
-	import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+	import { ref, uploadBytes, getDownloadURL, getMetadata } from 'firebase/storage';
+	import { getDoc, query, doc } from 'firebase/firestore';
 
-	import { storage } from '$lib/firebase/firebaseConfig';
+	import { storage, database } from '$lib/firebase/firebaseConfig';
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
 
 	export let imageUrl;
@@ -17,25 +18,48 @@
 	let moduleWidth = 'w-[400px]';
 	let imageError;
 
-	const handleFileChange = async (event) => {
-		imageError = '';
-		let selectedFile = event.target.files[0];
-		if (selectedFile.size > MAX_IMAGE_SIZE) {
-			imageError = 'The image is too big.';
-			selectedFile = '';
+	/** Verify in Firestore Collection if an image of this name is already present*/
+	const checkIfFileExists = async (imageFile: string) => {
+		const docRef = doc(database, 'images', imageFile);
+		const docSnap = await getDoc(docRef);
+
+		if (docSnap.exists()) {
+			return true; // File exists in Firestore
 		} else {
-			event.preventDefault();
-			const storageRef = ref(storage, 'images/' + selectedFile.name);
-			await uploadBytes(storageRef, selectedFile);
-			imageUrl = await getDownloadURL(storageRef);
-			dispatch('upload', imageUrl);
+			return false; // File doesn't exist in Firestore
+		}
+	};
+
+	const handleFileChange = async (event) => {
+		event.preventDefault();
+		imageError = '';
+		let selectedFile: FileList = event.target.files[0];
+
+		let fileExists = await checkIfFileExists(selectedFile.name);
+		if (fileExists) {
+			imageError = `<em>${selectedFile.name}</em> already exists. <p>Please choose another file.`;
+			resetInput();
+		} else {
+			if (selectedFile.size > MAX_IMAGE_SIZE) {
+				imageError = 'The image is too big.';
+				selectedFile = '';
+			} else {
+				imageError = '';
+				imageUrl = URL.createObjectURL(selectedFile);
+				dispatch('imageChange', selectedFile);
+			}
 		}
 	};
 
 	const resetInput = () => {
 		selectedFile = null;
+		URL.revokeObjectURL(imageUrl);
 		imageUrl = null;
 	};
+
+	onDestroy(() => {
+		resetInput();
+	});
 </script>
 
 {#if !imageUrl}
@@ -61,7 +85,7 @@
 			(jpeg, jpg, png, webp, max {MAX_IMAGE_SIZE / 1000}KB)
 		</div>
 		{#if imageError}
-			<p class="mt-3 text-center text-sm text-red-500">{imageError}</p>
+			<p class="mt-3 text-center text-base text-red-700">{@html imageError}</p>
 		{/if}
 	</form>
 {:else}

@@ -5,7 +5,7 @@
 	import { goto } from '$app/navigation';
 
 	const isEnabled = import.meta.env.VITE_ENABLE_MAKEADMIN === 'true';
-	console.log('isEnabled', isEnabled);
+
 	if (!isEnabled) {
 		goto('/');
 	}
@@ -14,20 +14,11 @@
 
 	$: authStore.subscribe((store) => {
 		auth = store;
+		console.log(auth.user);
 	});
 
 	const setAdminRole = async (email) => {
-		const response = await fetch(
-			'https://us-central1-chaplaincy-website-bncgn.cloudfunctions.net/setAdminRole',
-			{
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ email: email })
-			}
-		);
-		const data = await response.text();
+		result = await changeUserRole(email, 'admin');
 	};
 
 	const makeadmin = () => {

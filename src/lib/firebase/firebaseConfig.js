@@ -10,7 +10,7 @@ const firebaseConfig = {
 	projectId: import.meta.env.VITE_PROJECTID,
 	storageBucket: import.meta.env.VITE_STORAGEBUCKET,
 	messagingSenderId: import.meta.env.VITE_MESSAGINGSENDERID,
-	appId: import.meta.env.VITE_APPID
+	appId: import.meta.env.VITE_APPID,
 };
 
 export let firebaseApp;
@@ -35,6 +35,8 @@ export const storageRef = ref(storage);
 export const eventsColRef = collection(database, 'events');
 export const newsColRef = collection(database, 'news');
 export const userCollectionReference = collection(database, 'users');
+export const settingsColRef = collection(database, 'settings');
+export const imageColRef = collection(database, 'images');
 
 // Create storage references
 export const eventsStoreRef = ref(storage, 'events');

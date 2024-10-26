@@ -12,11 +12,15 @@ export const load = async () => {
 };
 
 const loadNews = async () => {
+	if (!newsColRef) {
+		news = [];
+		return;
+	}
 	try {
 		const q = query(newsColRef, orderBy('publishdate', 'desc'), limit(2));
 		let snapshot = await getDocs(q);
 		if (snapshot.empty) {
-			console.log('No matching documents.');
+			news = [];
 		} else {
 			news = snapshot.docs.map((item) => {
 				return {
@@ -31,6 +35,10 @@ const loadNews = async () => {
 };
 
 const loadEvents = async () => {
+	if (!eventsColRef) {
+		events = [];
+		return;
+	}
 	const today = new Date();
 	try {
 		const a = query(
@@ -42,7 +50,7 @@ const loadEvents = async () => {
 		);
 		let snapshot2 = await getDocs(a);
 		if (snapshot2.empty) {
-			console.log('No matching documents.');
+			events = [];
 		} else {
 			events = snapshot2.docs.map((item) => {
 				return {

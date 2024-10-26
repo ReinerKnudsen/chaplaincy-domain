@@ -29,3 +29,10 @@ export type Event = {
 	image: string;
 	imageAlt: string;
 };
+
+export type HeaderData = {
+	photoName: string /** Name of photographer */;
+	photoUrl: string /** Url of photographer */;
+	imageUrl: string /** Url of image */;
+	title: string /** Title of page */;
+};

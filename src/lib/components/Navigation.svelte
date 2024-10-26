@@ -4,7 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { signOut } from 'firebase/auth';
 	import caplogo from '$lib/assets/chaplaincy_logo.png';
-	import { menu as menuItems } from '$lib/data/data.json';
+	import { about as aboutItems } from '$lib/data/data.json';
 
 	import type { MenuItem } from '$lib/types';
 
@@ -65,16 +65,17 @@
 				></path>
 			</svg></button
 		>
-		<div class="w-full cursor-pointer md:block md:w-auto" hidden="true">
+		<div class="w-full cursor-pointer md:block md:w-auto">
 			<ul
 				class="mt-4 flex flex-col p-4 text-primary-100 md:mt-0 md:flex-row md:space-x-8 md:text-sm md:font-medium"
 			>
 				<NavigationItem url="/" label="Home" />
+				<NavigationItem url="/worship" label="Worship" />
 				<NavigationItem url="/news" label="News" />
 				<NavigationItem url="/events" label="Events" />
 				<NavigationItem url="/groups" label="Groups" />
 				<NavigationItem url="/activities" label="Activities" />
-				<NavigationRollUp {menuItems} title="About us" />
+				<NavigationRollUp {aboutItems} title="About us" />
 				{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
 					<NavigationItem url="/admin" label="Admin" />
 				{/if}

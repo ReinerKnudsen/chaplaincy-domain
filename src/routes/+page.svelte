@@ -6,6 +6,8 @@
 	import ItemCard from '../lib/components/ItemCard.svelte';
 
 	import { authStore } from '$lib/stores/AuthStore';
+	import { query, getDocs, where, orderBy, limit } from 'firebase/firestore';
+	import { newsColRef, eventsColRef } from '$lib/firebase/firebaseConfig';
 
 	import mainhero from '$lib/assets/mainhero.webp';
 	import Icon from '$lib/components/Icon.svelte';
@@ -19,13 +21,19 @@
 		return service;
 	});
 
-	let user;
-
 	export let data;
+
+	let user;
+	let loading = true;
+	let news = data.news;
+	let events = data.events;
+
+	onMount(async () => {
+		loading = false;
+	});
 
 	$: authStore.subscribe((store) => {
 		user = store.user;
-		console.log(user);
 	});
 
 	const header = 'text-2xl text-justify w-full px-5 font-semibold';
@@ -37,9 +45,9 @@
 	const sectionHeader = 'text-xl text-justify w-full px-5 pt-4 font-semibold';
 	const sectionHeaderMd = 'md:text-3xl md:px-10 md:pt-10 md:py-3';
 	const sectionHeaderXl = 'xl:text-4xl xl:px-10 xl:pt-14 xl:py-5 ';
-	const container = 'mb-5';
+	const container = 'mb-5 w-full';
 	const containerLg = 'lg:mb-10';
-	const services = 'px-5 py-5 grid grid-cols-1 gap-5';
+	const services = 'px-5 py-5 flex flex-row gap-5 w-full';
 	const servicesMd = 'md:grid-cols-2 md:gap-8 md:px-10 ';
 	const servicesXL = 'xl:grid xl:grid-cols-4 xl:gap-8 xl:px-5 ';
 	const itemContainer = 'px-5 grid grid-cols-1';
@@ -64,7 +72,7 @@
 <div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
 	Our regular worship services
 </div>
-<div class={`container ${container} ${containerLg}`}>
+<div class="mb-5 w-full lg:mb-10">
 	<div class={`services ${services} ${servicesMd} ${servicesXL}`}>
 		{#each servicesArray as service}
 			<ServiceCard {service} />
@@ -73,43 +81,57 @@
 </div>
 <hr class="mx-auto w-[80%]" />
 
+<!-- Section: News and Notices -->
+
 <!-- News -->
 <div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
 	News and Notices
 </div>
-<div class={`container ${container} ${containerLg}`}>
-	<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
-		{#each data.news as item}
-			<ItemCard {item} kind="news" />
-		{/each}
+{#if loading}
+	<div>loading...</div>
+{:else}
+	<div class="mb-5 w-full lg:mb-10">
+		<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
+			{#if news.length > 0}
+				{#each news as item}
+					<ItemCard {item} kind="news" />
+				{/each}
+			{:else}
+				<p>Currently there are no published news items</p>
+			{/if}
+		</div>
+		<div class="more-link mb-8">
+			<a class="cool-link" href="/news">See all news articles</a>
+		</div>
 	</div>
-	<div class="more-link mb-8">
-		<a class="cool-link" href="/news">See all news articles</a>
-	</div>
-</div>
+{/if}
+
 <hr class="mx-auto w-[80%]" />
 
 <!-- Section: Events 	-->
 <div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
 	Upcoming Events
 </div>
-<div class={`container ${container} ${containerLg}`}>
-	<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
-		{#if data.events.length > 0}
-			{#each data.events as event}
-				<ItemCard item={event} kind="events" />
-			{/each}
-		{:else}
-			<p>Currently there are no events scheduled</p>
-		{/if}
-	</div>
-	{#if data.events.length > 1}
+{#if loading}
+	loading...
+{:else}
+	<div class="mb-5 w-full lg:mb-10">
+		<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
+			{#if events.length > 0}
+				{#each events as event}
+					<ItemCard item={event} kind="events" />
+				{/each}
+			{:else}
+				<p>Currently there are no events scheduled</p>
+			{/if}
+		</div>
 		<div class="more-link mb-8">
 			<a class="cool-link" href="/news">See all events</a>
 		</div>
-	{/if}
-</div>
+	</div>
+{/if}
 <hr class="mx-auto w-[80%]" />
+
 <!-- About us -->
 <div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Who we are</div>
 <div class="single-post">
@@ -131,7 +153,7 @@
 <div class="downloads">
 	<h2 class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Downloads</h2>
 </div>
-<div class={`container ${container} ${containerLg}`}>
+<div class="mb-5 w-full lg:mb-10">
 	<!--<div
 		class={`download-container ${downloadContainer} ${downloadContainerLg} ${downloadContainerXL}`}
 	>-->

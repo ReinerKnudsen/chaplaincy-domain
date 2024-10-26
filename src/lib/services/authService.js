@@ -6,7 +6,7 @@ import {
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
 	updateProfile,
-	sendPasswordResetEmail
+	sendPasswordResetEmail,
 } from 'firebase/auth';
 import { httpsCallable } from 'firebase/functions';
 
@@ -25,15 +25,26 @@ export const listAllUsers = async () => {
 };
 
 // *****************************************************************************************
+// Count Admin Users
+// *****************************************************************************************
+export async function countAdmins() {
+	let countAdminUsers = httpsCallable(functions, 'getCountOfAdmins');
+
+	const numberOfAdmins = await countAdminUsers();
+	console.log('countAdminUsers: ', numberOfAdmins.data);
+	return numberOfAdmins.data;
+}
+
+// *****************************************************************************************
 // Change user role
 // *****************************************************************************************
 
-// Refactor: Only make available to admins
 export async function changeUserRole(email, role) {
-	let addUserRole = httpsCallable(functions, 'setUserRole');
+	let addUserRole = httpsCallable(functions, 'changeUserRole');
 	addUserRole({ email: email, role: role })
 		.then((result) => {
-			console.log('After role assignment: ', result);
+			console.log('After role assignment: ', result.data);
+			return result.data;
 		})
 		.catch((err) => {
 			console.log('Error: ', err.message);
@@ -65,24 +76,30 @@ export async function getUserByID(uid) {
 // Get user role
 // *****************************************************************************************
 export async function getUserRole(user) {
-	return user.getIdTokenResult().then((idTokenResult) => {
-		return idTokenResult.claims.role;
-	});
+	if (user) {
+		try {
+			return user.getIdTokenResult().then((idTokenResult) => {
+				return idTokenResult.claims.role;
+			});
+		} catch (error) {
+			console.log('Error: user not logged indent', error.message);
+		}
+	} else {
+		console.log('Error: must provide a user object');
+		return null;
+	}
 }
 
 // *****************************************************************************************
 // Create new with email, displayName and role
 // *****************************************************************************************
 export async function createNewUser({ email, displayName, role, firstname, lastname }) {
-	console.log('Parameters: ', email, displayName, role, firstname, lastname);
 	try {
 		let createUser = httpsCallable(functions, 'createUser');
 		const newUser = await createUser({ email, displayName, role });
 		const uid = newUser.data.uid;
-		console.log(newUser);
 
 		// Create user profile in Firestore
-		console.log('Create user profile in Firestore: ', database, uid);
 		try {
 			const userDocRef = doc(database, 'users', uid);
 			await setDoc(
@@ -91,9 +108,9 @@ export async function createNewUser({ email, displayName, role, firstname, lastn
 					firstname: firstname,
 					lastname: lastname,
 					email: email,
-					displayName: displayName
+					displayName: displayName,
 				},
-				{ merge: true }
+				{ merge: true },
 			);
 		} catch (error) {
 			console.log('Error: ', error);
@@ -101,7 +118,7 @@ export async function createNewUser({ email, displayName, role, firstname, lastn
 		const BASE_URL = import.meta.env.VITE_BASE_URL;
 		const actionCodeSettings = {
 			url: `${BASE_URL}/passwordreset`,
-			handleCodeInApp: true
+			handleCodeInApp: true,
 		};
 		await sendPasswordResetEmail(auth, newUser.data.email, actionCodeSettings);
 		return newUser;
@@ -119,6 +136,9 @@ export async function signInExistingUser(email, password) {
 	try {
 		authStore.update((store) => ({ ...store, loading: true, error: null }));
 		const userCredential = await signInWithEmailAndPassword(auth, email, password);
+		if (!userCredential.user) {
+			return;
+		}
 		const authenticatedUser = userCredential.user;
 		const role = await getUserRole(authenticatedUser);
 
@@ -129,7 +149,7 @@ export async function signInExistingUser(email, password) {
 			loading: false,
 			error: null,
 			isLoggedIn: true,
-			role: role
+			role: role,
 		});
 		return authenticatedUser;
 	} catch (error) {
@@ -137,7 +157,7 @@ export async function signInExistingUser(email, password) {
 			...store,
 			loading: false,
 			error: error.message,
-			isLoggedIn: false
+			isLoggedIn: false,
 		}));
 		console.log('Error: ', error.message);
 	}
@@ -157,12 +177,12 @@ export async function registerUser({ email, displayName, firstname, lastname, ro
 
 			// We set the displayName in the user object
 			await updateProfile(authenticatedUser, {
-				displayName: displayName
+				displayName: displayName,
 			});
 
 			// Set user role
 			if (role) {
-				await setUserRole(authenticatedUser.uid, role);
+				await changeUserRole(authenticatedUser.uid, role);
 			}
 		}
 
@@ -175,9 +195,9 @@ export async function registerUser({ email, displayName, firstname, lastname, ro
 					firstname: firstname,
 					lastname: lastname,
 					email: email,
-					displayName: displayName
+					displayName: displayName,
 				},
-				{ merge: true }
+				{ merge: true },
 			);
 		} catch (error) {
 			console.log('Error: ', error.message);
@@ -190,7 +210,7 @@ export async function registerUser({ email, displayName, firstname, lastname, ro
 			role: 'user',
 			loading: false,
 			error: null,
-			isLoggedIn: true
+			isLoggedIn: true,
 		});
 
 		return authenticatedUser; // Return authenticated user
@@ -200,7 +220,7 @@ export async function registerUser({ email, displayName, firstname, lastname, ro
 			...store,
 			loading: false,
 			error: error.message,
-			isLoggedIn: false
+			isLoggedIn: false,
 		}));
 		throw error;
 	}
@@ -242,7 +262,7 @@ export function signOutUser() {
 			...store,
 			loading: false,
 			error: error.message,
-			isLoggedIn: false
+			isLoggedIn: false,
 		}));
 		throw error;
 	}

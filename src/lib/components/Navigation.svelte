@@ -1,46 +1,33 @@
-<script>
-	import { page } from '$app/stores';
-	import {
-		Navbar,
-		NavBrand,
-		NavLi,
-		NavUl,
-		NavHamburger,
-		Dropdown,
-		DropdownDivider,
-		DropdownItem
-	} from 'flowbite-svelte';
-	import Icon from '$lib/components/Icon.svelte';
-
+<script lang="ts">
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
-	import { auth, imgStorageRef } from '$lib/firebase/firebaseConfig';
+	import { auth, settingsColRef } from '$lib/firebase/firebaseConfig';
 	import { goto } from '$app/navigation';
 	import { signOut } from 'firebase/auth';
 	import caplogo from '$lib/assets/chaplaincy_logo.png';
+	import { about as aboutItems } from '$lib/data/data.json';
+
+	import type { MenuItem } from '$lib/types';
+
+	import { page } from '$app/stores';
+	import NavigationItem from '$lib/components/NavigationItem.svelte';
+	import NavigationRollUp from '$lib/components/NavigationRollUp.svelte';
 
 	let user;
 
 	$: activeUrl = $page.url.pathname;
-
 	$: authStore.subscribe((store) => {
 		user = store;
 	});
 
-	const handleLogout = () => {
-		signOut(auth)
-			.then(() => {
-				goto('/');
-				console.log('User signed out');
-				unloadUser();
-			})
-			.catch((error) => {
-				console.error('Error logging out:', error);
-			});
-	};
-
-	let showDropdown = false;
-	const toggleDropdown = () => {
-		showDropdown = !showDropdown;
+	const handleLogout = async () => {
+		try {
+			await signOut(auth);
+			goto('/');
+			console.log('User signed out');
+			unloadUser();
+		} catch (error) {
+			console.error('Error signing out:', error);
+		}
 	};
 
 	const textSizeMenu = 'text-xl';
@@ -78,116 +65,28 @@
 				></path>
 			</svg></button
 		>
-		<div class="w-full cursor-pointer md:block md:w-auto" hidden="true">
+		<div class="w-full cursor-pointer md:block md:w-auto">
 			<ul
 				class="mt-4 flex flex-col p-4 text-primary-100 md:mt-0 md:flex-row md:space-x-8 md:text-sm md:font-medium"
 			>
-				<li>
-					<a
-						href="/"
-						class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-						>Home</a
-					>
-				</li>
-				<li>
-					<a
-						href="/news"
-						class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-						>News</a
-					>
-				</li>
-				<li>
-					<a
-						href="/events"
-						class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-						>Events</a
-					>
-				</li>
-				<li>
-					<a
-						href="/groups"
-						class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-						>Groups</a
-					>
-				</li>
-				<li>
-					<a
-						href="/prayers"
-						class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-						>Pray with us</a
-					>
-				</li>
-				<li class="group relative">
-					<a href="" class="text-xl" on:click|preventDefault={toggleDropdown}>About us</a>
-					{#if showDropdown}
-						<div
-							class="ring-black absolute left-0 mt-2 w-48 rounded-md bg-white-primary shadow-lg ring-1 ring-opacity-5"
-						>
-							<div
-								class="py-1"
-								role="menu"
-								aria-orientation="vertical"
-								aria-labelledby="options-menu"
-							>
-								<a
-									href="/about"
-									class="block px-4 py-2 text-sm text-primary-100 hover:bg-gray-100 hover:text-gray-900"
-									role="menuitem"
-									on:click={toggleDropdown}>Who we are</a
-								>
-								<a
-									href="/about/responsibilities"
-									class="block px-4 py-2 text-sm text-primary-100 hover:bg-gray-100 hover:text-gray-900"
-									role="menuitem"
-									on:click={toggleDropdown}>Responsibilities</a
-								>
-								<a
-									href="/about/safeguarding"
-									class="block px-4 py-2 text-sm text-primary-100 hover:bg-gray-100 hover:text-gray-900"
-									role="menuitem"
-									on:click={toggleDropdown}>Safeguarding</a
-								>
-								<a
-									href="/about/contact"
-									class="block px-4 py-2 text-sm text-primary-100 hover:bg-gray-100 hover:text-gray-900"
-									role="menuitem"
-									on:click={toggleDropdown}>Get in touch</a
-								>
-							</div>
-						</div>
-					{/if}
-				</li>
+				<NavigationItem url="/" label="Home" />
+				<NavigationItem url="/worship" label="Worship" />
+				<NavigationItem url="/news" label="News" />
+				<NavigationItem url="/events" label="Events" />
+				<NavigationItem url="/groups" label="Groups" />
+				<NavigationItem url="/activities" label="Activities" />
+				<NavigationRollUp {aboutItems} title="About us" />
 				{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
-					<li>
-						<a
-							href="/admin"
-							class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-							>Admin</a
-						>
-					</li>
+					<NavigationItem url="/admin" label="Admin" />
 				{/if}
 				{#if !$authStore.isLoggedIn}
-					<li>
-						<a
-							href="/login"
-							class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-							>Sign in</a
-						>
-					</li>
+					<NavigationItem url="/login" label="Login" />
 				{:else}
 					<li>
 						<button
 							class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
 							on:click={handleLogout}>Sign out</button
 						>
-						<!--<div
-							role="link"
-							href=""
-							class="md:hover:text-primary-700 md:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:border-0 md:p-0 md:hover:bg-transparent md:dark:hover:bg-transparent"
-							on:click={handleLogout}
-						>
-							Sign out
-						</div>-->
 					</li>
 				{/if}
 			</ul>

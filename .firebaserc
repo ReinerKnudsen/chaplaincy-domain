@@ -1,7 +1,10 @@
 {
   "projects": {
     "default": "chaplaincy-website-bncgn",
-    "prod": "chaplaincy-website-prod"
+    "prod": "chaplaincy-website-prod",
+    "staging": "chaplaincy-website-dev",
+    "local": "chaplaincy-website-bncgn",
+    "empty": "chaplaincy-empty-test"
   },
   "targets": {},
   "etags": {}

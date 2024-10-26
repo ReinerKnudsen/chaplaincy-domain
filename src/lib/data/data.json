@@ -1,0 +1,34 @@
+{
+	"about": [
+		{
+			"title": "Who we are",
+			"url": "/about/"
+		},
+		{
+			"title": "Who is who?",
+			"url": "/about/responsibilities"
+		},
+		{
+			"title": "Safeguarding",
+			"url": "/about/safeguarding"
+		},
+		{
+			"title": "Get in touch",
+			"url": "/about/contact"
+		}
+	],
+	"profiles": [
+		{
+		"name": "William Shatterton",
+		"role": "Webmaster",
+		"description": "I am a web developer. My home turf is everything dealing with presenting information in the web and give people easy access to information.",
+		"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fprofiles%2Fprofile-male.png?alt=media&token=29204448-7046-410a-b521-47e03c89a4b2"
+		},
+		{
+		"name": "Talia Hammerby",
+		"role": "Churchwarden & Musical Director",
+		"description": "My goal is to make everybody feel welcome and included in our services and your chaplaincy's activities. Music is my tool to connect with people.",
+		"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fprofiles%2Fprofile-female.png?alt=media&token=217e68f8-f802-4a0b-bc7a-503f21043f45"
+		}
+	]
+}

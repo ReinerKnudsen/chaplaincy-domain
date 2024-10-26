@@ -6,38 +6,59 @@
 	import { database } from '$lib/firebase/firebaseConfig';
 
 	import { Label, Input, Select, Button } from 'flowbite-svelte';
-	import { updateUserProfile } from '$lib/services/authService';
+	import { updateUserProfile, countAdmins } from '$lib/services/authService';
 	import { onMount } from 'svelte';
 
 	const userID = $page.params.userID;
 	export let data;
-	const user = data.user;
+	let currentUser = data.user;
 	const docRef = doc(database, 'users', userID);
+	let numberOfAdmins;
+
+	const errorObject = {
+		emailErr: '',
+		roleErr: '',
+	};
 
 	const userRoles = [
-		{ value: 'user', name: 'User' },
 		{ value: 'editor', name: 'Editor' },
-		{ value: 'admin', name: 'Admin' }
+		{ value: 'admin', name: 'Admin' },
 	];
 
-	onMount(() => {
-		// get userdoc from firestore
-		getDoc(docRef).then((doc) => {
-			user.firstname = doc.data().firstname;
-			user.lastname = doc.data().lastname;
-		});
+	$: console.log(currentUser, data.user);
+
+	onMount(async () => {
+		const doc = await getDoc(docRef);
+		currentUser = {
+			...currentUser,
+			firstname: doc.data().firstname,
+			lastname: doc.data().lastname,
+		};
+		numberOfAdmins = await countAdmins();
 	});
 
 	const handleSave = async () => {
-		const result = await updateUserProfile(user);
-		if (result) {
-			updateDoc(docRef, {
-				firstname: user.firstname,
-				lastname: user.lastname,
-				displayName: user.displayName
-			});
+		/** we must prevent to have the final admin being changed */
+		if (data.user.role === 'admin' && currentUser.role !== 'admin' && numberOfAdmins === 1) {
+			currentUser.role = 'admin';
+			errorObject.roleErr = 'You can not override the only admin.';
+			return;
+		} else {
+			errorObject.roleErr = '';
+			try {
+				const result = await updateUserProfile(currentUser);
+				if (result) {
+					updateDoc(docRef, {
+						firstname: currentUser.firstname,
+						lastname: currentUser.lastname,
+						displayName: currentUser.displayName,
+					});
+				}
+			} catch (error) {
+				console.log("Couldn't update user profile: ", error);
+			}
+			goto('/admin/useradmin');
 		}
-		goto('/admin/useradmin');
 	};
 
 	const handleCancel = () => {
@@ -51,11 +72,11 @@
 	<div class="mb-6 grid gap-6 md:grid-cols-2">
 		<div class="mb-6">
 			<Label for="firstname" class="mb-2 block">First Name</Label>
-			<Input id="firstname" size="lg" placeholder="First name" bind:value={user.firstname} />
+			<Input id="firstname" size="lg" placeholder="First name" bind:value={currentUser.firstname} />
 		</div>
 		<div class="mb-6">
 			<Label for="lastname" class="mb-2 block">Last Name</Label>
-			<Input id="lastname" size="lg" placeholder="Last name" bind:value={user.lastname} />
+			<Input id="lastname" size="lg" placeholder="Last name" bind:value={currentUser.lastname} />
 		</div>
 		<div class="mb-6">
 			<Label for="displayname" class="mb-2 block">Display Name *</Label>
@@ -63,19 +84,25 @@
 				id="displayname"
 				size="lg"
 				placeholder="Display name"
-				bind:value={user.displayName}
+				bind:value={currentUser.displayName}
 				required
 			/>
 		</div>
 		<div class="mb-6">
 			<Label for="email" class="mb-2 block">Email</Label>
-			<Input id="email" size="lg" placeholder="Email" bind:value={user.email} disabled />
+			<Input id="email" size="lg" placeholder="Email" bind:value={currentUser.email} disabled />
 		</div>
 		<div class="mb-6">
 			<Label for="role" class="mb-2 block">User role</Label>
-			<Select class="mt-2" items={userRoles} bind:value={user.role} />
+			<Select class="mt-2" items={userRoles} bind:value={currentUser.role} />
 		</div>
+		{#if errorObject.roleErr}
+			<div class="mb-6 flex w-full items-center justify-center font-semibold text-red-800">
+				{errorObject.roleErr}
+			</div>
+		{/if}
 	</div>
+
 	<div class="mx-[25%] mb-6 flex flex-row justify-between">
 		<Button
 			type="button"

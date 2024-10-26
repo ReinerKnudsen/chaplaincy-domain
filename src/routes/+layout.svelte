@@ -13,21 +13,21 @@
 
 	let unsubscribe;
 
+	export let data;
+	const routes = data.routes;
+
 	const auth = getAuth();
 
 	const clearUser = () => {
 		unloadUser();
 	};
 
-	$: if (authStore.user) {
-		console.log('User: ', authStore.user);
-	}
-
 	/** Wir initialisieren den AuthStateListener */
 	onMount(() => {
 		if (!authStore.user) {
 			unsubscribe = onAuthStateChanged(auth, async (user) => {
 				if (user) {
+					sessionStorage.setItem('accessToken', user.accessToken);
 					const role = await getUserRole(user);
 					authStore.update((curr) => {
 						return {
@@ -36,7 +36,7 @@
 							isLoggedIn: !!user,
 							isLoading: false,
 							name: user.displayName || 'no-name',
-							role: role
+							role: role,
 						};
 					});
 				} else {
@@ -53,7 +53,7 @@
 	});
 </script>
 
-<Navigation />
+<Navigation {routes} />
 
 <div class=" md:my-10 xl:my-10">
 	<slot />

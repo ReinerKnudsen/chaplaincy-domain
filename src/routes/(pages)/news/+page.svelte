@@ -55,6 +55,8 @@
 			{/each}
 		</div>
 	</div>
+{:else}
+	<div class="mt-10 font-semibold italic">Currently there are no published news.</div>
 {/if}
 
 <style>

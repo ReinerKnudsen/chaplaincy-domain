@@ -40,15 +40,15 @@ export async function countAdmins() {
 // *****************************************************************************************
 
 export async function changeUserRole(email, role) {
-	let addUserRole = httpsCallable(functions, 'changeUserRole');
-	addUserRole({ email: email, role: role })
-		.then((result) => {
-			console.log('After role assignment: ', result.data);
-			return result.data;
-		})
-		.catch((err) => {
-			console.log('Error: ', err.message);
-		});
+	let changeUserRole = httpsCallable(functions, 'changeUserRole');
+
+	try {
+		let result = await changeUserRole({ email: email, role: role });
+		return result.data;
+	} catch (error) {
+		console.log('Error: ', error.message);
+		return null;
+	}
 }
 
 // *****************************************************************************************
@@ -58,17 +58,15 @@ export async function changeUserRole(email, role) {
 export async function getUserByID(uid) {
 	try {
 		let getUserProfile = httpsCallable(functions, 'getUserProfile');
-		return await getUserProfile({ uid: uid })
-			.then((result) => {
-				return result.data.user;
-			})
-			.catch((err) => {
-				console.log(err.message);
-				throw err; // It's usually better to re-throw the error so it can be handled by the caller
-			});
-	} catch (error) {
-		console.log('Error: ', error.message);
-		throw error;
+		let result = await getUserProfile({ uid: uid });
+		if (!result) {
+			return null;
+		} else {
+			return result.data.user;
+		}
+	} catch (err) {
+		console.log(err.message);
+		throw err;
 	}
 }
 

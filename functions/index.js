@@ -22,20 +22,25 @@ exports.changeUserRole = functions.https.onRequest((req, res) => {
 	cors(req, res, async () => {
 		try {
 			let user;
-			const data = req.body; // hole die Daten aus dem Request-Body
+			const data = req.body.data; // hole die Daten aus dem Request-Body
+			console.log('Received this data: ', data);
 
-			if (data.uid) {
-				user = await admin.auth().getUser(data.uid);
-			} else if (data.email) {
-				user = await admin.auth().getUserByEmail(data.email);
-			} else {
-				return res.status(400).send('Must provide a valid UID or email.');
+			if (!data.uid && !data.email) {
+				return res.status(400).json({
+					error: 'Must provide a valid UID or email.',
+					data: { uid: data.uid, email: data.email },
+				});
 			}
 
 			if (!data.role) {
 				return res.status(400).send('Must provide a role to assign.');
 			}
 
+			if (data.uid) {
+				user = await admin.auth().getUser(data.uid);
+			} else if (data.email) {
+				user = await admin.auth().getUserByEmail(data.email);
+			}
 			await admin.auth().setCustomUserClaims(user.uid, { role: data.role });
 			res.status(200).send({ message: `Success! User now has the role ${data.role}.` });
 		} catch (error) {

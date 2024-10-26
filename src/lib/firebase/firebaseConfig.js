@@ -2,7 +2,7 @@ import { deleteApp, getApps, getApp, initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection } from 'firebase/firestore';
 import { getStorage, ref } from 'firebase/storage';
-import { getFunctions } from 'firebase/functions';
+import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_APIKEY,
@@ -23,6 +23,11 @@ if (!getApps().length) {
 	deleteApp(firebaseApp);
 	firebaseApp = initializeApp(firebaseConfig);
 }
+
+// const functions = getFunctions(firebaseApp);
+// if (import.meta.env.DEV && typeof window !== 'undefined') {
+// 	connectFunctionsEmulator(functions, 'localhost', 5001); // Replace 5001 with your emulator's actual port
+// }
 
 // Create auth, database and storage instances
 export const auth = getAuth(firebaseApp);

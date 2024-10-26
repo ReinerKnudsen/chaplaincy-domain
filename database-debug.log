@@ -1,4 +1,7 @@
-20:59:45.807 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
-20:59:45.902 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
-20:59:48.559 [Thread-0] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
-20:59:48.562 [Thread-0] INFO com.firebase.server.forge.App$ - Graceful shutdown complete.
+19:53:46.667 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+19:53:46.763 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
+19:54:52.863 [NamespaceSystem-akka.actor.default-dispatcher-7] INFO com.firebase.core.namespace.NamespaceActor - chaplaincy-empty-test successfully activated FBKV (SurveyIdle(0)) wait: 84ms, init: 0ms
+20:13:26.287 [Thread-0] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
+20:13:26.296 [NamespaceSystem-akka.actor.default-dispatcher-12] INFO com.firebase.core.namespace.Terminator$Terminator - 1 actors left to terminate: chaplaincy-empty-test
+20:13:26.305 [NamespaceSystem-akka.actor.default-dispatcher-12] INFO com.firebase.core.namespace.NamespaceActor - stopped namespace actor for chaplaincy-empty-test
+20:13:26.307 [Thread-0] INFO com.firebase.server.forge.App$ - Graceful shutdown complete.

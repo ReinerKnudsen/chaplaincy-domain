@@ -9,6 +9,8 @@
 	let thisEmail = '';
 	let error = '';
 
+	$: console.log('authStore: ', $authStore);
+
 	onMount(() => {
 		document.getElementById('email').focus();
 	});

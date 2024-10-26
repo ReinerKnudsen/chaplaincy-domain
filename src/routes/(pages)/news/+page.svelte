@@ -7,7 +7,8 @@
 	export let data;
 	let news = data.news;
 	let favNews = news[0];
-	let newsItems = news.slice(1);
+	let newsItems = news ? news.slice(1) : []; // all news items except the first one
+	let loading = false;
 
 	// Sort table items
 	const sortKey = writable('publishdate'); // default sort key
@@ -37,20 +38,24 @@
 		photoUrl: 'https://unsplash.com/@reinerknudsen',
 		imageUrl:
 			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fstock%2Fnews.jpg?alt=media&token=c783cad1-946a-4a47-9917-56c24bb74872',
-		title: 'News and Notices'
+		title: 'News and Notices',
 	};
 </script>
 
 <PageHeader {headerData} textStyle="white" />
 
-<div class=" flex flex-col">
-	<ItemCardFav item={favNews} kind="news" />
-	<div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
-		{#each newsItems as newsItem}
-			<ItemCard item={newsItem} kind="news" />
-		{/each}
+{#if loading}
+	loading...
+{:else if news.length > 0}
+	<div class=" flex flex-col">
+		<ItemCardFav item={favNews} kind="news" />
+		<div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+			{#each newsItems as newsItem}
+				<ItemCard item={newsItem} kind="news" />
+			{/each}
+		</div>
 	</div>
-</div>
+{/if}
 
 <style>
 </style>

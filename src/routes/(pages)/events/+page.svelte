@@ -13,7 +13,7 @@
 		photoName: 'Gaurav Kumar',
 		photoUrl: 'https://unsplash.com/@gkumar2175',
 		imageUrl:
-			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fstock%2Fevents.jpeg?alt=media&token=7b530e23-9825-477f-9fef-587beee93406'
+			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fstock%2Fevents.jpeg?alt=media&token=7b530e23-9825-477f-9fef-587beee93406',
 	};
 </script>
 

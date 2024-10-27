@@ -58,9 +58,7 @@
 				{error}
 			</div>
 			<div class="flex items-start">
-				<a href="/" class="ml-auto text-sm text-blue-700 hover:underline dark:text-blue-500"
-					>Forgot password?</a
-				>
+				<a href="/" class="border-b-2 border-b-purple-100 pb-1">Forgot password?</a>
 			</div>
 			<Button type="submit" class="w-full bg-primary-80 text-white-primary">Sign in</Button>
 			<!--<p class="text-sm font-light text-gray-500 dark:text-gray-400">

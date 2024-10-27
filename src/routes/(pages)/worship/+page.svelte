@@ -157,6 +157,23 @@
 			to worship that is both accessible and profoundly moving.
 		</p>
 	</div>
+	<h2 class="my-8 text-2xl font-semibold">Pilgrimage</h2>
+	<div class="flex flex-col space-y-8">
+		<p>
+			A pilgrimage is a spiritual journey to a place of religious significance. It offers a way of
+			engaging with the surrounding landscape and a space where we can reflect and pray.
+		</p>
+		<p>
+			Each year, we offer a one-day pilgrimage to Echternach in Luxembourg (with our Old Catholic
+			sister congregation from <a
+				class="border-b-2 border-b-purple-100 pb-1"
+				href="https://www.alt-katholisch.de/unsere-gemeinden/gemeinde-bonn-startseite/"
+				target="_blank">St. Cyprian’s church</a
+			> in Bonn), and a weekend pilgrimage within Germany. Previous destinations have included Fulda,
+			Kevelaer and Rüdesheim. We walk, pray, eat and worship together, sharing the journey and growing
+			in faith as we travel.
+		</p>
+	</div>
 </div>
 
 <style>

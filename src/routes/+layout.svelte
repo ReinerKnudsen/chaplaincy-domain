@@ -1,10 +1,10 @@
 <script>
-	import '/src/app.pcss';
+	import '/src/app.css';
 	import Navigation from '$lib/components/Navigation.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import { onDestroy, onMount } from 'svelte';
 
-	import '@fontsource-variable/raleway';
+	import '@fontsource/inter';
 
 	import { getAuth, onAuthStateChanged } from 'firebase/auth';
 	import { firebaseApp } from '$lib/firebase/firebaseConfig';

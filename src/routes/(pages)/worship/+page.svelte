@@ -53,11 +53,11 @@
 		<p>
 			Morning Prayer traditionally includes a sequence of prayers and readings, often beginning with
 			a call to worship, followed by psalms, readings from both the Old and New Testaments, and
-			canticles. Key elements include the *Venite*, an invitation to worship based on Psalm 95, and
-			the *Benedictus*, a song of thanksgiving from the Gospel of Luke. These texts highlight themes
-			of praise, repentance, and dedication, encouraging worshipers to carry these virtues into
-			their daily lives. The structured yet accessible format allows individuals or congregations to
-			follow along, either privately or as part of a communal gathering.
+			canticles. Key elements include the <em>Venite</em>, an invitation to worship based on Psalm
+			95, and the <em>Benedictus</em>, a song of thanksgiving from the Gospel of Luke. These texts
+			highlight themes of praise, repentance, and dedication, encouraging worshipers to carry these
+			virtues into their daily lives. The structured yet accessible format allows individuals or
+			congregations to follow along, either privately or as part of a communal gathering.
 		</p>
 
 		<p>

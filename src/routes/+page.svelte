@@ -101,7 +101,7 @@
 			{/if}
 		</div>
 		<div class="more-link mb-8">
-			<a class="cool-link" href="/news">See all news articles</a>
+			<a class="border-b-2 border-b-purple-100 pb-1" href="/news">See all news articles</a>
 		</div>
 	</div>
 {/if}
@@ -126,7 +126,7 @@
 			{/if}
 		</div>
 		<div class="more-link mb-8">
-			<a class="cool-link" href="/news">See all events</a>
+			<a class="border-b-2 border-b-purple-100 pb-1" href="/news">See all events</a>
 		</div>
 	</div>
 {/if}
@@ -136,7 +136,7 @@
 <div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Who we are</div>
 <div class="single-post">
 	<div class="more-link">
-		<a class="cool-link" href="/about">Learn more</a>
+		<a class="border-b-2 border-b-purple-100 pb-1" href="/about">Learn more</a>
 	</div>
 </div>
 
@@ -146,7 +146,7 @@
 </div>
 <div class="single-post">
 	<div class="more-link">
-		<a class="cool-link" href="/about">Learn more</a>
+		<a class="border-b-2 border-b-purple-100 pb-1" href="/about">Learn more</a>
 	</div>
 </div>
 
@@ -179,11 +179,6 @@
 	.more-link {
 		text-align: center;
 		margin: 20px;
-	}
-
-	.cool-link {
-		border-bottom: solid 2px #a07b9f;
-		padding-bottom: 3px;
 	}
 
 	.download-item {

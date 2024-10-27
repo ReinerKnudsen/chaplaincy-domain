@@ -14,7 +14,7 @@
 
 <PageHeader {headerData} textStyle="white" />
 
-<div class="mx-auto w-[80%] text-xl">
+<div class="mx-auto w-[80%] text-lg">
 	<h2 class="my-4 text-2xl font-semibold">Eucharist service</h2>
 	<div class="flex flex-col space-y-8">
 		Worshipping God together is at the heart of the chaplaincy’s life. Before bringing our gifts to

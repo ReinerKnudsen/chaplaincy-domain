@@ -12,8 +12,11 @@
 			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fstock%2Fgroups.jpg?alt=media&token=83a5659a-9299-4f6c-bc5a-2bc5608e1b73',
 	};
 
-	const previousPage = sessionStorage.getItem('previousPage') || null;
-	console.log(groups);
+	onMount(() => {
+		if (sessionStorage.getItem('previousPage') !== null) {
+			const previousPage = sessionStorage.getItem('previousPage') || null;
+		}
+	});
 
 	onDestroy(() => {
 		sessionStorage.setItem('previousPage', '/groups');
@@ -38,9 +41,3 @@
 		<GroupCard {group} />
 	{/each}
 </div>
-
-<style>
-	.group {
-		@apply mb-10;
-	}
-</style>

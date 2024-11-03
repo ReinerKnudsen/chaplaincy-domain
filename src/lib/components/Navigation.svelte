@@ -72,10 +72,9 @@
 				<NavigationItem url="/" label="Home" />
 				<NavigationItem url="/worship" label="Worship" />
 				<NavigationItem url="/news" label="News" />
-				<NavigationItem url="/events" label="Events" />
-				<NavigationItem url="/groups" label="Groups" />
 				<NavigationItem url="/activities" label="Activities" />
-				<NavigationRollUp {aboutItems} title="About us" />
+				<NavigationItem url="/groups" label="Groups" />
+				<NavigationRollUp menuItems={aboutItems} title="About us" />
 				{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
 					<NavigationItem url="/admin" label="Admin" />
 				{/if}

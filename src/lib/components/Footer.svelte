@@ -1,4 +1,8 @@
 <script>
+	import { onMount } from 'svelte';
+	import { doc, getDoc } from 'firebase/firestore';
+	import { database } from '$lib/firebase/firebaseConfig';
+
 	import {
 		Footer,
 		FooterCopyright,
@@ -8,9 +12,18 @@
 		FooterIcon,
 	} from 'flowbite-svelte';
 	import Icon from '$lib/components/Icon.svelte';
-	import { firebaseEnv } from '$lib/firebase/firebaseConfig';
 
-	const environment = firebaseEnv.name;
+	let environment;
+	let loading = true;
+
+	onMount(async () => {
+		const docRef = doc(database, 'settings', 'env');
+		const docSnapshot = await getDoc(docRef);
+		if (docSnapshot.exists()) {
+			environment = docSnapshot.data().name;
+		}
+		loading = false;
+	});
 </script>
 
 <Footer footerType="socialmedia" class=" rounded-t-2xl bg-white-primary shadow-xl ">
@@ -47,7 +60,11 @@
 	<hr class="my-6 border-gray-200 dark:border-gray-700 sm:mx-auto lg:my-8" />
 	<div class=" pl-8 pr-8 sm:flex sm:items-center sm:justify-between">
 		<FooterCopyright href="/" by="Sleepy Panda " />
-		{environment}
+		{#if loading}
+			<span>...</span>
+		{:else}
+			{environment}
+		{/if}
 		<div class="mt-4 flex space-x-6 sm:mt-0 sm:justify-center rtl:space-x-reverse">
 			<FooterIcon href="https://www.facebook.com/AnglicanBonnCologne/">
 				<Icon

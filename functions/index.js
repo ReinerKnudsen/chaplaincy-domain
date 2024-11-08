@@ -23,17 +23,20 @@ exports.changeUserRole = functions.https.onRequest((req, res) => {
 		try {
 			let user;
 			const data = req.body.data; // hole die Daten aus dem Request-Body
-			console.log('Received this data: ', data);
-
 			if (!data.uid && !data.email) {
-				return res.status(400).json({
-					error: 'Must provide a valid UID or email.',
-					data: { uid: data.uid, email: data.email },
+				return res.status(400).send({
+					data: {
+						error: 'Must provide a valid UID or email.',
+					},
 				});
 			}
 
 			if (!data.role) {
-				return res.status(400).send('Must provide a role to assign.');
+				return res.status(400).send({
+					data: {
+						error: 'Must provide a role to assign.',
+					},
+				});
 			}
 
 			if (data.uid) {
@@ -42,10 +45,18 @@ exports.changeUserRole = functions.https.onRequest((req, res) => {
 				user = await admin.auth().getUserByEmail(data.email);
 			}
 			await admin.auth().setCustomUserClaims(user.uid, { role: data.role });
-			res.status(200).send({ message: `Success! User now has the role ${data.role}.` });
+			res.status(200).send({
+				data: {
+					message: `Success! User now has the role ${data.role}.`,
+				},
+			});
 		} catch (error) {
 			console.error('Error setting user role:', error);
-			res.status(500).send('Failed to set user role.');
+			res.status(500).send({
+				data: {
+					error: 'Failed to set user role.',
+				},
+			});
 		}
 	});
 });

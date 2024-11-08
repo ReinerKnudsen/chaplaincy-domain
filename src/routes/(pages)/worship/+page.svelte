@@ -68,6 +68,13 @@
 			practice reflects the Anglican value of daily consecration and mindfulness, anchoring
 			believers in faith as they move into their everyday activities with purpose and peace.
 		</p>
+		<div class="my-2 border-y-2 py-4">
+			<a
+				class="border-b-2 border-b-purple-100 pb-[3px]"
+				href="https://www.churchofengland.org/prayer-and-worship/join-us-service-daily-prayer"
+				target="_blank">Join us in a service of Daily Prayer.</a
+			>
+		</div>
 	</div>
 	<h2 class="my-8 text-2xl font-semibold">Evening Prayer</h2>
 	<div class="flex flex-col space-y-8">

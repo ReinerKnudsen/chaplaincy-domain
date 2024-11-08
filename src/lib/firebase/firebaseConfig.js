@@ -48,13 +48,3 @@ export const eventsStoreRef = ref(storage, 'events');
 export const articlesStoreRef = ref(storage, 'articles');
 export const docsStorageRef = ref(storage, 'documents');
 export const imgStorageRef = ref(storage, 'images');
-
-const getEnvironment = async () => {
-	const docRef = doc(database, 'settings', 'env');
-	const docSnapshot = await getDoc(docRef);
-	if (docSnapshot.exists()) {
-		return docSnapshot.data();
-	}
-};
-
-export const firebaseEnv = await getEnvironment();

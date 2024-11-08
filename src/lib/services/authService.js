@@ -42,13 +42,8 @@ export async function countAdmins() {
 export async function changeUserRole(email, role) {
 	let changeUserRole = httpsCallable(functions, 'changeUserRole');
 
-	try {
-		let result = await changeUserRole({ email: email, role: role });
-		return result.data;
-	} catch (error) {
-		console.log('Error: ', error.message);
-		return null;
-	}
+	let result = await changeUserRole({ email: email, role: role });
+	console.log(result);
 }
 
 // *****************************************************************************************

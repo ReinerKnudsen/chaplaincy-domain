@@ -5,9 +5,12 @@
 		FooterLinkGroup,
 		FooterLink,
 		FooterBrand,
-		FooterIcon
+		FooterIcon,
 	} from 'flowbite-svelte';
 	import Icon from '$lib/components/Icon.svelte';
+	import { firebaseEnv } from '$lib/firebase/firebaseConfig';
+
+	const environment = firebaseEnv.name;
 </script>
 
 <Footer footerType="socialmedia" class=" rounded-t-2xl bg-white-primary shadow-xl ">
@@ -44,6 +47,7 @@
 	<hr class="my-6 border-gray-200 dark:border-gray-700 sm:mx-auto lg:my-8" />
 	<div class=" pl-8 pr-8 sm:flex sm:items-center sm:justify-between">
 		<FooterCopyright href="/" by="Sleepy Panda " />
+		{environment}
 		<div class="mt-4 flex space-x-6 sm:mt-0 sm:justify-center rtl:space-x-reverse">
 			<FooterIcon href="https://www.facebook.com/AnglicanBonnCologne/">
 				<Icon

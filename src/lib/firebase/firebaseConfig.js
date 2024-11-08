@@ -1,6 +1,6 @@
 import { deleteApp, getApps, getApp, initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, collection } from 'firebase/firestore';
+import { getFirestore, collection, doc, getDoc } from 'firebase/firestore';
 import { getStorage, ref } from 'firebase/storage';
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 
@@ -48,3 +48,13 @@ export const eventsStoreRef = ref(storage, 'events');
 export const articlesStoreRef = ref(storage, 'articles');
 export const docsStorageRef = ref(storage, 'documents');
 export const imgStorageRef = ref(storage, 'images');
+
+const getEnvironment = async () => {
+	const docRef = doc(database, 'settings', 'env');
+	const docSnapshot = await getDoc(docRef);
+	if (docSnapshot.exists()) {
+		return docSnapshot.data();
+	}
+};
+
+export const firebaseEnv = await getEnvironment();

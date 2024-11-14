@@ -55,7 +55,7 @@
 
 <Navigation {routes} />
 
-<div class=" md:my-10 xl:my-10">
+<div class="main-layout md:my-10 xl:my-10">
 	<slot />
 </div>
 

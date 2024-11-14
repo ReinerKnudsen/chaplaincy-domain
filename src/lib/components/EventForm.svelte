@@ -43,7 +43,7 @@
 	let newEvent: Event = defaultEvent;
 	let mode = 'save';
 	let hasImage = false;
-	let selectedImage: FileList;
+	let selectedImage: File;
 
 	$: if (newEvent.image) {
 		hasImage = true;
@@ -76,25 +76,29 @@
 		newEvent.slug = e.detail;
 	};
 
-	const handleImageChange = async (e) => {
+	const handleImageChange = async (e: CustomEvent) => {
 		selectedImage = e.detail;
 	};
 
 	/** Upload the image and create a reference in the "images" collection*/
 	const uploadImage = async () => {
-		const storageRef = ref(storage, 'images/' + selectedImage.name);
-		try {
-			await uploadBytes(storageRef, selectedImage);
-			let imageUrl = await getDownloadURL(storageRef);
-			await setDoc(doc(database, 'images', selectedImage.name), {
-				name: selectedImage.name,
-				url: imageUrl,
-				createdAt: new Date(),
-			});
-			newEvent.image = imageUrl;
-			return imageUrl;
-		} catch (error) {
-			console.log(error);
+		if (selectedImage) {
+			const storageRef = ref(storage, 'images/' + selectedImage.name);
+			try {
+				await uploadBytes(storageRef, selectedImage);
+				let imageUrl = await getDownloadURL(storageRef);
+				await setDoc(doc(database, 'images', selectedImage.name), {
+					name: selectedImage.name,
+					url: imageUrl,
+					createdAt: new Date(),
+				});
+				newEvent.image = imageUrl;
+				return imageUrl;
+			} catch (error) {
+				console.log(error);
+			}
+		} else {
+			return newEvent.image;
 		}
 	};
 
@@ -285,7 +289,7 @@
 				{#if newEvent.image}
 					<UploadImage imageUrl={newEvent.image} on:imageChange={handleImageChange} />
 				{:else}
-					<UploadImage on:imageChange={handleImageChange} />
+					<UploadImage imageUrl="" on:imageChange={handleImageChange} />
 				{/if}
 			</div>
 		</div>

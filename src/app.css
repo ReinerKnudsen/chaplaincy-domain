@@ -17,8 +17,9 @@
 	}
 
 	a {
-		cursor: pointer;
+		@apply cursor-pointer border-b-2 border-b-purple-100 pb-1 text-purple-100;
 	}
+
 	h1 {
 		color: black;
 		font-weight: 700;
@@ -49,5 +50,9 @@
 
 	h4 {
 		@apply text-lg font-semibold;
+	}
+
+	.event-description p {
+		padding-bottom: 3rem;
 	}
 }

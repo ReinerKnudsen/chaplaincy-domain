@@ -9,14 +9,14 @@
 	import { storage, database } from '$lib/firebase/firebaseConfig';
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
 
-	export let imageUrl;
+	export let imageUrl: string;
 
 	const dispatch = createEventDispatcher();
-	const authorizedExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+	const authorizedExtensions = '.jpg, .jpeg, .png, .webp';
 
-	let selectedFile;
+	let selectedFile: File;
 	let moduleWidth = 'w-[400px]';
-	let imageError;
+	let imageError: string;
 
 	/** Verify in Firestore Collection if an image of this name is already present*/
 	const checkIfFileExists = async (imageFile: string) => {
@@ -33,28 +33,29 @@
 	const handleFileChange = async (event) => {
 		event.preventDefault();
 		imageError = '';
-		let selectedFile: FileList = event.target.files[0];
-
-		let fileExists = await checkIfFileExists(selectedFile.name);
-		if (fileExists) {
-			imageError = `<em>${selectedFile.name}</em> already exists. <p>Please choose another file.`;
-			resetInput();
-		} else {
-			if (selectedFile.size > MAX_IMAGE_SIZE) {
-				imageError = 'The image is too big.';
-				selectedFile = '';
+		if (event.target) {
+			selectedFile = event.target.files[0];
+			let fileExists = await checkIfFileExists(selectedFile.name);
+			if (fileExists) {
+				imageError = `<em>${selectedFile.name}</em> already exists. <p>Please choose another file.`;
+				resetInput();
 			} else {
-				imageError = '';
-				imageUrl = URL.createObjectURL(selectedFile);
-				dispatch('imageChange', selectedFile);
+				if (selectedFile.size > MAX_IMAGE_SIZE) {
+					imageError = 'The image is too big.';
+					selectedFile = new File([], '');
+				} else {
+					imageError = '';
+					imageUrl = URL.createObjectURL(selectedFile);
+					dispatch('imageChange', selectedFile);
+				}
 			}
 		}
 	};
 
 	const resetInput = () => {
-		selectedFile = null;
+		selectedFile = new File([], '');
 		URL.revokeObjectURL(imageUrl);
-		imageUrl = null;
+		imageUrl = '';
 	};
 
 	onDestroy(() => {

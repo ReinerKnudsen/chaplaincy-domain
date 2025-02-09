@@ -53,7 +53,7 @@
 	});
 </script>
 
-<Navigation {routes} />
+<Navigation />
 
 <div class="main-layout md:my-10 xl:my-10">
 	<slot />

@@ -6,7 +6,6 @@
 	import { onMount } from 'svelte';
 
 	const isEnabled = import.meta.env.VITE_ENABLE_MAKEADMIN === 'true';
-	console.log('isEnabled: ', isEnabled);
 
 	if (!isEnabled) {
 		goto('/');
@@ -20,7 +19,6 @@
 
 	const makeadmin = async () => {
 		if (!auth.user) {
-			console.log('no auth');
 			return;
 		} else {
 			let result = await changeUserRole(auth.user.email, 'admin');

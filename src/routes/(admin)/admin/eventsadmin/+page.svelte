@@ -39,7 +39,6 @@
 	const sortKey = writable('title'); // default sort key
 	const sortDirection = writable(1); // default sort direction (ascending)
 	const sortItems = writable(events.slice()); // make a copy of the news array
-	console.log($sortItems);
 
 	// Define a function to sort the items
 	const sortTable = (key) => {
@@ -70,7 +69,7 @@
 	}
 
 	const handleSearchInput = (event) => {
-		console.log(event.target.value);
+		//console.log(event.target.value);
 	};
 
 	const handleClick = async () => {

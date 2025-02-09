@@ -8,8 +8,6 @@
 
 	export let imagePosition: 'left' | 'right';
 	export let profile: ProfileData;
-
-	console.log(imagePosition);
 </script>
 
 <div

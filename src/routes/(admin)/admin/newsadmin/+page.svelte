@@ -19,7 +19,7 @@
 		TableHeadCell,
 		Search,
 		Button,
-		Modal
+		Modal,
 	} from 'flowbite-svelte';
 
 	export let data;
@@ -65,7 +65,7 @@
 	}
 
 	const handleSearchInput = (news) => {
-		console.log(news.target.value);
+		//console.log(news.target.value);
 	};
 
 	const handleCreateNew = async () => {

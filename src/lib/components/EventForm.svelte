@@ -9,10 +9,15 @@
 	import type { Event } from '$lib/types/Event';
 	import { database, storage } from '$lib/firebase/firebaseConfig';
 
-	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
+	import { getFirestore, collection, getDocs } from 'firebase/firestore';
+	import { writable } from 'svelte/store';
+
+	import { Input, Label, Checkbox, Textarea, Helper, Button, Tooltip } from 'flowbite-svelte';
 	import SlugText from './SlugText.svelte';
 	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadImage from '$lib/components/UploadImage.svelte';
+	import LocationDropdown from './LocationDropdown.svelte';
+	import NewLocationModal from './NewLocationModal.svelte';
 
 	export let thisEvent: Event;
 	const dispatch = createEventDispatcher();
@@ -44,6 +49,22 @@
 	let mode = 'save';
 	let hasImage = false;
 	let selectedImage: File;
+	let showModal = false;
+	let selectedLocationId = thisEvent.location || '';
+	let locationAdded = false;
+
+	const db = getFirestore();
+	const locations = writable<{ id: string; name: string }[]>([]);
+
+	async function fetchLocations() {
+		const querySnapshot = await getDocs(collection(db, 'location'));
+		const locs = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+		locations.set(locs);
+	}
+
+	onMount(async () => {
+		await fetchLocations();
+	});
 
 	$: if (newEvent.image) {
 		hasImage = true;
@@ -80,9 +101,26 @@
 		selectedImage = e.detail;
 	};
 
+	const handleSetPublishDate = (e) => {
+		e.preventDefault();
+		if (newEvent.startdate) {
+			const pubdate = new Date(newEvent.startdate);
+			pubdate.setDate(pubdate.getDate() - 14);
+			newEvent.publishdate = pubdate.toISOString().split('T')[0];
+		}
+	};
+	const handleSetEndDate = (e) => {
+		e.preventDefault();
+		if (newEvent.startdate) {
+			const enddate = new Date(newEvent.startdate);
+			newEvent.enddate = enddate.toISOString().split('T')[0];
+		}
+	};
+
 	/** Upload the image and create a reference in the "images" collection*/
 	const uploadImage = async () => {
 		if (selectedImage) {
+			console.log(selectedImage.name);
 			const storageRef = ref(storage, 'images/' + selectedImage.name);
 			try {
 				await uploadBytes(storageRef, selectedImage);
@@ -115,6 +153,21 @@
 		dispatch(mode, newEvent);
 		newEvent = defaultEvent;
 		goto('/admin/eventsadmin');
+	};
+
+	const handleLocationChange = (event) => {
+		if (event.detail.value === 'new') {
+			showModal = true;
+		} else {
+			newEvent.location = event.detail.value;
+		}
+	};
+
+	const handleLocationAddedModal = async (event) => {
+		await fetchLocations();
+		selectedLocationId = event.detail.id;
+		newEvent.location = event.detail.id;
+		showModal = false;
 	};
 </script>
 
@@ -186,9 +239,17 @@
 		</div>
 
 		<!-- End date -->
-		<div>
+		<div class="flex-1">
 			<Label for="enddate" class="mb-2 mt-8 text-xl font-semibold">End Date</Label>
-			<Input type="date" id="enddate" bind:value={newEvent.enddate} />
+			<div class="flex w-full flex-row items-center gap-4">
+				<Input type="date" id="enddate" bind:value={newEvent.enddate} />
+				<Button
+					class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
+					on:click={handleSetEndDate}
+					>Auto set
+				</Button>
+				<Tooltip type="light">Sets the publish date to 14 days before the start date</Tooltip>
+			</div>
 		</div>
 
 		<!-- End time -->
@@ -201,7 +262,18 @@
 		<div class="form-area">
 			<div>
 				<Label for="Location" class="mb-2 mt-8 text-xl font-semibold">Location *</Label>
-				<Input type="text" id="location" bind:value={newEvent.location} required />
+				<LocationDropdown
+					bind:selectedLocationId
+					on:change={handleLocationChange}
+					bind:locationAdded
+					{locations}
+				/>
+				{#if showModal}
+					<NewLocationModal
+						on:locationAdded={handleLocationAddedModal}
+						on:close={() => (showModal = false)}
+					/>
+				{/if}
 			</div>
 		</div>
 
@@ -224,7 +296,15 @@
 		<!-- Publish date  -->
 		<div>
 			<Label for="publishdate" class="mb-2 mt-8 text-xl font-semibold">Publish Date *</Label>
-			<Input type="date" id="publishdate" required bind:value={newEvent.publishdate} />
+			<div class="flex w-full flex-row items-center gap-4">
+				<Input type="date" id="publishdate" required bind:value={newEvent.publishdate} />
+				<Button
+					class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
+					on:click={handleSetPublishDate}
+					>Auto set
+				</Button>
+				<Tooltip type="light">Sets the publish date to 14 days before the start date</Tooltip>
+			</div>
 		</div>
 
 		<!-- Publish time  -->

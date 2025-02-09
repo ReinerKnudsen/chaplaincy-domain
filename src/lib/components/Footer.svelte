@@ -43,9 +43,8 @@
 					Follow us
 				</h2>
 				<FooterLinkGroup>
-					<FooterLink liClass="mb-4" href="/">Twitter</FooterLink>
+					<FooterLink liClass="mb-4" href="/">Twitter (X)</FooterLink>
 					<FooterLink liClass="mb-4" href="/">Facebook</FooterLink>
-					<FooterLink liClass="mb-4" href="/">Instagram</FooterLink>
 				</FooterLinkGroup>
 			</div>
 			<div>

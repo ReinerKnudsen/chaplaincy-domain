@@ -7,6 +7,7 @@
 
 	import { authStore } from '$lib/stores/AuthStore';
 	import UploadImage from '$lib/components/UploadImage.svelte';
+	import UploadPDF from '$lib/components/UploadPDF.svelte';
 
 	export let thisItem;
 	const dispatch = createEventDispatcher();
@@ -22,7 +23,8 @@
 		image: '',
 		imageAlt: '',
 		imageCaption: '',
-		tags: ''
+		tags: '',
+		pdfFile: ''
 	};
 	let docRef;
 	let state = 'save';
@@ -43,7 +45,8 @@
 			image: '',
 			imageAlt: '',
 			imageCaption: '',
-			tags: ''
+			tags: '',
+			pdfFile: ''
 		};
 	};
 
@@ -63,6 +66,10 @@
 
 	const assignImage = (e) => {
 		newItem.image = e.detail;
+	};
+
+	const assignPDF = (e) => {
+		newItem.pdfFile = e.detail;
 	};
 </script>
 
@@ -165,6 +172,13 @@
 					<p class="explanation">This text will be displayed below the image.</p>
 				</div>
 			</div>
+		</div>
+
+		<!-- PDF Upload -->
+		<div>
+			<Label class="mb-2 mt-8 text-xl font-semibold">PDF Document</Label>
+			<UploadPDF fileUrl={newItem.pdfFile} on:upload={assignPDF} />
+			<p class="explanation">Upload a PDF document that will be attached to this news item (max 5MB).</p>
 		</div>
 
 		<!-- Buttons -->

@@ -12,19 +12,34 @@
 
 	import { Button, Modal } from 'flowbite-svelte';
 
+	import { getFirestore, collection } from 'firebase/firestore';
+
 	export let data;
 	let events = data.events;
 	let showModal = false;
 	let deleteID = '';
 
-	onMount(() => {
+	const db = getFirestore();
+	let locationMap = {};
+
+	async function fetchLocations() {
+		const querySnapshot = await getDocs(collection(db, 'location'));
+		querySnapshot.forEach((doc) => {
+			const data = doc.data();
+			locationMap[doc.id] = `${data.name}, ${data.city}`;
+		});
+	}
+
+	onMount(async () => {
 		$pathName = $page.url.pathname;
+		await fetchLocations();
 	});
 
 	// Sort table items
 	const sortKey = writable('title'); // default sort key
 	const sortDirection = writable(1); // default sort direction (ascending)
 	const sortItems = writable(events.slice()); // make a copy of the news array
+	console.log($sortItems);
 
 	// Define a function to sort the items
 	const sortTable = (key) => {
@@ -128,7 +143,7 @@
 						<td>{item.data.title}</td>
 						<td>{item.data.startdate}</td>
 						<td>{item.data.publishdate}</td>
-						<td>{item.data.location}</td>
+						<td>{locationMap[item.data.location] || item.data.location}</td>
 						<td>{item.data.author}</td>
 						<td>
 							<div class="flex justify-between">

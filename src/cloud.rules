@@ -10,24 +10,32 @@ service cloud.firestore {
     match /news/{document} {
       allow read: if true;
     }
+    // Allow read access to all documents in the "pdfs" collection
+    match /pdfs/{document} {
+      allow read: if true;
+    }
     
     // Allow write access to documents in the "events" and "news" collections 
     // only if the user has "editor" or "admin" role
-   match /events/{document} {
+    match /events/{document} {
       allow write: if request.auth.token.role ==  'editor' || request.auth.token.role == 'admin';
-      }
+    }
     match /news/{document} {
       allow write: if request.auth.token.role ==  'editor' || request.auth.token.role == 'admin';
-    	}
+    }
+    // Allow write access to documents in the "pdfs" collection
+    match /pdfs/{document} {
+      allow write: if request.auth.token.role ==  'editor' || request.auth.token.role == 'admin';
+    }
     
     // Allow read and write access to their document in the "users" collection
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
-			allow read, write: if request.auth != null && request.auth.token.role == 'admin';
-    	}
+      allow read, write: if request.auth != null && request.auth.token.role == 'admin';
+    }
     // Allow admins access to all documents in the "users" collection
     match /users {
       allow read, write: if request.auth != null && request.auth.token.role == 'admin';
-    	}
+    }
   }
 }

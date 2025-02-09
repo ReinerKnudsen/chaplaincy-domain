@@ -17,7 +17,11 @@
 	}
 
 	a {
-		@apply cursor-pointer border-b-2 border-b-purple-100 pb-1 text-purple-100;
+		@apply cursor-pointer pb-1 text-purple-100;
+	}
+
+	a .link {
+		@apply border-b-2 border-b-purple-100
 	}
 
 	h1 {

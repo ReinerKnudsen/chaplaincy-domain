@@ -53,6 +53,3 @@
 		{/if}
 	</SidebarWrapper>
 </Sidebar>
-
-<style>
-</style>

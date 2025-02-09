@@ -32,13 +32,10 @@
 		<img class={formats.itemImage} src={thisEvent.image} alt={thisEvent.title} />
 	</div>
 	<div class={`event-description ${formats.itemDescription}`}>
-		{@html thisEvent.description}
+		{@html marked.parse(thisEvent.description)}
 	</div>
 </div>
 <div class={`back-link ${formats.backLink}`}>
 	<Icon name="left" />
 	<a class={formats.aLink} href="/news">Take me back to overview</a>
 </div>
-
-<style>
-</style>

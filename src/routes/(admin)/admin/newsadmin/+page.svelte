@@ -118,7 +118,7 @@
 		</div>
 	</div>
 
-	<div class="w-full overflow-scroll">
+	<div class="w-full">
 		<table>
 			<thead>
 				<tr>

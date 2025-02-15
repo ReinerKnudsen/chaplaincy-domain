@@ -43,6 +43,7 @@ export const userCollectionReference = collection(database, 'users');
 export const settingsColRef = collection(database, 'settings');
 export const imageColRef = collection(database, 'images');
 export const pdfColRef = collection(database, 'pdfs');
+export const documentsColRef = collection(database, 'documents');
 
 // Create storage references
 export const eventsStoreRef = ref(storage, 'events');
@@ -50,3 +51,5 @@ export const articlesStoreRef = ref(storage, 'articles');
 export const docsStorageRef = ref(storage, 'documents');
 export const imgStorageRef = ref(storage, 'images');
 export const pdfStorageRef = ref(storage, 'pdfs');
+export const weeklysheetStorageRef = ref(storage, 'documents/weeklysheet');
+export const newsletterStorageRef = ref(storage, 'documents/newsletter');

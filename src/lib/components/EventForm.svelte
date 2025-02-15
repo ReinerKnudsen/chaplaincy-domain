@@ -172,7 +172,7 @@
 	};
 
 	const assignPDF = (e) => {
-		newEvent.pdfFile = e.detail;
+		newEvent.pdfFile = e.detail.url;
 	};
 </script>
 

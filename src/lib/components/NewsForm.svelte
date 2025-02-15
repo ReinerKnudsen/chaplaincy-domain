@@ -69,7 +69,7 @@
 	};
 
 	const assignPDF = (e) => {
-		newItem.pdfFile = e.detail;
+		newItem.pdfFile = e.detail.url;
 	};
 </script>
 

@@ -23,74 +23,74 @@
 	let icons = {
 		author: {
 			box: 24,
-			svg: author
+			svg: author,
 		},
 		calendar: {
 			box: 24,
-			svg: calendar
+			svg: calendar,
 		},
 		camera: {
 			box: 24,
-			svg: camera
+			svg: camera,
 		},
 		clock: {
 			box: 24,
-			svg: clock
+			svg: clock,
 		},
 		chevronDown: {
-			box: 24,
-			svg: chevron_down
+			box: 512,
+			svg: chevron_down,
 		},
 		chevronUp: {
-			box: 24,
-			svg: chevron_up
+			box: 512,
+			svg: chevron_up,
 		},
 		churchnearyou: {
 			box: 24,
-			svg: churchnearyou
+			svg: churchnearyou,
 		},
 		email: {
 			box: 24,
-			svg: email
+			svg: email,
 		},
 		facebook: {
 			box: 24,
-			svg: facebook
+			svg: facebook,
 		},
 		left: {
 			box: 24,
-			svg: left
+			svg: left,
 		},
 		location: {
 			box: 24,
-			svg: location
+			svg: location,
 		},
 		news: {
 			box: 24,
-			svg: news
+			svg: news,
 		},
 		onsite: {
 			box: 24,
-			svg: onsite
+			svg: onsite,
 		},
 		sheet: {
 			box: 24,
-			svg: sheet
+			svg: sheet,
 		},
 		tags: {
 			box: 24,
-			svg: tags
+			svg: tags,
 		},
 		twitter: {
 			box: 24,
-			svg: twitter
+			svg: twitter,
 		},
 		users_online: {
 			box: 24,
-			svg: users_online
-		}
+			svg: users_online,
+		},
 	};
-	let displayIcon = icons[name];
+	$: displayIcon = icons[name];
 </script>
 
 <svg class={$$props.class} {width} {height} viewBox="0 0 {displayIcon.box} {displayIcon.box}"

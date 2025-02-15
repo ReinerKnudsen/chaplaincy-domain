@@ -34,7 +34,7 @@
 </script>
 
 <nav
-	class="z-999 sticky top-0 flex h-full min-h-28 w-full items-center divide-gray-100 rounded-b-2xl border-b border-gray-100 bg-white-primary px-2 py-2.5 align-middle text-gray-700 shadow-xl dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 sm:px-4"
+	class="sticky top-0 z-50 flex h-full min-h-28 w-full items-center divide-gray-100 rounded-b-2xl border-b border-gray-100 bg-white-primary px-2 py-2.5 align-middle text-gray-700 shadow-xl dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 sm:px-4"
 >
 	<div class="container mx-auto flex flex-wrap items-center justify-between">
 		<a href="/" class="flex items-center">

@@ -4,9 +4,19 @@
 	import { ref, uploadBytes, getDownloadURL, getMetadata } from 'firebase/storage';
 	import { getDoc, addDoc, query, doc } from 'firebase/firestore';
 
-	import { storage, database, pdfStorageRef, pdfColRef } from '$lib/firebase/firebaseConfig';
+	import {
+		storage,
+		database,
+		documentsColRef,
+		docsStorageRef,
+		pdfStorageRef,
+		pdfColRef,
+		weeklysheetStorageRef,
+		newsletterStorageRef,
+	} from '$lib/firebase/firebaseConfig';
 
 	export let fileUrl: string = '';
+	export let target: 'pdf' | 'weeklysheet' | 'newsletter' = 'pdf';
 
 	const dispatch = createEventDispatcher();
 	const MAX_PDF_SIZE = 5 * 1024 * 1024; // 5MB max size for PDFs
@@ -32,9 +42,16 @@
 		}
 	});
 
+	const targetRefs = {
+		pdf: { storage: pdfStorageRef, collection: pdfColRef },
+		weeklysheet: { storage: weeklysheetStorageRef, collection: documentsColRef },
+		newsletter: { storage: newsletterStorageRef, collection: documentsColRef },
+	};
+	const { storage: targetStorageRef, collection: targetCollectionRef } = targetRefs[target];
+
 	/** Verify in Firestore Collection if a PDF of this name is already present*/
-	const checkIfFileExists = async (pdfFile: string) => {
-		const docRef = doc(database, 'pdfs', pdfFile);
+	const checkIfFileExists = async (thisFile: string) => {
+		const docRef = doc(targetCollectionRef, thisFile);
 		const docSnap = await getDoc(docRef);
 
 		if (docSnap.exists()) {
@@ -51,6 +68,9 @@
 			selectedFile = event.target.files[0];
 			let fileExists = await checkIfFileExists(selectedFile.name);
 			if (fileExists) {
+				const userConfirmed = confirm(
+					'A file with this name already exists. Do you want to overwrite it?',
+				);
 				fileError = `<em>${selectedFile.name}</em> already exists. <p>Please choose another file.`;
 				resetInput();
 			} else {
@@ -63,29 +83,29 @@
 				} else {
 					fileError = '';
 					uploadProgress = true;
-					
+
 					try {
 						// Create a reference to the file location in Firebase Storage
-						const fileRef = ref(pdfStorageRef, selectedFile.name);
-						
+						const fileRef = ref(targetStorageRef, selectedFile.name);
+
 						// Upload the file to Firebase Storage
 						const uploadResult = await uploadBytes(fileRef, selectedFile);
-						
+
 						// Get the download URL
 						const downloadURL = await getDownloadURL(fileRef);
-						
+
 						// Add metadata to Firestore
-						await addDoc(pdfColRef, {
+						const docRef = await addDoc(targetCollectionRef, {
 							name: selectedFile.name,
 							path: downloadURL,
 							size: selectedFile.size,
-							type: selectedFile.type,
-							uploadDate: new Date().toISOString()
+							type: target,
+							uploadDate: new Date().toISOString(),
 						});
-						
+
 						fileUrl = downloadURL;
 						fileName = selectedFile.name;
-						dispatch('upload', downloadURL);
+						dispatch('upload', { url: downloadURL, docRef: docRef });
 					} catch (error) {
 						console.error('Error uploading file:', error);
 						fileError = 'Error uploading file. Please try again.';
@@ -128,9 +148,7 @@
 				on:change={handleFileChange}
 			/>
 		</label>
-		<div class="mt-3 text-center text-sm">
-			(PDF files only, max 5MB)
-		</div>
+		<div class="mt-3 text-center text-sm">(PDF files only, max 5MB)</div>
 		{#if fileError}
 			<p class="mt-3 text-center text-base text-red-700">{@html fileError}</p>
 		{/if}
@@ -142,16 +160,19 @@
 	<div class="pdf-container">
 		<div class="flex items-center justify-center rounded-lg bg-slate-100 p-4">
 			<svg class="h-8 w-8 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-				<path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
-				<path d="M3 8a2 2 0 012-2h2.93a.25.25 0 01.174.073l2.6 2.6a.25.25 0 00.174.073H13a2 2 0 012 2v3a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
+				<path
+					d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z"
+				/>
+				<path
+					d="M3 8a2 2 0 012-2h2.93a.25.25 0 01.174.073l2.6 2.6a.25.25 0 00.174.073H13a2 2 0 012 2v3a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"
+				/>
 			</svg>
 			<span class="ml-2 text-sm font-medium text-gray-900">{fileName}</span>
 			<a
 				href={fileUrl}
 				target="_blank"
 				rel="noopener noreferrer"
-				class="ml-2 text-sm text-blue-600 hover:text-blue-800"
-				>View PDF</a
+				class="ml-2 text-sm text-blue-600 hover:text-blue-800">View PDF</a
 			>
 		</div>
 		<div class="col-span-2 text-center">

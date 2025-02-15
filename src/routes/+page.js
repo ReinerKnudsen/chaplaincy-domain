@@ -1,14 +1,15 @@
 import { getDocs, query, orderBy, limit, where } from 'firebase/firestore';
-import { newsColRef, eventsColRef } from '$lib/firebase/firebaseConfig';
+import { newsColRef, eventsColRef, documentsColRef } from '$lib/firebase/firebaseConfig';
 
 let news;
 let events;
+let sheet;
 
 export const load = async () => {
 	await loadNews();
 	await loadEvents();
-
-	return { news, events };
+	await loadWeeklySheet();
+	return { news, events, sheet };
 };
 
 const loadNews = async () => {
@@ -62,4 +63,15 @@ const loadEvents = async () => {
 	} catch (err) {
 		console.log('Error while loading events:', err);
 	}
+};
+
+const loadWeeklySheet = async () => {
+	const today = new Date().toISOString().split('T')[0];
+	const q = query(documentsColRef, where('date', '>=', today));
+	const querySnapshot = await getDocs(q);
+	const documents = querySnapshot.docs.map((document) => ({
+		id: document.id,
+		...document.data(),
+	}));
+	sheet = documents.sort((a, b) => new Date(a.date) - new Date(b.date))[0];
 };

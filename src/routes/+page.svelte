@@ -27,6 +27,7 @@
 	let loading = true;
 	let news = data.news;
 	let events = data.events;
+	let weeklySheet = data.sheet;
 
 	onMount(async () => {
 		loading = false;
@@ -160,12 +161,15 @@
 	<div
 		class={`download-container ${downloadContainer} ${downloadContainerLg} ${downloadContainerXL}`}
 	>
-		<div class="download-item mt-10">
-			Weekly Sheet
-			<div class="circle">
-				<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
-			</div>
-		</div>
+		<a href={weeklySheet.url} target="_blank">
+			<div class="download-item mt-10">
+				Weekly Sheet
+				<div class="circle">
+					<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
+				</div>
+			</div></a
+		>
+
 		<div class="download-item mt-10">
 			Newsletter
 			<div class="circle">

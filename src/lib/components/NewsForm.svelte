@@ -24,7 +24,7 @@
 		imageAlt: '',
 		imageCaption: '',
 		tags: '',
-		pdfFile: ''
+		pdfFile: '',
 	};
 	let docRef;
 	let state = 'save';
@@ -46,7 +46,7 @@
 			imageAlt: '',
 			imageCaption: '',
 			tags: '',
-			pdfFile: ''
+			pdfFile: '',
 		};
 	};
 
@@ -122,12 +122,7 @@
 		<!-- Publish time  -->
 		<div>
 			<Label class="mb-2 mt-8 text-xl font-semibold">Publish Time</Label>
-			<Input
-				type="time"
-				id="publishtime"
-				bind:value={newItem.publishtime}
-				disabled={!newItem.publishdate}
-			/>
+			<Input type="time" id="publishtime" bind:value={newItem.publishtime} />
 			<p class="explanation">
 				If you don't select a publish time, it will be set to 09:00 of the selected day.
 			</p>
@@ -137,23 +132,21 @@
 		<div>
 			{#if newItem.image}
 				<Label class="mb-2 mt-8 text-xl font-semibold">Uploaded image</Label>
-				<UploadImage imageUrl={newItem.image} on:upload={assignImage} />
+				<div class="flex flex-col items-center justify-center">
+					<UploadImage imageUrl={newItem.image} on:upload={assignImage} />
+				</div>
 			{:else}
 				<Label class="mb-2 mt-8 text-xl font-semibold">Upload image</Label>
-				<UploadImage on:upload={assignImage} />
+				<div class="flex flex-col items-center justify-center">
+					<UploadImage on:upload={assignImage} />
+				</div>
 			{/if}
 		</div>
 		<div class="imageMeta">
 			<div class="imageAlt">
 				<div>
 					<Label for="imageAlt" class="mb-2 mt-8 text-xl font-semibold">Image Alt text *</Label>
-					<Input
-						type="text"
-						id="imageAlt"
-						bind:value={newItem.imageAlt}
-						disabled={!newItem.image}
-						required
-					/>
+					<Input type="text" id="imageAlt" bind:value={newItem.imageAlt} required />
 					<p class="explanation">
 						This text helps interpreting the image for visually impaired users.
 					</p>
@@ -166,7 +159,6 @@
 						type="text"
 						id="imageCaption"
 						bind:value={newItem.imageCaption}
-						disabled={!newItem.image}
 						placeholder="Image by "
 					/>
 					<p class="explanation">This text will be displayed below the image.</p>
@@ -177,8 +169,12 @@
 		<!-- PDF Upload -->
 		<div>
 			<Label class="mb-2 mt-8 text-xl font-semibold">PDF Document</Label>
-			<UploadPDF fileUrl={newItem.pdfFile} on:upload={assignPDF} />
-			<p class="explanation">Upload a PDF document that will be attached to this news item (max 5MB).</p>
+			<div class="flex flex-col items-center justify-center">
+				<UploadPDF fileUrl={newItem.pdfFile} on:upload={assignPDF} />
+				<p class="explanation">
+					Upload a PDF document that will be attached to this news item (max 5MB).
+				</p>
+			</div>
 		</div>
 
 		<!-- Buttons -->

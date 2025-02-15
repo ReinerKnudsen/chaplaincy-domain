@@ -18,6 +18,7 @@
 	import UploadImage from '$lib/components/UploadImage.svelte';
 	import LocationDropdown from './LocationDropdown.svelte';
 	import NewLocationModal from './NewLocationModal.svelte';
+	import UploadPDF from '$lib/components/UploadPDF.svelte';
 
 	export let thisEvent: Event;
 	const dispatch = createEventDispatcher();
@@ -50,7 +51,7 @@
 	let hasImage = false;
 	let selectedImage: File;
 	let showModal = false;
-	let selectedLocationId = thisEvent.location || '';
+	let selectedLocationId = '';
 	let locationAdded = false;
 
 	const db = getFirestore();
@@ -169,6 +170,10 @@
 		newEvent.location = event.detail.id;
 		showModal = false;
 	};
+
+	const assignPDF = (e) => {
+		newEvent.pdfFile = e.detail;
+	};
 </script>
 
 <div class="form bg-white-primary">
@@ -209,6 +214,7 @@
 				name="description"
 				bind:value={newEvent.description}
 				wrap="hard"
+				class="z-0"
 			/>
 		</div>
 
@@ -309,13 +315,10 @@
 
 		<!-- Publish time  -->
 		<div>
-			<Label class="mb-2 mt-8 text-xl font-semibold">Publish Time</Label>
-			<Input
-				type="time"
-				id="publishtime"
-				bind:value={newEvent.publishtime}
-				disabled={!newEvent.publishdate}
-			/>
+			<Label for="publishtime" class="mb-2 mt-8 text-xl font-semibold">Publish Time</Label>
+			<div class="flex w-full flex-row items-center gap-4">
+				<Input type="time" id="publishtime" bind:value={newEvent.publishtime} />
+			</div>
 			<p class="explanation">
 				If you don't select a publish time, it will be set to 09:00 of the selected day.
 			</p>
@@ -345,7 +348,6 @@
 				id="unpublishtime"
 				title="Select a time when the event shall be unpublished. (optional) "
 				bind:value={newEvent.unpublishtime}
-				disabled={!newEvent.unpublishdate}
 			/>
 		</div>
 
@@ -373,10 +375,10 @@
 				{/if}
 			</div>
 		</div>
-		<div class="imageMeta" hidden={!hasImage}>
+		<div class="imageMeta">
 			<div class="imageAlt">
 				<div>
-					<Label class="mb-2 mt-8 text-xl font-semibold">Image Alt text *</Label>
+					<Label for="ImageAlt" class="mb-2 mt-8 text-xl font-semibold">Image Alt text *</Label>
 					<Input type="text" id="imageAlt" bind:value={newEvent.imageAlt} required={hasImage} />
 					<p class="explanation">
 						This text helps interpreting the image for visually impaired users.
@@ -390,11 +392,20 @@
 						type="text"
 						id="imageCaption"
 						bind:value={newEvent.imageCaption}
-						disabled={!newEvent.image}
 						placeholder="Image by "
 					/>
 					<p class="explanation">This text will be displayed below the image.</p>
 				</div>
+			</div>
+		</div>
+
+		<div>
+			<Label class="mb-2 mt-8 text-xl font-semibold">PDF Document</Label>
+			<div class="flex flex-col items-center justify-center">
+				<UploadPDF fileUrl={newEvent.pdfFile} on:upload={assignPDF} />
+				<p class="explanation">
+					Upload a PDF document that will be attached to this event item (max 5MB).
+				</p>
 			</div>
 		</div>
 

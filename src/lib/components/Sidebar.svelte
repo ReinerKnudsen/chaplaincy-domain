@@ -36,6 +36,11 @@
 					<MailBoxSolid class="h-5 w-5" />
 				</svelte:fragment> -->
 			</SidebarItem>
+			<SidebarItem label="Weekly Sheet" href="/admin/weeklysheet">
+				<!-- <svelte:fragment slot="icon">
+					<MailBoxSolid class="h-5 w-5" />
+				</svelte:fragment> -->
+			</SidebarItem>
 		</SidebarGroup>
 		{#if userRole === 'admin'}
 			<SidebarGroup class="mt-4  border-t-2">

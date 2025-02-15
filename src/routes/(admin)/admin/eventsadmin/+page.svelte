@@ -12,13 +12,27 @@
 
 	import { Button, Modal } from 'flowbite-svelte';
 
+	import { getFirestore, collection } from 'firebase/firestore';
+
 	export let data;
 	let events = data.events;
 	let showModal = false;
 	let deleteID = '';
 
-	onMount(() => {
+	const db = getFirestore();
+	let locationMap = {};
+
+	async function fetchLocations() {
+		const querySnapshot = await getDocs(collection(db, 'location'));
+		querySnapshot.forEach((doc) => {
+			const data = doc.data();
+			locationMap[doc.id] = `${data.name}, ${data.city}`;
+		});
+	}
+
+	onMount(async () => {
 		$pathName = $page.url.pathname;
+		await fetchLocations();
 	});
 
 	// Sort table items
@@ -55,7 +69,7 @@
 	}
 
 	const handleSearchInput = (event) => {
-		console.log(event.target.value);
+		//console.log(event.target.value);
 	};
 
 	const handleClick = async () => {
@@ -110,7 +124,7 @@
 		</div>
 	</div>
 
-	<div class="w-full overflow-scroll">
+	<div class="w-full">
 		<table>
 			<thead>
 				<tr>
@@ -128,7 +142,7 @@
 						<td>{item.data.title}</td>
 						<td>{item.data.startdate}</td>
 						<td>{item.data.publishdate}</td>
-						<td>{item.data.location}</td>
+						<td>{locationMap[item.data.location] || item.data.location}</td>
 						<td>{item.data.author}</td>
 						<td>
 							<div class="flex justify-between">

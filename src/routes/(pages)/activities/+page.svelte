@@ -28,7 +28,7 @@
 {#if events.length > 0}
 	<div class="mb-10 grid grid-cols-1 gap-5 lg:grid-cols-2">
 		{#each sortedEvents as event}
-			<ItemCard item={event} kind="events" />
+			<ItemCard item={event} kind="activities" />
 		{/each}
 	</div>
 {:else}

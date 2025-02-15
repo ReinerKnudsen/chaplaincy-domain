@@ -5,6 +5,7 @@
 
 	export let data;
 	const thisEvent = data.thisEvent;
+	const locations = data.locations;
 
 	thisEvent.description = marked.parse(thisEvent.description); //.replace(/\n/g, '<br />');
 </script>
@@ -25,17 +26,19 @@
 		<div class={`entry ${formats.itemMetaDataEntry}`}>
 			<!-- Refactor: Add link to location document -->
 			<Icon name="location" />
-			{thisEvent.location}
+			{locations[thisEvent.location] || thisEvent.location}
 		</div>
 	</div>
-	<div class={`event-image ${formats.itemImageContainer}`}>
-		<img class={formats.itemImage} src={thisEvent.image} alt={thisEvent.title} />
-	</div>
+	{#if thisEvent.image}
+		<div class={`event-image ${formats.itemImageContainer}`}>
+			<img class={formats.itemImage} src={thisEvent.image} alt={thisEvent.title} />
+		</div>
+	{/if}
 	<div class={`event-description ${formats.itemDescription}`}>
 		{@html marked.parse(thisEvent.description)}
 	</div>
 </div>
 <div class={`back-link ${formats.backLink}`}>
 	<Icon name="left" />
-	<a class={formats.aLink} href="/news">Take me back to overview</a>
+	<a class={formats.aLink} href="/activities">Take me back to overview</a>
 </div>

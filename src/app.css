@@ -55,8 +55,4 @@
 	h4 {
 		@apply text-lg font-semibold;
 	}
-
-	.event-description p {
-		padding-bottom: 3rem;
-	}
 }

@@ -10,7 +10,7 @@ export async function load({ params }) {
 		// Fetch all locations
 		const locationSnapshot = await getDocs(collection(database, 'location'));
 		const locations = {};
-		locationSnapshot.forEach(doc => {
+		locationSnapshot.forEach((doc) => {
 			const data = doc.data();
 			locations[doc.id] = `${data.name}, ${data.city}`;
 		});

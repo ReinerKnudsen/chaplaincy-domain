@@ -25,10 +25,10 @@
 		"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fprofiles%2Fprofile-male.png?alt=media&token=29204448-7046-410a-b521-47e03c89a4b2"
 		},
 		{
-		"name": "Talia Hammerby",
-		"role": "Churchwarden & Musical Director",
-		"description": "My goal is to make everybody feel welcome and included in our services and your chaplaincy's activities. Music is my tool to connect with people.",
-		"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fprofiles%2Fprofile-female.png?alt=media&token=217e68f8-f802-4a0b-bc7a-503f21043f45"
+		"name": "Reiner Knudsen",
+		"role": "Churchwarden & Webmaster",
+		"description": "My goal is to make everybody feel welcome, included, and safe in our services and your chaplaincy's activities.",
+		"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Frk_kl_square.jpeg?alt=media&token=0ee00bba-3bd4-4d3d-a6a8-0a8c324fc5b7"
 		}
 	]
 }

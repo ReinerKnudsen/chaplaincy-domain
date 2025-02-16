@@ -44,6 +44,7 @@ export const settingsColRef = collection(database, 'settings');
 export const imageColRef = collection(database, 'images');
 export const pdfColRef = collection(database, 'pdfs');
 export const documentsColRef = collection(database, 'documents');
+export const locationColRef = collection(database, 'location');
 
 // Create storage references
 export const eventsStoreRef = ref(storage, 'events');

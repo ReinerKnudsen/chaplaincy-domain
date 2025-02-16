@@ -4,38 +4,41 @@
 	import * as formats from '../../formats.js';
 
 	export let data;
+	console.log(data);
 	const thisEvent = data.thisEvent;
 	const locations = data.locations;
 
 	thisEvent.description = marked.parse(thisEvent.description); //.replace(/\n/g, '<br />');
 </script>
 
-<div class={`container ${formats.container}`}>
-	<div class={`headline ${formats.headline}`}>
-		{thisEvent.title}
-	</div>
-	<div class={`event-data ${formats.itemMetaData}`}>
-		<div class={`entry ${formats.itemMetaDataEntry}`}>
-			<Icon name="calendar" />
-			{thisEvent.startdate}
+<div class="rounded-2xl bg-white-primary">
+	<div class={`container ${formats.container}`}>
+		<div class={`headline ${formats.headline}`}>
+			{thisEvent.title}
 		</div>
-		<div class={`entry ${formats.itemMetaDataEntry}`}>
-			<Icon name="clock" />
-			{thisEvent.starttime}
+		<div class={`event-data ${formats.itemMetaData}`}>
+			<div class={`entry ${formats.itemMetaDataEntry}`}>
+				<Icon name="calendar" />
+				{thisEvent.startdate}
+			</div>
+			<div class={`entry ${formats.itemMetaDataEntry}`}>
+				<Icon name="clock" />
+				{thisEvent.starttime}
+			</div>
+			<div class={`entry ${formats.itemMetaDataEntry}`}>
+				<!-- Refactor: Add link to location document -->
+				<Icon name="location" />
+				{locations[thisEvent.location] || thisEvent.location}
+			</div>
 		</div>
-		<div class={`entry ${formats.itemMetaDataEntry}`}>
-			<!-- Refactor: Add link to location document -->
-			<Icon name="location" />
-			{locations[thisEvent.location] || thisEvent.location}
+		{#if thisEvent.image}
+			<div class={`event-image ${formats.itemImageContainer}`}>
+				<img class={formats.itemImage} src={thisEvent.image} alt={thisEvent.title} />
+			</div>
+		{/if}
+		<div class={`event-description ${formats.itemDescription}`}>
+			{@html thisEvent.description}
 		</div>
-	</div>
-	{#if thisEvent.image}
-		<div class={`event-image ${formats.itemImageContainer}`}>
-			<img class={formats.itemImage} src={thisEvent.image} alt={thisEvent.title} />
-		</div>
-	{/if}
-	<div class={`event-description ${formats.itemDescription}`}>
-		{@html marked.parse(thisEvent.description)}
 	</div>
 </div>
 <div class={`back-link ${formats.backLink}`}>

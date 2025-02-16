@@ -404,7 +404,7 @@
 			<div class="flex flex-col items-center justify-center">
 				<UploadPDF fileUrl={newEvent.pdfFile} on:upload={assignPDF} />
 				<p class="explanation">
-					Upload a PDF document that will be attached to this event item (max 5MB).
+					Upload a PDF document that will be attached to this event (max 5MB).
 				</p>
 			</div>
 		</div>

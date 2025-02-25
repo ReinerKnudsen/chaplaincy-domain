@@ -147,20 +147,19 @@
 	<h2 class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Downloads</h2>
 </div>
 <div class="mb-5 w-full lg:mb-10">
-	<!--<div
-		class={`download-container ${downloadContainer} ${downloadContainerLg} ${downloadContainerXL}`}
-	>-->
 	<div
 		class={`download-container ${downloadContainer} ${downloadContainerLg} ${downloadContainerXL}`}
 	>
-		<a href={weeklySheet.url} target="_blank">
-			<div class="download-item mt-10">
-				Weekly Sheet
-				<div class="circle">
-					<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
-				</div>
-			</div></a
-		>
+		{#if weeklySheet}
+			<a href={weeklySheet.path} target="_blank">
+				<div class="download-item mt-10">
+					Weekly Sheet
+					<div class="circle">
+						<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
+					</div>
+				</div></a
+			>
+		{/if}
 
 		<div class="download-item mt-10">
 			Newsletter

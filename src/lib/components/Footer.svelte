@@ -8,7 +8,6 @@
 		FooterCopyright,
 		FooterLinkGroup,
 		FooterLink,
-		FooterBrand,
 		FooterIcon,
 	} from 'flowbite-svelte';
 	import Icon from '$lib/components/Icon.svelte';

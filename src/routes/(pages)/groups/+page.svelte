@@ -40,7 +40,4 @@
 </div>
 
 <style>
-	.group {
-		@apply mb-10;
-	}
 </style>

@@ -114,11 +114,11 @@
 		<div class="mb-5 w-full lg:mb-10">
 			<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
 				{#each events as event}
-					<ItemCard item={event} kind="events" />
+					<ItemCard item={event} kind="activities" />
 				{/each}
 			</div>
 			<div class="more-link mb-8">
-				<a class="border-b-2 border-b-purple-100 pb-1" href="/news">See all events</a>
+				<a class="border-b-2 border-b-purple-100 pb-1" href="/activities">See all activities</a>
 			</div>
 		</div>
 	{/if}

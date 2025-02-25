@@ -14,7 +14,19 @@ service cloud.firestore {
     match /settings/{document} {
       allow read: if true;
     }
-    
+   // Allow read access to all documents in the "documents" collection
+    match /documents/{document} {
+      allow read: if true;
+    }
+   // Allow read access to all documents in the "locations" collection
+    match /locations/{document} {
+      allow read: if true;
+    }
+   // Allow read access to all documents in the "profiles" collection
+    match /profiles/{document} {
+      allow read: if true;
+    }
+
     // Allow users to red, write their own documents
      match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;

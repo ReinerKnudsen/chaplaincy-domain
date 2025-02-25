@@ -9,6 +9,7 @@ export const load = async () => {
 	await loadNews();
 	await loadEvents();
 	await loadWeeklySheet();
+	console.log('Next weekly sheet: ', sheet);
 	return { news, events, sheet };
 };
 

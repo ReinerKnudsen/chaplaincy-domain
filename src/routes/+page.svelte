@@ -1,19 +1,16 @@
 <script>
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { STORAGE_IMAGES } from '$lib/utils/constants';
+	import { onMount } from 'svelte';
 
 	import ServiceCard from '$lib/components/ServiceCard.svelte';
 	import ItemCard from '../lib/components/ItemCard.svelte';
 
 	import { authStore } from '$lib/stores/AuthStore';
-	import { query, getDocs, where, orderBy, limit } from 'firebase/firestore';
-	import { newsColRef, eventsColRef } from '$lib/firebase/firebaseConfig';
 
 	import mainhero from '$lib/assets/mainhero.webp';
 	import Icon from '$lib/components/Icon.svelte';
 	import servicesData from '$lib/services.json';
-	// Manually convert the services object into an array
 
+	// Manually convert the services object into an array
 	const servicesArray = servicesData.services.map((service) => {
 		if (service.place_address) {
 			service.place_address = service.place_address.replace(/\n/g, '<br>');
@@ -49,14 +46,14 @@
 	const container = 'mb-5 w-full';
 	const containerLg = 'lg:mb-10';
 	const services = 'px-5 py-5 flex flex-row gap-5 w-full';
-	const servicesMd = 'md:grid-cols-2 md:gap-8 md:px-10 ';
-	const servicesXL = 'xl:grid xl:grid-cols-4 xl:gap-8 xl:px-5 ';
+	const servicesMd = 'md:grid md:grid-cols-2 md:gap-8 md:px-10 ';
+	const servicesXL = 'lg:grid lg:grid-cols-4 lg:gap-8 lg:px-5 ';
 	const itemContainer = 'px-5 grid grid-cols-1';
 	const itemContainerLg = 'lg:px-10 lg:grid lg:grid-cols-2 lg:gap-5';
 	const itemContainerXL = 'xl:px-10 xl:grid xl:grid-cols-2 xl:gap-5';
 	const downloadContainer = 'grid grid-cols-2 justify-items-center px-5';
 	const downloadContainerLg = 'lg:grid lg:grid-cols-4 lg:justify-items-center lg:px-5';
-	const downloadContainerXL = 'xl:grid xl:grid-cols-4 xl:justify-items-center xl:px-5';
+	const downloadContainerXL = 'xl:flex xl:flex-row xl:justify-center gap-10 xl:px-5';
 </script>
 
 <div class={`page-title ${header} ${headerLg} ${headerXl}`}>
@@ -85,51 +82,46 @@
 <!-- Section: News and Notices -->
 
 <!-- News -->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
-	News and Notices
-</div>
-{#if loading}
-	<div>loading...</div>
-{:else}
-	<div class="mb-5 w-full lg:mb-10">
-		<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
-			{#if news.length > 0}
+{#if news.length > 0}
+	<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
+		News and Notices
+	</div>
+	{#if loading}
+		<div>loading...</div>
+	{:else}
+		<div class="mb-5 w-full lg:mb-10">
+			<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
 				{#each news as item}
 					<ItemCard {item} kind="news" />
 				{/each}
-			{:else}
-				<p>Currently there are no published news items</p>
-			{/if}
+			</div>
+			<div class="more-link mb-8">
+				<a class="border-b-2 border-b-purple-100 pb-1" href="/news">See all news articles</a>
+			</div>
 		</div>
-		<div class="more-link mb-8">
-			<a class="border-b-2 border-b-purple-100 pb-1" href="/news">See all news articles</a>
-		</div>
-	</div>
+	{/if}
 {/if}
-
 <hr class="mx-auto w-[80%]" />
 
 <!-- Section: Events 	-->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
-	Upcoming Events
-</div>
-{#if loading}
-	loading...
-{:else}
-	<div class="mb-5 w-full lg:mb-10">
-		<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
-			{#if events.length > 0}
+{#if events.length > 0}
+	<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
+		Upcoming Events
+	</div>
+	{#if loading}
+		loading...
+	{:else}
+		<div class="mb-5 w-full lg:mb-10">
+			<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
 				{#each events as event}
 					<ItemCard item={event} kind="events" />
 				{/each}
-			{:else}
-				<p>Currently there are no events scheduled</p>
-			{/if}
+			</div>
+			<div class="more-link mb-8">
+				<a class="border-b-2 border-b-purple-100 pb-1" href="/news">See all events</a>
+			</div>
 		</div>
-		<div class="more-link mb-8">
-			<a class="border-b-2 border-b-purple-100 pb-1" href="/news">See all events</a>
-		</div>
-	</div>
+	{/if}
 {/if}
 <hr class="mx-auto w-[80%]" />
 
@@ -155,20 +147,19 @@
 	<h2 class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Downloads</h2>
 </div>
 <div class="mb-5 w-full lg:mb-10">
-	<!--<div
-		class={`download-container ${downloadContainer} ${downloadContainerLg} ${downloadContainerXL}`}
-	>-->
 	<div
 		class={`download-container ${downloadContainer} ${downloadContainerLg} ${downloadContainerXL}`}
 	>
-		<a href={weeklySheet.url} target="_blank">
-			<div class="download-item mt-10">
-				Weekly Sheet
-				<div class="circle">
-					<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
-				</div>
-			</div></a
-		>
+		{#if weeklySheet}
+			<a href={weeklySheet.path} target="_blank">
+				<div class="download-item mt-10">
+					Weekly Sheet
+					<div class="circle">
+						<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
+					</div>
+				</div></a
+			>
+		{/if}
 
 		<div class="download-item mt-10">
 			Newsletter

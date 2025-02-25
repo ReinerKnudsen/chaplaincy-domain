@@ -121,7 +121,6 @@
 	/** Upload the image and create a reference in the "images" collection*/
 	const uploadImage = async () => {
 		if (selectedImage) {
-			console.log(selectedImage.name);
 			const storageRef = ref(storage, 'images/' + selectedImage.name);
 			try {
 				await uploadBytes(storageRef, selectedImage);
@@ -134,7 +133,7 @@
 				newEvent.image = imageUrl;
 				return imageUrl;
 			} catch (error) {
-				console.log(error);
+				console.log(error); // eslint-disable-line no-console
 			}
 		} else {
 			return newEvent.image;

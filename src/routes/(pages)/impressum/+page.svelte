@@ -8,7 +8,7 @@
 		Zanderstrasse 4<br />
 		53117 Bonn<br />
 		Tel: +49-171-1216762<br />
-		<a href="mailto:info@anglicanbonncologne.de">info@anglicanbonncologne.de</a>
+		E-Mail: <a href="mailto:info@anglicanbonncologne.de">info@anglicanbonncologne.de</a>
 	</div>
 	<div class="mt-8">
 		<h3>Registereintrag:</h3>
@@ -22,6 +22,7 @@
 		<p>Carol Ann Pereira (Vorstand)</p>
 		<p>Rosie Chen (Vorstand)</p>
 		<p>Imke Lichterfeld (Vorstand)</p>
+		E-Mail:&nbsp;<a href="mailto:council@anglicanbonncologne.de">council@anglicanbonncologne.de</a>
 	</div>
 	<div class="mt-8">
 		<h3>Verantwortlich für den Inhalt</h3>
@@ -29,6 +30,7 @@
 		Reiner Knudsen<br />
 		Ulmenweg 19<br />
 		53117 Bonn<br />
+		E-Mail: <a href="mailto:webmaster@anglicanbonncologne.de">webmaster@anglicanbonncologne.de</a>
 	</div>
 </div>
 <div class="mt-20 border-t-2 border-slate-300 text-center">

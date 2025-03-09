@@ -33,8 +33,7 @@
 					Resources
 				</h2>
 				<FooterLinkGroup>
-					<FooterLink liClass="mb-4" href="/">Newsletter Archive</FooterLink>
-					<FooterLink liClass="mb-4" href="/">Image Gallery</FooterLink>
+					<FooterLink liClass="mb-4" href="/newsletter/archive">Newsletter Archive</FooterLink>
 				</FooterLinkGroup>
 			</div>
 			<div>

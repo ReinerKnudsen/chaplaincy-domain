@@ -42,6 +42,7 @@
 		</a>
 		<button
 			type="button"
+			id="mobile-menu"
 			class="m-0.5 ms-3 whitespace-normal rounded-lg p-1.5 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:hover:bg-gray-600 md:hidden"
 			aria-label="Open main menu"
 			><span class="sr-only">Open main menu</span>
@@ -65,7 +66,7 @@
 				></path>
 			</svg></button
 		>
-		<div class="w-full cursor-pointer md:block md:w-auto">
+		<div class="menu hidden w-full cursor-pointer md:block md:w-auto">
 			<ul
 				class="mt-4 flex flex-col p-4 text-primary-100 md:mt-0 md:flex-row md:space-x-8 md:text-sm md:font-medium"
 			>

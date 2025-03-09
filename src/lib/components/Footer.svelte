@@ -42,8 +42,15 @@
 					Follow us
 				</h2>
 				<FooterLinkGroup>
-					<FooterLink liClass="mb-4" href="/">Twitter (X)</FooterLink>
-					<FooterLink liClass="mb-4" href="/">Facebook</FooterLink>
+					<FooterLink liClass="mb-4" href="https://twitter.com/Anglican_Bn_Cgn" target="_blank"
+						>Twitter (X)
+					</FooterLink>
+					<FooterLink
+						liClass="mb-4"
+						href="https://www.facebook.com/AnglicanBonnCologne"
+						target="_blank"
+						>Facebook
+					</FooterLink>
 				</FooterLinkGroup>
 			</div>
 			<div>

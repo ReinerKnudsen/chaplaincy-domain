@@ -33,8 +33,7 @@
 					Resources
 				</h2>
 				<FooterLinkGroup>
-					<FooterLink liClass="mb-4" href="/">Newsletter Archive</FooterLink>
-					<FooterLink liClass="mb-4" href="/">Image Gallery</FooterLink>
+					<FooterLink liClass="mb-4" href="/newsletter/archive">Newsletter Archive</FooterLink>
 				</FooterLinkGroup>
 			</div>
 			<div>
@@ -42,15 +41,22 @@
 					Follow us
 				</h2>
 				<FooterLinkGroup>
-					<FooterLink liClass="mb-4" href="/">Twitter (X)</FooterLink>
-					<FooterLink liClass="mb-4" href="/">Facebook</FooterLink>
+					<FooterLink liClass="mb-4" href="https://twitter.com/Anglican_Bn_Cgn" target="_blank"
+						>Twitter (X)
+					</FooterLink>
+					<FooterLink
+						liClass="mb-4"
+						href="https://www.facebook.com/AnglicanBonnCologne"
+						target="_blank"
+						>Facebook
+					</FooterLink>
 				</FooterLinkGroup>
 			</div>
 			<div>
 				<h2 class="dark:text-white mb-6 text-sm font-semibold uppercase text-gray-900">Legal</h2>
 				<FooterLinkGroup>
-					<FooterLink liClass="mb-4" href="/">Privacy Policy</FooterLink>
-					<FooterLink liClass="mb-4" href="/">Terms & Conditions</FooterLink>
+					<FooterLink liClass="mb-4" href="/legal">Privacy Policy</FooterLink>
+					<FooterLink liClass="mb-4" href="/impressum">Impressum</FooterLink>
 				</FooterLinkGroup>
 			</div>
 		</div>

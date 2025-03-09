@@ -43,7 +43,6 @@ export async function changeUserRole(email, role) {
 	let changeUserRole = httpsCallable(functions, 'changeUserRole');
 
 	let result = await changeUserRole({ email: email, role: role });
-	console.log(result);
 }
 
 // *****************************************************************************************

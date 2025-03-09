@@ -13,7 +13,6 @@
 	};
 
 	const previousPage = sessionStorage.getItem('previousPage') || null;
-	console.log(groups);
 
 	onDestroy(() => {
 		sessionStorage.setItem('previousPage', '/groups');

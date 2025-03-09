@@ -49,8 +49,8 @@
 			<div>
 				<h2 class="dark:text-white mb-6 text-sm font-semibold uppercase text-gray-900">Legal</h2>
 				<FooterLinkGroup>
-					<FooterLink liClass="mb-4" href="/">Privacy Policy</FooterLink>
-					<FooterLink liClass="mb-4" href="/">Terms & Conditions</FooterLink>
+					<FooterLink liClass="mb-4" href="/legal">Privacy Policy</FooterLink>
+					<FooterLink liClass="mb-4" href="/impressum">Impressum</FooterLink>
 				</FooterLinkGroup>
 			</div>
 		</div>

@@ -5,19 +5,22 @@
 	import { goto } from '$app/navigation';
 
 	import { doc, deleteDoc, getDocs } from 'firebase/firestore';
+	import { eventsColRef } from '$lib/firebase/firebaseConfig';
+	import { getFirestore, collection } from 'firebase/firestore';
 
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { resetEventStore } from '$lib/stores/FormStore';
-	import { eventsColRef } from '$lib/firebase/firebaseConfig';
+	import { duplicateItem } from '$lib/services/fileService.js';
 
 	import { Button, Modal } from 'flowbite-svelte';
-
-	import { getFirestore, collection } from 'firebase/firestore';
 
 	export let data;
 	let events = data.events;
 	let showModal = false;
+	let showDuplicateModal = false;
 	let deleteID = '';
+	let dupeID = '';
+	let loading;
 
 	const db = getFirestore();
 	let locationMap = {};
@@ -30,6 +33,17 @@
 		});
 	}
 
+	const loadData = async () => {
+		let snapshot = await getDocs(eventsColRef);
+		events = snapshot.docs.map((event) => {
+			return {
+				id: event.id,
+				data: event.data(),
+			};
+		});
+		sortTable($sortKey, false);
+	};
+
 	onMount(async () => {
 		$pathName = $page.url.pathname;
 		await fetchLocations();
@@ -38,16 +52,18 @@
 	// Sort table items
 	const sortKey = writable('title'); // default sort key
 	const sortDirection = writable(1); // default sort direction (ascending)
-	const sortItems = writable(events.slice()); // make a copy of the news array
+	$: sortItems = writable(events.slice()); // make a copy of the array
 
 	// Define a function to sort the items
-	const sortTable = (key) => {
+	const sortTable = (key, toggle) => {
 		// If the same key is clicked, reverse the sort direction
 		if ($sortKey === key) {
 			sortDirection.update((val) => -val);
 		} else {
 			sortKey.set(key);
-			sortDirection.set(1);
+			if (toggle) {
+				sortDirection.set(1);
+			}
 		}
 	};
 
@@ -81,13 +97,28 @@
 		showModal = false;
 		await deleteDoc(doc(eventsColRef, deleteID));
 		events = events.filter((event) => event.id !== deleteID);
+		loading = true;
+		await loadData();
+		loading = false;
+	};
 
-		// Refactor: Enforce reload of list
+	const handleDuplicate = async () => {
+		const newEvent = await duplicateItem(dupeID, 'events'); // docRef of the new Event
+		showDuplicateModal = false;
+		loading = true;
+		await loadData();
+		loading = false;
+		goto(`/admin/eventsadmin/${newEvent}`);
 	};
 
 	const openModal = (id) => {
 		deleteID = id;
 		showModal = true;
+	};
+
+	const openDuplicateModal = (id) => {
+		dupeID = id;
+		showDuplicateModal = true;
 	};
 </script>
 
@@ -101,6 +132,22 @@
 			<Button color="alternative">Cancel</Button>
 			<Button color="red" class=" me-2 text-white-primary" on:click={() => handleDelete()}
 				>Delete</Button
+			>
+		</div>
+	</div>
+</Modal>
+
+<Modal bind:open={showDuplicateModal} size="md" autoclose>
+	<div class="rounded-xl bg-white-primary p-10 text-center">
+		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+			Do you want to duplicate this event?
+			<p>All information will be kept but all dates will be reset.</p>
+		</h3>
+		<div class="flex justify-between px-36">
+			<Button color="alternative">Cancel</Button>
+			<Button
+				class="bg-primary-100 text-lg font-semibold text-white-primary"
+				on:click={() => handleDuplicate()}>Confirm</Button
 			>
 		</div>
 	</div>
@@ -128,32 +175,43 @@
 		<table>
 			<thead>
 				<tr>
-					<th on:click={() => sortTable('title')}>Title</th>
-					<th on:click={() => sortTable('startdate')}>Date</th>
-					<th on:click={() => sortTable('publishdate')}>Publish date</th>
-					<th on:click={() => sortTable('location')}>Location</th>
-					<th on:click={() => sortTable('author')}>Author</th>
-					<th>Edit</th>
+					<th on:click={() => sortTable('title', true)}>Title</th>
+					<th on:click={() => sortTable('startdate', true)}>Date</th>
+					<th on:click={() => sortTable('publishdate', true)}>Publish date</th>
+					<th on:click={() => sortTable('location', true)}>Location</th>
+					<th on:click={() => sortTable('author', true)}>Author</th>
+					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each $sortItems as item}
 					<tr>
-						<td>{item.data.title}</td>
+						<td><a class="underline" href="/admin/eventsadmin/{item.id}">{item.data.title}</a></td>
 						<td>{item.data.startdate}</td>
 						<td>{item.data.publishdate}</td>
 						<td>{locationMap[item.data.location] || item.data.location}</td>
 						<td>{item.data.author}</td>
 						<td>
+							<!-- <select
+								name="actions"
+								id="actions"
+								class="mr-4 max-h-8 max-w-28 rounded-md py-0 text-sm"
+							>
+								<option value="" disabled selected>Select</option>
+								<option value="">Edit</option>
+								<option value="">Delete</option>
+								<option value="">Duplicate</option>
+							</select> -->
+
 							<div class="flex justify-between">
 								<button
 									class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-									on:click={() => goto('/admin/eventsadmin/' + item.id)}>Edit</button
+									on:click={() => openModal(item.id)}>Delete</button
 								>
 								|
 								<button
 									class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-									on:click={() => openModal(item.id)}>Delete</button
+									on:click={() => openDuplicateModal(item.id)}>Duplicate</button
 								>
 							</div>
 						</td>

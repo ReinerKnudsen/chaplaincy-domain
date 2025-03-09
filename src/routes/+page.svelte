@@ -34,10 +34,10 @@
 		user = store.user;
 	});
 
-	const header = 'text-2xl text-justify w-full px-5 font-semibold';
-	const headerLg = 'lg:text-4xl lg:px-10 lg:py-4';
+	const header = 'text-2xl text-justify w-[80%] text-center px-4 py-4 font-semibold';
+	const headerLg = 'lg:text-4xl lg:px-10 lg:w-full';
 	const headerXl = 'xl:text-6xl xl:px-10 xl:py-6';
-	const subTitle = 'text-lg text-justify w-full px-5 py-3 ';
+	const subTitle = 'text-md text-justify px-5 py-3 w-full ';
 	const subTitleLg = 'lg:text-2xl lg:px-10 lg:py-2';
 	const subTitleXl = 'xl:text-4xl xl:px-10 xl:py-5';
 	const sectionHeader = 'text-xl text-justify w-full px-5 pt-4 font-semibold';
@@ -45,7 +45,7 @@
 	const sectionHeaderXl = 'xl:text-4xl xl:px-10 xl:pt-14 xl:py-5 ';
 	const container = 'mb-5 w-full';
 	const containerLg = 'lg:mb-10';
-	const services = 'px-5 py-5 flex flex-row gap-5 w-full';
+	const services = 'px-5 py-5 grid grid-cols-1 gap-5 w-full';
 	const servicesMd = 'md:grid md:grid-cols-2 md:gap-8 md:px-10 ';
 	const servicesXL = 'lg:grid lg:grid-cols-4 lg:gap-8 lg:px-5 ';
 	const itemContainer = 'px-5 grid grid-cols-1';
@@ -114,11 +114,11 @@
 		<div class="mb-5 w-full lg:mb-10">
 			<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
 				{#each events as event}
-					<ItemCard item={event} kind="events" />
+					<ItemCard item={event} kind="activities" />
 				{/each}
 			</div>
 			<div class="more-link mb-8">
-				<a class="border-b-2 border-b-purple-100 pb-1" href="/news">See all events</a>
+				<a class="border-b-2 border-b-purple-100 pb-1" href="/activities">See all activities</a>
 			</div>
 		</div>
 	{/if}

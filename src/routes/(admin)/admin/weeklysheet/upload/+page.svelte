@@ -17,10 +17,8 @@
 		docRef: null,
 	};
 
-	$: console.log(newItem);
 	const saveDocRef = (e) => {
 		newItem.docRef = e.detail.docRef;
-		console.log(newItem.docRef);
 	};
 
 	const handleSubmit = async () => {

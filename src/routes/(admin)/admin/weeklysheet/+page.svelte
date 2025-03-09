@@ -42,7 +42,6 @@
 	}
 	$: {
 		sortIcon.set($sortDirection === 1 ? 'chevronDown' : 'chevronUp');
-		console.log($sortIcon);
 	}
 	const handleSearchInput = (event) => {
 		//console.log(event.target.value);

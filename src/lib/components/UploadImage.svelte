@@ -40,7 +40,6 @@
 			if (existingFile) {
 				imageError = '';
 				imageNote = 'This image already exists.';
-				console.log(imageNote);
 				imageUrl = existingFile.data().url;
 				dispatch('imageChange', selectedFile);
 			} else {

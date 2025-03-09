@@ -22,7 +22,6 @@
 			// Loop over each file and push the name to Firestore
 			for (const itemRef of result.items) {
 				const fileName = itemRef.name;
-				console.log(`Processing file: ${fileName}`);
 
 				// Add file name to Firestore (using the file name as the document ID)
 				await setDoc(doc(database, 'images', fileName), {

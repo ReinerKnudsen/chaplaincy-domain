@@ -12,7 +12,7 @@
 	const { name, text, extraLink, extraLinkText, activitiesLink } = group;
 </script>
 
-<div class="group">
+<div class="group border-b-2 border-slate-300">
 	<div class="group-header">
 		<h2 class="group-title pb-4 pt-6 text-2xl font-semibold">{name}</h2>
 	</div>
@@ -21,20 +21,20 @@
 
 		{#if extraLink || activitiesLink}
 			{#if extraLink && activitiesLink}
-				<div class="flex flex-col gap-2 border-t-2 py-4 pl-10">
-					<p>
+				<div class="flex flex-row justify-between gap-20 py-4">
+					<p class="bg-slate-200 p-4">
 						<a class="border-b-2 border-b-purple-100 pb-1" href={extraLink} target="_blank"
 							>{extraLinkText}</a
 						>
 					</p>
-					<p>
+					<p class="bg-slate-200 p-4">
 						Please check our <a class="border-b-2 border-b-purple-100 pb-1" href="/activities"
 							>Activities</a
 						> page for upcoming meetings.
 					</p>
 				</div>
 			{:else if extraLink}
-				<div class=" border-t-2 py-4 pl-10">
+				<div class=" bg-slate-200 py-4 pl-4">
 					<p>
 						{extraLinkText}
 						<a class="border-b-2 border-b-purple-100 pb-1" href={extraLink} target="_blank"
@@ -43,7 +43,7 @@
 					</p>
 				</div>
 			{:else if activitiesLink}
-				<div class="border-t-2 py-4 pl-10">
+				<div class=" bg-slate-200 py-4 pl-4">
 					<p>
 						Please check our <a class="border-b-2 border-b-purple-100 pb-1" href="/activities"
 							>Activities</a

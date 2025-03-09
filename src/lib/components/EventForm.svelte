@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 
 	import { Timestamp, doc, setDoc } from 'firebase/firestore';
-	import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+	import { ref, uploadBytes, getDownloadURL, connectStorageEmulator } from 'firebase/storage';
 	import { authStore } from '$lib/stores/AuthStore';
 
 	import type { Event } from '$lib/types/Event';
@@ -20,7 +20,7 @@
 	import NewLocationModal from './NewLocationModal.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
 
-	export let thisEvent: Event;
+	export let thisEvent: Event | undefined;
 	const dispatch = createEventDispatcher();
 
 	const defaultEvent: Event = {
@@ -98,10 +98,6 @@
 		newEvent.slug = e.detail;
 	};
 
-	const handleImageChange = async (e: CustomEvent) => {
-		selectedImage = e.detail;
-	};
-
 	const handleSetPublishDate = (e) => {
 		e.preventDefault();
 		if (newEvent.startdate) {
@@ -118,6 +114,52 @@
 		}
 	};
 
+	const handleImageChange = async (e: CustomEvent) => {
+		selectedImage = e.detail;
+	};
+
+	const handleLocationChange = (event) => {
+		if (event.detail.value === 'new') {
+			showModal = true;
+		} else {
+			newEvent.location = event.detail.value;
+		}
+	};
+
+	const handleLocationAddedModal = async (event) => {
+		await fetchLocations();
+		selectedLocationId = event.detail.id;
+		newEvent.location = event.detail.id;
+		showModal = false;
+	};
+
+	const assignPDF = (e) => {
+		newEvent.pdfFile = e.detail.url;
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		if (!newEvent.publishdate) {
+			newEvent.publishdate = new Date().toISOString().split('T')[0];
+			const currentTime = new Date();
+			newEvent.publishtime = currentTime.toLocaleTimeString('en-US', {
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false,
+			});
+		}
+		!newEvent.publishtime && (newEvent.publishtime = '09:00');
+		!newEvent.unpublishdate && (newEvent.unpublishdate = newEvent.startdate);
+		!newEvent.unpublishtime && (newEvent.unpublishtime = newEvent.starttime);
+		const publishDateTime = new Date(newEvent.publishdate + 'T' + newEvent.publishtime);
+		newEvent.publishDateTime = Timestamp.fromDate(publishDateTime);
+		const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
+		newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
+		await uploadImage();
+		dispatch(mode, newEvent);
+		newEvent = defaultEvent;
+		goto('/admin/eventsadmin');
+	};
 	/** Upload the image and create a reference in the "images" collection*/
 	const uploadImage = async () => {
 		if (selectedImage) {
@@ -138,40 +180,6 @@
 		} else {
 			return newEvent.image;
 		}
-	};
-
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-		!newEvent.publishtime && (newEvent.publishtime = '09:00');
-		!newEvent.unpublishdate && (newEvent.unpublishdate = newEvent.startdate);
-		!newEvent.unpublishtime && (newEvent.unpublishtime = newEvent.starttime);
-		const publishDateTime = new Date(newEvent.publishdate + 'T' + newEvent.publishtime);
-		newEvent.publishDateTime = Timestamp.fromDate(publishDateTime);
-		const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
-		newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
-		await uploadImage();
-		dispatch(mode, newEvent);
-		newEvent = defaultEvent;
-		goto('/admin/eventsadmin');
-	};
-
-	const handleLocationChange = (event) => {
-		if (event.detail.value === 'new') {
-			showModal = true;
-		} else {
-			newEvent.location = event.detail.value;
-		}
-	};
-
-	const handleLocationAddedModal = async (event) => {
-		await fetchLocations();
-		selectedLocationId = event.detail.id;
-		newEvent.location = event.detail.id;
-		showModal = false;
-	};
-
-	const assignPDF = (e) => {
-		newEvent.pdfFile = e.detail.url;
 	};
 </script>
 
@@ -253,7 +261,7 @@
 					on:click={handleSetEndDate}
 					>Auto set
 				</Button>
-				<Tooltip type="light">Sets the publish date to 14 days before the start date</Tooltip>
+				<Tooltip type="light">Sets the end date tothe start date</Tooltip>
 			</div>
 		</div>
 
@@ -300,9 +308,9 @@
 
 		<!-- Publish date  -->
 		<div>
-			<Label for="publishdate" class="mb-2 mt-8 text-xl font-semibold">Publish Date *</Label>
+			<Label for="publishdate" class="mb-2 mt-8 text-xl font-semibold">Publish Date</Label>
 			<div class="flex w-full flex-row items-center gap-4">
-				<Input type="date" id="publishdate" required bind:value={newEvent.publishdate} />
+				<Input type="date" id="publishdate" bind:value={newEvent.publishdate} />
 				<Button
 					class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
 					on:click={handleSetPublishDate}
@@ -310,13 +318,21 @@
 				</Button>
 				<Tooltip type="light">Sets the publish date to 14 days before the start date</Tooltip>
 			</div>
+			<p class="explanation">
+				If you don't select a publish date, the event will be published immediately.
+			</p>
 		</div>
 
 		<!-- Publish time  -->
 		<div>
-			<Label for="publishtime" class="mb-2 mt-8 text-xl font-semibold">Publish Time</Label>
-			<div class="flex w-full flex-row items-center gap-4">
-				<Input type="time" id="publishtime" bind:value={newEvent.publishtime} />
+			<div>
+				<Label for="publishTime" class="mb-2 mt-8 text-xl font-semibold">Publish Time</Label>
+				<Input
+					type="time"
+					id="publishtime"
+					bind:value={newEvent.publishtime}
+					disabled={!newEvent.publishdate}
+				/>
 			</div>
 			<p class="explanation">
 				If you don't select a publish time, it will be set to 09:00 of the selected day.

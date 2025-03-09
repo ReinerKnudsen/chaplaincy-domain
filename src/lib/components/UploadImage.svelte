@@ -17,6 +17,7 @@
 	let selectedFile: File;
 	let moduleWidth = 'w-[400px]';
 	let imageError: string;
+	let imageNote: string;
 
 	/** Verify in Firestore Collection if an image of this name is already present*/
 	const checkIfFileExists = async (imageFile: string) => {
@@ -24,9 +25,9 @@
 		const docSnap = await getDoc(docRef);
 
 		if (docSnap.exists()) {
-			return true; // File exists in Firestore
+			return docSnap; // File exists in Firestore
 		} else {
-			return false; // File doesn't exist in Firestore
+			return null; // File doesn't exist in Firestore
 		}
 	};
 
@@ -35,10 +36,13 @@
 		imageError = '';
 		if (event.target) {
 			selectedFile = event.target.files[0];
-			let fileExists = await checkIfFileExists(selectedFile.name);
-			if (fileExists) {
-				imageError = `<em>${selectedFile.name}</em> already exists. <p>Please choose another file.`;
-				resetInput();
+			let existingFile = await checkIfFileExists(selectedFile.name);
+			if (existingFile) {
+				imageError = '';
+				imageNote = 'This image already exists.';
+				console.log(imageNote);
+				imageUrl = existingFile.data().url;
+				dispatch('imageChange', selectedFile);
 			} else {
 				if (selectedFile.size > MAX_IMAGE_SIZE) {
 					imageError = 'The image is too big.';
@@ -92,6 +96,9 @@
 {:else}
 	<div class="image-container">
 		<img class="w-full" src={imageUrl} alt="selectedFile" />
+		{#if imageNote}
+			<p class="mt-3 text-center text-base text-gray-700">Note: {@html imageNote}</p>
+		{/if}
 		<div class="col-span-2 text-center">
 			<Button class="mt-5 w-6/12" on:click={resetInput}>Change</Button>
 		</div>

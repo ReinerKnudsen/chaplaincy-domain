@@ -6,7 +6,7 @@ export const load = async () => {
 	let events = snapshot.docs.map((event) => {
 		return {
 			id: event.id,
-			data: event.data()
+			data: event.data(),
 		};
 	});
 	return { events };

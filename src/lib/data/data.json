@@ -32,29 +32,29 @@
 			"name": "Jenny Knudsen",
 			"role": "Reader & Communications",
 			"description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ",
-			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fplaceholderman_sm.jpeg?alt=media&token=254eec4a-8b00-46c7-83cf-675febf975a8"
+			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fjennyknudsen.jpeg?alt=media&token=da524693-d014-4362-b308-1993f8df767e"
 		},
 		{
 			"name": "Hamish Cooper",
-			"role": "Churchwarden",
+			"role": "Churchwarden in Bonn",
+			"description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ",
+			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fplaceholderman_sm.jpeg?alt=media&token=254eec4a-8b00-46c7-83cf-675febf975a8"
+		},
+		{
+			"name": "Anette Klever",
+			"role": "Churchwarden in Cologne",
 			"description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ",
 			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fplaceholderman_sm.jpeg?alt=media&token=254eec4a-8b00-46c7-83cf-675febf975a8"
 		},
 		{
 			"name": "Reiner Knudsen",
-			"role": "Churchwarden & Webmaster",
+			"role": "Churchwarden in Bonn & Webmaster",
 			"description": "My goal is to make everybody feel welcome, included, and safe in our services and your chaplaincy's activities.",
-			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Frk_kl_square.jpeg?alt=media&token=0ee00bba-3bd4-4d3d-a6a8-0a8c324fc5b7"
-		},
-		{
-			"name": "Anette Klever",
-			"role": "Churchwarden",
-			"description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ",
-			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fplaceholderman_sm.jpeg?alt=media&token=254eec4a-8b00-46c7-83cf-675febf975a8"
+			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Freinerknudsen.jpeg?alt=media&token=73be19b2-767d-460f-970f-037fefcd9ae0"
 		},
 		{
 			"name": "Markus Müller",
-			"role": "Churchwarden",
+			"role": "Churchwarden in Cologne",
 			"description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ",
 			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fplaceholderman_sm.jpeg?alt=media&token=254eec4a-8b00-46c7-83cf-675febf975a8"
 		},

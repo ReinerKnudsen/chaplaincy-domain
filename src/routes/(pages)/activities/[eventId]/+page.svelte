@@ -83,6 +83,5 @@
 <style>
 	a {
 		color: blue; /* Example style */
-		text-decoration: underline;
 	}
 </style>

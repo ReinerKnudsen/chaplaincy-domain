@@ -20,7 +20,7 @@
 		@apply cursor-pointer pb-1 text-purple-100;
 	}
 
-	a .link {
+	.link {
 		@apply border-b-2 border-b-purple-100
 	}
 

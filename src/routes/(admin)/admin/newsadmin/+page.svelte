@@ -132,17 +132,12 @@
 			<tbody>
 				{#each $sortItems as item}
 					<tr>
-						<td>{item.data.title}</td>
+						<td><a class="underline" href={'/admin/newsadmin/' + item.id}>{item.data.title}</a></td>
 						<td>{item.data.text}</td>
 						<td>{item.data.publishdate}</td>
 						<td>{item.data.author}</td>
 						<td>
 							<div class="flex justify-between">
-								<button
-									class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-									on:click={() => goto('/admin/newsadmin/' + item.id)}>Edit</button
-								>
-								|
 								<button
 									class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
 									on:click={() => openModal(item.id)}>Delete</button

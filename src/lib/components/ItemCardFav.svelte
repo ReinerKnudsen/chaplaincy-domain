@@ -23,12 +23,14 @@
 		<div class="headline text-left text-lg font-semibold">
 			<a href="/{kind}/{item.id}">{item.data.title}</a>
 		</div>
-		<div class="metadata text-right text-lg text-slate-400">
-			<span>{item.data.author}, {item.data.publishdate}</span>
-		</div>
 		<div class="news-text min-h-[50%] text-left text-base">{item.data.slug}</div>
-		<div class="read-more mb-10 text-right font-medium text-link-primary xl:mb-0">
-			<a href="/news/{item.id}">Read more...</a>
+		<div class="flex flex-row justify-between">
+			<div class="metadata font-medium">
+				<span>{item.data.author}, {item.data.publishdate}</span>
+			</div>
+			<div class="read-more mb-10 text-right font-medium text-link-primary xl:mb-0">
+				<a href="/news/{item.id}">Read more...</a>
+			</div>
 		</div>
 	</div>
 </div>

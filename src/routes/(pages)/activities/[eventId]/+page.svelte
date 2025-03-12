@@ -79,3 +79,9 @@
 		<a class={formats.aLink} href="/activities">Take me back to overview</a>
 	</div>
 {/if}
+
+<style>
+	a {
+		color: blue; /* Example style */
+	}
+</style>

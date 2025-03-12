@@ -21,6 +21,9 @@
 
 	/** Verify in Firestore Collection if an image of this name is already present*/
 	const checkIfFileExists = async (imageFile: string) => {
+		if (!imageFile) {
+			return null;
+		}
 		const docRef = doc(database, 'images', imageFile);
 		const docSnap = await getDoc(docRef);
 

@@ -7,7 +7,7 @@
 	const containerLG = 'lg:grid-col-3';
 	const containerXL = 'xl:bg-white';
 	const mainContent = 'justify-between';
-	const mainContentMd = 'md:flex md:flex-row md:gap-5';
+	const mainContentMd = 'md:flex md:flex md:gap-5';
 </script>
 
 <div class={`container ${containerSM} ${containerLG} ${containerXL}`}>
@@ -15,10 +15,10 @@
 		<a href="/{kind}/{item.id}">{item.data.title}</a>
 	</div>
 	<div class={`main-content ${mainContent} ${mainContentMd}`}>
-		<div class="image mb-5 min-w-[40%]">
-			<img class="image rounded-2xl" src={item.data.image} alt={item.data.imageAlt} />
+		<div class="image mb-5 flex w-[40%] align-middle">
+			<img class="image w-full rounded-2xl" src={item.data.image} alt={item.data.imageAlt} />
 		</div>
-		<div class="article">
+		<div class="article w-[60%]">
 			<div class="mb-4">
 				{item.data.slug}
 			</div>

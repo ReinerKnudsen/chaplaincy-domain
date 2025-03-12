@@ -14,9 +14,9 @@
 
 	const previousPage = sessionStorage.getItem('previousPage') || null;
 
-	onDestroy(() => {
-		sessionStorage.setItem('previousPage', '/groups');
-	});
+	// onDestroy(() => {
+	// 	sessionStorage.setItem('previousPage', '/groups');
+	// });
 </script>
 
 <PageHeader {headerData} textStyle="dark" />

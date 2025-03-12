@@ -1,17 +1,15 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
-	import { Timestamp, doc, setDoc } from 'firebase/firestore';
-	import { ref, uploadBytes, getDownloadURL, connectStorageEmulator } from 'firebase/storage';
+	import { Timestamp, doc, setDoc, getFirestore, collection, getDocs } from 'firebase/firestore';
+	//import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+	//import { database, storage } from '$lib/firebase/firebaseConfig';
 	import { authStore } from '$lib/stores/AuthStore';
 
 	import type { Event } from '$lib/types/Event';
-	import { database, storage } from '$lib/firebase/firebaseConfig';
-
-	import { getFirestore, collection, getDocs } from 'firebase/firestore';
-	import { writable } from 'svelte/store';
-
+	import { uploadImage, fetchLocations } from '$lib/services/fileService';
 	import { Input, Label, Checkbox, Textarea, Helper, Button, Tooltip } from 'flowbite-svelte';
 	import SlugText from './SlugText.svelte';
 	import MarkdownHelp from './MarkdownHelp.svelte';
@@ -54,17 +52,10 @@
 	let selectedLocationId = '';
 	let locationAdded = false;
 
-	const db = getFirestore();
 	const locations = writable<{ id: string; name: string }[]>([]);
 
-	async function fetchLocations() {
-		const querySnapshot = await getDocs(collection(db, 'location'));
-		const locs = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-		locations.set(locs);
-	}
-
 	onMount(async () => {
-		await fetchLocations();
+		locations.set(await fetchLocations());
 	});
 
 	$: if (newEvent.image) {
@@ -78,7 +69,7 @@
 		mode = 'update';
 	}
 
-	const handleConditionChange = (e) => {
+	const handleConditionChange = (e: CustomEvent) => {
 		if (e.target.checked) {
 			newEvent.condition = 'Entry is free, donations are welcome.';
 		} else {
@@ -86,19 +77,11 @@
 		}
 	};
 
-	const cellPadding = 'py-2 pl-5';
-	const cellFormat = {
-		one: 'border-b font-mono',
-		two: 'border-b border-l pb-1 pl-5',
-		three: 'border-b border-l-4 pb-1 pl-5 font-mono',
-		four: 'border-b border-l pb-1 pl-5',
-	};
-
-	const handleSlugChange = (e) => {
+	const handleSlugChange = (e: CustomEvent) => {
 		newEvent.slug = e.detail;
 	};
 
-	const handleSetPublishDate = (e) => {
+	const handleSetPublishDate = (e: CustomEvent) => {
 		e.preventDefault();
 		if (newEvent.startdate) {
 			const pubdate = new Date(newEvent.startdate);
@@ -106,7 +89,7 @@
 			newEvent.publishdate = pubdate.toISOString().split('T')[0];
 		}
 	};
-	const handleSetEndDate = (e) => {
+	const handleSetEndDate = (e: CustomEvent) => {
 		e.preventDefault();
 		if (newEvent.startdate) {
 			const enddate = new Date(newEvent.startdate);
@@ -114,11 +97,11 @@
 		}
 	};
 
-	const handleImageChange = async (e: CustomEvent) => {
+	const handleImageChange = (e: CustomEvent) => {
 		selectedImage = e.detail;
 	};
 
-	const handleLocationChange = (event) => {
+	const handleLocationChange = (event: CustomEvent) => {
 		if (event.detail.value === 'new') {
 			showModal = true;
 		} else {
@@ -126,18 +109,18 @@
 		}
 	};
 
-	const handleLocationAddedModal = async (event) => {
+	const handleLocationAddedModal = async (event: CustomEvent) => {
 		await fetchLocations();
 		selectedLocationId = event.detail.id;
 		newEvent.location = event.detail.id;
 		showModal = false;
 	};
 
-	const assignPDF = (e) => {
+	const assignPDF = (e: CustomEvent) => {
 		newEvent.pdfFile = e.detail.url;
 	};
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
 		if (!newEvent.publishdate) {
 			newEvent.publishdate = new Date().toISOString().split('T')[0];
@@ -155,32 +138,32 @@
 		newEvent.publishDateTime = Timestamp.fromDate(publishDateTime);
 		const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
 		newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
-		await uploadImage();
+		newEvent.image = await uploadImage(selectedImage);
 		dispatch(mode, newEvent);
 		newEvent = defaultEvent;
 		goto('/admin/eventsadmin');
 	};
 	/** Upload the image and create a reference in the "images" collection*/
-	const uploadImage = async () => {
-		if (selectedImage) {
-			const storageRef = ref(storage, 'images/' + selectedImage.name);
-			try {
-				await uploadBytes(storageRef, selectedImage);
-				let imageUrl = await getDownloadURL(storageRef);
-				await setDoc(doc(database, 'images', selectedImage.name), {
-					name: selectedImage.name,
-					url: imageUrl,
-					createdAt: new Date(),
-				});
-				newEvent.image = imageUrl;
-				return imageUrl;
-			} catch (error) {
-				console.log(error); // eslint-disable-line no-console
-			}
-		} else {
-			return newEvent.image;
-		}
-	};
+	// export const uploadImage = async (selectedImage: File) => {
+	// 	if (selectedImage) {
+	// 		const storageRef = ref(storage, 'images/' + selectedImage.name);
+	// 		try {
+	// 			await uploadBytes(storageRef, selectedImage);
+	// 			let imageUrl = await getDownloadURL(storageRef);
+	// 			await setDoc(doc(database, 'images', selectedImage.name), {
+	// 				name: selectedImage.name,
+	// 				url: imageUrl,
+	// 				createdAt: new Date(),
+	// 			});
+	// 			newEvent.image = imageUrl;
+	// 			return imageUrl;
+	// 		} catch (error) {
+	// 			console.log(error); // eslint-disable-line no-console
+	// 		}
+	// 	} else {
+	// 		return newEvent.image;
+	// 	}
+	// };
 </script>
 
 <div class="form bg-white-primary">

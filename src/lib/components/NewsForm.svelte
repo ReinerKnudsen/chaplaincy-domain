@@ -1,19 +1,22 @@
-<script>
-	import { createEventDispatcher, onMount } from 'svelte';
+<script lang="ts">
+	import { createEventDispatcher } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { Input, Label, Checkbox, Textarea, Helper, Button } from 'flowbite-svelte';
-	import SlugText from './SlugText.svelte';
-	import MarkdownHelp from './MarkdownHelp.svelte';
+
+	import { uploadImage } from '$lib/services/fileService';
+	import type { News } from '$lib/types/News';
 
 	import { authStore } from '$lib/stores/AuthStore';
-	import UploadImage from '$lib/components/UploadImage.svelte';
+	import { Input, Label, Textarea, Button } from 'flowbite-svelte';
+	import SlugText from './SlugText.svelte';
+	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
+	import UploadImage from '$lib/components/UploadImage.svelte';
 
-	export let thisItem;
+	export let thisItem: News | undefined;
 	const dispatch = createEventDispatcher();
 	const author = $authStore.name;
 
-	let newItem = {
+	let defaultItem = {
 		title: '',
 		author: author,
 		text: '',
@@ -26,8 +29,11 @@
 		tags: '',
 		pdfFile: '',
 	};
+
+	let newItem = defaultItem;
 	let docRef;
 	let state = 'save';
+	let selectedImage: File;
 
 	if (thisItem) {
 		newItem = thisItem;
@@ -54,18 +60,27 @@
 		newItem.slug = e.detail;
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
-		if (state === 'save') {
-			!newItem.publishdate && (newItem.publishdate = new Date());
-			!newItem.publishtime && (newItem.publishtime = '09:00');
+		if (!newItem.publishdate) {
+			const now = new Date();
+			newItem.publishdate = now.toISOString().split('T')[0];
+			newItem.publishtime = now.toLocaleTimeString('en-US', {
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false,
+			});
 		}
+		!newItem.publishtime && (newItem.publishtime = '09:00');
+		newItem.image = await uploadImage(selectedImage);
 		dispatch(state, newItem);
+		newItem = defaultItem;
 		goto('/admin/newsadmin');
 	};
 
-	const assignImage = (e) => {
-		newItem.image = e.detail;
+	const handleImageChange = (e: CustomEvent) => {
+		selectedImage = e.detail;
+		console.log('Selected Image (Form): ', selectedImage);
 	};
 
 	const assignPDF = (e) => {
@@ -115,32 +130,34 @@
 		<!-- Publish date  -->
 		<div>
 			<Label for="publishdate" class="mb-2 mt-8 text-xl font-semibold">Publish Date *</Label>
-			<Input type="date" id="publishdate" required bind:value={newItem.publishdate} />
+			<Input type="date" id="publishdate" bind:value={newItem.publishdate} />
 			<p class="explanation">If you don't select a publish date, it will be set to today.</p>
 		</div>
 
 		<!-- Publish time  -->
 		<div>
 			<Label class="mb-2 mt-8 text-xl font-semibold">Publish Time</Label>
-			<Input type="time" id="publishtime" bind:value={newItem.publishtime} />
+			<Input
+				type="time"
+				id="publishtime"
+				disabled={!newItem.publishdate}
+				bind:value={newItem.publishtime}
+			/>
 			<p class="explanation">
 				If you don't select a publish time, it will be set to 09:00 of the selected day.
 			</p>
 		</div>
 
-		<!-- File Upload -->
+		<!-- Image -->
 		<div>
-			{#if newItem.image}
-				<Label class="mb-2 mt-8 text-xl font-semibold">Uploaded image</Label>
-				<div class="flex flex-col items-center justify-center">
-					<UploadImage imageUrl={newItem.image} on:upload={assignImage} />
-				</div>
-			{:else}
-				<Label class="mb-2 mt-8 text-xl font-semibold">Upload image</Label>
-				<div class="flex flex-col items-center justify-center">
-					<UploadImage on:upload={assignImage} />
-				</div>
-			{/if}
+			<Label class="mb-2 mt-8 text-xl font-semibold">Image</Label>
+			<div class="flex flex-col items-center justify-center">
+				{#if newItem.image}
+					<UploadImage imageUrl={newItem.image} on:imageChange={handleImageChange} />
+				{:else}
+					<UploadImage imageUrl="" on:imageChange={handleImageChange} />
+				{/if}
+			</div>
 		</div>
 		<div class="imageMeta">
 			<div class="imageAlt">

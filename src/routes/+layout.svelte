@@ -60,6 +60,3 @@
 </div>
 
 <Footer />
-
-<style>
-</style>

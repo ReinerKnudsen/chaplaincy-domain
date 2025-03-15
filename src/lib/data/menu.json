@@ -1,0 +1,64 @@
+{
+	"menu": [
+		{
+			"url": "/",
+			"name": "Home"
+		},
+		{
+			"url": "/worship",
+			"name": "Worship"
+		},
+		{
+			"url": "/news",
+			"name": "News"
+		},
+		{
+			"url": "/activities",
+			"name": "Activities"
+		},
+		{
+			"url": "/groups",
+			"name": "Groups"
+		},
+		{
+			"name": "About us",
+			"submenu": [
+				{
+					"name": "Who we are",
+					"url": "/about/"
+				},
+				{
+					"name": "Who is who?",
+					"url": "/about/responsibilities"
+				},
+				{
+					"name": "Where we are",
+					"url": "/about/locations"
+				},
+				{
+					"name": "Safeguarding",
+					"url": "/about/safeguarding"
+				},
+				{
+					"name": "Get in touch",
+					"url": "/about/contact"
+				}
+			]
+		},
+		{
+			"url": "/admin",
+			"name": "Admin",
+			"visibility": "admin"
+		},
+		{
+			"url": "/login",
+			"name": "Login",
+			"visibility": "loggedOut"
+		},
+		{
+			"url": "/logout",
+			"name": "Logout",
+			"visibility": "loggedIn"
+		}
+	]
+}

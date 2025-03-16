@@ -27,7 +27,7 @@
 
 <Footer footerType="socialmedia" class=" rounded-t-2xl bg-white-primary shadow-xl ">
 	<div class="pl-8 md:flex md:justify-between">
-		<div class="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-6">
+		<div class="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-6 lg:gap-8">
 			<div>
 				<h2 class="dark:text-white mb-6 text-sm font-semibold uppercase text-gray-900">
 					Resources

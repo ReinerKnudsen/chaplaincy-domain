@@ -43,7 +43,9 @@
 <div>
 	<li class="group relative">
 		<!-- svelte-ignore a11y-invalid-attribute -->
-		<button class="menuitem text-xl" on:click|preventDefault={toggleDropdown}>{title}</button>
+		<button class="menuitem text-md xl:text-xl" on:click|preventDefault={toggleDropdown}
+			>{title}</button
+		>
 		{#if showDropdown}
 			<div
 				class="dropdown ring-black absolute left-0 mt-2 w-48 rounded-md bg-white-primary shadow-lg ring-1 ring-opacity-5"

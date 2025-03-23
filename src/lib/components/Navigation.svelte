@@ -44,7 +44,10 @@
 </script>
 
 <nav
-	class="sticky top-0 z-50 flex h-full min-h-28 w-full items-center justify-between divide-gray-100 rounded-b-2xl border-b border-gray-100 bg-white-primary px-4 py-2.5 text-gray-700 shadow-xl dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+	class="sticky top-0 z-50 flex h-full min-h-28 w-full
+	items-center justify-between divide-gray-100 rounded-b-2xl border-b
+	border-gray-100 bg-white-primary px-4 py-2.5 text-gray-700 shadow-xl
+	dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
 >
 	<!-- Logo -->
 	<div class="nav-container flex w-full justify-between">
@@ -85,7 +88,7 @@
 				<div
 					class="mobile-menu absolute left-[20%] top-28 z-20 w-[80%] cursor-pointer rounded-lg bg-white-primary px-4 py-4"
 				>
-					<ul class="gap-2p-4 mt-4 flex flex-col text-primary-100">
+					<ul class="mt-4 flex flex-col gap-2 p-4 text-primary-100">
 						<NavigationItem url="/" label="Home" onClick={toggleMobileMenu} />
 						<NavigationItem url="/worship" label="Worship" onClick={toggleMobileMenu} />
 						<NavigationItem url="/news" label="News" onClick={toggleMobileMenu} />
@@ -120,7 +123,7 @@
 
 						{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
 							<hr class="mb-4" />
-							<NavigationItem url="/admin" label="Admin" />
+							<NavigationItem url="/admin" label="Admin" onClick={toggleMobileMenu} />
 						{/if}
 					</ul>
 					<div class="flex flex-col">
@@ -159,7 +162,7 @@
 				{:else}
 					<li>
 						<button
-							class="lg:hover:text-primary-700 lg:dark:hover:text-white dark:hover:text-white block rounded py-2 pe-4 ps-3 text-xl text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
+							class="lg:hover:text-primary-700 lg:dark:hover:text-white dark:hover:text-white text-md block rounded py-2 pe-4 ps-3 text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent xl:text-xl"
 							on:click={handleLogout}>Sign out</button
 						>
 					</li>

@@ -10,15 +10,15 @@
 	const mainContentMd = 'md:flex md:gap-5';
 </script>
 
-<div class={`container ${containerSM} ${containerLG} `}>
+<div class={` ${containerSM} ${containerLG} `}>
 	<div class="head-line mb-4 py-2 text-xl font-semibold">
 		<a href="/{kind}/{item.id}">{item.data.title}</a>
 	</div>
 	<div class={`main-content ${mainContent} ${mainContentMd}`}>
-		<div class="image mb-5 flex h-auto w-[40%] align-middle">
-			<img class="image w-full rounded-2xl" src={item.data.image} alt={item.data.imageAlt} />
+		<div class="image mb-5 flex h-auto w-full align-middle sm:w-[40%]">
+			<img class="w-full rounded-2xl" src={item.data.image} alt={item.data.imageAlt} />
 		</div>
-		<div class="article w-[60%]">
+		<div class="article w-full md:w-[60%]">
 			<div class="mb-8">
 				{item.data.slug}
 			</div>

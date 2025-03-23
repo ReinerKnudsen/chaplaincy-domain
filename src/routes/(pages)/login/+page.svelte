@@ -26,7 +26,9 @@
 </script>
 
 <div class="flex flex-row justify-center">
-	<div class="w-5/12 space-y-4 rounded-xl bg-white-primary p-6 shadow-xl sm:p-8 md:space-y-6">
+	<div
+		class="w-[80%] space-y-4 rounded-xl bg-white-primary p-6 shadow-xl sm:p-8 md:space-y-6 lg:w-5/12"
+	>
 		<form class="flex flex-col space-y-6" action="/" on:submit={handleSubmit}>
 			<h3 class="dark:text-white p-0 text-xl font-medium text-gray-900">Login</h3>
 			<Label class="space-y-2">

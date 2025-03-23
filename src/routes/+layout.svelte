@@ -1,14 +1,15 @@
 <script>
 	import '/src/app.css';
-	import Navigation from '$lib/components/Navigation.svelte';
-	import Footer from '$lib/components/Footer.svelte';
 	import { onDestroy, onMount } from 'svelte';
 
 	import '@fontsource/inter';
 
+	import Navigation from '$lib/components/Navigation.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 	import { getAuth, onAuthStateChanged } from 'firebase/auth';
 	import { firebaseApp } from '$lib/firebase/firebaseConfig';
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
+	import { screenSize, stopListening } from '$lib/stores/ScreenSizeStore';
 	import { getUserRole } from '$lib/services/authService';
 
 	let unsubscribe;
@@ -44,6 +45,9 @@
 				}
 			});
 		}
+		return () => {
+			stopListening();
+		};
 	});
 
 	onDestroy(() => {

@@ -16,10 +16,12 @@
 	import email from '$lib/assets/icons/email.svg?raw';
 	import facebook from '$lib/assets/icons/facebook.svg?raw';
 	import twitter from '$lib/assets/icons/twitter.svg?raw';
+	import trash from '$lib/assets/icons/delete.svg?raw';
 
 	export let name;
 	export let width = '1rem';
 	export let height = '1rem';
+
 	let icons = {
 		author: {
 			box: 24,
@@ -48,6 +50,10 @@
 		churchnearyou: {
 			box: 24,
 			svg: churchnearyou,
+		},
+		delete: {
+			box: 24,
+			svg: trash,
 		},
 		email: {
 			box: 24,

@@ -19,7 +19,7 @@ const initialEventState = {
 	comments: '',
 	image: '',
 	imagealt: '',
-	author: ''
+	author: '',
 };
 
 export const EventStore = writable(initialEventState);
@@ -41,7 +41,7 @@ const initialNewsState = {
 	tags: [],
 	image: '',
 	imagealt: '',
-	author: ''
+	author: '',
 };
 
 export const NewsStore = writable(initialNewsState);

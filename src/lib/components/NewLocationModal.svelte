@@ -1,18 +1,14 @@
-<script lang="ts">
+<script>
 	import { createEventDispatcher } from 'svelte';
 	import { getFirestore, addDoc, collection } from 'firebase/firestore';
-	import { writable } from 'svelte/store';
+	import { LocationStore } from '$lib/stores/FormStore';
 	import { Button, Input, Label } from 'flowbite-svelte';
+	import NewLocationForm from './NewLocationForm.svelte';
 
 	const db = getFirestore();
 	const dispatch = createEventDispatcher();
 
-	let name = '';
-	let description = '';
-	let street = '';
-	let city = '';
-	let zip = '';
-	let openMapUrl = '';
+	const { name, description, street, city, zip, openMapUrl } = $LocationStore;
 
 	const handleSave = async () => {
 		try {
@@ -34,47 +30,7 @@
 <div class="overlay">
 	<div class="modal">
 		<h2>Add New Location</h2>
-		<div class="py-2 text-sm">All fields marked with * are required</div>
-		<div>
-			<Label class="mb-2 mt-4 font-semibold" for="name">Name *</Label>
-			<Input id="name" type="text" placeholder="Name" bind:value={name} required />
-		</div>
-		<div>
-			<Label class="mb-2 mt-4 font-semibold" for="description">Description *</Label>
-			<Input
-				id="description"
-				type="text"
-				placeholder="Description"
-				bind:value={description}
-				required
-			/>
-		</div>
-		<div>
-			<Label class="mb-2 mt-4 font-semibold" for="street">Street *</Label>
-			<Input id="street" type="text" placeholder="Street" bind:value={street} required />
-		</div>
-		<div>
-			<Label class="mb-2 mt-4 font-semibold" for="city">City *</Label>
-			<Input id="city" type="text" placeholder="City" bind:value={city} required />
-		</div>
-		<div>
-			<Label class="mb-2 mt-4 font-semibold" for="zip">Zip *</Label>
-			<Input id="zip" type="text" placeholder="Zip" bind:value={zip} required />
-		</div>
-		<div>
-			<Label class="mb-2 mt-4 font-semibold" for="url">Open Street Map URL:</Label>
-			<Input id="url" type="url" placeholder="OpenStreetMap URL" bind:value={openMapUrl} />
-		</div>
-		<div class="mt-8 flex w-full flex-row justify-center gap-10">
-			<Button
-				class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
-				on:click={handleSave}>Save</Button
-			>
-			<Button
-				class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
-				on:click={() => dispatch('close')}>Cancel</Button
-			>
-		</div>
+		<NewLocationForm on:save={handleSave} on:close={() => dispatch('close')} showClose={true} />
 	</div>
 </div>
 

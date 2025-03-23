@@ -29,6 +29,11 @@
 		<h2 class="mb-4 mt-6 text-xl font-bold"><a href="admin/newsadmin">News Management</a></h2>
 		<div>Articles list and management options go here.</div>
 
+		<h2 class="mb-4 mt-6 text-xl font-bold">
+			<a href="admin/locationsadmin">Locations Management</a>
+		</h2>
+		<div>All Locations options go here.</div>
+
 		<h2 class="mb-4 mt-6 text-xl font-bold"><a href="admin/weeklysheet">Weekly Sheet Upload</a></h2>
 		<div>List and upload weekly sheets</div>
 

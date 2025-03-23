@@ -4,3 +4,10 @@ export const STORAGE_URL = `https://storage.cloud.google.com/${import.meta.env.V
 export const STORAGE_IMAGES = STORAGE_URL + 'images/';
 
 export const h2Class = 'text-2xl font-semibold my-4';
+
+export const size = {
+	sm: 640,
+	md: 768,
+	lg: 1024,
+	xl: 1280,
+};

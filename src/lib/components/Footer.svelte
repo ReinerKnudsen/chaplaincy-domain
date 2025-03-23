@@ -27,7 +27,7 @@
 
 <Footer footerType="socialmedia" class=" rounded-t-2xl bg-white-primary shadow-xl ">
 	<div class="pl-8 md:flex md:justify-between">
-		<div class="grid grid-cols-2 gap-8 sm:grid-cols-3 sm:gap-6">
+		<div class="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-6 lg:gap-8">
 			<div>
 				<h2 class="dark:text-white mb-6 text-sm font-semibold uppercase text-gray-900">
 					Resources
@@ -64,11 +64,6 @@
 	<hr class="my-6 border-gray-200 dark:border-gray-700 sm:mx-auto lg:my-8" />
 	<div class=" pl-8 pr-8 sm:flex sm:items-center sm:justify-between">
 		<FooterCopyright href="/" by="Sleepy Panda " />
-		{#if loading}
-			<span>...</span>
-		{:else}
-			{environment}
-		{/if}
 		<div class="mt-4 flex space-x-6 sm:mt-0 sm:justify-center rtl:space-x-reverse">
 			<FooterIcon href="https://www.facebook.com/AnglicanBonnCologne/">
 				<Icon

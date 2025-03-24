@@ -16,8 +16,6 @@
 	import NewLocationModal from './NewLocationModal.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
 
-	export let thisEvent: Event | undefined;
-	console.log(thisEvent.location);
 	const dispatch = createEventDispatcher();
 
 	const defaultEvent: Event = {
@@ -42,6 +40,8 @@
 		image: '',
 		imageAlt: '',
 	};
+
+	export let thisEvent: Event = defaultEvent;
 
 	let newEvent: Event = defaultEvent;
 	let mode = 'save';

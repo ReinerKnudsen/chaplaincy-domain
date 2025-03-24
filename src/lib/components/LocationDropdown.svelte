@@ -1,17 +1,18 @@
-<script lang="ts">
+<script>
 	import { onMount, createEventDispatcher } from 'svelte';
 	import { getFirestore, collection, getDocs } from 'firebase/firestore';
 	import { writable } from 'svelte/store';
 
 	const db = getFirestore();
-	export let locationAdded = false;
-
+	//export let locationAdded = false;
 	const dispatch = createEventDispatcher();
 
 	// Parent component should handle locationAdded event and set locationAdded to true
 
 	export let selectedLocationId = '';
 	export let locations;
+
+	console.log('Transferred location: ', selectedLocationId);
 
 	function handleChange(event) {
 		dispatch('change', { value: event.target.value });

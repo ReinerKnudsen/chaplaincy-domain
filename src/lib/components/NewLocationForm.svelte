@@ -6,6 +6,8 @@
 	export let showClose = true;
 
 	const dispatch = createEventDispatcher();
+
+	//$: console.log($LocationStore);
 </script>
 
 <div class="py-2 text-sm">All fields marked with * are required</div>
@@ -55,16 +57,16 @@
 		/>
 	</div>
 	<div class="mt-8 flex w-full flex-row justify-center gap-10">
+		{#if showClose}
+			<Button
+				class="min-w-32 bg-secondary-100 text-primary-text disabled:bg-primary-40 disabled:text-slate-600"
+				on:click={() => dispatch('close')}>Cancel</Button
+			>
+		{/if}
 		<Button
 			class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
 			on:click={() => dispatch('save')}>Save</Button
 		>
-		{#if showClose}
-			<Button
-				class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
-				on:click={() => dispatch('close')}>Cancel</Button
-			>
-		{/if}
 	</div>
 </form>
 

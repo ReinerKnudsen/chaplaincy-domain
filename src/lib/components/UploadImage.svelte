@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { createEventDispatcher, onDestroy } from 'svelte';
-	import { onMount } from 'svelte';
 
 	import { Button } from 'flowbite-svelte';
-	import { ref, uploadBytes, getDownloadURL, getMetadata } from 'firebase/storage';
-	import { getDoc, query, doc } from 'firebase/firestore';
 
-	import { storage, database } from '$lib/firebase/firebaseConfig';
+	import { getDoc, doc } from 'firebase/firestore';
+
+	import { database } from '$lib/firebase/firebaseConfig';
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
 
 	export let imageUrl: string;

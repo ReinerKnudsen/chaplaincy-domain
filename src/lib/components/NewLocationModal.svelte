@@ -1,8 +1,9 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
+
 	import { getFirestore, addDoc, collection } from 'firebase/firestore';
-	import { LocationStore } from '$lib/stores/FormStore';
-	import { Button, Input, Label } from 'flowbite-svelte';
+	import { LocationStore } from '$lib/stores/LocationsStore';
+
 	import NewLocationForm from './NewLocationForm.svelte';
 
 	const db = getFirestore();

@@ -2,14 +2,14 @@
 	import { createEventDispatcher } from 'svelte';
 
 	import { getFirestore, addDoc, collection } from 'firebase/firestore';
-	import { LocationStore } from '$lib/stores/LocationsStore';
+	import { LocationStore, LocationsStore, selectedLocation } from '$lib/stores/LocationsStore';
+
+	import { fetchLocations } from '$lib/services/fileService';
 
 	import NewLocationForm from './NewLocationForm.svelte';
 
 	const db = getFirestore();
 	const dispatch = createEventDispatcher();
-
-	$: console.log('Current Location: ', $LocationStore);
 
 	const handleSave = async () => {
 		const { name, description, street, city, zip, openMapUrl } = $LocationStore;
@@ -22,7 +22,8 @@
 				zip,
 				openMapUrl,
 			});
-			console.log('New location added: ', docRef.id + ' ' + name);
+			LocationsStore.set(await fetchLocations());
+			selectedLocation.set(docRef.id);
 			dispatch('locationAdded', { id: docRef.id, name });
 		} catch (e) {
 			console.error('Error adding document: ', e);

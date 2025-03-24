@@ -17,14 +17,6 @@
 </script>
 
 <div class="w-100 ml-3">
-	<nav>
-		<div class="localNavigation w-[100%] xl:w-[80%]">
-			<div class="localNavItem"><a href="/admin/eventsadmin">Activities</a></div>
-			<div class="localNavItem"><a href="/admin/newsadmin">News</a></div>
-			<div class="localNavItem"><a href="/admin/locationsadmin">Locations</a></div>
-			<div class="localNavItem"><a href="/admin/weeklysheet">Weekly sheet</a></div>
-		</div>
-	</nav>
 	<h1>Administration</h1>
 	<div>
 		<p>This page provides a list of available administration tasks.</p>
@@ -53,23 +45,4 @@
 </div>
 
 <style>
-	.localNavigation {
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		margin: 40px 0;
-		gap: 30px;
-	}
-	.localNavItem {
-		border: solid 1px rgba(16, 11, 116, 1);
-		padding: 10px 20px;
-		border-radius: 6px;
-		flex: 0 0 150px;
-		text-align: center;
-	}
-	.localNavItem:hover {
-		background-color: #c3c3c3;
-		font-weight: bold;
-	}
 </style>

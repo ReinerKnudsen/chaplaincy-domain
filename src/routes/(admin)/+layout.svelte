@@ -1,17 +1,16 @@
 <script>
-	import { page } from '$app/stores';
-	import { pathName } from '$lib/stores/NavigationStore';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
+
+	import { pathName } from '$lib/stores/NavigationStore';
 	import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-	import { size } from '$lib/utils/constants';
-
-	import Sidebar from '$lib/components/Sidebar.svelte';
 	import { screenSize } from '$lib/stores/ScreenSizeStore';
 
 	let auth = getAuth();
 	let loading = true;
+	let screenWidth;
 
 	$: screenWidth = $screenSize;
 	onMount(() => {
@@ -32,18 +31,24 @@
 		});
 	});
 
+	$: $pathName = $page.url.pathname;
+
 	const adminMenu = [
 		{
+			name: 'Dashboard',
+			url: '/admin',
+		},
+		{
 			name: 'Activities',
-			url: '/admin/activities',
+			url: '/admin/eventsadmin',
 		},
 		{
 			name: 'News',
-			url: '/admin/news',
+			url: '/admin/newsadmin',
 		},
 		{
 			name: 'Locations',
-			url: 'admin/locations',
+			url: '/admin/locationsadmin',
 		},
 		{
 			name: 'Weekly Sheet',
@@ -57,19 +62,55 @@
 		<h1>Loading...</h1>
 	</div>
 {:else}
-	<!-- <div class="page-container">
-		<div class="sidebar col-span-1 ml-2 mt-8 hidden sm:block">
-			<Sidebar />
-		</div> -->
-	<div class="main-content col-span-11 p-5">
+	<nav>
+		<div class="subNav">
+			{#each adminMenu as item}
+				<div class="subNavItem">
+					{#if item.url === $pathName}
+						<div class="inactive">{item.name}</div>
+					{:else}
+						<a href={item.url}>{item.name}</a>
+					{/if}
+				</div>
+			{/each}
+		</div>
+	</nav>
+
+	<div class="main-content p-5">
 		<slot />
 	</div>
 	<!-- </div> -->
 {/if}
 
 <style>
-	.page-container {
-		display: grid;
-		grid-template-columns: repeat(12, 1fr);
+	.subNav {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 0 20px;
+		background-color: white;
+		width: 100%;
+		border-radius: 10px;
+		height: 60px;
+
+		@apply shadow-xl;
+	}
+
+	.subNavItem {
+		border-right: 1px solid #c3c3c3;
+		padding: 0 30px;
+	}
+
+	.inactive {
+		cursor: not-allowed;
+		font-weight: 300;
+	}
+
+	.subNavItem > a {
+		font-weight: 900;
+	}
+
+	.subNavItem:last-child {
+		border-right: none;
 	}
 </style>

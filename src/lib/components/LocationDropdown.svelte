@@ -1,7 +1,7 @@
 <script>
-	import { onMount, createEventDispatcher } from 'svelte';
-	import { getFirestore, collection, getDocs } from 'firebase/firestore';
-	import { writable } from 'svelte/store';
+	import { createEventDispatcher } from 'svelte';
+	import { getFirestore } from 'firebase/firestore';
+	import { selectedLocation } from '$lib/stores/LocationsStore';
 
 	const db = getFirestore();
 	//export let locationAdded = false;
@@ -9,10 +9,9 @@
 
 	// Parent component should handle locationAdded event and set locationAdded to true
 
-	export let selectedLocationId = '';
 	export let locations;
 
-	console.log('Transferred location: ', selectedLocationId);
+	console.log('Transferred location: ', $selectedLocation);
 
 	function handleChange(event) {
 		dispatch('change', { value: event.target.value });
@@ -21,7 +20,7 @@
 
 <select
 	class="mb-2 min-h-12 w-full rounded-md border-slate-300 bg-slate-50"
-	bind:value={selectedLocationId}
+	bind:value={$selectedLocation}
 	on:change={handleChange}
 >
 	<option value="" disabled>Select a location</option>

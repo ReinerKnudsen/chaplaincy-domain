@@ -9,9 +9,10 @@
 	const db = getFirestore();
 	const dispatch = createEventDispatcher();
 
-	const { name, description, street, city, zip, openMapUrl } = $LocationStore;
+	$: console.log('Current Location: ', $LocationStore);
 
 	const handleSave = async () => {
+		const { name, description, street, city, zip, openMapUrl } = $LocationStore;
 		try {
 			const docRef = await addDoc(collection(db, 'location'), {
 				name,
@@ -21,6 +22,7 @@
 				zip,
 				openMapUrl,
 			});
+			console.log('New location added: ', docRef.id + ' ' + name);
 			dispatch('locationAdded', { id: docRef.id, name });
 		} catch (e) {
 			console.error('Error adding document: ', e);
@@ -56,12 +58,5 @@
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 		width: 400px;
 		max-width: 90%;
-	}
-
-	.anzeige {
-		margin-top: 20px;
-		margin-bottom: 10px;
-		font-size: 1.5rem;
-		font-weight: 700;
 	}
 </style>

@@ -30,3 +30,5 @@ export function updateAndSortLocations(updateFn) {
 		return updatedLocations.sort((a, b) => a.data.name.localeCompare(b.data.name));
 	});
 }
+
+export const selectedLocation = writable('');

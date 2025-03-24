@@ -15,6 +15,7 @@
 	import LocationDropdown from './LocationDropdown.svelte';
 	import NewLocationModal from './NewLocationModal.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
+	import { selectedLocation } from '$lib/stores/LocationsStore';
 
 	const dispatch = createEventDispatcher();
 
@@ -48,13 +49,19 @@
 	let hasImage = false;
 	let selectedImage: File;
 	let showModal = false;
-	let selectedLocationId = '';
 	let locationAdded = false;
+
+	$: console.log('Selected location: ', $selectedLocation);
 
 	const locations = writable<{ id: string; name: string }[]>([]);
 
 	onMount(async () => {
 		locations.set(await fetchLocations());
+		if (thisEvent) {
+			newEvent = thisEvent;
+			mode = 'update';
+			$selectedLocation = thisEvent.location;
+		}
 	});
 
 	$: if (newEvent.image) {
@@ -63,14 +70,7 @@
 		hasImage = false;
 	}
 
-	$: console.log('Locations: ', $locations);
-
-	if (thisEvent) {
-		newEvent = thisEvent;
-		mode = 'update';
-	}
-
-	const handleConditionChange = (e: CustomEvent) => {
+	const handleConditionChange = (e: Event) => {
 		if (e.target.checked) {
 			newEvent.condition = 'Entry is free, donations are welcome.';
 		} else {
@@ -107,12 +107,13 @@
 			showModal = true;
 		} else {
 			newEvent.location = event.detail.value;
+			selectedLocation.set(event.detail.value);
 		}
 	};
 
 	const handleLocationAddedModal = async (event: CustomEvent) => {
 		await fetchLocations();
-		selectedLocationId = event.detail.id;
+		selectedLocation.set(event.detail.id);
 		newEvent.location = event.detail.id;
 		showModal = false;
 	};
@@ -238,11 +239,7 @@
 		<div class="form-area">
 			<div>
 				<Label for="Location" class="mb-2 mt-8 text-xl font-semibold">Location *</Label>
-				<LocationDropdown
-					on:change={handleLocationChange}
-					bind:selectedLocationId={thisEvent.location}
-					{locations}
-				/>
+				<LocationDropdown on:change={handleLocationChange} {locations} />
 
 				<!-- Modal for new location -->
 				{#if showModal}

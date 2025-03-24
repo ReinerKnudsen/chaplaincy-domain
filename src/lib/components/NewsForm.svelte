@@ -80,7 +80,7 @@
 
 	const handleImageChange = (e: CustomEvent) => {
 		selectedImage = e.detail;
-		console.log('Selected Image (Form): ', selectedImage);
+		//console.log('Selected Image (Form): ', selectedImage);
 	};
 
 	const assignPDF = (e) => {

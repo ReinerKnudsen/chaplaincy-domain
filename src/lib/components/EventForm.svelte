@@ -3,9 +3,7 @@
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
-	import { Timestamp, doc, setDoc, getFirestore, collection, getDocs } from 'firebase/firestore';
-	//import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-	//import { database, storage } from '$lib/firebase/firebaseConfig';
+	import { Timestamp } from 'firebase/firestore';
 	import { authStore } from '$lib/stores/AuthStore';
 
 	import type { Event } from '$lib/types/Event';
@@ -19,6 +17,7 @@
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
 
 	export let thisEvent: Event | undefined;
+	console.log(thisEvent.location);
 	const dispatch = createEventDispatcher();
 
 	const defaultEvent: Event = {
@@ -63,6 +62,8 @@
 	} else {
 		hasImage = false;
 	}
+
+	$: console.log('Locations: ', $locations);
 
 	if (thisEvent) {
 		newEvent = thisEvent;
@@ -143,27 +144,6 @@
 		newEvent = defaultEvent;
 		goto('/admin/eventsadmin');
 	};
-	/** Upload the image and create a reference in the "images" collection*/
-	// export const uploadImage = async (selectedImage: File) => {
-	// 	if (selectedImage) {
-	// 		const storageRef = ref(storage, 'images/' + selectedImage.name);
-	// 		try {
-	// 			await uploadBytes(storageRef, selectedImage);
-	// 			let imageUrl = await getDownloadURL(storageRef);
-	// 			await setDoc(doc(database, 'images', selectedImage.name), {
-	// 				name: selectedImage.name,
-	// 				url: imageUrl,
-	// 				createdAt: new Date(),
-	// 			});
-	// 			newEvent.image = imageUrl;
-	// 			return imageUrl;
-	// 		} catch (error) {
-	// 			console.log(error); // eslint-disable-line no-console
-	// 		}
-	// 	} else {
-	// 		return newEvent.image;
-	// 	}
-	// };
 </script>
 
 <div class="form bg-white-primary">
@@ -259,11 +239,12 @@
 			<div>
 				<Label for="Location" class="mb-2 mt-8 text-xl font-semibold">Location *</Label>
 				<LocationDropdown
-					bind:selectedLocationId
 					on:change={handleLocationChange}
-					bind:locationAdded
+					bind:selectedLocationId={thisEvent.location}
 					{locations}
 				/>
+
+				<!-- Modal for new location -->
 				{#if showModal}
 					<NewLocationModal
 						on:locationAdded={handleLocationAddedModal}

@@ -1,26 +1,25 @@
-<script lang="ts">
+<script>
 	import { createEventDispatcher, onDestroy } from 'svelte';
-	import { onMount } from 'svelte';
 
 	import { Button } from 'flowbite-svelte';
-	import { ref, uploadBytes, getDownloadURL, getMetadata } from 'firebase/storage';
-	import { getDoc, query, doc } from 'firebase/firestore';
 
-	import { storage, database } from '$lib/firebase/firebaseConfig';
+	import { getDoc, doc } from 'firebase/firestore';
+	import { database } from '$lib/firebase/firebaseConfig';
+
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
 
-	export let imageUrl: string;
+	export let imageUrl;
 
 	const dispatch = createEventDispatcher();
 	const authorizedExtensions = '.jpg, .jpeg, .png, .webp';
 
-	let selectedFile: File;
+	let selectedFile;
 	let moduleWidth = 'w-[400px]';
-	let imageError: string;
-	let imageNote: string;
+	let imageError;
+	let imageNote;
 
 	/** Verify in Firestore Collection if an image of this name is already present*/
-	const checkIfFileExists = async (imageFile: string) => {
+	const checkIfFileExists = async (imageFile) => {
 		if (!imageFile) {
 			return null;
 		}

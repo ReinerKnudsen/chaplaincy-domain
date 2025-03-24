@@ -1,5 +1,7 @@
 {
 	"extends": "./.svelte-kit/tsconfig.json",
+	"include": ["src/**/*", "types/**/*"],
+	"exclude": ["node_modules/*", "__sapper__/*", "public/*"],
 	"compilerOptions": {
 		/* Visit https://aka.ms/tsconfig to read more about this file */
 

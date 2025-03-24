@@ -189,7 +189,7 @@
 						<td><a class="underline" href="/admin/eventsadmin/{item.id}">{item.data.title}</a></td>
 						<td>{item.data.startdate}</td>
 						<td>{item.data.publishdate}</td>
-						<td>{locationMap[item.data.location] || item.data.location}</td>
+						<td>{locationMap[item.data.location]}</td>
 						<td>{item.data.author}</td>
 						<td>
 							<!-- <select

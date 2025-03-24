@@ -42,6 +42,10 @@
 			url: '/admin/news',
 		},
 		{
+			name: 'Locations',
+			url: 'admin/locations',
+		},
+		{
 			name: 'Weekly Sheet',
 			url: '/admin/weeklysheet',
 		},

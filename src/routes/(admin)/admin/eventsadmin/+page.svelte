@@ -9,7 +9,8 @@
 	import { getFirestore, collection } from 'firebase/firestore';
 
 	import { pathName } from '$lib/stores/NavigationStore';
-	import { resetEventStore } from '$lib/stores/FormStore';
+	import { resetEventStore, EditMode } from '$lib/stores/FormStore';
+	import { resetCurrentLocation } from '$lib/stores/LocationsStore';
 	import { duplicateItem } from '$lib/services/fileService.js';
 
 	import { Button, Modal } from 'flowbite-svelte';
@@ -47,6 +48,7 @@
 	onMount(async () => {
 		$pathName = $page.url.pathname;
 		await fetchLocations();
+		resetCurrentLocation();
 	});
 
 	// Sort table items
@@ -88,8 +90,9 @@
 		//console.log(event.target.value);
 	};
 
-	const handleClick = async () => {
+	const handleCreateNew = async () => {
 		await resetEventStore();
+		EditMode.set('new');
 		goto('/admin/eventsadmin/create');
 	};
 
@@ -102,12 +105,19 @@
 		loading = false;
 	};
 
+	const handleOpenItem = (id) => {
+		EditMode.set('update');
+		goto(`/admin/eventsadmin/${id}`);
+	};
+
 	const handleDuplicate = async () => {
-		const newEvent = await duplicateItem(dupeID, 'events'); // docRef of the new Event
+		const newEvent = await duplicateItem(dupeID, 'events');
+		// docRef of the new Event
 		showDuplicateModal = false;
 		loading = true;
 		await loadData();
 		loading = false;
+		EditMode.set('new');
 		goto(`/admin/eventsadmin/${newEvent}`);
 	};
 
@@ -165,8 +175,9 @@
 			/>
 		</div>
 		<div class="col-span-3 justify-self-end">
-			<Button on:click={handleClick} class="bg-primary-100 text-lg font-semibold text-white-primary"
-				>Create Event</Button
+			<Button
+				on:click={handleCreateNew}
+				class="bg-primary-100 text-lg font-semibold text-white-primary">Create Event</Button
 			>
 		</div>
 	</div>
@@ -186,7 +197,11 @@
 			<tbody>
 				{#each $sortItems as item}
 					<tr>
-						<td><a class="underline" href="/admin/eventsadmin/{item.id}">{item.data.title}</a></td>
+						<td
+							><button class="underline" on:click={() => handleOpenItem(item.id)}
+								>{item.data.title}</button
+							></td
+						>
 						<td>{item.data.startdate}</td>
 						<td>{item.data.publishdate}</td>
 						<td>{locationMap[item.data.location]}</td>

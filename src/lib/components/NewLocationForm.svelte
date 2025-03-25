@@ -1,7 +1,7 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import { Button, Input, Label } from 'flowbite-svelte';
-	import { LocationStore } from '$lib/stores/LocationsStore';
+	import { CurrentLocation } from '$lib/stores/LocationsStore';
 
 	export let showClose = true;
 
@@ -14,7 +14,7 @@
 <form autocomplete="off">
 	<div>
 		<Label class="mb-2 mt-4 font-semibold" for="name">Name *</Label>
-		<Input id="name" type="text" placeholder="Name" bind:value={$LocationStore.name} required />
+		<Input id="name" type="text" placeholder="Name" bind:value={$CurrentLocation.name} required />
 	</div>
 	<div>
 		<Label class="mb-2 mt-4 font-semibold" for="description">Description</Label>
@@ -22,7 +22,7 @@
 			id="description"
 			type="text"
 			placeholder="Description"
-			bind:value={$LocationStore.description}
+			bind:value={$CurrentLocation.description}
 		/>
 	</div>
 	<div>
@@ -31,17 +31,17 @@
 			id="street"
 			type="text"
 			placeholder="Street"
-			bind:value={$LocationStore.street}
+			bind:value={$CurrentLocation.street}
 			required
 		/>
 	</div>
 	<div>
 		<Label class="mb-2 mt-4 font-semibold" for="city">City *</Label>
-		<Input id="city" type="text" placeholder="City" bind:value={$LocationStore.city} required />
+		<Input id="city" type="text" placeholder="City" bind:value={$CurrentLocation.city} required />
 	</div>
 	<div>
 		<Label class="mb-2 mt-4 font-semibold" for="zip">Zip *</Label>
-		<Input id="zip" type="text" placeholder="Zip" bind:value={$LocationStore.zip} required />
+		<Input id="zip" type="text" placeholder="Zip" bind:value={$CurrentLocation.zip} required />
 	</div>
 	<div>
 		<Label class="mb-2 mt-4 font-semibold" for="url"
@@ -53,7 +53,7 @@
 			id="url"
 			type="url"
 			placeholder="OpenStreetMap URL"
-			bind:value={$LocationStore.openMapUrl}
+			bind:value={$CurrentLocation.openMapUrl}
 		/>
 	</div>
 	<div class="mt-8 flex w-full flex-row justify-center gap-10">

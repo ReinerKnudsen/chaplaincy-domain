@@ -1,7 +1,7 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
 	import { getFirestore } from 'firebase/firestore';
-	import { selectedLocation, LocationsStore } from '$lib/stores/LocationsStore';
+	import { selectedLocation, AllLocations } from '$lib/stores/LocationsStore';
 
 	const db = getFirestore();
 	const dispatch = createEventDispatcher();
@@ -19,7 +19,7 @@
 	on:change={handleChange}
 >
 	<option value="" disabled>Select a location</option>
-	{#each $LocationsStore as location}
+	{#each $AllLocations as location}
 		<option value={location.id}>{location.name}</option>
 	{/each}
 	<option value="new">Create new location...</option>

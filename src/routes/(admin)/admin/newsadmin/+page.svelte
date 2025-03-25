@@ -5,25 +5,14 @@
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { resetNewsStore } from '$lib/stores/FormStore';
 	import { goto } from '$app/navigation';
-	import { doc, deleteDoc, getDocs } from 'firebase/firestore';
+	import { doc, deleteDoc } from 'firebase/firestore';
 	import { newsColRef } from '$lib/firebase/firebaseConfig';
-	import { makeDate, makeTimestamp } from '$lib/utils/dateUtils';
 
-	import {
-		Checkbox,
-		Table,
-		TableBody,
-		TableBodyCell,
-		TableBodyRow,
-		TableHead,
-		TableHeadCell,
-		Search,
-		Button,
-		Modal,
-	} from 'flowbite-svelte';
+	import { Button, Modal } from 'flowbite-svelte';
+	import { EditMode, resetEditMode } from '$lib/stores/FormStore';
 
 	export let data;
-	let news = data.news;
+	let news = writable(data.news);
 	let showModal = false;
 	let deleteID = '';
 
@@ -34,7 +23,7 @@
 	// Sort table items
 	const sortKey = writable('title'); // default sort key
 	const sortDirection = writable(1); // default sort direction (ascending)
-	const sortItems = writable(news.slice()); // make a copy of the news array
+	$: sortItems = writable($news.slice()); // make a copy of the news array
 
 	// Define a function to sort the items
 	const sortTable = (key) => {
@@ -70,12 +59,19 @@
 
 	const handleCreateNew = async () => {
 		await resetNewsStore();
+		EditMode.set('new');
 		goto('/admin/newsadmin/create');
 	};
 
-	const handleDelete = async (id) => {
-		await deleteDoc(doc(newsColRef, id));
-		news = news.filter((item) => item.id !== id);
+	const handleEdit = async (id) => {
+		await resetNewsStore();
+		EditMode.set('update');
+		goto('/admin/newsadmin/' + id);
+	};
+
+	const handleDelete = async () => {
+		await deleteDoc(doc(newsColRef, deleteID));
+		news.set($news.filter((item) => item.id !== deleteID));
 	};
 
 	const openModal = (id) => {
@@ -132,7 +128,11 @@
 			<tbody>
 				{#each $sortItems as item}
 					<tr>
-						<td><a class="underline" href={'/admin/newsadmin/' + item.id}>{item.data.title}</a></td>
+						<td
+							><button class="underline" on:click={() => handleEdit(item.id)}
+								>{item.data.title}</button
+							></td
+						>
 						<td>{item.data.text}</td>
 						<td>{item.data.publishdate}</td>
 						<td>{item.data.author}</td>

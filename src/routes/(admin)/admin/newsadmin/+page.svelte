@@ -12,7 +12,7 @@
 	import { EditMode, resetEditMode } from '$lib/stores/FormStore';
 
 	export let data;
-	let news = data.news;
+	let news = writable(data.news);
 	let showModal = false;
 	let deleteID = '';
 
@@ -23,7 +23,7 @@
 	// Sort table items
 	const sortKey = writable('title'); // default sort key
 	const sortDirection = writable(1); // default sort direction (ascending)
-	const sortItems = writable(news.slice()); // make a copy of the news array
+	$: sortItems = writable($news.slice()); // make a copy of the news array
 
 	// Define a function to sort the items
 	const sortTable = (key) => {
@@ -69,9 +69,9 @@
 		goto('/admin/newsadmin/' + id);
 	};
 
-	const handleDelete = async (id) => {
-		await deleteDoc(doc(newsColRef, id));
-		news = news.filter((item) => item.id !== id);
+	const handleDelete = async () => {
+		await deleteDoc(doc(newsColRef, deleteID));
+		news.set($news.filter((item) => item.id !== deleteID));
 	};
 
 	const openModal = (id) => {

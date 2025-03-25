@@ -1,4 +1,4 @@
-<script lang="ts">
+	<script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';

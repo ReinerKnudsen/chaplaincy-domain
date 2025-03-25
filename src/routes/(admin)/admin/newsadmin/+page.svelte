@@ -5,22 +5,11 @@
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { resetNewsStore } from '$lib/stores/FormStore';
 	import { goto } from '$app/navigation';
-	import { doc, deleteDoc, getDocs } from 'firebase/firestore';
+	import { doc, deleteDoc } from 'firebase/firestore';
 	import { newsColRef } from '$lib/firebase/firebaseConfig';
-	import { makeDate, makeTimestamp } from '$lib/utils/dateUtils';
 
-	import {
-		Checkbox,
-		Table,
-		TableBody,
-		TableBodyCell,
-		TableBodyRow,
-		TableHead,
-		TableHeadCell,
-		Search,
-		Button,
-		Modal,
-	} from 'flowbite-svelte';
+	import { Button, Modal } from 'flowbite-svelte';
+	import { EditMode, resetEditMode } from '$lib/stores/FormStore';
 
 	export let data;
 	let news = data.news;
@@ -70,7 +59,14 @@
 
 	const handleCreateNew = async () => {
 		await resetNewsStore();
+		EditMode.set('new');
 		goto('/admin/newsadmin/create');
+	};
+
+	const handleEdit = async (id) => {
+		await resetNewsStore();
+		EditMode.set('update');
+		goto('/admin/newsadmin/' + id);
 	};
 
 	const handleDelete = async (id) => {
@@ -132,7 +128,11 @@
 			<tbody>
 				{#each $sortItems as item}
 					<tr>
-						<td><a class="underline" href={'/admin/newsadmin/' + item.id}>{item.data.title}</a></td>
+						<td
+							><button class="underline" on:click={() => handleEdit(item.id)}
+								>{item.data.title}</button
+							></td
+						>
 						<td>{item.data.text}</td>
 						<td>{item.data.publishdate}</td>
 						<td>{item.data.author}</td>

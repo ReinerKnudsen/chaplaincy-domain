@@ -39,9 +39,7 @@ const removeDateFields = (data) => {
 };
 
 export const uploadImage = async (selectedImage) => {
-	console.log('Uploading image', selectedImage);
 	if (selectedImage) {
-		console.log('Uploading image 2', selectedImage);
 		const storageRef = ref(storage, 'images/' + selectedImage.name);
 		try {
 			await uploadBytes(storageRef, selectedImage);
@@ -51,7 +49,6 @@ export const uploadImage = async (selectedImage) => {
 				url: imageUrl,
 				createdAt: new Date(),
 			});
-			console.log('Image uploaded successfully', imageUrl);
 			return imageUrl;
 		} catch (error) {
 			console.log(error); // eslint-disable-line no-console

@@ -55,8 +55,8 @@ export function resetNewsStore() {
 export const docRef = writable('');
 
 // Set the current editing mode for event and news
-export const editModeStore = writable('');
+export const EditMode = writable('');
 
-export const resetEditModeStore = () => {
-	editModeStore.set('');
+export const resetEditMode = () => {
+	EditMode.set('');
 };

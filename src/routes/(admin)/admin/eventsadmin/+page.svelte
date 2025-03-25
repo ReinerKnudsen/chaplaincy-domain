@@ -9,7 +9,8 @@
 	import { getFirestore, collection } from 'firebase/firestore';
 
 	import { pathName } from '$lib/stores/NavigationStore';
-	import { resetEventStore, editModeStore } from '$lib/stores/FormStore';
+	import { resetEventStore, EditMode } from '$lib/stores/FormStore';
+	import { resetCurrentLocation } from '$lib/stores/LocationsStore';
 	import { duplicateItem } from '$lib/services/fileService.js';
 
 	import { Button, Modal } from 'flowbite-svelte';
@@ -47,6 +48,7 @@
 	onMount(async () => {
 		$pathName = $page.url.pathname;
 		await fetchLocations();
+		resetCurrentLocation();
 	});
 
 	// Sort table items
@@ -88,9 +90,9 @@
 		//console.log(event.target.value);
 	};
 
-	const handleClick = async () => {
+	const handleCreateNew = async () => {
 		await resetEventStore();
-		editModeStore.set('new');
+		EditMode.set('new');
 		goto('/admin/eventsadmin/create');
 	};
 
@@ -104,7 +106,7 @@
 	};
 
 	const handleOpenItem = (id) => {
-		editModeStore.set('update');
+		EditMode.set('update');
 		goto(`/admin/eventsadmin/${id}`);
 	};
 
@@ -115,7 +117,7 @@
 		loading = true;
 		await loadData();
 		loading = false;
-		editModeStore.set('new');
+		EditMode.set('new');
 		goto(`/admin/eventsadmin/${newEvent}`);
 	};
 
@@ -173,8 +175,9 @@
 			/>
 		</div>
 		<div class="col-span-3 justify-self-end">
-			<Button on:click={handleClick} class="bg-primary-100 text-lg font-semibold text-white-primary"
-				>Create Event</Button
+			<Button
+				on:click={handleCreateNew}
+				class="bg-primary-100 text-lg font-semibold text-white-primary">Create Event</Button
 			>
 		</div>
 	</div>

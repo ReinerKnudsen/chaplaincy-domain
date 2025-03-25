@@ -28,7 +28,7 @@
 
 <div>
 	<div class="flex flex-row justify-between">
-		<Label for="slug" class="mb-2 mt-8 self-center text-xl font-semibold">Short text (slug)</Label>
+		<Label class="mb-2 mt-8 self-center text-xl font-semibold">Short text (slug)</Label>
 		<p class="explanation self-end text-right">
 			<strong>{slugText.length} of {MAX_SLUG_TEXT} </strong> characters.
 		</p>

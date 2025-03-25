@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 
 	import { getFirestore, addDoc, collection } from 'firebase/firestore';
-	import { LocationStore, LocationsStore, selectedLocation } from '$lib/stores/LocationsStore';
+	import { CurrentLocation, AllLocations, selectedLocation } from '$lib/stores/LocationsStore';
 
 	import { fetchLocations } from '$lib/services/fileService';
 
@@ -12,7 +12,7 @@
 	const dispatch = createEventDispatcher();
 
 	const handleSave = async () => {
-		const { name, description, street, city, zip, openMapUrl } = $LocationStore;
+		const { name, description, street, city, zip, openMapUrl } = $CurrentLocation;
 		try {
 			const docRef = await addDoc(collection(db, 'location'), {
 				name,
@@ -22,7 +22,7 @@
 				zip,
 				openMapUrl,
 			});
-			LocationsStore.set(await fetchLocations());
+			AllLocations.set(await fetchLocations());
 			selectedLocation.set(docRef.id);
 			dispatch('locationAdded', { id: docRef.id, name });
 		} catch (e) {

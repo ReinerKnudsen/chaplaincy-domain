@@ -7,7 +7,7 @@
 
 	const saveNewItem = async (e) => {
 		const newsData = e.detail;
-		
+
 		try {
 			// Add the news document first
 			const docRef = await addDoc(newsColRef, newsData);
@@ -19,5 +19,5 @@
 </script>
 
 <div>
-	<NewsForm on:save={saveNewItem} />
+	<NewsForm on:new={saveNewItem} />
 </div>

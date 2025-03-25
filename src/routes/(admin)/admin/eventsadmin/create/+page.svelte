@@ -3,14 +3,14 @@
 
 	import EventForm from '$lib/components/EventForm.svelte';
 	import { addDoc } from 'firebase/firestore';
-	import { resetEditModeStore } from '$lib/stores/FormStore';
+	import { resetEditMode } from '$lib/stores/FormStore';
 
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
 
 	const saveNewEvent = async (e) => {
 		try {
 			const newDoc = await addDoc(eventsColRef, e.detail);
-			resetEditModeStore();
+			resetEditMode();
 			goto('/admin/eventsadmin');
 		} catch (error) {
 			console.error('Error writing event document:', error);
@@ -19,6 +19,6 @@
 </script>
 
 <div>
-	<EventForm on:save={saveNewEvent} />
+	<EventForm on:new={saveNewEvent} />
 </div>
 <div>&NonBreakingSpace;</div>

@@ -5,9 +5,9 @@
 
 	import { getFirestore, getDoc, addDoc, deleteDoc, doc, collection } from 'firebase/firestore';
 	import {
-		LocationStore,
-		resetLocationStore,
-		LocationsStore,
+		CurrentLocation,
+		resetCurrentLocation,
+		AllLocations,
 		updateAndSortLocations,
 	} from '$lib/stores/LocationsStore';
 
@@ -17,7 +17,7 @@
 	export let data;
 	const locations = data.locations;
 
-	$: LocationsStore.set(
+	$: AllLocations.set(
 		locations.sort((a, b) => {
 			if (a.data.name < b.data.name) return -1;
 			if (a.data.name > b.data.name) return 1;
@@ -30,17 +30,17 @@
 	let updateItem = true;
 	let currentLocationId = 0;
 
-	$LocationStore = locations[0].data;
+	$CurrentLocation = locations[0].data;
 
-	$: $LocationStore = locations[currentLocationId].data;
+	$: $CurrentLocation = locations[currentLocationId].data;
 
 	const handleLocationChange = (location, index) => {
-		$LocationStore = location.data;
+		$CurrentLocation = location.data;
 		currentLocationId = index;
 	};
 
 	const handleCreateNew = () => {
-		resetLocationStore();
+		resetCurrentLocation();
 		updateItem = false;
 	};
 
@@ -55,7 +55,7 @@
 	};
 
 	const handleSave = async () => {
-		const { name, description, street, city, zip, openMapUrl } = $LocationStore;
+		const { name, description, street, city, zip, openMapUrl } = $CurrentLocation;
 		if (currentLocationId) {
 			updateAndSortLocations((locations) => {
 				locations[currentLocationId].data = { name, description, street, city, zip, openMapUrl };
@@ -91,11 +91,11 @@
 		<div class="locations-list-container">
 			<h2>Locations List</h2>
 			<ul class="locations-list">
-				{#each $LocationsStore as location, index}
+				{#each $AllLocations as location, index}
 					<div class="flex flex-row items-center justify-between">
 						<li>
 							<button
-								class={$LocationStore.id === location.id ? 'active list-item' : 'list-item'}
+								class={$CurrentLocation.id === location.id ? 'active list-item' : 'list-item'}
 								key={location.id}
 								on:click={() => handleLocationChange(location, index)}>{location.data.name}</button
 							>

@@ -8,15 +8,16 @@
 
 	import type { Event } from '$lib/types/Event';
 	import { uploadImage, fetchLocations } from '$lib/services/fileService';
-	import { Input, Label, Checkbox, Textarea, Helper, Button, Tooltip } from 'flowbite-svelte';
+	import { Input, Checkbox, Textarea, Helper, Button, Tooltip } from 'flowbite-svelte';
 	import SlugText from './SlugText.svelte';
 	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadImage from '$lib/components/UploadImage.svelte';
 	import LocationDropdown from './LocationDropdown.svelte';
 	import NewLocationModal from './NewLocationModal.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
-	import { editModeStore } from '$lib/stores/FormStore';
-	import { selectedLocation, LocationsStore } from '$lib/stores/LocationsStore';
+	import { EditMode, resetEditMode } from '$lib/stores/FormStore';
+	import { selectedLocation, AllLocations } from '$lib/stores/LocationsStore';
+	import Label from './Label.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -46,7 +47,7 @@
 	export let thisEvent: Event = defaultEvent;
 
 	let newEvent: Event = defaultEvent;
-	let hasImage = false;
+	let hasImage = writable(false);
 	let selectedImage: File;
 	let showModal = false;
 	let locationAdded = false;
@@ -56,20 +57,17 @@
 
 	onMount(async () => {
 		locations = await fetchLocations();
-		if ($editModeStore === 'update') {
+		if ($EditMode === 'update') {
 			newEvent = thisEvent;
 			$selectedLocation = thisEvent.location;
 		}
 		loading = false;
+		console.log('EditMode: ', $EditMode);
 	});
 
-	$: LocationsStore.set(locations);
+	$: AllLocations.set(locations);
 
-	$: if (newEvent.image) {
-		hasImage = true;
-	} else {
-		hasImage = false;
-	}
+	$: hasImage.set(!!newEvent.image);
 
 	const handleConditionChange = (e: Event) => {
 		if (e.target.checked) {
@@ -101,6 +99,7 @@
 
 	const handleImageChange = (e: CustomEvent) => {
 		selectedImage = e.detail;
+		hasImage.set(!!e.detail);
 	};
 
 	const handleLocationChange = (event: CustomEvent) => {
@@ -124,7 +123,6 @@
 	};
 
 	const handleSubmit = async (e: SubmitEvent) => {
-		debugger;
 		e.preventDefault();
 		if (!newEvent.publishdate) {
 			newEvent.publishdate = new Date().toISOString().split('T')[0];
@@ -143,9 +141,14 @@
 		const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
 		newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
 		newEvent.image = await uploadImage(selectedImage);
-		dispatch($editModeStore, newEvent);
+		dispatch($EditMode, newEvent);
 		newEvent = defaultEvent;
 		goto('/admin/eventsadmin');
+	};
+
+	const handleReset = () => {
+		newEvent = defaultEvent;
+		resetEditMode();
 	};
 </script>
 
@@ -153,8 +156,13 @@
 	<div>Loading...</div>
 {:else}
 	<div class="form bg-white-primary">
-		<h1 class="mx-10">{$editModeStore === 'update' ? 'Edit event' : 'Create new event'}</h1>
-		<form class="mx-10" enctype="multipart/form-data" on:submit={handleSubmit}>
+		<h1 class="mx-10">{$EditMode === 'update' ? 'Edit event' : 'Create new event'}</h1>
+		<form
+			class="mx-10"
+			enctype="multipart/form-data"
+			on:submit={handleSubmit}
+			on:reset={handleReset}
+		>
 			<!-- Titel -->
 			<div>
 				<Label for="title" class="mb-2 mt-8 text-xl font-semibold">Event Titel *</Label>
@@ -364,23 +372,36 @@
 			<div class="imageMeta">
 				<div class="imageAlt">
 					<div>
-						<Label for="ImageAlt" class="mb-2 mt-8 text-xl font-semibold">Image Alt text *</Label>
-						<Input type="text" id="imageAlt" bind:value={newEvent.imageAlt} required={hasImage} />
-						<p class="explanation">
+						<Label class="mb-2 mt-8 text-xl font-semibold">Image Alt text *</Label>
+						<Input
+							type="text"
+							id="imageAlt"
+							bind:value={newEvent.imageAlt}
+							required={$hasImage}
+							disabled={!$hasImage}
+							placeholder={$hasImage ? 'Image Alt text' : 'Please select an image first'}
+						/>
+						<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
 							This text helps interpreting the image for visually impaired users.
 						</p>
 					</div>
 				</div>
 				<div class="imageCaption mt-10">
 					<div>
-						<Label for="imageCaption" class="mb-2 mt-8 text-xl font-semibold">Image caption</Label>
+						<Label child="imageCaption" disabled={!$hasImage} text="Image caption"
+							>Image caption</Label
+						>
+
 						<Input
 							type="text"
 							id="imageCaption"
 							bind:value={newEvent.imageCaption}
-							placeholder="Image by "
+							disabled={!$hasImage}
+							placeholder={$hasImage ? 'Image by ...' : 'Please select an image first'}
 						/>
-						<p class="explanation">This text will be displayed below the image.</p>
+						<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
+							This text will be displayed below the image.
+						</p>
 					</div>
 				</div>
 			</div>
@@ -389,7 +410,7 @@
 				<Label class="mb-2 mt-8 text-xl font-semibold">PDF Document</Label>
 				<div class="flex flex-col items-center justify-center">
 					<UploadPDF fileUrl={newEvent.pdfFile} on:upload={assignPDF} />
-					<p class="explanation">
+					<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
 						Upload a PDF document that will be attached to this event (max 5MB).
 					</p>
 				</div>
@@ -409,7 +430,7 @@
 					class="bg-primary-100  font-semibold text-white-primary"
 					type="submit"
 					disabled={newEvent.length === 0}
-					>{$editModeStore === 'update' ? 'Update' : 'Save'} event</Button
+					>{$EditMode === 'update' ? 'Update' : 'Save'} event</Button
 				>
 			</div>
 		</form>

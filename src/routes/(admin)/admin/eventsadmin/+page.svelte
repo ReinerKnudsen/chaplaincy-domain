@@ -9,7 +9,7 @@
 	import { getFirestore, collection } from 'firebase/firestore';
 
 	import { pathName } from '$lib/stores/NavigationStore';
-	import { resetEventStore } from '$lib/stores/FormStore';
+	import { resetEventStore, editModeStore } from '$lib/stores/FormStore';
 	import { duplicateItem } from '$lib/services/fileService.js';
 
 	import { Button, Modal } from 'flowbite-svelte';
@@ -90,6 +90,7 @@
 
 	const handleClick = async () => {
 		await resetEventStore();
+		editModeStore.set('new');
 		goto('/admin/eventsadmin/create');
 	};
 
@@ -102,12 +103,19 @@
 		loading = false;
 	};
 
+	const handleOpenItem = (id) => {
+		editModeStore.set('update');
+		goto(`/admin/eventsadmin/${id}`);
+	};
+
 	const handleDuplicate = async () => {
-		const newEvent = await duplicateItem(dupeID, 'events'); // docRef of the new Event
+		const newEvent = await duplicateItem(dupeID, 'events');
+		// docRef of the new Event
 		showDuplicateModal = false;
 		loading = true;
 		await loadData();
 		loading = false;
+		editModeStore.set('new');
 		goto(`/admin/eventsadmin/${newEvent}`);
 	};
 
@@ -186,7 +194,11 @@
 			<tbody>
 				{#each $sortItems as item}
 					<tr>
-						<td><a class="underline" href="/admin/eventsadmin/{item.id}">{item.data.title}</a></td>
+						<td
+							><button class="underline" on:click={() => handleOpenItem(item.id)}
+								>{item.data.title}</button
+							></td
+						>
 						<td>{item.data.startdate}</td>
 						<td>{item.data.publishdate}</td>
 						<td>{locationMap[item.data.location]}</td>

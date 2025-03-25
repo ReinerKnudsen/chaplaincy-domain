@@ -53,3 +53,10 @@ export function resetNewsStore() {
 
 // We store the document ID if we are working on a existing document; otherwise the ide will be empty
 export const docRef = writable('');
+
+// Set the current editing mode for event and news
+export const editModeStore = writable('');
+
+export const resetEditModeStore = () => {
+	editModeStore.set('');
+};

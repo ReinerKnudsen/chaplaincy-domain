@@ -1,10 +1,17 @@
 <script>
 	import EventForm from '$lib/components/EventForm.svelte';
 	import { updateDoc } from 'firebase/firestore';
+	import { resetEditModeStore } from '$lib/stores/FormStore';
+
 	export let data;
 
 	const updateEvent = async (event) => {
-		await updateDoc(data.docRef, event.detail);
+		try {
+			await updateDoc(data.docRef, event.detail);
+			resetEditModeStore();
+		} catch (error) {
+			console.log('Error updating the event: ', error);
+		}
 	};
 </script>
 

@@ -15,6 +15,7 @@
 	import LocationDropdown from './LocationDropdown.svelte';
 	import NewLocationModal from './NewLocationModal.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
+	import { editModeStore } from '$lib/stores/FormStore';
 	import { selectedLocation, LocationsStore } from '$lib/stores/LocationsStore';
 
 	const dispatch = createEventDispatcher();
@@ -45,23 +46,18 @@
 	export let thisEvent: Event = defaultEvent;
 
 	let newEvent: Event = defaultEvent;
-	let mode = 'save';
 	let hasImage = false;
 	let selectedImage: File;
 	let showModal = false;
 	let locationAdded = false;
 	let loading = true;
 
-	$: console.log('Selected location: ', $selectedLocation);
-
 	let locations;
 
 	onMount(async () => {
 		locations = await fetchLocations();
-		console.log('Locations: ', locations);
-		if (thisEvent) {
+		if ($editModeStore === 'update') {
 			newEvent = thisEvent;
-			mode = 'update';
 			$selectedLocation = thisEvent.location;
 		}
 		loading = false;
@@ -87,7 +83,7 @@
 		newEvent.slug = e.detail;
 	};
 
-	const handleSetPublishDate = (e: CustomEvent) => {
+	const handleSetPublishDate = (e: Event) => {
 		e.preventDefault();
 		if (newEvent.startdate) {
 			const pubdate = new Date(newEvent.startdate);
@@ -95,7 +91,7 @@
 			newEvent.publishdate = pubdate.toISOString().split('T')[0];
 		}
 	};
-	const handleSetEndDate = (e: CustomEvent) => {
+	const handleSetEndDate = (e: Event) => {
 		e.preventDefault();
 		if (newEvent.startdate) {
 			const enddate = new Date(newEvent.startdate);
@@ -128,6 +124,7 @@
 	};
 
 	const handleSubmit = async (e: SubmitEvent) => {
+		debugger;
 		e.preventDefault();
 		if (!newEvent.publishdate) {
 			newEvent.publishdate = new Date().toISOString().split('T')[0];
@@ -146,7 +143,7 @@
 		const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
 		newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
 		newEvent.image = await uploadImage(selectedImage);
-		dispatch(mode, newEvent);
+		dispatch($editModeStore, newEvent);
 		newEvent = defaultEvent;
 		goto('/admin/eventsadmin');
 	};
@@ -156,7 +153,7 @@
 	<div>Loading...</div>
 {:else}
 	<div class="form bg-white-primary">
-		<h1 class="mx-10">{mode === 'update' ? 'Edit event' : 'Create new event'}</h1>
+		<h1 class="mx-10">{$editModeStore === 'update' ? 'Edit event' : 'Create new event'}</h1>
 		<form class="mx-10" enctype="multipart/form-data" on:submit={handleSubmit}>
 			<!-- Titel -->
 			<div>
@@ -411,7 +408,8 @@
 				<Button
 					class="bg-primary-100  font-semibold text-white-primary"
 					type="submit"
-					disabled={newEvent.length === 0}>{mode === 'update' ? 'Update' : 'Save'} event</Button
+					disabled={newEvent.length === 0}
+					>{$editModeStore === 'update' ? 'Update' : 'Save'} event</Button
 				>
 			</div>
 		</form>

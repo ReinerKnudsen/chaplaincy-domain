@@ -171,7 +171,7 @@
 
 		<!-- Image -->
 		<div>
-			<Label disabled=true>Image</Label>
+			<Label >Image</Label>
 			<div class="flex flex-col items-center justify-center">
 				{#if newItem.image}
 					<UploadImage imageUrl={newItem.image} on:imageChange={handleImageChange} />
@@ -183,7 +183,7 @@
 		<div class="imageMeta">
 			<div class="imageAlt">
 				<div>
-					<Label disabled=true>Image Alt text *</Label>
+					<Label child="imageAlt" disabled={!$hasImage}>Image Alt text *</Label>
 					<Input
 						type="text"
 						id="imageAlt"
@@ -199,7 +199,7 @@
 			</div>
 			<div class="imageCaption mt-10">
 				<div>
-					<Label disabled=true>Image caption</Label>
+					<Label child="imageCaption" disabled={!$hasImage}>Image caption</Label>
 					<Input
 						type="text"
 						id="imageCaption"
@@ -216,7 +216,7 @@
 
 		<!-- PDF Upload -->
 		<div>
-			<Label disabled=true>PDF Document</Label>
+			<Label child="pdfFile">PDF Document</Label>
 			<div class="flex flex-col items-center justify-center">
 				<UploadPDF fileUrl={newItem.pdfFile} on:upload={assignPDF} />
 				<p class="explanation">

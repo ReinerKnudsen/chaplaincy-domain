@@ -6,14 +6,16 @@
 	import { uploadImage } from '$lib/services/fileService';
 	import type { News } from '$lib/types/News';
 
+	import { Input, Textarea, Button } from 'flowbite-svelte';
+	
 	import { authStore } from '$lib/stores/AuthStore';
-	import { Input, Label, Textarea, Button } from 'flowbite-svelte';
+	import { EditMode, resetEditMode } from '$lib/stores/FormStore';
+	
 	import SlugText from './SlugText.svelte';
 	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
 	import UploadImage from '$lib/components/UploadImage.svelte';
-
-	import { EditMode } from '$lib/stores/FormStore';
+    import Label from './Label.svelte';
 
 	const author = $authStore.name;
 	let defaultItem = {
@@ -59,10 +61,7 @@
 		};
 	};
 
-	console.log('EditMode: ', $EditMode);
-
 	$: hasImage.set(!!newItem.image);
-	$: console.log('hasImage: ', $hasImage);
 
 	const handleSlugChange = (e: CustomEvent) => {
 		newItem.slug = e.detail;
@@ -83,12 +82,13 @@
 		newItem.image = await uploadImage(selectedImage);
 		dispatch($EditMode, newItem);
 		newItem = defaultItem;
+		resetEditMode();
 		goto('/admin/newsadmin');
 	};
 
 	const handleReset = () => {
 		cleanUpForm();
-		EditMode.set('');
+		resetEditMode();
 		goto('/admin/newsadmin');
 	};
 
@@ -113,21 +113,20 @@
 	>
 		<!-- Titel -->
 		<div>
-			<Label for="title" class="mb-2 mt-8 text-xl font-semibold">News Headline *</Label>
+			<Label child="title">News Headline *</Label>
 			<Input type="text" id="title" placeholder="News Title" bind:value={newItem.title} required />
 		</div>
 
 		<!-- Author -->
 		<div>
-			<Label for="author" class="mb-2 mt-8 text-xl font-semibold">Author</Label>
+			<Label child="author" disabled=true>Author</Label>
 			<Input type="text" id="author" bind:value={newItem.author} disabled />
 		</div>
 
 		<!-- News text -->
 		<div>
 			<div class="flex flex-row justify-between">
-				<Label for="news-text" class="mb-2 mt-8 self-center text-xl font-semibold"
-					>News text *</Label
+				<Label child="news-text">News text *</Label
 				>
 				<p class="explanation self-end text-right">
 					<strong>{newItem.text.length}</strong> characters.
@@ -148,14 +147,17 @@
 
 		<!-- Publish date  -->
 		<div>
-			<Label for="publishdate" class="mb-2 mt-8 text-xl font-semibold">Publish Date *</Label>
-			<Input type="date" id="publishdate" bind:value={newItem.publishdate} />
+			<Label child="publishdate">Publish Date *</Label>
+			<Input 
+			type="date" 
+			id="publishdate" 
+			bind:value={newItem.publishdate} />
 			<p class="explanation">If you don't select a publish date, it will be set to today.</p>
 		</div>
 
 		<!-- Publish time  -->
 		<div>
-			<Label class="mb-2 mt-8 text-xl font-semibold">Publish Time</Label>
+			<Label child="publishtime" disabled={!newItem.publishdate}>Publish Time</Label>
 			<Input
 				type="time"
 				id="publishtime"
@@ -169,7 +171,7 @@
 
 		<!-- Image -->
 		<div>
-			<Label class="mb-2 mt-8 text-xl font-semibold">Image</Label>
+			<Label disabled=true>Image</Label>
 			<div class="flex flex-col items-center justify-center">
 				{#if newItem.image}
 					<UploadImage imageUrl={newItem.image} on:imageChange={handleImageChange} />
@@ -181,7 +183,7 @@
 		<div class="imageMeta">
 			<div class="imageAlt">
 				<div>
-					<Label class="mb-2 mt-8 text-xl font-semibold">Image Alt text *</Label>
+					<Label disabled=true>Image Alt text *</Label>
 					<Input
 						type="text"
 						id="imageAlt"
@@ -197,7 +199,7 @@
 			</div>
 			<div class="imageCaption mt-10">
 				<div>
-					<Label class="mb-2 mt-8 text-xl font-semibold">Image caption</Label>
+					<Label disabled=true>Image caption</Label>
 					<Input
 						type="text"
 						id="imageCaption"
@@ -214,7 +216,7 @@
 
 		<!-- PDF Upload -->
 		<div>
-			<Label class="mb-2 mt-8 text-xl font-semibold">PDF Document</Label>
+			<Label disabled=true>PDF Document</Label>
 			<div class="flex flex-col items-center justify-center">
 				<UploadPDF fileUrl={newItem.pdfFile} on:upload={assignPDF} />
 				<p class="explanation">

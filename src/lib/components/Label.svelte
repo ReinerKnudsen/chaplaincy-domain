@@ -1,10 +1,10 @@
-<script lang="ts">
-	export const child: string = '';
+<script>
+	export let child;
+	export let disabled = false;
 
-	export const disabled: boolean = false;
 </script>
 
-<div class="my-2">
+<div class="mb-2 mt-6">
 	<label for={child} class="text-xl font-semibold {disabled ? 'opacity-30' : 'opacity-100'}">
 		<slot />
 	</label>

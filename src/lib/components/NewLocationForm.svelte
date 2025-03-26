@@ -1,17 +1,23 @@
-<script>
+<script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { Button, Input, Label } from 'flowbite-svelte';
-	import { CurrentLocation } from '$lib/stores/LocationsStore';
+	import { CurrentLocation, type LocationItem } from '$lib/stores/LocationsStore';
 
 	export let showClose = true;
 
-	const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher<{
+		save: void;
+		close: void;
+	}>();
 
-	//$: console.log($LocationStore);
+	function handleSubmit(e: SubmitEvent) {
+		e.preventDefault();
+		dispatch('save');
+	}
 </script>
 
 <div class="py-2 text-sm">All fields marked with * are required</div>
-<form autocomplete="off">
+<form autocomplete="off" on:submit={handleSubmit}>
 	<div>
 		<Label class="mb-2 mt-4 font-semibold" for="name">Name *</Label>
 		<Input id="name" type="text" placeholder="Name" bind:value={$CurrentLocation.name} required />

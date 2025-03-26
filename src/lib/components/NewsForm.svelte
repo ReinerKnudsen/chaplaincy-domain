@@ -4,7 +4,7 @@
 	import { goto } from '$app/navigation';
 
 	import { uploadImage } from '$lib/services/fileService';
-	import type { News } from '$lib/types/News';
+	import type { NewsState } from '$lib/stores/FormStore';
 
 	import { Input, Textarea, Button } from 'flowbite-svelte';
 	
@@ -18,24 +18,24 @@
     import Label from './Label.svelte';
 
 	const author = $authStore.name;
-	let defaultItem = {
+	let defaultItem: NewsState = {
 		title: '',
 		author: author,
 		text: '',
 		slug: '',
-		publishdate: '',
-		publishtime: '',
+		publishdate: null,
+		publishtime: null,
 		image: '',
 		imageAlt: '',
 		imageCaption: '',
-		tags: '',
+		tags: [],
 		pdfFile: '',
 	};
 
-	export let thisItem: News = defaultItem;
+	export let thisItem: NewsState = defaultItem;
 	const dispatch = createEventDispatcher();
 
-	let newItem = defaultItem;
+	let newItem: NewsState = defaultItem;
 	let docRef;
 	let selectedImage: File;
 
@@ -46,22 +46,8 @@
 	}
 
 	const cleanUpForm = () => {
-		newItem = {
-			title: '',
-			author: '',
-			text: '',
-			slug: '',
-			publishdate: '',
-			publishtime: '',
-			image: '',
-			imageAlt: '',
-			imageCaption: '',
-			tags: '',
-			pdfFile: '',
-		};
+		newItem = defaultItem;
 	};
-
-	$: hasImage.set(!!newItem.image);
 
 	const handleSlugChange = (e: CustomEvent) => {
 		newItem.slug = e.detail;
@@ -71,12 +57,14 @@
 		e.preventDefault();
 		if (!newItem.publishdate) {
 			const now = new Date();
-			newItem.publishdate = now.toISOString().split('T')[0];
-			newItem.publishtime = now.toLocaleTimeString('en-US', {
+			const dateStr = now.toISOString().split('T')[0];
+			const timeStr = now.toLocaleTimeString('en-US', {
 				hour: '2-digit',
 				minute: '2-digit',
 				hour12: false,
 			});
+			newItem.publishdate = dateStr;
+			newItem.publishtime = timeStr;
 		}
 		!newItem.publishtime && (newItem.publishtime = '09:00');
 		newItem.image = await uploadImage(selectedImage);

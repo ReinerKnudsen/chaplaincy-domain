@@ -10,7 +10,7 @@
 
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { resetEventStore, EditMode } from '$lib/stores/FormStore';
-	import { resetCurrentLocation } from '$lib/stores/LocationsStore';
+	import { resetCurrentLocation } from '$lib/stores/LocationsStore.js';
 	import { duplicateItem } from '$lib/services/fileService.js';
 
 	import { Button, Modal } from 'flowbite-svelte';

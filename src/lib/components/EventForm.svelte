@@ -69,8 +69,6 @@
 
 	$: AllLocations.set(locations);
 
-	$: hasImage.set(!!newEvent.image);
-
 	const handleConditionChange = (e: Event) => {
 		if (e.target.checked) {
 			newEvent.condition = 'Entry is free, donations are welcome.';
@@ -102,6 +100,7 @@
 	const handleImageChange = (e: CustomEvent) => {
 		selectedImage = e.detail;
 		hasImage.set(!!e.detail);
+		console.log('Image changed: ', e.detail, $hasImage);
 	};
 
 	const handleLocationChange = (event: CustomEvent) => {
@@ -281,7 +280,7 @@
 
 	<!-- Publish date  -->
 				<div>
-					<Label child="publishdate" dis>Publish Date</Label>
+					<Label child="publishdate" >Publish Date</Label>
 					<div class="flex w-full flex-row items-center gap-4">
 						<Input type="date" id="publishdate" bind:value={newEvent.publishdate} />
 						<Button
@@ -362,7 +361,7 @@
 
 	<!-- Comments -->
 				<div class="col-span-2">
-					<Label child="comments" dis>Comments</Label>
+					<Label child="comments" >Comments</Label>
 					<Textarea
 						id="comments"
 						placeholder="Comments"
@@ -378,7 +377,7 @@
 			<div class="form bg-white-primary my-8 p-10">
 	<!-- Image -->
 				<div>
-					<Label dis>Image</Label>
+					<Label >Image</Label>
 					<div class="flex items-center justify-center">
 						{#if newEvent.image}
 							<UploadImage imageUrl={newEvent.image} on:imageChange={handleImageChange} />
@@ -409,7 +408,6 @@
 							<Label child="imageCaption" disabled={!$hasImage} text="Image caption"
 								>Image caption</Label
 							>
-
 							<Input
 								type="text"
 								id="imageCaption"
@@ -425,7 +423,7 @@
 				</div>
 
 				<div>
-					<Label dis>PDF Document</Label>
+					<Label >PDF Document</Label>
 					<div class="flex flex-col items-center justify-center">
 						<UploadPDF fileUrl={newEvent.pdfFile} on:upload={assignPDF} />
 						<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">

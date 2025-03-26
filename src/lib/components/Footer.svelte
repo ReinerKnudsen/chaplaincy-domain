@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
 	import { doc, getDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
@@ -10,6 +10,7 @@
 		FooterLink,
 		FooterIcon,
 	} from 'flowbite-svelte';
+
 	import Icon from '$lib/components/Icon.svelte';
 
 	let environment;

@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
 	import EventForm from '$lib/components/EventForm.svelte';
 	import { updateDoc } from 'firebase/firestore';
 	import { resetEditMode } from '$lib/stores/FormStore';
 
 	export let data;
 
-	const updateEvent = async (event) => {
+	const updateEvent = async (event: CustomEvent) => {
 		try {
 			await updateDoc(data.docRef, event.detail);
 			resetEditMode();

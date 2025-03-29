@@ -1,7 +1,17 @@
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, type DocumentData, type DocumentReference } from 'firebase/firestore';
 import { database } from '$lib/firebase/firebaseConfig';
 
-export async function load({ params }) {
+interface Params {
+	eventId: string;
+}
+
+// Exports an event: Event and its docRef
+
+export async function load({
+	params,
+}: {
+	params: Params;
+}): Promise<{ newEvent: DocumentData | undefined; docRef: DocumentReference | null }> {
 	const eventId = params.eventId;
 	try {
 		const docRef = doc(database, 'events', eventId);
@@ -11,8 +21,10 @@ export async function load({ params }) {
 			return { newEvent, docRef };
 		} else {
 			console.log('Error: Document does not exist!)');
+			return { newEvent: undefined, docRef };
 		}
 	} catch (err) {
 		console.log('Error while loading event:', err);
+		return { newEvent: undefined, docRef: null };
 	}
 }

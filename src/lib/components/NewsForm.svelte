@@ -4,49 +4,36 @@
 	import { goto } from '$app/navigation';
 
 	import { uploadImage } from '$lib/services/fileService';
-	import type { NewsState } from '$lib/stores/FormStore';
+	import type { News } from '$lib/stores/ObjectStore';
+	import { initialNews } from '$lib/stores/ObjectStore';
 
 	import { Input, Textarea, Button } from 'flowbite-svelte';
-	
+
 	import { authStore } from '$lib/stores/AuthStore';
-	import { EditMode, resetEditMode } from '$lib/stores/FormStore';
-	
+	import { EditMode, resetEditMode } from '$lib/stores/ObjectStore';
+
 	import SlugText from './SlugText.svelte';
 	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
-	import UploadImage from '$lib/components/UploadImage.svelte';
-    import Label from './Label.svelte';
+	import UploadImage from './UploadImage.svelte';
+	import Label from './Label.svelte';
 
 	const author = $authStore.name;
-	let defaultItem: NewsState = {
-		title: '',
-		author: author,
-		text: '',
-		slug: '',
-		publishdate: null,
-		publishtime: null,
-		image: '',
-		imageAlt: '',
-		imageCaption: '',
-		tags: [],
-		pdfFile: '',
-	};
 
-	export let thisItem: NewsState = defaultItem;
-	const dispatch = createEventDispatcher();
+	export let thisItem: News = initialNews;
+	const dispatch = createEventDispatcher<{
+		create: News;
+		update: News;
+	}>();
 
-	let newItem: NewsState = defaultItem;
+	let newItem: News = thisItem;
 	let docRef;
 	let selectedImage: File;
 
 	const hasImage = writable(false);
 
-	if ($EditMode === 'update') {
-		newItem = thisItem;
-	}
-
 	const cleanUpForm = () => {
-		newItem = defaultItem;
+		newItem = initialNews;
 	};
 
 	const handleSlugChange = (e: CustomEvent) => {
@@ -67,9 +54,11 @@
 			newItem.publishtime = timeStr;
 		}
 		!newItem.publishtime && (newItem.publishtime = '09:00');
-		newItem.image = await uploadImage(selectedImage);
-		dispatch($EditMode, newItem);
-		newItem = defaultItem;
+		if (selectedImage) {
+			newItem.image = await uploadImage(selectedImage);
+		}
+		dispatch($EditMode === 'update' ? 'update' : 'create', newItem);
+		newItem = initialNews;
 		resetEditMode();
 		goto('/admin/newsadmin');
 	};
@@ -107,15 +96,14 @@
 
 		<!-- Author -->
 		<div>
-			<Label child="author" disabled=true>Author</Label>
+			<Label child="author" disabled="true">Author</Label>
 			<Input type="text" id="author" bind:value={newItem.author} disabled />
 		</div>
 
 		<!-- News text -->
 		<div>
 			<div class="flex flex-row justify-between">
-				<Label child="news-text">News text *</Label
-				>
+				<Label child="news-text">News text *</Label>
 				<p class="explanation self-end text-right">
 					<strong>{newItem.text.length}</strong> characters.
 				</p>
@@ -136,10 +124,7 @@
 		<!-- Publish date  -->
 		<div>
 			<Label child="publishdate">Publish Date *</Label>
-			<Input 
-			type="date" 
-			id="publishdate" 
-			bind:value={newItem.publishdate} />
+			<Input type="date" id="publishdate" bind:value={newItem.publishdate} />
 			<p class="explanation">If you don't select a publish date, it will be set to today.</p>
 		</div>
 
@@ -159,7 +144,7 @@
 
 		<!-- Image -->
 		<div>
-			<Label >Image</Label>
+			<Label>Image</Label>
 			<div class="flex flex-col items-center justify-center">
 				{#if newItem.image}
 					<UploadImage imageUrl={newItem.image} on:imageChange={handleImageChange} />

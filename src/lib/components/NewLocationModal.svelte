@@ -1,14 +1,13 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
-
-	import { getFirestore, addDoc, collection } from 'firebase/firestore';
-	import { CurrentLocation, AllLocations, selectedLocation } from '$lib/stores/LocationsStore';
-
-	import { fetchLocations } from '$lib/services/fileService';
+	import { Button, Modal } from 'flowbite-svelte';
+	import { addDoc, collection } from 'firebase/firestore';
+	import { database } from '$lib/firebase/firebaseConfig';
+	import { CurrentLocation, AllLocations, selectedLocation, fetchLocations } from '$lib/stores/LocationsStore';
 
 	import NewLocationForm from './NewLocationForm.svelte';
 
-	const db = getFirestore();
+	const db = database;
 	const dispatch = createEventDispatcher();
 
 	const handleSave = async () => {

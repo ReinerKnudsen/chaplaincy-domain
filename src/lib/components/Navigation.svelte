@@ -92,7 +92,7 @@
 						<NavigationItem url="/" label="Home" onClick={toggleMobileMenu} />
 						<NavigationItem url="/worship" label="Worship" onClick={toggleMobileMenu} />
 						<NavigationItem url="/news" label="News" onClick={toggleMobileMenu} />
-						<NavigationItem url="/activities" label="Activities" onClick={toggleMobileMenu} />
+						<NavigationItem url="/events" label="Events" onClick={toggleMobileMenu} />
 						<NavigationItem url="/groups" label="Groups" onClick={toggleMobileMenu} />
 						<NavigationItem url="#" label="About us" onClick={toggleAboutMenu} />
 						{#if aboutMenuOpen}
@@ -151,7 +151,7 @@
 				<NavigationItem url="/" label="Home" />
 				<NavigationItem url="/worship" label="Worship" />
 				<NavigationItem url="/news" label="News" />
-				<NavigationItem url="/activities" label="Activities" />
+				<NavigationItem url="/events" label="Events" />
 				<NavigationItem url="/groups" label="Groups" />
 				<NavigationRollUp menuItems={aboutItems} title="About us" />
 				{#if $authStore.role === 'admin' || $authStore.role === 'editor'}

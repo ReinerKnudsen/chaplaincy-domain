@@ -1,4 +1,4 @@
-import { getUserByID } from '../../../../../lib/services/authService.js';
+import { getUserByID } from '$lib/services/authService.ts';
 
 export async function load({ params }) {
 	try {

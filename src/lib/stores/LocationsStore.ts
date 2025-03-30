@@ -12,13 +12,6 @@ export interface Location {
 	openMapUrl: string;
 }
 
-// Define a store for holding all Locations
-const initialLocationsState: Location[] = [];
-export const AllLocations = writable(initialLocationsState);
-export function resetAllLocations() {
-	AllLocations.set(initialLocationsState);
-}
-
 // Location Store
 // Define the initial state of the form
 const initialLocationState: Location = {
@@ -31,12 +24,25 @@ const initialLocationState: Location = {
 	openMapUrl: '',
 };
 
-export const CurrentLocation = writable(initialLocationState);
+const initialLocationsState: Location[] = [];
 
+// Location related stores
+export const AllLocations = writable<Location[]>(initialLocationsState);
+export const CurrentLocation = writable<Location>(initialLocationState);
+export const selectedLocation = writable<Location>(initialLocationState);
+
+// Reset functions
+export function resetAllLocations() {
+	AllLocations.set(initialLocationsState);
+}
 export function resetCurrentLocation() {
 	CurrentLocation.set(initialLocationState);
 }
+export function resetSelectedLocation() {
+	selectedLocation.set(initialLocationState);
+}
 
+// Update functions
 export function updateAndSortLocations(updateFn: (locations: Location[]) => Location[]) {
 	AllLocations.update((locations) => {
 		const updatedLocations = updateFn(locations);
@@ -44,14 +50,17 @@ export function updateAndSortLocations(updateFn: (locations: Location[]) => Loca
 	});
 }
 
-export const selectedLocation = writable('');
-
 // Fetch locations from Firestore
-export const fetchLocations = async (): Promise<Location[]> => {
+export const fetchLocations = async (): Promise<void> => {
 	const querySnapshot = await getDocs(collection(database, 'location'));
 	const locs = querySnapshot.docs.map((doc) => ({
 		id: doc.id,
 		...(doc.data() as Omit<Location, 'id'>),
 	}));
-	return locs;
+	locs.sort((a: Location, b: Location) => {
+		if (a.name < b.name) return -1;
+		if (a.name > b.name) return 1;
+		return 0;
+	});
+	AllLocations.set(locs);
 };

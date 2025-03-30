@@ -1,25 +1,24 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-
 	import { pathName } from '$lib/stores/NavigationStore';
-	import { getAuth, onAuthStateChanged } from 'firebase/auth';
-
+	import { getAuth, type Auth, onAuthStateChanged, type User } from 'firebase/auth';
 	import { screenSize } from '$lib/stores/ScreenSizeStore';
 
-	let auth = getAuth();
+	let auth: Auth = getAuth();
 	let loading = true;
-	let screenWidth;
+	let screenWidth: number;
 
 	$: screenWidth = $screenSize;
 	onMount(() => {
 		$pathName = $page.url.pathname;
 
-		onAuthStateChanged(auth, (user) => {
+		onAuthStateChanged(auth, (user: User | null) => {
 			if (user) {
 				user.getIdTokenResult().then((idTokenResult) => {
-					if (!['admin', 'editor'].includes(idTokenResult.claims.role)) {
+					const role = idTokenResult.claims.role as string;
+					if (!['admin', 'editor'].includes(role)) {
 						goto('/');
 					} else {
 						loading = false;
@@ -33,13 +32,18 @@
 
 	$: $pathName = $page.url.pathname;
 
-	const adminMenu = [
+	interface MenuItem {
+		name: string;
+		url: string;
+	}
+
+	const adminMenu: MenuItem[] = [
 		{
 			name: 'Dashboard',
 			url: '/admin',
 		},
 		{
-			name: 'Activities',
+			name: 'Events',
 			url: '/admin/eventsadmin',
 		},
 		{
@@ -79,7 +83,6 @@
 	<div class="main-content p-5">
 		<slot />
 	</div>
-	<!-- </div> -->
 {/if}
 
 <style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import { Button } from 'flowbite-svelte';
 	import {
 		getFirestore,
@@ -15,33 +15,32 @@
 		resetCurrentLocation,
 		AllLocations,
 		updateAndSortLocations,
-		type LocationItem,
+		fetchLocations,
+		type Location,
 	} from '$lib/stores/LocationsStore';
+
+	import { database } from '$lib/firebase/firebaseConfig';
+
 	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 
-	export let data: { locations: LocationItem[] };
-	const locations: LocationItem[] = data.locations ?? [];
-
-	$: AllLocations.set(
-		locations.sort((a, b) => {
-			if (a.name < b.name) return -1;
-			if (a.name > b.name) return 1;
-			return 0;
-		}),
-	);
-
-	const db = getFirestore();
 	const dispatch = createEventDispatcher();
+
+	onMount(() => {
+		fetchLocations();
+	});
 
 	let updateItem = true;
 	let currentLocationId = 0;
 
-	$CurrentLocation = locations[0];
+	// Only set CurrentLocation when AllLocations has items
+	$: if ($AllLocations.length > 0) {
+		CurrentLocation.set($AllLocations[currentLocationId]);
+	} else {
+		resetCurrentLocation();
+	}
 
-	$: $CurrentLocation = locations[currentLocationId];
-
-	const handleLocationChange = (location: LocationItem, index: number) => {
+	const handleLocationChange = (location: Location, index: number) => {
 		$CurrentLocation = location;
 		currentLocationId = index;
 	};
@@ -51,9 +50,9 @@
 		updateItem = false;
 	};
 
-	const handleDelete = async (location: LocationItem) => {
+	const handleDelete = async (location: Location) => {
 		try {
-			const docRef = doc(db, 'location', location.id);
+			const docRef = doc(database, 'location', location.id);
 			await deleteDoc(docRef);
 			updateAndSortLocations((locations) => locations.filter((loc) => loc.id !== location.id));
 		} catch (e) {
@@ -65,9 +64,9 @@
 		const { id, name, description, street, city, zip, openMapUrl } = $CurrentLocation;
 
 		if (updateItem) {
-			// Editing existing location
+			// Updating existing location
 			try {
-				const docRef = doc(db, 'location', id);
+				const docRef = doc(database, 'location', id);
 				await updateDoc(docRef, {
 					name,
 					description,
@@ -88,7 +87,7 @@
 		} else {
 			// Creating new location
 			try {
-				const docRef = await addDoc(collection(db, 'location'), {
+				const docRef = await addDoc(collection(database, 'location'), {
 					name,
 					description,
 					street,
@@ -108,7 +107,6 @@
 			}
 		}
 	};
-	console.log($AllLocations);
 </script>
 
 <div class="w-full gap-2">

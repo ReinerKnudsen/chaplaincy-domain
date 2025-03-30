@@ -1,10 +1,14 @@
-<script>
+<script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { Button, Modal } from 'flowbite-svelte';
 	import { addDoc, collection } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
-	import { CurrentLocation, AllLocations, selectedLocation, fetchLocations } from '$lib/stores/LocationsStore';
 
+	import {
+		CurrentLocation,
+		AllLocations,
+		selectedLocation,
+		fetchLocations,
+	} from '$lib/stores/LocationsStore';
 	import NewLocationForm from './NewLocationForm.svelte';
 
 	const db = database;
@@ -21,8 +25,11 @@
 				zip,
 				openMapUrl,
 			});
-			AllLocations.set(await fetchLocations());
-			selectedLocation.set(docRef.id);
+			await fetchLocations();
+			const newLocation = $AllLocations.find((loc) => loc.id === docRef.id);
+			if (newLocation) {
+				selectedLocation.set(newLocation);
+			}
 			dispatch('locationAdded', { id: docRef.id, name });
 		} catch (e) {
 			console.error('Error adding document: ', e);

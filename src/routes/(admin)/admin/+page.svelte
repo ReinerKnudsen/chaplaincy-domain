@@ -1,13 +1,9 @@
-<script>
-	import { page } from '$app/stores';
-	import { pathName } from '$lib/stores/NavigationStore';
+<script lang="ts">
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
-	import { getAuth, onAuthStateChanged } from 'firebase/auth';
+	import { getAuth } from 'firebase/auth';
 	import { authStore } from '$lib/stores/AuthStore';
 
-	let auth = getAuth();
-	let role;
+	let role: string | null = null;
 
 	$: authStore.subscribe((store) => {
 		role = store.role;
@@ -22,7 +18,7 @@
 		<p>This page provides a list of available administration tasks.</p>
 		<p>It is only visible to users with Admin or Editor role.</p>
 		<h2 class="mb-4 mt-6 text-xl font-bold">
-			<a href="/admin/eventsadmin">Activities Management</a>
+			<a href="/admin/eventsadmin">Events Management</a>
 		</h2>
 		<div>Events list and management options go here.</div>
 

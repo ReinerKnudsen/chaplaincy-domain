@@ -12,22 +12,22 @@
 	};
 
 	const handleClickOutside = (event: MouseEvent) => {
-		/** if the target of the click was the menu item, don't close the dropdown */ if (
-			showDropdown &&
-			event.target.classList.contains('menuitem')
-		) {
-			return;
-		}
+		if (event.target) {
+			/** if the target of the click was the menu item, don't close the dropdown */
+			if (showDropdown && (event.target as HTMLElement).classList.contains('menuitem')) {
+				return;
+			}
 
-		/** if the target of the click was the dropdown, don't close the dropdown */
-		const dropdownElement = document.querySelector('.dropdown');
-		if (!dropdownElement) {
-			return;
-		}
+			/** if the target of the click was the dropdown, don't close the dropdown */
+			const dropdownElement = document.querySelector('.dropdown');
+			if (!dropdownElement) {
+				return;
+			}
 
-		/** if the event target is NOT child of the dropdown, close the dropdown */
-		if (!dropdownElement.contains(event.target)) {
-			showDropdown = false;
+			/** if the event target is NOT child of the dropdown, close the dropdown */
+			if (!dropdownElement.contains(event.target as Node)) {
+				showDropdown = false;
+			}
 		}
 	};
 

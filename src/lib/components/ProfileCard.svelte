@@ -35,7 +35,6 @@
 		class="profile-card my-10 flex w-full {imagePosition === 'left'
 			? 'flex-row'
 			: 'flex-row-reverse'}  rounded-xl border border-slate-200 shadow-xl"
-		key={index}
 	>
 		<ProfileImage {photo} />
 		<div class="profile-data my-auto flex w-full flex-col px-6">

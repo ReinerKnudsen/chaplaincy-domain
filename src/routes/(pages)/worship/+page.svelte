@@ -1,7 +1,5 @@
-<script>
+<script lang="ts">
 	import PageHeader from '$lib/components/PageHeader.svelte';
-	import ItemCard from '$lib/components/ItemCard.svelte';
-	import ItemCardFav from '$lib/components/ItemCardFav.svelte';
 
 	const headerData = {
 		title: 'Worship',
@@ -66,7 +64,7 @@
 			It offers a chance to seek guidance, express repentance, and ask for God’s blessings,
 			reinforcing the Anglican commitment to a life centered around worship and scripture. This
 			practice reflects the Anglican value of daily consecration and mindfulness, anchoring
-			believers in faith as they move into their everyday activities with purpose and peace.
+			believers in faith as they move into their everyday events with purpose and peace.
 		</p>
 	</div>
 	<h2 class="my-8 text-2xl font-semibold">Evening Prayer</h2>

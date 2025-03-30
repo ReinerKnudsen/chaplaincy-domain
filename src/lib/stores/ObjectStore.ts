@@ -1,5 +1,17 @@
-import { writable, type Writable } from 'svelte/store';
-import { type DocumentData, getDocs, collection, doc, getDoc, addDoc } from 'firebase/firestore';
+import { writable, derived, type Writable } from 'svelte/store';
+import {
+	type DocumentData,
+	getDocs,
+	collection,
+	doc,
+	getDoc,
+	addDoc,
+	query,
+	orderBy,
+	where,
+	limit,
+	type DocumentReference,
+} from 'firebase/firestore';
 import { database } from '$lib/firebase/firebaseConfig';
 
 export interface CollectionItem {
@@ -12,18 +24,18 @@ export interface Event {
 	subtitle: string;
 	description: string;
 	slug: string;
-	startdate: string | null;
+	startdate: string;
 	starttime: string | null;
 	enddate: string | null;
 	endtime: string | null;
 	location: string;
 	condition?: string;
-	publishdate: string | null;
-	publishtime: string | null;
-	publishDateTime: string | null;
-	unpublishdate: string | null;
-	unpublishtime: string | null;
-	unpublishDateTime: string | null;
+	publishdate: string;
+	publishtime: string;
+	publishDateTime: string;
+	unpublishdate: string;
+	unpublishtime: string;
+	unpublishDateTime: string;
 	comments: string;
 	image?: string | null;
 	imageAlt?: string;
@@ -33,8 +45,35 @@ export interface Event {
 	tags: string[];
 }
 
+export const initialEvent: Event = {
+	title: '',
+	subtitle: '',
+	description: '',
+	slug: '',
+	startdate: '',
+	starttime: null,
+	enddate: null,
+	endtime: null,
+	location: '',
+	condition: '',
+	publishdate: '',
+	publishDateTime: '',
+	publishtime: '',
+	unpublishdate: '',
+	unpublishtime: '',
+	unpublishDateTime: '',
+	comments: '',
+	image: null,
+	imageAlt: '',
+	imageCaption: '',
+	author: '',
+	pdfFile: '',
+	tags: [],
+};
+
 export type EventSortableFields = keyof Event;
 
+// News
 export interface News {
 	title: string;
 	text: string;
@@ -53,32 +92,6 @@ export interface News {
 
 export type NewsSortableFields = keyof News;
 
-const initialEvent: Event = {
-	title: '',
-	subtitle: '',
-	description: '',
-	slug: '',
-	startdate: null,
-	starttime: null,
-	enddate: null,
-	endtime: null,
-	location: '',
-	condition: '',
-	publishdate: null,
-	publishDateTime: null,
-	publishtime: null,
-	unpublishdate: null,
-	unpublishtime: null,
-	unpublishDateTime: null,
-	comments: '',
-	image: null,
-	imageAlt: '',
-	imageCaption: '',
-	author: '',
-	pdfFile: '',
-	tags: [],
-};
-
 export const initialNews: News = {
 	title: '',
 	text: '',
@@ -95,18 +108,57 @@ export const initialNews: News = {
 	pdfFile: '',
 };
 
+// WeeklySheet
+export interface WeeklySheet {
+	date: string;
+	name: string;
+	path: string;
+	id: string;
+}
+
+export type WeeklySheetSortableFields = keyof WeeklySheet;
+
+export const initialWeeklySheet: WeeklySheet = {
+	date: '',
+	name: '',
+	path: '',
+	id: '',
+};
+
 export enum CollectionType {
 	Events = 'events',
 	News = 'news',
+	FutureEvents = 'futureEvents', // Virtual collection type
+}
+
+export enum DocumentType {
+	WeeklySheet = 'weeklysheet',
+	Newsletter = 'newsletter',
 }
 
 // Single item stores
 export const EventStore: Writable<Event> = writable(initialEvent);
 export const NewsStore: Writable<News> = writable(initialNews);
+export const WeeklySheetStore: Writable<WeeklySheet | null> = writable(null);
 
-// Collection stores
+// Collection and document stores
 export const EventsStore: Writable<CollectionItem[]> = writable([]);
+export const FutureEventsStore: Writable<CollectionItem[]> = writable([]);
 export const NewsItemsStore: Writable<CollectionItem[]> = writable([]);
+export const WeeklySheetsStore: Writable<CollectionItem[]> = writable([]);
+
+// Derived stores for homepage previews
+// The three latest news
+export const LatestNewsStore = derived(NewsItemsStore, ($NewsItemsStore) => {
+	return [...$NewsItemsStore] // Create a copy to avoid mutating the original
+		.sort((a, b) => new Date(b.data.publishdate).getTime() - new Date(a.data.publishdate).getTime())
+		.slice(0, 4);
+});
+
+// The three next events
+export const NextEventsStore = derived(FutureEventsStore, ($FutureEventsStore) => {
+	return $FutureEventsStore.slice(0, 4); // Already sorted by date in loadItems
+});
 
 export function resetEventStore() {
 	EventStore.set(initialEvent);
@@ -116,28 +168,138 @@ export function resetNewsStore() {
 	NewsStore.set(initialNews);
 }
 
+// Other collection or dcoument related items
 export const EditMode = writable<'new' | 'update' | ''>('new');
 export function resetEditMode() {
 	EditMode.set('');
 }
 
-export const loadItems = async (type: CollectionType): Promise<CollectionItem[]> => {
+// Collection and document related functions
+// Load a single item by id and type
+export const loadItem = async (
+	id: string,
+	type: CollectionType,
+): Promise<DocumentReference | null> => {
 	try {
-		const snapshot = await getDocs(collection(database, type));
+		const docRef = doc(database, type, id);
+		const docSnap = await getDoc(docRef);
+
+		if (docSnap.exists()) {
+			const item = {
+				id: docSnap.id,
+				data: docSnap.data(),
+			};
+
+			// Set the appropriate store based on type
+			if (type === CollectionType.Events) {
+				EventStore.set(item.data as Event);
+			} else if (type === CollectionType.News) {
+				NewsStore.set(item.data as News);
+			}
+			return docRef;
+		} else {
+			console.error(`No ${type} found with id: ${id}`);
+			// Reset the appropriate store
+			if (type === CollectionType.Events) {
+				resetEventStore();
+			} else if (type === CollectionType.News) {
+				resetNewsStore();
+			}
+			return null;
+		}
+	} catch (error) {
+		console.error(`Error loading ${type} item:`, error);
+		// Reset the appropriate store
+		if (type === CollectionType.Events) {
+			resetEventStore();
+		} else if (type === CollectionType.News) {
+			resetNewsStore();
+		}
+		return null;
+	}
+};
+export const loadItems = async (type: CollectionType): Promise<void> => {
+	try {
+		// For FutureEvents, we still query the events collection but filter the results
+		const collectionPath = type === CollectionType.FutureEvents ? CollectionType.Events : type;
+		const snapshot = await getDocs(collection(database, collectionPath));
 		const items = snapshot.docs.map((doc) => ({
 			id: doc.id,
 			data: doc.data(),
 		}));
-		// Always update the store, even with empty array
+
+		// Filter and store based on type
 		if (type === CollectionType.Events) {
 			EventsStore.set(items);
 		} else if (type === CollectionType.News) {
 			NewsItemsStore.set(items);
+		} else if (type === CollectionType.FutureEvents) {
+			const now = new Date();
+			const futureEvents = items
+				.filter((item) => {
+					const eventData = item.data as Event;
+					const eventDate = new Date(eventData.startdate);
+					const publishDate = new Date(eventData.publishdate);
+					const unpublishDate = new Date(eventData.unpublishdate);
+
+					// Event must be:
+					// 1. In the future or today
+					// 2. Publish date has passed
+					// 3. Unpublish date hasn't passed yet
+					return eventDate >= now && publishDate <= now && unpublishDate > now;
+				})
+				.sort((a, b) => {
+					const dateA = new Date((a.data as Event).startdate);
+					const dateB = new Date((b.data as Event).startdate);
+					return dateA.getTime() - dateB.getTime();
+				});
+			FutureEventsStore.set(futureEvents);
 		}
-		return items;
 	} catch (error) {
 		console.error(`Error loading ${type} items:`, error);
-		return [];
+		if (type === CollectionType.Events) {
+			EventsStore.set([]);
+		} else if (type === CollectionType.News) {
+			NewsItemsStore.set([]);
+		} else if (type === CollectionType.FutureEvents) {
+			FutureEventsStore.set([]);
+		}
+	}
+};
+
+export const loadDocument = async (type: DocumentType): Promise<void> => {
+	if (!collection(database, 'documents')) {
+		if (type === DocumentType.WeeklySheet) {
+			WeeklySheetStore.set(null);
+		}
+		return;
+	}
+	try {
+		const q = query(
+			collection(database, 'documents'),
+			where('type', '==', type),
+			orderBy('date', 'desc'),
+			limit(1),
+		);
+		const querySnapshot = await getDocs(q);
+		if (!querySnapshot.empty) {
+			const doc = querySnapshot.docs[0];
+			if (type === DocumentType.WeeklySheet) {
+				WeeklySheetStore.set({
+					...(doc.data() as WeeklySheet),
+					id: doc.id,
+				});
+			}
+		} else {
+			if (type === DocumentType.WeeklySheet) {
+				WeeklySheetStore.set(null);
+			}
+		}
+	} catch (error) {
+		console.error(`Error loading ${type} document:`, error);
+		if (type === DocumentType.WeeklySheet) {
+			WeeklySheetStore.set(null);
+		}
 	}
 };
 

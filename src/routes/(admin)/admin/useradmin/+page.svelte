@@ -1,22 +1,32 @@
-<script>
-	import { onMount } from 'svelte';
-	import { changeUserRole, listAllUsers } from '$lib/services/authService';
-	import { Button } from 'flowbite-svelte';
+<script lang="ts">
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import { Button } from 'flowbite-svelte';
+	import { listAllUsers, type FirebaseUser } from '$lib/services/authService';
 
-	let role;
-	let email;
-	let roles = [
+	interface Role {
+		value: 'user' | 'editor' | 'admin';
+		name: string;
+	}
+
+	let role: string | undefined;
+	let email: string | undefined;
+	const roles: Role[] = [
 		{ value: 'user', name: 'User' },
 		{ value: 'editor', name: 'Editor' },
-		{ value: 'admin', name: 'Admin' }
+		{ value: 'admin', name: 'Admin' },
 	];
-	let userList = [];
+	let userList: FirebaseUser[] = [];
 	let loading = true;
 
 	onMount(async () => {
-		userList = await listAllUsers();
-		loading = false;
+		try {
+			userList = await listAllUsers();
+		} catch (error) {
+			console.error('Error loading users:', error);
+		} finally {
+			loading = false;
+		}
 	});
 
 	const handleCreateUser = () => {
@@ -43,7 +53,7 @@
 					<td>{user.email}</td>
 					<td>
 						{#if user.customClaims}
-							{user.customClaims.role}
+							{user.customClaims.role || '-'}
 						{:else}
 							-
 						{/if}
@@ -51,8 +61,10 @@
 					<td>
 						<a
 							href="/admin/useradmin/{user.uid}"
-							class="text-primary-600 dark:text-primary-500 font-medium hover:underline">Edit</a
+							class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
 						>
+							Edit
+						</a>
 					</td>
 				</tr>
 			{/each}
@@ -62,8 +74,10 @@
 		<Button
 			type="button"
 			class="w-3/12 bg-primary-80 text-white-primary"
-			on:click={handleCreateUser}>Create user</Button
+			on:click={handleCreateUser}
 		>
+			Create user
+		</Button>
 	</div>
 {/if}
 

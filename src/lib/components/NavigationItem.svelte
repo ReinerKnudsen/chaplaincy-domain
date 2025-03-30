@@ -1,7 +1,7 @@
-<script>
-	export let url;
-	export let label;
-	export let onClick;
+<script lang="ts">
+	export let url: string;
+	export let label: string;
+	export let onClick: (event: Event) => void;
 </script>
 
 <li>

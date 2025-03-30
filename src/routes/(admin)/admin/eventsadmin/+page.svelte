@@ -6,7 +6,6 @@
 
 	import { doc, deleteDoc } from 'firebase/firestore';
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
-	import { getFirestore } from 'firebase/firestore';
 
 	import { pathName } from '$lib/stores/NavigationStore';
 	import {

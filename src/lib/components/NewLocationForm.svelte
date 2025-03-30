@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { Button, Input, Label } from 'flowbite-svelte';
-	import { CurrentLocation, type LocationItem } from '$lib/stores/LocationsStore';
+	import { CurrentLocation } from '$lib/stores/LocationsStore';
 
 	export let showClose = true;
 

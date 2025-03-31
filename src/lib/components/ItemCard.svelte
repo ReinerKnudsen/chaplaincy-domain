@@ -1,6 +1,8 @@
-<script>
-	export let item;
-	export let kind;
+<script lang="ts">
+	import { type CollectionItem } from '$lib/stores/ObjectStore';
+
+	export let item: CollectionItem;
+	export let kind: 'news' | 'events';
 
 	const containerSM =
 		'sm:grid-col-1 my-5 grid rounded-2xl border border-slate-200 px-4 py-4 shadow-xl bg-white';

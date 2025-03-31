@@ -1,12 +1,22 @@
-<script>
+<script lang="ts">
 	import EventForm from '$lib/components/EventForm.svelte';
 	import { updateDoc } from 'firebase/firestore';
-	import { resetEditMode } from '$lib/stores/FormStore';
+	import { resetEditMode } from '$lib/stores/ObjectStore.js';
+	import { DocumentReference } from 'firebase/firestore';
+	import type { Event } from '$lib/stores/ObjectStore.js';
 
-	export let data;
+	type Params = {
+		newEvent: Event;
+		docRef: DocumentReference | null;
+	};
 
-	const updateEvent = async (event) => {
+	export let data: Params;
+
+	const updateEvent = async (event: CustomEvent) => {
 		try {
+			if (!data.docRef) {
+				throw new Error('No document reference provided');
+			}
 			await updateDoc(data.docRef, event.detail);
 			resetEditMode();
 		} catch (error) {

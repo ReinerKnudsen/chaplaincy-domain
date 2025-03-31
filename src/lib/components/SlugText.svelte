@@ -9,18 +9,17 @@
 
 	let editSlug: boolean = false;
 
-	const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher<{ slugChange: string }>();
 
-	const handleChangeSlug = () => {
+	const handleChangeSlug = async () => {
 		if (!slugText) {
-			slugText = marked
-				.parse(text)
-				.replace(/<[^>]*>/g, '')
-				.slice(0, MAX_SLUG_TEXT);
+			const parsedText = await marked.parse(text);
+			slugText = parsedText.replace(/<[^>]*>/g, '').slice(0, MAX_SLUG_TEXT);
 		} else {
 			editSlug = true;
 		}
 	};
+
 	$: if (slugText) {
 		dispatch('slugChange', slugText);
 	}

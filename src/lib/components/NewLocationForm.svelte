@@ -1,17 +1,37 @@
-<script>
+<script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { Button, Input, Label } from 'flowbite-svelte';
-	import { CurrentLocation } from '$lib/stores/LocationsStore';
+	import { CurrentLocation, resetCurrentLocation } from '$lib/stores/LocationsStore';
 
 	export let showClose = true;
 
-	const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher<{
+		save: void;
+		close: void;
+	}>();
 
-	//$: console.log($LocationStore);
+	function handleSubmit(e: SubmitEvent) {
+		e.preventDefault();
+		dispatch('save');
+	}
+
+	function resetForm() {
+		// Reset the form element
+		const formElement = document.querySelector('form');
+		if (formElement) formElement.reset();
+	}
+
+	// Reset form when store changes
+	$: {
+		$CurrentLocation; // Track store changes
+		resetForm();
+	}
+
+	$: openStreetUrl = `https://www.openstreetmap.org/search?query=${$CurrentLocation.street}+${$CurrentLocation.city}`;
 </script>
 
 <div class="py-2 text-sm">All fields marked with * are required</div>
-<form autocomplete="off">
+<form autocomplete="off" on:submit={handleSubmit}>
 	<div>
 		<Label class="mb-2 mt-4 font-semibold" for="name">Name *</Label>
 		<Input id="name" type="text" placeholder="Name" bind:value={$CurrentLocation.name} required />
@@ -45,7 +65,7 @@
 	</div>
 	<div>
 		<Label class="mb-2 mt-4 font-semibold" for="url"
-			><a href="https://www.openstreetmap.org/" target="_blank" rel="noopener noreferrer">
+			><a href={openStreetUrl} target="_blank" rel="noopener noreferrer">
 				Open Street Map URL</a
 			>:</Label
 		>

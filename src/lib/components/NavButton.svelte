@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
-	export let label;
-	export let url;
+	export let label: string;
+	export let url: string;
 
 	const handleClick = () => {
 		goto(url);

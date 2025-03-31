@@ -1,11 +1,12 @@
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
 	import { addDoc } from 'firebase/firestore';
-	import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-	import { newsColRef, pdfStorageRef, pdfColRef } from '$lib/firebase/firebaseConfig';
+
+	import { newsColRef } from '$lib/firebase/firebaseConfig';
+
 	import NewsForm from '$lib/components/NewsForm.svelte';
 
-	const saveNewItem = async (e) => {
+	const saveNewItem = async (e: CustomEvent<Record<string, any>>) => {
 		const newsData = e.detail;
 
 		try {

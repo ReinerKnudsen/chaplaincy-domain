@@ -1,15 +1,12 @@
-<script>
+<script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { getFirestore } from 'firebase/firestore';
+
 	import { selectedLocation, AllLocations } from '$lib/stores/LocationsStore';
 
-	const db = getFirestore();
 	const dispatch = createEventDispatcher();
 
-	// Parent component should handle locationAdded event and set locationAdded to true
-
-	function handleChange(event) {
-		dispatch('change', { value: event.target.value });
+	function handleChange(event: Event) {
+		dispatch('change', { value: (event.target as HTMLSelectElement).value });
 	}
 </script>
 

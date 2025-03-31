@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import { onDestroy, onMount } from 'svelte';
 	import groups from './groups.json';

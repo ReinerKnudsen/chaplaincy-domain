@@ -1,21 +1,18 @@
-<script>
-	import '/src/app.css';
+<script lang="ts">
+	import '../app.css';
 	import { onDestroy, onMount } from 'svelte';
-
 	import '@fontsource/inter';
 
+	import { getAuth, onAuthStateChanged, type User } from 'firebase/auth';
+	
+	import { authStore, unloadUser, type AuthState } from '$lib/stores/AuthStore';
+	import { stopListening } from '$lib/stores/ScreenSizeStore';
+	import { getUserRole } from '$lib/services/authService';
+	
 	import Navigation from '$lib/components/Navigation.svelte';
 	import Footer from '$lib/components/Footer.svelte';
-	import { getAuth, onAuthStateChanged } from 'firebase/auth';
-	import { firebaseApp } from '$lib/firebase/firebaseConfig';
-	import { authStore, unloadUser } from '$lib/stores/AuthStore';
-	import { screenSize, stopListening } from '$lib/stores/ScreenSizeStore';
-	import { getUserRole } from '$lib/services/authService';
 
-	let unsubscribe;
-
-	export let data;
-	const routes = data.routes;
+	let unsubscribe: () => void;
 
 	const auth = getAuth();
 
@@ -23,14 +20,15 @@
 		unloadUser();
 	};
 
-	/** Wir initialisieren den AuthStateListener */
+	/** Initialize the AuthStateListener */
 	onMount(() => {
-		if (!authStore.user) {
-			unsubscribe = onAuthStateChanged(auth, async (user) => {
+		if (!$authStore.user) {
+			unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
 				if (user) {
-					sessionStorage.setItem('accessToken', user.accessToken);
+					const token = await user.getIdToken();
+					sessionStorage.setItem('accessToken', token);
 					const role = await getUserRole(user);
-					authStore.update((curr) => {
+					authStore.update((curr: AuthState) => {
 						return {
 							...curr,
 							user: user,
@@ -46,6 +44,7 @@
 			});
 		}
 		return () => {
+			if (unsubscribe) unsubscribe();
 			stopListening();
 		};
 	});

@@ -1,20 +1,23 @@
-<script>
+<script lang="ts">
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
 	import Icon from '$lib/components/Icon.svelte';
 	import { Button } from 'flowbite-svelte';
 
-	export let data;
+	// Get the data from the server
+	export let data: { documents: Array<Record<string, any>> };
+
+	type IconName = 'chevronDown' | 'chevronUp';
 
 	// Sort table items
-	const sortKey = writable('date'); // default sort key
-	const sortDirection = writable(1); // default sort direction (ascending)
+	const sortKey = writable<string>('date'); // default sort key
+	const sortDirection = writable<number>(1); // default sort direction (ascending)
 	const sortItems = writable(data.documents);
-	const sortIcon = writable('chevronDown');
+	const sortIcon = writable<IconName>('chevronDown');
 
 	// Define a function to sort the items
-	const sortTable = (key) => {
+	const sortTable = (key: string) => {
 		// If the same key is clicked, reverse the sort direction
 		if ($sortKey === key) {
 			sortDirection.update((val) => -val);
@@ -27,7 +30,7 @@
 	$: {
 		const key = $sortKey;
 		const direction = $sortDirection;
-		const sorted = data.documents.sort((a, b) => {
+		const sorted = [...data.documents].sort((a, b) => {
 			const aVal = a[key];
 			const bVal = b[key];
 			if (aVal < bVal) {
@@ -40,11 +43,14 @@
 
 		sortItems.set(sorted);
 	}
+
 	$: {
 		sortIcon.set($sortDirection === 1 ? 'chevronDown' : 'chevronUp');
 	}
-	const handleSearchInput = (event) => {
-		//console.log(event.target.value);
+
+	const handleSearchInput = (event: Event) => {
+		const target = event.target as HTMLInputElement;
+		//console.log(target.value);
 	};
 
 	const handleClick = () => {

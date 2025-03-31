@@ -4,64 +4,37 @@
 	import { goto } from '$app/navigation';
 
 	import { uploadImage } from '$lib/services/fileService';
-	import type { News } from '$lib/types/News';
+	import type { News } from '$lib/stores/ObjectStore';
+	import { initialNews } from '$lib/stores/ObjectStore';
 
 	import { Input, Textarea, Button } from 'flowbite-svelte';
-	
+
 	import { authStore } from '$lib/stores/AuthStore';
-	import { EditMode, resetEditMode } from '$lib/stores/FormStore';
-	
+	import { EditMode, resetEditMode } from '$lib/stores/ObjectStore';
+
 	import SlugText from './SlugText.svelte';
 	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
-	import UploadImage from '$lib/components/UploadImage.svelte';
-    import Label from './Label.svelte';
+	import UploadImage from './UploadImage.svelte';
+	import Label from './Label.svelte';
 
 	const author = $authStore.name;
-	let defaultItem = {
-		title: '',
-		author: author,
-		text: '',
-		slug: '',
-		publishdate: '',
-		publishtime: '',
-		image: '',
-		imageAlt: '',
-		imageCaption: '',
-		tags: '',
-		pdfFile: '',
-	};
 
-	export let thisItem: News = defaultItem;
-	const dispatch = createEventDispatcher();
+	export let thisItem: News = initialNews;
+	const dispatch = createEventDispatcher<{
+		create: News;
+		update: News;
+	}>();
 
-	let newItem = defaultItem;
+	let newItem: News = thisItem;
 	let docRef;
 	let selectedImage: File;
 
 	const hasImage = writable(false);
 
-	if ($EditMode === 'update') {
-		newItem = thisItem;
-	}
-
 	const cleanUpForm = () => {
-		newItem = {
-			title: '',
-			author: '',
-			text: '',
-			slug: '',
-			publishdate: '',
-			publishtime: '',
-			image: '',
-			imageAlt: '',
-			imageCaption: '',
-			tags: '',
-			pdfFile: '',
-		};
+		newItem = initialNews;
 	};
-
-	$: hasImage.set(!!newItem.image);
 
 	const handleSlugChange = (e: CustomEvent) => {
 		newItem.slug = e.detail;
@@ -71,17 +44,21 @@
 		e.preventDefault();
 		if (!newItem.publishdate) {
 			const now = new Date();
-			newItem.publishdate = now.toISOString().split('T')[0];
-			newItem.publishtime = now.toLocaleTimeString('en-US', {
+			const dateStr = now.toISOString().split('T')[0];
+			const timeStr = now.toLocaleTimeString('en-US', {
 				hour: '2-digit',
 				minute: '2-digit',
 				hour12: false,
 			});
+			newItem.publishdate = dateStr;
+			newItem.publishtime = timeStr;
 		}
 		!newItem.publishtime && (newItem.publishtime = '09:00');
-		newItem.image = await uploadImage(selectedImage);
-		dispatch($EditMode, newItem);
-		newItem = defaultItem;
+		if (selectedImage) {
+			newItem.image = await uploadImage(selectedImage);
+		}
+		dispatch($EditMode === 'update' ? 'update' : 'create', newItem);
+		newItem = initialNews;
 		resetEditMode();
 		goto('/admin/newsadmin');
 	};
@@ -119,15 +96,14 @@
 
 		<!-- Author -->
 		<div>
-			<Label child="author" disabled=true>Author</Label>
+			<Label child="author" disabled="true">Author</Label>
 			<Input type="text" id="author" bind:value={newItem.author} disabled />
 		</div>
 
 		<!-- News text -->
 		<div>
 			<div class="flex flex-row justify-between">
-				<Label child="news-text">News text *</Label
-				>
+				<Label child="news-text">News text *</Label>
 				<p class="explanation self-end text-right">
 					<strong>{newItem.text.length}</strong> characters.
 				</p>
@@ -148,10 +124,7 @@
 		<!-- Publish date  -->
 		<div>
 			<Label child="publishdate">Publish Date *</Label>
-			<Input 
-			type="date" 
-			id="publishdate" 
-			bind:value={newItem.publishdate} />
+			<Input type="date" id="publishdate" bind:value={newItem.publishdate} />
 			<p class="explanation">If you don't select a publish date, it will be set to today.</p>
 		</div>
 
@@ -171,7 +144,7 @@
 
 		<!-- Image -->
 		<div>
-			<Label >Image</Label>
+			<Label>Image</Label>
 			<div class="flex flex-col items-center justify-center">
 				{#if newItem.image}
 					<UploadImage imageUrl={newItem.image} on:imageChange={handleImageChange} />

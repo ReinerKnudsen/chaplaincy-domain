@@ -12,10 +12,10 @@
 		one: 'border-b font-mono',
 		two: 'border-b border-l pb-1 pl-5',
 		three: 'border-b border-l-4 pb-1 pl-5 font-mono',
-		four: 'border-b border-l pb-1 pl-5'
+		four: 'border-b border-l pb-1 pl-5',
 	};
 
-	const toggleSection = (view) => {
+	const toggleSection = (view: 'help' | 'preview') => {
 		if (view === 'help') {
 			isVisible.help = !isVisible.help;
 		} else if (view === 'preview') {

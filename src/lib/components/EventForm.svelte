@@ -4,15 +4,13 @@
 	import { goto } from '$app/navigation';
 
 	import { Timestamp } from 'firebase/firestore';
+
+	import { uploadImage } from '$lib/services/fileService';
+	import { EditMode, EditModeStore, type Event } from '$lib/stores/ObjectStore';
+	import { selectedLocation, AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 	import { authStore } from '$lib/stores/AuthStore';
 
-	import { EditMode, resetEditMode } from '$lib/stores/ObjectStore';
-	import { selectedLocation, AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
-	import { uploadImage } from '$lib/services/fileService';
-	import type { Event, News } from '$lib/stores/ObjectStore';
-
 	import { Input, Checkbox, Textarea, Helper, Button, Tooltip } from 'flowbite-svelte';
-
 	import SlugText from './SlugText.svelte';
 	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadImage from '$lib/components/UploadImage.svelte';
@@ -44,6 +42,7 @@
 		comments: '',
 		image: '',
 		imageAlt: '',
+		tags: [],
 	};
 
 	export let thisEvent: Event = defaultEvent;
@@ -58,16 +57,24 @@
 	let locations;
 
 	onMount(async () => {
-		locations = await fetchLocations();
-		if ($EditMode === 'update') {
+		await fetchLocations();
+		if ($EditModeStore === EditMode.Update) {
 			newEvent = thisEvent;
-			$selectedLocation = thisEvent.location;
+			const location = $AllLocations.find((loc) => loc.id === thisEvent.location);
+			selectedLocation.set(
+				location || {
+					id: '',
+					name: '',
+					description: '',
+					street: '',
+					city: '',
+					zip: '',
+					openMapUrl: '',
+				},
+			);
 		}
 		loading = false;
-		console.log('EditMode: ', $EditMode);
 	});
-
-	$: AllLocations.set(locations);
 
 	const handleConditionChange = (e: Event) => {
 		if (e.target.checked) {
@@ -81,7 +88,7 @@
 		newEvent.slug = e.detail;
 	};
 
-	const handleSetPublishDate = (e: Event) => {
+	const handleSetPublishDate = (e: MouseEvent) => {
 		e.preventDefault();
 		if (newEvent.startdate) {
 			const pubdate = new Date(newEvent.startdate);
@@ -89,7 +96,7 @@
 			newEvent.publishdate = pubdate.toISOString().split('T')[0];
 		}
 	};
-	const handleSetEndDate = (e: Event) => {
+	const handleSetEndDate = (e: MouseEvent) => {
 		e.preventDefault();
 		if (newEvent.startdate) {
 			const enddate = new Date(newEvent.startdate);
@@ -136,20 +143,20 @@
 		}
 		!newEvent.publishtime && (newEvent.publishtime = '09:00');
 		!newEvent.unpublishdate && (newEvent.unpublishdate = newEvent.startdate);
-		!newEvent.unpublishtime && (newEvent.unpublishtime = newEvent.starttime);
+		!newEvent.unpublishtime && (newEvent.unpublishtime = newEvent.starttime!);
 		const publishDateTime = new Date(newEvent.publishdate + 'T' + newEvent.publishtime);
-		newEvent.publishDateTime = Timestamp.fromDate(publishDateTime);
+		newEvent.publishDateTime = Timestamp.fromDate(publishDateTime!);
 		const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
 		newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
 		newEvent.image = await uploadImage(selectedImage);
-		dispatch($EditMode, newEvent);
+		dispatch($EditModeStore, newEvent);
 		newEvent = defaultEvent;
 		goto('/admin/eventsadmin');
 	};
 
 	const handleReset = () => {
 		newEvent = defaultEvent;
-		resetEditMode();
+		EditModeStore.set('');
 	};
 </script>
 
@@ -157,7 +164,7 @@
 	<div>Loading...</div>
 {:else}
 	<div class="form bg-white-primary">
-		<h1 class="mx-10">{$EditMode === 'update' ? 'Edit event' : 'Create new event'}</h1>
+		<h1 class="mx-10">{$EditModeStore === 'update' ? 'Edit event' : 'Create new event'}</h1>
 	</div>
 
 	<form enctype="multipart/form-data" on:submit={handleSubmit} on:reset={handleReset}>
@@ -377,7 +384,7 @@
 		<div class="form my-8 bg-white-primary p-10">
 			<!-- Image -->
 			<div>
-				<Label>Image</Label>
+				<Label child="image">Image</Label>
 				<div class="flex items-center justify-center">
 					{#if newEvent.image}
 						<UploadImage imageUrl={newEvent.image} on:imageChange={handleImageChange} />
@@ -423,7 +430,7 @@
 			</div>
 
 			<div>
-				<Label>PDF Document</Label>
+				<Label child="pdfFile">PDF Document</Label>
 				<div class="flex flex-col items-center justify-center">
 					<UploadPDF fileUrl={newEvent.pdfFile} on:upload={assignPDF} />
 					<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
@@ -449,7 +456,7 @@
 					class="bg-primary-100  font-semibold text-white-primary"
 					type="submit"
 					disabled={newEvent.length === 0}
-					>{$EditMode === 'update' ? 'Update' : 'Save'} event</Button
+					>{$EditModeStore === 'update' ? 'Update' : 'Save'} event</Button
 				>
 			</div>
 		</div>

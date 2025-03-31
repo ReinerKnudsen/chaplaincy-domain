@@ -186,9 +186,14 @@ export function resetNewsStore() {
 }
 
 // Other collection or dcoument related items
-export const EditMode = writable<'new' | 'update' | ''>('new');
-export function resetEditMode() {
-	EditMode.set('');
+export enum EditMode {
+	New = 'new',
+	Update = 'update',
+}
+
+export const EditModeStore = writable<'new' | 'update' | ''>('new');
+export function resetEditModeStore() {
+	EditModeStore.set('');
 }
 
 // Collection and document related functions

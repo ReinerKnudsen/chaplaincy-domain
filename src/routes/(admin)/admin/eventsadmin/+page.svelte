@@ -11,6 +11,7 @@
 	import {
 		CollectionType,
 		EditMode,
+		EditModeStore,
 		EventsStore,
 		EventStore,
 		resetEventStore,
@@ -19,11 +20,10 @@
 		type Event,
 		type EventSortableFields,
 	} from '$lib/stores/ObjectStore';
-	import { resetCurrentLocation, fetchLocations, type Location } from '$lib/stores/LocationsStore';
+	import { AllLocations } from '$lib/stores/LocationsStore';
 
 	import { Button, Modal } from 'flowbite-svelte';
 
-	let locations: Location[] = [];
 	let showModal = false;
 	let showDuplicateModal = false;
 	let deleteID: string = '';
@@ -32,10 +32,6 @@
 
 	let locationMap: Record<string, string> = {};
 
-	const loadLocations = async () => {
-		locations = await fetchLocations();
-	};
-
 	const loadData = async () => {
 		await loadItems(CollectionType.Events);
 	};
@@ -43,8 +39,6 @@
 	onMount(async () => {
 		$pathName = $page.url.pathname;
 		await loadData();
-		await loadLocations();
-		resetCurrentLocation();
 		loading = false;
 	});
 
@@ -82,13 +76,13 @@
 		sortItems.set(sorted);
 	}
 
-	const handleSearchInput = (event: Event) => {
+	const handleSearchInput = (event: CustomEvent) => {
 		//console.log(event.target.value);
 	};
 
 	const handleCreateNew = () => {
 		resetEventStore();
-		EditMode.set('new');
+		EditModeStore.set(EditMode.New);
 		goto('/admin/eventsadmin/create');
 	};
 
@@ -98,7 +92,7 @@
 			return;
 		}
 		EventStore.set(selectedEvent.data as Event);
-		EditMode.set('update');
+		EditModeStore.set(EditMode.Update);
 		goto(`/admin/eventsadmin/${id}`);
 	};
 
@@ -111,7 +105,7 @@
 		loading = true;
 		await loadData();
 		loading = false;
-		EditMode.set('update');
+		EditModeStore.set(EditMode.Update);
 		goto(`/admin/eventsadmin/${newEvent}`);
 	};
 
@@ -167,12 +161,7 @@
 	<h1>Events</h1>
 	<div class="mb-6 grid grid-cols-12 items-center gap-2 lg:gap-20">
 		<div class="col-span-9">
-			<input
-				class="w-full rounded-lg"
-				placeholder="Search (not yet active)"
-				type="text"
-				on:input={handleSearchInput}
-			/>
+			<input class="w-full rounded-lg" placeholder="Search (not yet active)" type="text" />
 		</div>
 		<div class="col-span-3 justify-self-end">
 			<Button
@@ -207,7 +196,7 @@
 							>
 							<td>{item.data.startdate}</td>
 							<td>{item.data.publishdate}</td>
-							<td>{locationMap[item.data.location]}</td>
+							<td>{item.data.location}</td>
 							<td>{item.data.author}</td>
 							<td>
 								<div class="flex justify-between">

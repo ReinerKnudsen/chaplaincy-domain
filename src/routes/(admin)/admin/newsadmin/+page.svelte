@@ -12,6 +12,7 @@
 	import {
 		resetNewsStore,
 		EditMode,
+		EditModeStore,
 		CollectionType,
 		loadItems,
 		NewsItemsStore,
@@ -70,7 +71,7 @@
 
 	const handleCreateNew = () => {
 		resetNewsStore();
-		EditMode.set('new');
+		EditModeStore.set(EditMode.New);
 		goto('/admin/newsadmin/create');
 	};
 
@@ -80,7 +81,7 @@
 			return;
 		}
 		NewsStore.set(selectedNews.data as News);
-		EditMode.set('update');
+		EditModeStore.set(EditMode.Update);
 		goto('/admin/newsadmin/' + id);
 	};
 

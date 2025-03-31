@@ -8,12 +8,16 @@
 
 	let currentDocRef: DocumentReference | null = null;
 
+	/**
+	 * TODO: Report completion or error
+	 */
 	onMount(async () => {
 		currentDocRef = await loadItem($page.params.newsId, CollectionType.News);
 	});
 
 	const updateNews = async (event: CustomEvent<Record<string, any>>) => {
-		let result = await updateDoc(currentDocRef!, event.detail);
+		await updateDoc(currentDocRef!, event.detail);
+		console.log('News updated: ', event.detail);
 	};
 </script>
 

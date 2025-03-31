@@ -186,9 +186,14 @@ export function resetNewsStore() {
 }
 
 // Other collection or dcoument related items
-export const EditMode = writable<'new' | 'update' | ''>('new');
-export function resetEditMode() {
-	EditMode.set('');
+export enum EditMode {
+	New = 'new',
+	Update = 'update',
+}
+
+export const EditModeStore = writable<'new' | 'update' | ''>('new');
+export function resetEditModeStore() {
+	EditModeStore.set('');
 }
 
 // Collection and document related functions
@@ -323,7 +328,6 @@ export const loadDocument = async (type: DocumentType): Promise<void> => {
 			} else if (type === DocumentType.Newsletter) {
 				NewsletterStore.set(null);
 			}
-			console.log(`No documents of type ${type} found.`);
 		}
 	} catch (error) {
 		console.error(`Error loading ${type} document:`, error);
@@ -370,6 +374,12 @@ export const loadDocuments = async (type: DocumentType) => {
 					});
 				});
 				NewslettersStore.set(documents);
+			}
+		} else {
+			if (type === DocumentType.WeeklySheet) {
+				WeeklySheetsStore.set([]);
+			} else if (type === DocumentType.Newsletter) {
+				NewslettersStore.set([]);
 			}
 		}
 	} catch (error) {

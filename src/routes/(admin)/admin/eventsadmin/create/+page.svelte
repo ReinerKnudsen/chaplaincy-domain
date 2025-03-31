@@ -3,14 +3,14 @@
 
 	import EventForm from '$lib/components/EventForm.svelte';
 	import { addDoc } from 'firebase/firestore';
-	import { resetEditMode } from '$lib/stores/ObjectStore';
-
+	import { EditModeStore } from '$lib/stores/ObjectStore';
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
 
 	const saveNewEvent = async (e: CustomEvent) => {
 		try {
 			await addDoc(eventsColRef, e.detail);
-			resetEditMode();
+			console.log('Event saved successfully', e.detail);
+			EditModeStore.set('');
 			goto('/admin/eventsadmin');
 		} catch (error) {
 			console.error('Error writing event document:', error);

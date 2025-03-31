@@ -10,7 +10,7 @@
 	import { Input, Textarea, Button } from 'flowbite-svelte';
 
 	import { authStore } from '$lib/stores/AuthStore';
-	import { EditMode, resetEditMode } from '$lib/stores/ObjectStore';
+	import { EditModeStore, EditMode } from '$lib/stores/ObjectStore';
 
 	import SlugText from './SlugText.svelte';
 	import MarkdownHelp from './MarkdownHelp.svelte';
@@ -22,11 +22,12 @@
 
 	export let thisItem: News = initialNews;
 	const dispatch = createEventDispatcher<{
-		create: News;
+		new: News;
 		update: News;
 	}>();
 
-	let newItem: News = thisItem;
+	let newItem: News = { ...thisItem };
+	newItem.author = author;
 	let docRef;
 	let selectedImage: File;
 
@@ -41,6 +42,7 @@
 	};
 
 	const handleSubmit = async (e: SubmitEvent) => {
+		console.log('Called handleSubmit');
 		e.preventDefault();
 		if (!newItem.publishdate) {
 			const now = new Date();
@@ -57,15 +59,15 @@
 		if (selectedImage) {
 			newItem.image = await uploadImage(selectedImage);
 		}
-		dispatch($EditMode === 'update' ? 'update' : 'create', newItem);
+		dispatch($EditModeStore === EditMode.Update ? EditMode.Update : EditMode.New, newItem);
 		newItem = initialNews;
-		resetEditMode();
+		EditModeStore.set('');
 		goto('/admin/newsadmin');
 	};
 
 	const handleReset = () => {
 		cleanUpForm();
-		resetEditMode();
+		EditModeStore.set('');
 		goto('/admin/newsadmin');
 	};
 
@@ -80,7 +82,7 @@
 </script>
 
 <div class="form bg-white-primary">
-	<h1 class="">{$EditMode === 'update' ? 'Edit news item' : 'Create news item'}</h1>
+	<h1 class="">{$EditModeStore === EditMode.Update ? 'Edit news item' : 'Create news item'}</h1>
 
 	<form
 		id="form-container"
@@ -96,7 +98,7 @@
 
 		<!-- Author -->
 		<div>
-			<Label child="author" disabled="true">Author</Label>
+			<Label child="author" disabled={true}>Author</Label>
 			<Input type="text" id="author" bind:value={newItem.author} disabled />
 		</div>
 
@@ -144,7 +146,7 @@
 
 		<!-- Image -->
 		<div>
-			<Label>Image</Label>
+			<Label child="image">Image</Label>
 			<div class="flex flex-col items-center justify-center">
 				{#if newItem.image}
 					<UploadImage imageUrl={newItem.image} on:imageChange={handleImageChange} />
@@ -207,7 +209,8 @@
 			<Button
 				class="bg-primary-100  font-semibold text-white-primary"
 				type="submit"
-				disabled={newItem.length === 0}>{$EditMode === 'update' ? 'Update' : 'Save'} news</Button
+				disabled={newItem.title.length === 0}
+				>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</Button
 			>
 		</div>
 	</form>

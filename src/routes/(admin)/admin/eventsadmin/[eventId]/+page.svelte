@@ -1,9 +1,8 @@
 <script lang="ts">
 	import EventForm from '$lib/components/EventForm.svelte';
 	import { updateDoc } from 'firebase/firestore';
-	import { resetEditMode } from '$lib/stores/ObjectStore.js';
 	import { DocumentReference } from 'firebase/firestore';
-	import type { Event } from '$lib/stores/ObjectStore.js';
+	import { type Event, EditModeStore } from '$lib/stores/ObjectStore';
 
 	type Params = {
 		newEvent: Event;
@@ -18,7 +17,7 @@
 				throw new Error('No document reference provided');
 			}
 			await updateDoc(data.docRef, event.detail);
-			resetEditMode();
+			EditModeStore.set('');
 		} catch (error) {
 			console.log('Error updating the event: ', error);
 		}

@@ -1,30 +1,22 @@
 <script lang="ts">
-	import { onMount, createEventDispatcher } from 'svelte';
-	import { getFirestore, collection, getDocs } from 'firebase/firestore';
-	import { writable } from 'svelte/store';
+	import { createEventDispatcher } from 'svelte';
 
-	const db = getFirestore();
-	export let locationAdded = false;
+	import { selectedLocation, AllLocations } from '$lib/stores/LocationsStore';
 
 	const dispatch = createEventDispatcher();
 
-	// Parent component should handle locationAdded event and set locationAdded to true
-
-	export let selectedLocationId = '';
-	export let locations;
-
-	function handleChange(event) {
-		dispatch('change', { value: event.target.value });
+	function handleChange(event: Event) {
+		dispatch('change', { value: (event.target as HTMLSelectElement).value });
 	}
 </script>
 
 <select
 	class="mb-2 min-h-12 w-full rounded-md border-slate-300 bg-slate-50"
-	bind:value={selectedLocationId}
+	bind:value={$selectedLocation}
 	on:change={handleChange}
 >
 	<option value="" disabled>Select a location</option>
-	{#each $locations as location}
+	{#each $AllLocations as location}
 		<option value={location.id}>{location.name}</option>
 	{/each}
 	<option value="new">Create new location...</option>

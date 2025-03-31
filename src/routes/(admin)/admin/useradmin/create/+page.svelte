@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import type { User } from '../../../../../lib/types';
-	import { Button, Label, Input, Select } from 'flowbite-svelte';
-	import { createNewUser } from '../../../../../lib/services/authService';
+	import { Button, Input, Select } from 'flowbite-svelte';
+	import { createNewUser } from '$lib/services/authService';
+	import Label from '$lib/components/Label.svelte';
 
 	type User = {
 		firstname: string;
@@ -20,27 +20,20 @@
 		email: '',
 		displayName: '',
 		uid: '',
-		role: ''
+		role: '',
 	};
-
-	let errorObject = {
-		emailErr: '',
-		nameErr: ''
-	};
-
-	let password = '';
-	let confirmPassword = '';
-	let passwordError = false;
 
 	const userRoles = [
 		{ value: 'editor', name: 'Editor' },
-		{ value: 'admin', name: 'Admin' }
+		{ value: 'admin', name: 'Admin' },
 	];
 
 	let newUser = initUser;
 
 	onMount(() => {
-		document.getElementById('firstname').focus();
+		if (document.getElementById('firstname')) {
+			document.getElementById('firstname').focus();
+		}
 	});
 
 	const resetForm = () => {
@@ -58,7 +51,7 @@
 	<div class="w-5/12 space-y-4 rounded-xl bg-white-primary p-6 shadow-xl sm:p-8 md:space-y-6">
 		<form class="flex flex-col space-y-6" on:submit={create}>
 			<h3 class="dark:text-white p-0 text-xl font-medium text-gray-900">Create an new account</h3>
-			<Label class="space-y-2">
+			<Label child="firstname" class="space-y-2">
 				<span><strong>First name *</strong></span>
 				<Input
 					type="text"
@@ -69,7 +62,7 @@
 					required
 				/>
 			</Label>
-			<Label class="space-y-2">
+			<Label child="lastname" class="space-y-2">
 				<span>Last name</span>
 				<Input
 					type="text"
@@ -79,7 +72,7 @@
 					placeholder="last name"
 				/>
 			</Label>
-			<Label class="space-y-2">
+			<Label child="displayname" class="space-y-2">
 				<span>Display Name</span>
 				<Input
 					type="text"
@@ -89,7 +82,7 @@
 					placeholder="display name"
 				/>
 			</Label>
-			<Label class="space-y-2">
+			<Label child="email" class="space-y-2">
 				<span><strong>Email *</strong></span>
 				<Input
 					type="email"
@@ -102,8 +95,8 @@
 			</Label>
 
 			<div class="mb-6">
-				<Label for="role" class="mb-2 block">User role</Label>
-				<Select class="mt-2" items={userRoles} bind:value={newUser.role} />
+				<Label child="roles">User role</Label>
+				<Select id="roles" class="mt-2" items={userRoles} bind:value={newUser.role} />
 			</div>
 
 			<Button type="submit" class="w-full  bg-primary-80 text-white-primary">Create user</Button>

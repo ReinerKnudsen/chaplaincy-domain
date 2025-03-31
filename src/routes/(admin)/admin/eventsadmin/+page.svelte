@@ -1,69 +1,62 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
-	import { writable } from 'svelte/store';
+	import { writable, type Writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 
-	import { doc, deleteDoc, getDocs } from 'firebase/firestore';
+	import { doc, deleteDoc } from 'firebase/firestore';
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
-	import { getFirestore, collection } from 'firebase/firestore';
 
 	import { pathName } from '$lib/stores/NavigationStore';
-	import { resetEventStore } from '$lib/stores/FormStore';
-	import { duplicateItem } from '$lib/services/fileService.js';
+	import {
+		CollectionType,
+		EditMode,
+		EditModeStore,
+		EventsStore,
+		EventStore,
+		resetEventStore,
+		loadItems,
+		duplicateItem,
+		type Event,
+		type EventSortableFields,
+	} from '$lib/stores/ObjectStore';
+	import { AllLocations } from '$lib/stores/LocationsStore';
 
 	import { Button, Modal } from 'flowbite-svelte';
 
-	export let data;
-	let events = data.events;
 	let showModal = false;
 	let showDuplicateModal = false;
-	let deleteID = '';
-	let dupeID = '';
-	let loading;
+	let deleteID: string = '';
+	let dupeID: string = '';
+	let loading: boolean = true;
 
-	const db = getFirestore();
-	let locationMap = {};
-
-	async function fetchLocations() {
-		const querySnapshot = await getDocs(collection(db, 'location'));
-		querySnapshot.forEach((doc) => {
-			const data = doc.data();
-			locationMap[doc.id] = `${data.name}, ${data.city}`;
-		});
-	}
+	let locationMap: Record<string, string> = {};
 
 	const loadData = async () => {
-		let snapshot = await getDocs(eventsColRef);
-		events = snapshot.docs.map((event) => {
-			return {
-				id: event.id,
-				data: event.data(),
-			};
-		});
-		sortTable($sortKey, false);
+		await loadItems(CollectionType.Events);
 	};
 
 	onMount(async () => {
 		$pathName = $page.url.pathname;
-		await fetchLocations();
+		await loadData();
+		loading = false;
 	});
 
 	// Sort table items
-	const sortKey = writable('title'); // default sort key
-	const sortDirection = writable(1); // default sort direction (ascending)
-	$: sortItems = writable(events.slice()); // make a copy of the array
+	const sortKey: Writable<EventSortableFields> = writable('title');
+	const sortDirection: Writable<number> = writable(1);
+	$: sortItems = writable($EventsStore.slice()); // make a copy of the array
 
-	// Define a function to sort the items
-	const sortTable = (key, toggle) => {
-		// If the same key is clicked, reverse the sort direction
+	/**
+	 * TODO:We should store sort order in SessionStorage
+	 */
+
+	const sortTable = (key: EventSortableFields) => {
 		if ($sortKey === key) {
 			sortDirection.update((val) => -val);
 		} else {
 			sortKey.set(key);
-			if (toggle) {
-				sortDirection.set(1);
-			}
+			sortDirection.set(1);
 		}
 	};
 
@@ -71,7 +64,6 @@
 		const key = $sortKey;
 		const direction = $sortDirection;
 		const sorted = [...$sortItems].sort((a, b) => {
-			// since the data sits deeper in the news object we must dig deeper here
 			const aVal = a.data[key];
 			const bVal = b.data[key];
 			if (aVal < bVal) {
@@ -84,39 +76,51 @@
 		sortItems.set(sorted);
 	}
 
-	const handleSearchInput = (event) => {
+	const handleSearchInput = (event: CustomEvent) => {
 		//console.log(event.target.value);
 	};
 
-	const handleClick = async () => {
-		await resetEventStore();
+	const handleCreateNew = () => {
+		resetEventStore();
+		EditModeStore.set(EditMode.New);
 		goto('/admin/eventsadmin/create');
+	};
+
+	const handleOpenItem = (id: string) => {
+		const selectedEvent = $EventsStore.find((item) => item.id === id);
+		if (!selectedEvent) {
+			return;
+		}
+		EventStore.set(selectedEvent.data as Event);
+		EditModeStore.set(EditMode.Update);
+		goto(`/admin/eventsadmin/${id}`);
+	};
+
+	const handleDuplicate = async () => {
+		const newEvent = await duplicateItem(dupeID, CollectionType.Events);
+		if (!newEvent) {
+			return;
+		}
+		showDuplicateModal = false;
+		loading = true;
+		await loadData();
+		loading = false;
+		EditModeStore.set(EditMode.Update);
+		goto(`/admin/eventsadmin/${newEvent}`);
 	};
 
 	const handleDelete = async () => {
 		showModal = false;
 		await deleteDoc(doc(eventsColRef, deleteID));
-		events = events.filter((event) => event.id !== deleteID);
-		loading = true;
 		await loadData();
-		loading = false;
 	};
 
-	const handleDuplicate = async () => {
-		const newEvent = await duplicateItem(dupeID, 'events'); // docRef of the new Event
-		showDuplicateModal = false;
-		loading = true;
-		await loadData();
-		loading = false;
-		goto(`/admin/eventsadmin/${newEvent}`);
-	};
-
-	const openModal = (id) => {
+	const openModal = (id: string) => {
 		deleteID = id;
 		showModal = true;
 	};
 
-	const openDuplicateModal = (id) => {
+	const openDuplicateModal = (id: string) => {
 		dupeID = id;
 		showDuplicateModal = true;
 	};
@@ -157,69 +161,62 @@
 	<h1>Events</h1>
 	<div class="mb-6 grid grid-cols-12 items-center gap-2 lg:gap-20">
 		<div class="col-span-9">
-			<input
-				class="w-full rounded-lg"
-				placeholder="Search (not yet active)"
-				type="text"
-				on:input={handleSearchInput}
-			/>
+			<input class="w-full rounded-lg" placeholder="Search (not yet active)" type="text" />
 		</div>
 		<div class="col-span-3 justify-self-end">
-			<Button on:click={handleClick} class="bg-primary-100 text-lg font-semibold text-white-primary"
-				>Create Event</Button
+			<Button
+				on:click={handleCreateNew}
+				class="bg-primary-100 text-lg font-semibold text-white-primary">Create Event</Button
 			>
 		</div>
 	</div>
 
-	<div class="w-full">
-		<table>
-			<thead>
-				<tr>
-					<th on:click={() => sortTable('title', true)}>Title</th>
-					<th on:click={() => sortTable('startdate', true)}>Date</th>
-					<th on:click={() => sortTable('publishdate', true)}>Publish date</th>
-					<th on:click={() => sortTable('location', true)}>Location</th>
-					<th on:click={() => sortTable('author', true)}>Author</th>
-					<th>Action</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each $sortItems as item}
+	{#if loading}
+		<div class="w-full">Loading...</div>
+	{:else}
+		<div class="w-full">
+			<table>
+				<thead>
 					<tr>
-						<td><a class="underline" href="/admin/eventsadmin/{item.id}">{item.data.title}</a></td>
-						<td>{item.data.startdate}</td>
-						<td>{item.data.publishdate}</td>
-						<td>{locationMap[item.data.location] || item.data.location}</td>
-						<td>{item.data.author}</td>
-						<td>
-							<!-- <select
-								name="actions"
-								id="actions"
-								class="mr-4 max-h-8 max-w-28 rounded-md py-0 text-sm"
-							>
-								<option value="" disabled selected>Select</option>
-								<option value="">Edit</option>
-								<option value="">Delete</option>
-								<option value="">Duplicate</option>
-							</select> -->
-
-							<div class="flex justify-between">
-								<button
-									class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-									on:click={() => openModal(item.id)}>Delete</button
-								>
-								|
-								<button
-									class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-									on:click={() => openDuplicateModal(item.id)}>Duplicate</button
-								>
-							</div>
-						</td>
+						<th on:click={() => sortTable('title')}>Title</th>
+						<th on:click={() => sortTable('startdate')}>Date</th>
+						<th on:click={() => sortTable('publishdate')}>Publish date</th>
+						<th on:click={() => sortTable('location')}>Location</th>
+						<th on:click={() => sortTable('author')}>Author</th>
+						<th>Action</th>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</div>
+				</thead>
+				<tbody>
+					{#each $sortItems as item}
+						<tr>
+							<td
+								><button class="underline" on:click={() => handleOpenItem(item.id)}
+									>{item.data.title}</button
+								></td
+							>
+							<td>{item.data.startdate}</td>
+							<td>{item.data.publishdate}</td>
+							<td>{item.data.location}</td>
+							<td>{item.data.author}</td>
+							<td>
+								<div class="flex justify-between">
+									<button
+										class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+										on:click={() => openModal(item.id)}>Delete</button
+									>
+									|
+									<button
+										class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+										on:click={() => openDuplicateModal(item.id)}>Duplicate</button
+									>
+								</div>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+	{/if}
 </div>
 
 <style>

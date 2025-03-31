@@ -4,12 +4,12 @@
 		text: string;
 		extraLink?: string;
 		extraLinkText?: string;
-		activitiesLink?: boolean;
+		eventsLink?: boolean;
 	};
 
 	export let group: Group;
 
-	const { name, text, extraLink, extraLinkText, activitiesLink } = group;
+	const { name, text, extraLink, extraLinkText, eventsLink } = group;
 </script>
 
 <div class="group border-b-2 border-slate-300">
@@ -19,8 +19,8 @@
 	<div class="group-text flex flex-col space-y-8 pb-4">
 		{@html text}
 
-		{#if extraLink || activitiesLink}
-			{#if extraLink && activitiesLink}
+		{#if extraLink || eventsLink}
+			{#if extraLink && eventsLink}
 				<div class="flex flex-row justify-between gap-20 py-4">
 					<p class="bg-slate-200 p-4">
 						<a class="border-b-2 border-b-purple-100 pb-1" href={extraLink} target="_blank"
@@ -28,8 +28,7 @@
 						>
 					</p>
 					<p class="bg-slate-200 p-4">
-						Please check our <a class="border-b-2 border-b-purple-100 pb-1" href="/activities"
-							>Activities</a
+						Please check our <a class="border-b-2 border-b-purple-100 pb-1" href="/events">Events</a
 						> page for upcoming meetings.
 					</p>
 				</div>
@@ -42,11 +41,10 @@
 						>.
 					</p>
 				</div>
-			{:else if activitiesLink}
+			{:else if eventsLink}
 				<div class=" bg-slate-200 py-4 pl-4">
 					<p>
-						Please check our <a class="border-b-2 border-b-purple-100 pb-1" href="/activities"
-							>Activities</a
+						Please check our <a class="border-b-2 border-b-purple-100 pb-1" href="/events">Events</a
 						> page for upcoming meetings.
 					</p>
 				</div>

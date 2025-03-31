@@ -1,46 +1,48 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { pathName } from '$lib/stores/NavigationStore';
-	import { resetNewsStore } from '$lib/stores/FormStore';
+
 	import { goto } from '$app/navigation';
-	import { doc, deleteDoc, getDocs } from 'firebase/firestore';
+	import { doc, deleteDoc, type DocumentData } from 'firebase/firestore';
 	import { newsColRef } from '$lib/firebase/firebaseConfig';
-	import { makeDate, makeTimestamp } from '$lib/utils/dateUtils';
 
+	import { Button, Modal } from 'flowbite-svelte';
 	import {
-		Checkbox,
-		Table,
-		TableBody,
-		TableBodyCell,
-		TableBodyRow,
-		TableHead,
-		TableHeadCell,
-		Search,
-		Button,
-		Modal,
-	} from 'flowbite-svelte';
+		resetNewsStore,
+		EditMode,
+		EditModeStore,
+		CollectionType,
+		loadItems,
+		NewsItemsStore,
+		type News,
+		type NewsSortableFields,
+		NewsStore,
+	} from '$lib/stores/ObjectStore';
 
-	export let data;
-	let news = data.news;
+	const loadData = async () => {
+		await loadItems(CollectionType.News);
+	};
+
 	let showModal = false;
-	let deleteID = '';
+	let deleteID: string = '';
+	let loading = true;
 
-	onMount(() => {
+	onMount(async () => {
 		$pathName = $page.url.pathname;
+		await loadData();
+		loading = false;
 	});
 
 	// Sort table items
-	const sortKey = writable('title'); // default sort key
-	const sortDirection = writable(1); // default sort direction (ascending)
-	const sortItems = writable(news.slice()); // make a copy of the news array
+	const sortKey = writable<NewsSortableFields>('title');
+	const sortDirection = writable<1 | -1>(1);
+	$: sortItems = writable($NewsItemsStore.slice());
 
-	// Define a function to sort the items
-	const sortTable = (key) => {
-		// If the same key is clicked, reverse the sort direction
+	const sortTable = (key: NewsSortableFields) => {
 		if ($sortKey === key) {
-			sortDirection.update((val) => -val);
+			sortDirection.update((val) => (val === 1 ? -1 : 1));
 		} else {
 			sortKey.set(key);
 			sortDirection.set(1);
@@ -51,7 +53,6 @@
 		const key = $sortKey;
 		const direction = $sortDirection;
 		const sorted = [...$sortItems].sort((a, b) => {
-			// since the data sits deeper in the news object we must dig deeper here
 			const aVal = a.data[key];
 			const bVal = b.data[key];
 			if (aVal < bVal) {
@@ -64,21 +65,33 @@
 		sortItems.set(sorted);
 	}
 
-	const handleSearchInput = (news) => {
-		//console.log(news.target.value);
+	const handleSearchInput = (event: Event) => {
+		//console.log(event.target.value);
 	};
 
-	const handleCreateNew = async () => {
-		await resetNewsStore();
+	const handleCreateNew = () => {
+		resetNewsStore();
+		EditModeStore.set(EditMode.New);
 		goto('/admin/newsadmin/create');
 	};
 
-	const handleDelete = async (id) => {
-		await deleteDoc(doc(newsColRef, id));
-		news = news.filter((item) => item.id !== id);
+	const handleOpenItem = (id: string) => {
+		const selectedNews = $NewsItemsStore.find((item) => item.id === id);
+		if (!selectedNews) {
+			return;
+		}
+		NewsStore.set(selectedNews.data as News);
+		EditModeStore.set(EditMode.Update);
+		goto('/admin/newsadmin/' + id);
 	};
 
-	const openModal = (id) => {
+	const handleDelete = async () => {
+		showModal = false;
+		await deleteDoc(doc(newsColRef, deleteID));
+		await loadData();
+	};
+
+	const openModal = (id: string) => {
 		deleteID = id;
 		showModal = true;
 	};
@@ -117,38 +130,45 @@
 			>
 		</div>
 	</div>
-
-	<div class="w-full">
-		<table>
-			<thead>
-				<tr>
-					<th on:click={() => sortTable('title')}>Title</th>
-					<th on:click={() => sortTable('text')}>News Text</th>
-					<th on:click={() => sortTable('publishdate')}>Publish date</th>
-					<th on:click={() => sortTable('author')}>Author</th>
-					<th>Edit</th>
-				</tr>
-			</thead>
-			<tbody>
-				{#each $sortItems as item}
+	{#if loading}
+		<div class="w-full">Loading...</div>
+	{:else}
+		<div class="w-full">
+			<table>
+				<thead>
 					<tr>
-						<td><a class="underline" href={'/admin/newsadmin/' + item.id}>{item.data.title}</a></td>
-						<td>{item.data.text}</td>
-						<td>{item.data.publishdate}</td>
-						<td>{item.data.author}</td>
-						<td>
-							<div class="flex justify-between">
-								<button
-									class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-									on:click={() => openModal(item.id)}>Delete</button
-								>
-							</div>
-						</td>
+						<th on:click={() => sortTable('title')}>Title</th>
+						<th on:click={() => sortTable('text')}>News Text</th>
+						<th on:click={() => sortTable('publishdate')}>Publish date</th>
+						<th on:click={() => sortTable('author')}>Author</th>
+						<th>Edit</th>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</div>
+				</thead>
+				<tbody>
+					{#each $sortItems as item}
+						<tr>
+							<td
+								><button class="underline" on:click={() => handleOpenItem(item.id)}
+									>{item.data.title}</button
+								></td
+							>
+							<td>{item.data.text}</td>
+							<td>{item.data.publishdate}</td>
+							<td>{item.data.author}</td>
+							<td>
+								<div class="flex justify-between">
+									<button
+										class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+										on:click={() => openModal(item.id)}>Delete</button
+									>
+								</div>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+	{/if}
 </div>
 
 <style>

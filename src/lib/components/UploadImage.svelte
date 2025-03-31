@@ -1,65 +1,59 @@
 <script lang="ts">
 	import { createEventDispatcher, onDestroy } from 'svelte';
-	import { onMount } from 'svelte';
 
 	import { Button } from 'flowbite-svelte';
-	import { ref, uploadBytes, getDownloadURL, getMetadata } from 'firebase/storage';
-	import { getDoc, query, doc } from 'firebase/firestore';
 
-	import { storage, database } from '$lib/firebase/firebaseConfig';
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
 
-	export let imageUrl: string;
+	import { FileType, checkIfFileExists } from '$lib/services/fileService';
 
-	const dispatch = createEventDispatcher();
+	export let imageUrl: string;
+	const dispatch = createEventDispatcher<{
+		imageChange: File;
+		error: string;
+	}>();
 	const authorizedExtensions = '.jpg, .jpeg, .png, .webp';
 
-	let selectedFile: File;
+	let selectedFile: File | null = null;
 	let moduleWidth = 'w-[400px]';
-	let imageError: string;
-	let imageNote: string;
+	let imageError: string = '';
+	let imageNote: string = '';
 
-	/** Verify in Firestore Collection if an image of this name is already present*/
-	const checkIfFileExists = async (imageFile: string) => {
-		if (!imageFile) {
-			return null;
-		}
-		const docRef = doc(database, 'images', imageFile);
-		const docSnap = await getDoc(docRef);
-
-		if (docSnap.exists()) {
-			return docSnap; // File exists in Firestore
-		} else {
-			return null; // File doesn't exist in Firestore
-		}
-	};
-
-	const handleFileChange = async (event) => {
+	const handleFileChange = async (event: Event) => {
 		event.preventDefault();
 		imageError = '';
-		if (event.target) {
-			selectedFile = event.target.files[0];
-			let existingFile = await checkIfFileExists(selectedFile.name);
-			if (existingFile) {
-				imageError = '';
-				imageNote = 'This image already exists.';
-				imageUrl = existingFile.data().url;
-				dispatch('imageChange', selectedFile);
+		const target = event.target as HTMLInputElement;
+		const files = target.files;
+
+		if (!files || files.length === 0) {
+			imageError = 'No file selected';
+			dispatch('error', imageError);
+			return;
+		}
+
+		selectedFile = files[0];
+		const existingFile = await checkIfFileExists(selectedFile.name, FileType.Image);
+
+		if (existingFile) {
+			imageError = '';
+			imageNote = 'This image already exists.';
+			imageUrl = existingFile.data().url;
+			dispatch('imageChange', selectedFile);
+		} else {
+			if (selectedFile.size > MAX_IMAGE_SIZE) {
+				imageError = 'The image is too big.';
+				selectedFile = null;
+				dispatch('error', imageError);
 			} else {
-				if (selectedFile.size > MAX_IMAGE_SIZE) {
-					imageError = 'The image is too big.';
-					selectedFile = new File([], '');
-				} else {
-					imageError = '';
-					imageUrl = URL.createObjectURL(selectedFile);
-					dispatch('imageChange', selectedFile);
-				}
+				imageError = '';
+				imageUrl = URL.createObjectURL(selectedFile);
+				dispatch('imageChange', selectedFile);
 			}
 		}
 	};
 
 	const resetInput = () => {
-		selectedFile = new File([], '');
+		selectedFile = null;
 		URL.revokeObjectURL(imageUrl);
 		imageUrl = '';
 	};

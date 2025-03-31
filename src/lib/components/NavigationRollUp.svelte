@@ -12,22 +12,22 @@
 	};
 
 	const handleClickOutside = (event: MouseEvent) => {
-		/** if the target of the click was the menu item, don't close the dropdown */ if (
-			showDropdown &&
-			event.target.classList.contains('menuitem')
-		) {
-			return;
-		}
+		if (event.target) {
+			/** if the target of the click was the menu item, don't close the dropdown */
+			if (showDropdown && (event.target as HTMLElement).classList.contains('menuitem')) {
+				return;
+			}
 
-		/** if the target of the click was the dropdown, don't close the dropdown */
-		const dropdownElement = document.querySelector('.dropdown');
-		if (!dropdownElement) {
-			return;
-		}
+			/** if the target of the click was the dropdown, don't close the dropdown */
+			const dropdownElement = document.querySelector('.dropdown');
+			if (!dropdownElement) {
+				return;
+			}
 
-		/** if the event target is NOT child of the dropdown, close the dropdown */
-		if (!dropdownElement.contains(event.target)) {
-			showDropdown = false;
+			/** if the event target is NOT child of the dropdown, close the dropdown */
+			if (!dropdownElement.contains(event.target as Node)) {
+				showDropdown = false;
+			}
 		}
 	};
 
@@ -43,7 +43,9 @@
 <div>
 	<li class="group relative">
 		<!-- svelte-ignore a11y-invalid-attribute -->
-		<button class="menuitem text-xl" on:click|preventDefault={toggleDropdown}>{title}</button>
+		<button class="menuitem text-md xl:text-xl" on:click|preventDefault={toggleDropdown}
+			>{title}</button
+		>
 		{#if showDropdown}
 			<div
 				class="dropdown ring-black absolute left-0 mt-2 w-48 rounded-md bg-white-primary shadow-lg ring-1 ring-opacity-5"

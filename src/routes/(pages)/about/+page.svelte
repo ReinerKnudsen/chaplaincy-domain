@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 </script>
 
 <div class="my-3 w-full">
@@ -50,8 +50,7 @@
 		major strengths. It helps to make the congregation more flexible and dynamic in its attitudes.
 		In the main, our chaplaincy staff are volunteers from our congregation who take on different
 		aspects managing and supporting our community, under the guidance and support of our chaplain.
-		If you would like to get involved or support any of our activities in any way, please get in
-		touch.
+		If you would like to get involved or support any of our events in any way, please get in touch.
 	</div>
 	<figure class="image mx-10 max-h-60 justify-self-end">
 		<img

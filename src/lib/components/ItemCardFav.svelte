@@ -1,6 +1,8 @@
-<script>
-	export let item;
-	export let kind;
+<script lang="ts">
+	import { type CollectionItem } from '$lib/stores/ObjectStore';
+
+	export let item: CollectionItem;
+	export let kind: string;
 
 	const container =
 		'mb-10 grid grid-flow-row gap-5 rounded-2xl border border-slate-200 bg-slate-100 p-4 shadow-xl';
@@ -11,7 +13,7 @@
 	const imageXl = 'xl:max-h-[400px]';
 </script>
 
-<div class={`container ${container} ${containerMd} ${containerXl}`}>
+<div class={` ${container} ${containerMd} ${containerXl}`}>
 	<div class="image-container">
 		<img
 			class={`image ${image} ${imageLg} ${imageXl}`}
@@ -23,12 +25,14 @@
 		<div class="headline text-left text-lg font-semibold">
 			<a href="/{kind}/{item.id}">{item.data.title}</a>
 		</div>
-		<div class="news-text min-h-[50%] text-left text-base">{item.data.slug}</div>
-		<div class="flex flex-row justify-between">
-			<div class="metadata font-medium">
+		<div class="news-text min-h-[50%] text-left text-sm sm:text-base">{item.data.slug}</div>
+		<div class="flex flex-col justify-between lg:flex-row">
+			<div class="metadata text-sm font-medium md:text-base">
 				<span>{item.data.author}, {item.data.publishdate}</span>
 			</div>
-			<div class="read-more mb-10 text-right font-medium text-link-primary xl:mb-0">
+			<div
+				class="read-more mb-10 text-right text-sm font-medium text-link-primary md:text-base xl:mb-0"
+			>
 				<a href="/news/{item.id}">Read more...</a>
 			</div>
 		</div>

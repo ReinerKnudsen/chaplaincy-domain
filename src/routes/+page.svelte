@@ -1,14 +1,22 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
-
 	import ServiceCard from '$lib/components/ServiceCard.svelte';
-	import ItemCard from '../lib/components/ItemCard.svelte';
-
+	import ItemCard from '$lib/components/ItemCard.svelte';
+	import Spinner from '$lib/components/Spinner.svelte';
 	import { authStore } from '$lib/stores/AuthStore';
-
 	import mainhero from '$lib/assets/mainhero.webp';
 	import Icon from '$lib/components/Icon.svelte';
 	import servicesData from '$lib/services.json';
+	import {
+		CollectionType,
+		DocumentType,
+		LatestNewsStore,
+		NextEventsStore,
+		loadItems,
+		loadDocument,
+		WeeklySheetStore,
+		NewsletterStore,
+	} from '$lib/stores/ObjectStore';
 
 	// Manually convert the services object into an array
 	const servicesArray = servicesData.services.map((service) => {
@@ -18,15 +26,14 @@
 		return service;
 	});
 
-	export let data;
-
 	let user;
 	let loading = true;
-	let news = data.news;
-	let events = data.events;
-	let weeklySheet = data.sheet;
 
 	onMount(async () => {
+		await loadItems(CollectionType.News);
+		await loadItems(CollectionType.FutureEvents);
+		await loadDocument(DocumentType.WeeklySheet);
+		await loadDocument(DocumentType.Newsletter);
 		loading = false;
 	});
 
@@ -81,44 +88,34 @@
 
 <!-- Section: News and Notices -->
 
-<!-- News -->
-{#if news.length > 0}
-	<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
-		News and Notices
-	</div>
-	{#if loading}
-		<div>loading...</div>
-	{:else}
-		<div class="mb-5 w-full lg:mb-10">
-			<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
-				{#each news as item}
+{#if !loading}
+	<!-- News section -->
+	{#if $LatestNewsStore.length > 0}
+		<div class={container + ' ' + containerLg}>
+			<h2 class={sectionHeader + ' ' + sectionHeaderMd + ' ' + sectionHeaderXl}>Latest News</h2>
+			<div class={itemContainer + ' ' + itemContainerLg + ' ' + itemContainerXL}>
+				{#each $LatestNewsStore as item}
 					<ItemCard {item} kind="news" />
 				{/each}
 			</div>
-			<div class="more-link mb-8">
-				<a class="border-b-2 border-b-purple-100 pb-1" href="/news">See all news articles</a>
+			<div class="mt-4 text-center">
+				<a href="/news" class="text-purple-600 underline hover:text-purple-800">See all news</a>
 			</div>
 		</div>
 	{/if}
-{/if}
-<hr class="mx-auto w-[80%]" />
+	<hr class="mx-auto w-[80%]" />
 
-<!-- Section: Events 	-->
-{#if events.length > 0}
-	<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
-		Upcoming Events
-	</div>
-	{#if loading}
-		loading...
-	{:else}
-		<div class="mb-5 w-full lg:mb-10">
-			<div class={`item-container ${itemContainer} ${itemContainerLg} ${itemContainerXL}`}>
-				{#each events as event}
-					<ItemCard item={event} kind="activities" />
+	<!-- Events section -->
+	{#if $NextEventsStore.length > 0}
+		<div class={container + ' ' + containerLg}>
+			<h2 class={sectionHeader + ' ' + sectionHeaderMd + ' ' + sectionHeaderXl}>Upcoming Events</h2>
+			<div class={itemContainer + ' ' + itemContainerLg + ' ' + itemContainerXL}>
+				{#each $NextEventsStore as item}
+					<ItemCard {item} kind="events" />
 				{/each}
 			</div>
-			<div class="more-link mb-8">
-				<a class="border-b-2 border-b-purple-100 pb-1" href="/activities">See all activities</a>
+			<div class="mt-4 text-center">
+				<a href="/events" class="text-purple-600 underline hover:text-purple-800">See all events</a>
 			</div>
 		</div>
 	{/if}
@@ -132,6 +129,7 @@
 		<a class="border-b-2 border-b-purple-100 pb-1" href="/about">Learn more</a>
 	</div>
 </div>
+<hr class="mx-auto w-[80%]" />
 
 <!-- Safeguarding -->
 <div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
@@ -142,7 +140,7 @@
 		<a class="border-b-2 border-b-purple-100 pb-1" href="/about">Learn more</a>
 	</div>
 </div>
-
+<hr class="mx-auto w-[80%]" />
 <div class="downloads">
 	<h2 class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Downloads</h2>
 </div>
@@ -150,23 +148,28 @@
 	<div
 		class={`download-container ${downloadContainer} ${downloadContainerLg} ${downloadContainerXL}`}
 	>
-		{#if weeklySheet}
-			<a href={weeklySheet.path} target="_blank">
+		{#if $WeeklySheetStore}
+			<a href={$WeeklySheetStore.path} target="_blank">
 				<div class="download-item mt-10">
 					Weekly Sheet
 					<div class="circle">
-						<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
+						<span class="icon"
+							><Icon class="text-primary-text" name="sheet" width="24px" height="24px" /></span
+						>
 					</div>
 				</div></a
 			>
 		{/if}
-
-		<div class="download-item mt-10">
-			Newsletter
-			<div class="circle">
-				<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
+		{#if $NewsletterStore}
+			<div class="download-item mt-10">
+				Newsletter
+				<div class="circle">
+					<span class="icon"
+						><Icon class="text-primary-text" name="sheet" width="24px" height="24px" /></span
+					>
+				</div>
 			</div>
-		</div>
+		{/if}
 	</div>
 </div>
 

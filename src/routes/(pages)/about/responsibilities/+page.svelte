@@ -26,7 +26,7 @@
 <div class="my-3 w-full">
 	<h1>Who is who?</h1>
 </div>
-<div class="mx-auto w-3/4">
+<div class="mx-auto w-full sm:w-3/4">
 	{#each profiles as profile, index}
 		<ProfileCard {profile} {index} imagePosition={positionImage(index)} />
 	{/each}

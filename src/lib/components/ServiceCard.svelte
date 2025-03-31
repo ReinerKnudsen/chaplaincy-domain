@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Icon from '$lib/components/Icon.svelte';
 
 	export let service;

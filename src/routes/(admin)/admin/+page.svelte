@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { getAuth } from 'firebase/auth';
 	import { authStore } from '$lib/stores/AuthStore';
 
 	let role: string | null = null;

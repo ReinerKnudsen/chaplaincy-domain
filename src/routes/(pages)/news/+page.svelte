@@ -1,19 +1,34 @@
-<script>
+<script lang="ts">
 	import { writable } from 'svelte/store';
 	import ItemCard from '$lib/components/ItemCard.svelte';
 	import ItemCardFav from '$lib/components/ItemCardFav.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 
-	export let data;
-	let news = data.news;
-	let favNews = news[0];
-	let newsItems = news ? news.slice(1) : []; // all news items except the first one
-	let loading = false;
+	import {
+		NewsItemsStore,
+		loadItems,
+		type NewsSortableFields,
+		CollectionType,
+	} from '$lib/stores/ObjectStore.js';
+	import { onMount } from 'svelte';
+
+	let favNews = $NewsItemsStore[0];
+	let newsItems = $NewsItemsStore ? $NewsItemsStore.slice(1) : []; // all news items except the first one
+	let loading = true;
+
+	const loadData = async () => {
+		await loadItems(CollectionType.News);
+	};
+
+	onMount(async () => {
+		await loadData();
+		loading = false;
+	});
 
 	// Sort table items
-	const sortKey = writable('publishdate'); // default sort key
-	const sortDirection = writable(-1); // default sort direction (ascending)
-	const sortItems = writable(news.slice()); // make a copy of the news array
+	const sortKey = writable<NewsSortableFields>('publishdate'); // default sort key
+	const sortDirection = writable<1 | -1>(-1); // default sort direction (ascending)
+	const sortItems = writable($NewsItemsStore.slice()); // make a copy of the news array
 
 	$: {
 		const key = $sortKey;
@@ -30,7 +45,7 @@
 			return 0;
 		});
 		sortItems.set(sorted);
-		const favNews = sorted[0];
+		favNews = sorted[0];
 	}
 
 	const headerData = {
@@ -46,7 +61,7 @@
 
 {#if loading}
 	loading...
-{:else if news.length > 0}
+{:else if $NewsItemsStore.length > 0}
 	<div class=" flex flex-col">
 		<ItemCardFav item={favNews} kind="news" />
 		<div class="grid grid-cols-1 gap-5 lg:grid-cols-2">

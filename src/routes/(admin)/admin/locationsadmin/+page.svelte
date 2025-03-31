@@ -41,7 +41,7 @@
 	}
 
 	const handleLocationChange = (location: Location, index: number) => {
-		$CurrentLocation = location;
+		CurrentLocation.set(location);
 		currentLocationId = index;
 	};
 

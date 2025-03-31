@@ -15,6 +15,7 @@
 		loadItems,
 		loadDocument,
 		WeeklySheetStore,
+		NewsletterStore,
 	} from '$lib/stores/ObjectStore';
 
 	// Manually convert the services object into an array
@@ -32,6 +33,7 @@
 		await loadItems(CollectionType.News);
 		await loadItems(CollectionType.FutureEvents);
 		await loadDocument(DocumentType.WeeklySheet);
+		await loadDocument(DocumentType.Newsletter);
 		loading = false;
 	});
 
@@ -151,18 +153,23 @@
 				<div class="download-item mt-10">
 					Weekly Sheet
 					<div class="circle">
-						<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
+						<span class="icon"
+							><Icon class="text-primary-text" name="sheet" width="24px" height="24px" /></span
+						>
 					</div>
 				</div></a
 			>
 		{/if}
-
-		<div class="download-item mt-10">
-			Newsletter
-			<div class="circle">
-				<span class="icon"><Icon name="sheet" width="24px" height="24px" /></span>
+		{#if $NewsletterStore}
+			<div class="download-item mt-10">
+				Newsletter
+				<div class="circle">
+					<span class="icon"
+						><Icon class="text-primary-text" name="sheet" width="24px" height="24px" /></span
+					>
+				</div>
 			</div>
-		</div>
+		{/if}
 	</div>
 </div>
 

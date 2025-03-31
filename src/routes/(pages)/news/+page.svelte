@@ -12,8 +12,8 @@
 	} from '$lib/stores/ObjectStore.js';
 	import { onMount } from 'svelte';
 
-	let favNews = $NewsItemsStore[0];
-	let newsItems = $NewsItemsStore ? $NewsItemsStore.slice(1) : []; // all news items except the first one
+	$: favNews = $NewsItemsStore[0];
+	$: newsItems = $NewsItemsStore ? $NewsItemsStore.slice(1) : []; // all news items except the first one
 	let loading = true;
 
 	const loadData = async () => {

@@ -125,6 +125,21 @@ export const initialWeeklySheet: WeeklySheet = {
 	id: '',
 };
 
+// Newsletter
+export interface Newsletter {
+	date: string;
+	path: string;
+	id: string;
+}
+
+export type NewsletterSortableFields = keyof Newsletter;
+
+export const initialNewsletter: Newsletter = {
+	date: '',
+	path: '',
+	id: '',
+};
+
 export enum CollectionType {
 	Events = 'events',
 	News = 'news',
@@ -137,15 +152,17 @@ export enum DocumentType {
 }
 
 // Single item stores
-export const EventStore: Writable<Event> = writable(initialEvent);
-export const NewsStore: Writable<News> = writable(initialNews);
+export const EventStore: Writable<Event | null> = writable(initialEvent);
+export const NewsStore: Writable<News | null> = writable(initialNews);
 export const WeeklySheetStore: Writable<WeeklySheet | null> = writable(null);
+export const NewsletterStore: Writable<Newsletter | null> = writable(null);
 
 // Collection and document stores
-export const EventsStore: Writable<CollectionItem[]> = writable([]);
+export const EventsStore: Writable<CollectionItem[] | null> = writable([]);
 export const FutureEventsStore: Writable<CollectionItem[]> = writable([]);
 export const NewsItemsStore: Writable<CollectionItem[]> = writable([]);
-export const WeeklySheetsStore: Writable<CollectionItem[]> = writable([]);
+export const WeeklySheetsStore: Writable<CollectionItem[] | null> = writable([]);
+export const NewslettersStore: Writable<CollectionItem[] | null> = writable([]);
 
 // Derived stores for homepage previews
 // The three latest news
@@ -218,6 +235,8 @@ export const loadItem = async (
 		return null;
 	}
 };
+
+// load all items of a collection
 export const loadItems = async (type: CollectionType): Promise<void> => {
 	try {
 		// For FutureEvents, we still query the events collection but filter the results
@@ -267,10 +286,13 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 	}
 };
 
+// load a single document
 export const loadDocument = async (type: DocumentType): Promise<void> => {
 	if (!collection(database, 'documents')) {
 		if (type === DocumentType.WeeklySheet) {
 			WeeklySheetStore.set(null);
+		} else if (type === DocumentType.Newsletter) {
+			NewsletterStore.set(null);
 		}
 		return;
 	}
@@ -289,16 +311,73 @@ export const loadDocument = async (type: DocumentType): Promise<void> => {
 					...(doc.data() as WeeklySheet),
 					id: doc.id,
 				});
+			} else if (type === DocumentType.Newsletter) {
+				NewsletterStore.set({
+					...(doc.data() as Newsletter),
+					id: doc.id,
+				});
 			}
 		} else {
 			if (type === DocumentType.WeeklySheet) {
 				WeeklySheetStore.set(null);
+			} else if (type === DocumentType.Newsletter) {
+				NewsletterStore.set(null);
 			}
+			console.log(`No documents of type ${type} found.`);
 		}
 	} catch (error) {
 		console.error(`Error loading ${type} document:`, error);
 		if (type === DocumentType.WeeklySheet) {
 			WeeklySheetStore.set(null);
+		} else if (type === DocumentType.Newsletter) {
+			NewsletterStore.set(null);
+		}
+	}
+};
+
+// load all documents of a DocumentType
+export const loadDocuments = async (type: DocumentType) => {
+	if (!collection(database, 'documents')) {
+		if (type === DocumentType.WeeklySheet) {
+			WeeklySheetsStore.set([]);
+		} else if (type === DocumentType.Newsletter) {
+			NewslettersStore.set([]);
+		}
+		return;
+	}
+	try {
+		const q = query(
+			collection(database, 'documents'),
+			where('type', '==', type),
+			orderBy('date', 'desc'),
+		);
+		const querySnapshot = await getDocs(q);
+		if (!querySnapshot.empty) {
+			const documents: CollectionItem[] = [];
+			if (type === DocumentType.WeeklySheet) {
+				querySnapshot.docs.forEach((doc) => {
+					documents.push({
+						id: doc.id,
+						data: doc.data() as DocumentData,
+					});
+				});
+				WeeklySheetsStore.set(documents);
+			} else if (type === DocumentType.Newsletter) {
+				querySnapshot.docs.forEach((doc) => {
+					documents.push({
+						id: doc.id,
+						data: doc.data() as DocumentData,
+					});
+				});
+				NewslettersStore.set(documents);
+			}
+		}
+	} catch (error) {
+		console.error(`Error loading ${type} documents:`, error);
+		if (type === DocumentType.WeeklySheet) {
+			WeeklySheetsStore.set([]);
+		} else if (type === DocumentType.Newsletter) {
+			NewslettersStore.set([]);
 		}
 	}
 };

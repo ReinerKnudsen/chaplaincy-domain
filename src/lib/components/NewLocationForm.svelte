@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { Button, Input, Label } from 'flowbite-svelte';
-	import { CurrentLocation } from '$lib/stores/LocationsStore';
+	import { CurrentLocation, resetCurrentLocation } from '$lib/stores/LocationsStore';
 
 	export let showClose = true;
 
@@ -14,6 +14,20 @@
 		e.preventDefault();
 		dispatch('save');
 	}
+
+	function resetForm() {
+		// Reset the form element
+		const formElement = document.querySelector('form');
+		if (formElement) formElement.reset();
+	}
+
+	// Reset form when store changes
+	$: {
+		$CurrentLocation; // Track store changes
+		resetForm();
+	}
+
+	$: openStreetUrl = `https://www.openstreetmap.org/search?query=${$CurrentLocation.street}+${$CurrentLocation.city}`;
 </script>
 
 <div class="py-2 text-sm">All fields marked with * are required</div>
@@ -51,7 +65,7 @@
 	</div>
 	<div>
 		<Label class="mb-2 mt-4 font-semibold" for="url"
-			><a href="https://www.openstreetmap.org/" target="_blank" rel="noopener noreferrer">
+			><a href={openStreetUrl} target="_blank" rel="noopener noreferrer">
 				Open Street Map URL</a
 			>:</Label
 		>

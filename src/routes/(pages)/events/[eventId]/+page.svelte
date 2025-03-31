@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
 	import Icon from '$lib/components/Icon.svelte';
-	import * as formats from '../../formats';
+	import * as formats from '$lib/formats';
 
 	import { loadItem, CollectionType, EventStore } from '$lib/stores/ObjectStore';
 	import { fetchLocations, type Location, AllLocations } from '$lib/stores/LocationsStore';

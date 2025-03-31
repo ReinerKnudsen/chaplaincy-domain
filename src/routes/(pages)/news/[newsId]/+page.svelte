@@ -4,7 +4,7 @@
 	import { database } from '$lib/firebase/firebaseConfig';
 	import { marked } from 'marked';
 	import Icon from '$lib/components/Icon.svelte';
-	import * as formats from '../../formats.js';
+	import * as formats from '$lib/formats';
 	import { onMount } from 'svelte';
 
 	let thisItem = {};

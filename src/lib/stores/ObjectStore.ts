@@ -323,7 +323,6 @@ export const loadDocument = async (type: DocumentType): Promise<void> => {
 			} else if (type === DocumentType.Newsletter) {
 				NewsletterStore.set(null);
 			}
-			console.log(`No documents of type ${type} found.`);
 		}
 	} catch (error) {
 		console.error(`Error loading ${type} document:`, error);
@@ -370,6 +369,12 @@ export const loadDocuments = async (type: DocumentType) => {
 					});
 				});
 				NewslettersStore.set(documents);
+			}
+		} else {
+			if (type === DocumentType.WeeklySheet) {
+				WeeklySheetsStore.set([]);
+			} else if (type === DocumentType.Newsletter) {
+				NewslettersStore.set([]);
 			}
 		}
 	} catch (error) {

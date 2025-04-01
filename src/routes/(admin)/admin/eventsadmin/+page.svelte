@@ -92,7 +92,7 @@
 	};
 
 	const handleOpenItem = (id: string) => {
-		const selectedEvent = $EventsStore.find((item) => item.id === id);
+		const selectedEvent = $EventsStore && $EventsStore.find((item) => item.id === id);
 		if (!selectedEvent) {
 			return;
 		}

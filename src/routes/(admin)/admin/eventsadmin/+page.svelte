@@ -17,10 +17,11 @@
 		resetEventStore,
 		loadItems,
 		duplicateItem,
+		type CollectionItem,
 		type Event,
 		type EventSortableFields,
 	} from '$lib/stores/ObjectStore';
-	import { AllLocations } from '$lib/stores/LocationsStore';
+	import { AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 
 	import { Button, Modal } from 'flowbite-svelte';
 
@@ -29,6 +30,7 @@
 	let deleteID: string = '';
 	let dupeID: string = '';
 	let loading: boolean = true;
+	let sortItems: Writable<CollectionItem[]> = writable([]);
 
 	let locationMap: Record<string, string> = {};
 
@@ -39,13 +41,16 @@
 	onMount(async () => {
 		$pathName = $page.url.pathname;
 		await loadData();
+		await fetchLocations();
 		loading = false;
 	});
 
 	// Sort table items
 	const sortKey: Writable<EventSortableFields> = writable('title');
 	const sortDirection: Writable<number> = writable(1);
-	$: sortItems = writable($EventsStore.slice()); // make a copy of the array
+	$: {
+		if ($EventsStore) sortItems.set($EventsStore.slice());
+	} // make a copy of the array
 
 	/**
 	 * TODO:We should store sort order in SessionStorage
@@ -124,6 +129,14 @@
 		dupeID = id;
 		showDuplicateModal = true;
 	};
+
+	const printLocation = (id: string) => {
+		const location = $AllLocations.find((location) => location.id === id);
+		if (!location) {
+			return;
+		}
+		return `${location.name}, ${location.city}`;
+	};
 </script>
 
 <Modal bind:open={showModal} size="md" autoclose>
@@ -196,7 +209,7 @@
 							>
 							<td>{item.data.startdate}</td>
 							<td>{item.data.publishdate}</td>
-							<td>{$AllLocations.find((loc) => loc.id === item.data.location).name}</td>
+							<td>{printLocation(item.data.location)}</td>
 							<td>{item.data.author}</td>
 							<td>
 								<div class="flex justify-between">

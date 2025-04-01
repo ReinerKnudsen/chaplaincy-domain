@@ -72,12 +72,6 @@
 					class="dark:hover:text-white h-5 w-5 text-gray-500 hover:text-gray-900 dark:text-gray-500"
 				/>
 			</FooterIcon>
-			<FooterIcon href="https://twitter.com/Anglican_Bn_Cgn">
-				<Icon
-					name="twitter"
-					class="dark:hover:text-white h-5 w-5 text-gray-500 hover:text-gray-900 dark:text-gray-500"
-				/>
-			</FooterIcon>
 			<FooterIcon href="https://www.achurchnearyou.com/church/8388/">
 				<Icon
 					name="churchnearyou"

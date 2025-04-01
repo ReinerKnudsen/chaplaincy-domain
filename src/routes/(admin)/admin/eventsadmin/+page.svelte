@@ -196,7 +196,7 @@
 							>
 							<td>{item.data.startdate}</td>
 							<td>{item.data.publishdate}</td>
-							<td>{item.data.location}</td>
+							<td>{$AllLocations.find((loc) => loc.id === item.data.location).name}</td>
 							<td>{item.data.author}</td>
 							<td>
 								<div class="flex justify-between">

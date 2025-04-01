@@ -5,12 +5,13 @@
 
 	import { Timestamp } from 'firebase/firestore';
 
+	import { Input, Checkbox, Textarea, Helper, Button, Tooltip } from 'flowbite-svelte';
+
 	import { uploadImage } from '$lib/services/fileService';
 	import { EditMode, EditModeStore, type Event } from '$lib/stores/ObjectStore';
 	import { selectedLocation, AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 	import { authStore } from '$lib/stores/AuthStore';
 
-	import { Input, Checkbox, Textarea, Helper, Button, Tooltip } from 'flowbite-svelte';
 	import SlugText from './SlugText.svelte';
 	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadImage from '$lib/components/UploadImage.svelte';
@@ -110,12 +111,15 @@
 		console.log('Image changed: ', e.detail, $hasImage);
 	};
 
-	const handleLocationChange = (event: CustomEvent) => {
+	const handleLocationChange = (event: CustomEvent<{ value: string }>) => {
 		if (event.detail.value === 'new') {
 			showModal = true;
 		} else {
 			newEvent.location = event.detail.value;
-			selectedLocation.set(event.detail.value);
+			const newLocation = $AllLocations.find((loc) => loc.id === event.detail.value);
+			if (newLocation) {
+				selectedLocation.set(newLocation);
+			}
 		}
 	};
 
@@ -213,6 +217,38 @@
 				slugText={newEvent.slug}
 				on:slugChange={handleSlugChange}
 			/>
+
+			<!-- Location -->
+			<div class="form-area">
+				<div>
+					<Label child="Location">Location *</Label>
+					<LocationDropdown on:change={handleLocationChange} />
+
+					<!-- Modal for new location -->
+					{#if showModal}
+						<NewLocationModal
+							on:locationAdded={handleLocationAddedModal}
+							on:close={() => (showModal = false)}
+						/>
+					{/if}
+				</div>
+			</div>
+
+			<!-- Conditions -->
+			<div>
+				<Label child="conditions">Conditions</Label>
+				<Input type="text" id="conditions" bind:value={newEvent.condition} />
+				<div class="mt-1 p-1">
+					<Checkbox
+						aria-describedby="helper-checkbox-text"
+						id="condition"
+						on:change={handleConditionChange}>Default</Checkbox
+					>
+					<Helper id="helper-checkbox-text" class="ps-6"
+						>"Entry is free, donations are welcome"</Helper
+					>
+				</div>
+			</div>
 		</div>
 
 		<!-- Second block -->
@@ -265,21 +301,6 @@
 					bind:value={newEvent.endtime}
 					disabled={!newEvent.enddate}
 				/>
-			</div>
-			<!-- Location -->
-			<div class="form-area">
-				<div>
-					<Label child="Location">Location *</Label>
-					<LocationDropdown on:change={handleLocationChange} />
-
-					<!-- Modal for new location -->
-					{#if showModal}
-						<NewLocationModal
-							on:locationAdded={handleLocationAddedModal}
-							on:close={() => (showModal = false)}
-						/>
-					{/if}
-				</div>
 			</div>
 		</div>
 
@@ -348,38 +369,6 @@
 			</div>
 		</div>
 
-		<!-- Fourth block -->
-		<div class="form my-8 bg-white-primary p-10">
-			<!-- Conditions -->
-			<div>
-				<Label child="conditions">Conditions</Label>
-				<Input type="text" id="conditions" bind:value={newEvent.condition} />
-				<div class="mt-1 p-1">
-					<Checkbox
-						aria-describedby="helper-checkbox-text"
-						id="condition"
-						on:change={handleConditionChange}>Default</Checkbox
-					>
-					<Helper id="helper-checkbox-text" class="ps-6"
-						>"Entry is free, donations are welcome"</Helper
-					>
-				</div>
-			</div>
-
-			<!-- Comments -->
-			<div class="col-span-2">
-				<Label child="comments">Comments</Label>
-				<Textarea
-					id="comments"
-					placeholder="Comments"
-					rows="10"
-					name="comments"
-					title="If there is anything people should need to know about this event? Put it here. (Parking instructions, public transport connections...)"
-					bind:value={newEvent.comments}
-				/>
-			</div>
-		</div>
-
 		<!-- Fifth block -->
 		<div class="form my-8 bg-white-primary p-10">
 			<!-- Image -->
@@ -437,6 +426,22 @@
 						Upload a PDF document that will be attached to this event (max 5MB).
 					</p>
 				</div>
+			</div>
+		</div>
+
+		<!-- Fourth block -->
+		<div class="form my-8 bg-white-primary p-10">
+			<!-- Comments -->
+			<div class="col-span-2">
+				<Label child="comments">Comments</Label>
+				<Textarea
+					id="comments"
+					placeholder="Comments"
+					rows="10"
+					name="comments"
+					title="If there is anything people should need to know about this event? Put it here. (Parking instructions, public transport connections...)"
+					bind:value={newEvent.comments}
+				/>
 			</div>
 		</div>
 

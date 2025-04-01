@@ -41,6 +41,7 @@
 	}
 
 	const handleLocationChange = (location: Location, index: number) => {
+		updateItem = true;
 		CurrentLocation.set(location);
 		currentLocationId = index;
 	};

@@ -17,6 +17,7 @@
 	import facebook from '$lib/assets/icons/facebook.svg?raw';
 	import twitter from '$lib/assets/icons/twitter.svg?raw';
 	import trash from '$lib/assets/icons/delete.svg?raw';
+	import cross from '$lib/assets/icons/cross.svg?raw';
 
 	interface IconDefinition {
 		box: number;
@@ -30,6 +31,7 @@
 		clock: { box: 24, svg: clock },
 		chevronDown: { box: 512, svg: chevron_down },
 		chevronUp: { box: 512, svg: chevron_up },
+		cross: { box: 256, svg: cross },
 		churchnearyou: { box: 24, svg: churchnearyou },
 		delete: { box: 24, svg: trash },
 		email: { box: 24, svg: email },

@@ -17,6 +17,7 @@
 		WeeklySheetStore,
 		NewsletterStore,
 	} from '$lib/stores/ObjectStore';
+	import cross from '$lib/assets/icons/cross.svg?raw';
 
 	// Manually convert the services object into an array
 	const servicesArray = servicesData.services.map((service) => {
@@ -77,15 +78,36 @@
 <div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
 	Our regular worship services
 </div>
-<div class="mb-5 w-full lg:mb-10">
+<div class=" w-full">
 	<div class={`services ${services} ${servicesMd} ${servicesXL}`}>
 		{#each servicesArray as service}
 			<ServiceCard {service} />
 		{/each}
 	</div>
 </div>
-<hr class="mx-auto w-[80%]" />
+<hr class="mx-auto my-10 w-[80%]" />
 
+<!-- Section: Mission Statement-->
+<div class="ml-[10%] flex w-[80%] flex-col">
+	<h2 class="text-xl font-bold">Our Mission Statement</h2>
+	<div class="flex flex-row items-center gap-10">
+		<div class="hidden md:block">
+			{@html cross.replace(
+				'<svg',
+				'<svg viewBox="0 0 90 90" preserveAspectRatio="xMidYMid meet" class="h-full w-full lg:h-[75%] lg:w-[75%] fill-current text-primary-100"',
+			)}
+		</div>
+		<div class="font-lg italic">
+			A welcoming, safe, diverse and open congregation, inclusive of all. Our worship tradition is
+			Eucharistic, to which we welcome everyone. We invite people of whatever background, age,
+			ethnicity, gender and sexuality to share our worship and to join our church family, wherever
+			they may be on their spiritual journey. We welcome and enjoy having children of all ages
+			worshipping with us.
+		</div>
+	</div>
+</div>
+
+<hr class="mx-auto mt-10 w-[80%]" />
 <!-- Section: News and Notices -->
 
 {#if !loading}

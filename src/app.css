@@ -55,4 +55,114 @@
 	h4 {
 		@apply text-lg font-semibold;
 	}
+
+	.form-label {
+		display: flex;
+		font-size: 1.25rem;
+		line-height: 1.75rem;
+		font-weight: 600;
+		flex: 1 0 200px;
+		align-items: center;
+		padding: 0 1rem;
+		border-right: 2px solid #e5e7eb;
+	}
+
+	.form-label.disabled {
+		opacity: 0.3;
+	}
+
+	.component-wrapper{
+		display: flex;
+		flex-direction: row;
+		align-items: stretch;
+		margin: 20px 0;
+		border: 2px solid #e5e7eb;
+		border-radius: 5px;
+		padding: 4px
+	}
+
+	.form-input {
+		display: block;
+		width: 100%;
+		border: 0;
+		padding: 1rem;
+		background-color: #f9fafb;
+	}
+
+	.form-input:focus {
+		outline: none;
+		border-color: rgba(16, 11, 116, 0.4);
+		box-shadow: 0 0 0 2px rgba(16, 11, 116, 0.2);
+		border-radius: 8px;
+	}
+
+	.form-input:disabled {
+		cursor: not-allowed;
+		background-color: white;
+		opacity: 0.3;
+	}	
+
+	.form-explanation {
+		color: rgba(100, 18, 129, 1);
+		font-weight: 600;
+		margin: 0 1rem;
+	}
+
+	.form-explanation.disabled {
+		opacity: 0.3;
+	}
+
+	button {
+		border-radius: 0.5rem;  /* rounded-lg */
+		padding: 0.625rem 1.25rem;  /* px-5 py-2.5 */
+		text-align: center;
+		font-size: 0.875rem;  /* text-sm */
+		font-weight: 500;  /* font-medium */
+		box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);  /* shadow-sm */
+		transition: all 0.2s ease-in-out;  /* transition-all */
+		min-width: 100px;
+	}
+
+	.btn-primary {	
+		background-color: rgba(16, 11, 116, 1);  /* bg-primary-100 */
+		border: 1px solid rgba(16, 11, 116, 1);
+		color: white;
+	}
+
+	.btn-primary:hover {
+		background-color: rgba(13, 9, 93, 1);  /* darker */
+		border-color: rgba(13, 9, 93, 1);
+	}
+
+	.btn-primary:focus {
+		outline: none;
+		box-shadow: 0 0 0 3px rgba(16, 11, 116, 0.2);  /* ring ring-primary-200 */
+	}
+
+	.btn-primary:disabled {
+		cursor: not-allowed;
+		background-color: rgba(16, 11, 116, 0.3);
+		border-color: rgba(16, 11, 116, 0.3);
+	}
+
+	.btn-secondary {
+		background-color: transparent;
+		border: 1px solid rgba(16, 11, 116, 1);
+		color: rgba(16, 11, 116, 1);
+	}
+
+	.btn-secondary:hover {
+		background-color: rgba(16, 11, 116, 0.1);
+	}
+
+	.btn-secondary:focus {
+		outline: none;
+		box-shadow: 0 0 0 3px rgba(16, 11, 116, 0.2);
+	}
+
+	.btn-secondary:disabled {
+		cursor: not-allowed;
+		border-color: rgba(16, 11, 116, 0.3);
+		color: rgba(16, 11, 116, 0.3);
+	}
 }

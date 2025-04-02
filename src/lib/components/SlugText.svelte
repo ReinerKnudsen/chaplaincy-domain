@@ -25,33 +25,29 @@
 	}
 </script>
 
-<div>
-	<div class="flex flex-row justify-between">
-		<Label class="mb-2 mt-8 self-center text-xl font-semibold">Short text (slug)</Label>
-		<p class="explanation self-end text-right">
-			<strong>{slugText.length} of {MAX_SLUG_TEXT} </strong> characters.
-		</p>
-	</div>
-	<Textarea
-		class="disabled:border-0 disabled:bg-white-primary disabled:text-slate-400"
+<div class="component-wrapper">
+	<label for="slug" class="form-label">Short text (slug)</label>
+	<textarea
+		class="form-input"
+		placeholder="Enter slug text"
 		id="slug"
 		rows="3"
 		name="slug"
 		bind:value={slugText}
-		maxlength="MAX_SLUG_TEXT"
+		maxlength={MAX_SLUG_TEXT}
 		required
 		disabled={!editSlug}
 		on:blur={() => (editSlug = false)}
 	/>
-	<div class="mt-2 flex justify-between">
-		<div class="mx-1 my-2 text-sm">
-			The slug text is a short version of your text to be shown in cards view. <br />The system will
-			suggest a slug text for you which you can change.
-		</div>
-		<Button
-			class="bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
-			disabled={editSlug}
-			on:click={handleChangeSlug}>{slugText.length === 0 ? 'Create' : 'Change'} slug text</Button
-		>
+</div>
+<div class="flex justify-between">
+	<div class="mx-1 text-sm">
+		The slug text is a short version of your text to be shown in cards view. <br />The system will
+		suggest a slug text for you which you can change.
 	</div>
+	<Button
+		class="bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
+		disabled={editSlug}
+		on:click={handleChangeSlug}>{slugText.length === 0 ? 'Create' : 'Change'} slug text</Button
+	>
 </div>

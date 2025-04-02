@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { marked } from 'marked';
-	import { Button } from 'flowbite-svelte';
 	import Icon from './Icon.svelte';
 
 	let isVisible = { help: false, preview: false };
@@ -28,16 +27,16 @@
 
 <div class="mt-2 border border-green-40">
 	<div class="flex w-full flex-row flex-nowrap items-center justify-between bg-green-50">
-		<Button class="h-8 w-full text-lg font-semibold" on:click={() => toggleSection('help')}
-			>Formatting help</Button
+		<button class="btn-accordion" type="button" on:click={() => toggleSection('help')}
+			>Formatting help</button
 		>
-		<Button class="text-lg font-semibold" on:click={() => toggleSection('help')}>
+		<button class="text-lg font-semibold" type="button" on:click={() => toggleSection('help')}>
 			{#if isVisible.help}
 				<Icon name="chevronUp" width="18px" height="18px" />
 			{:else}
 				<Icon name="chevronDown" width="18px" height="18px" />
 			{/if}
-		</Button>
+		</button>
 	</div>
 	{#if isVisible.help}
 		<div id="helpContainer" class="h-64 bg-green-50">
@@ -68,16 +67,16 @@
 <!-- Preview -->
 <div class="mt-2 border border-green-40">
 	<div class="flex w-full flex-row flex-nowrap items-center justify-between bg-green-50">
-		<Button class="h-8 w-full text-lg font-semibold" on:click={() => toggleSection('preview')}
-			>Preview</Button
+		<button class="btn-accordion" type="button" on:click={() => toggleSection('preview')}
+			>Preview</button
 		>
-		<Button class="text-lg font-semibold" on:click={() => toggleSection('preview')}>
+		<button class="text-lg font-semibold" type="button" on:click={() => toggleSection('preview')}>
 			{#if isVisible.preview}
 				<Icon name="chevronUp" width="18px" height="18px" />
 			{:else}
 				<Icon name="chevronDown" width="18px" height="18px" />
 			{/if}
-		</Button>
+		</button>
 	</div>
 	{#if isVisible.preview}
 		<div class="h-72 overflow-scroll bg-green-50 px-4">

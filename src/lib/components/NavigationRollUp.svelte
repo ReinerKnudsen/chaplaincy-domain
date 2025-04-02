@@ -1,6 +1,7 @@
 <script lang="ts">
-	import type { MenuItem } from '$lib/types';
 	import { onMount } from 'svelte';
+
+	import type { MenuItem } from '$lib/types';
 
 	export let title: string;
 	export let menuItems: MenuItem[];
@@ -48,7 +49,7 @@
 		>
 		{#if showDropdown}
 			<div
-				class="dropdown ring-black absolute left-0 mt-2 w-48 rounded-md bg-white-primary shadow-lg ring-1 ring-opacity-5"
+				class="ring-black dropdown absolute left-0 mt-2 w-48 rounded-md bg-white-primary shadow-lg ring-1 ring-opacity-5"
 			>
 				{#each menuItems as menuItem}
 					<div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">

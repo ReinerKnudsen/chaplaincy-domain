@@ -1,13 +1,15 @@
 <script lang="ts">
-	import { authStore, unloadUser } from '$lib/stores/AuthStore';
-	import { auth } from '$lib/firebase/firebaseConfig';
 	import { goto } from '$app/navigation';
+
 	import { signOut } from 'firebase/auth';
-	import caplogo from '$lib/assets/chaplaincy_logo.png';
-	import { about as aboutItems } from '$lib/data/data.json';
+	import { auth } from '$lib/firebase/firebaseConfig';
+	import { authStore, unloadUser } from '$lib/stores/AuthStore';
 
 	import NavigationItem from '$lib/components/NavigationItem.svelte';
 	import NavigationRollUp from '$lib/components/NavigationRollUp.svelte';
+
+	import caplogo from '$lib/assets/chaplaincy_logo.png';
+	import { about as aboutItems } from '$lib/data/data.json';
 
 	let user;
 	let menuOpen = true;

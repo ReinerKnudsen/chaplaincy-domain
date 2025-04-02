@@ -164,7 +164,7 @@
 {#if loading}
 	<div>Loading...</div>
 {:else}
-	<div class="form bg-white-primary">
+	<div class="form border-0 bg-white-primary">
 		<h1 class="mx-10">{$EditModeStore === 'update' ? 'Edit event' : 'Create new event'}</h1>
 	</div>
 
@@ -550,6 +550,7 @@
 
 <style>
 	.form {
+		margin: 40px auto;
 		max-width: 90%;
 		border: 1px solid #eaeaea;
 		border-radius: 20px;

@@ -85,6 +85,7 @@
 		display: block;
 		width: 100%;
 		border: 0;
+		flex: 1 1 100%;
 		padding: 1rem;
 		background-color: #f9fafb;
 	}
@@ -165,6 +166,28 @@
 		border-color: rgba(16, 11, 116, 0.3);
 		color: rgba(16, 11, 116, 0.3);
 	}
+
+	.btn-accordion {
+		display:flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		font-weight: 600;
+		font-size: 1.25rem;
+		min-height: 2rem;
+		width: 100%;
+	}
+	
+	.buttons-container {
+		display: flex;
+		flex-direction: row;
+		gap: 50px;
+		justify-content: center;
+		width: 100%;
+		padding: 0 50px;
+		margin: 40px 0;
+	}
+	
 
 	.footer {
 		padding: 1rem;

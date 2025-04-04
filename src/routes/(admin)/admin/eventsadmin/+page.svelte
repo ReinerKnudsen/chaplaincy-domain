@@ -23,7 +23,9 @@
 	} from '$lib/stores/ObjectStore';
 	import { AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 
-	import { Button, Modal } from 'flowbite-svelte';
+	import { Button } from 'flowbite-svelte';
+
+	import Modal from '$lib/components/Modal.svelte';
 
 	let showModal = false;
 	let showDuplicateModal = false;
@@ -32,7 +34,7 @@
 	let loading: boolean = true;
 	let sortItems: Writable<CollectionItem[]> = writable([]);
 
-	let locationMap: Record<string, string> = {};
+	//let locationMap: Record<string, string> = {};
 
 	const loadData = async () => {
 		await loadItems(CollectionType.Events);
@@ -139,7 +141,19 @@
 	};
 </script>
 
-<Modal bind:open={showModal} size="md" autoclose>
+<Modal
+	open={showModal}
+	type="warning"
+	header="Delete Event"
+	content="Deleting an event can not be undone.
+			<p><strong>Do you really want to delete this event?</strong></p>"
+	primaryBtnText="Delete"
+	secondaryBtnText="Cancel"
+	on:primary={() => handleDelete()}
+	on:secondary={() => (showModal = false)}
+/>
+
+<!-- <Modal bind:open={showModal} size="md" autoclose>
 	<div class="rounded-xl bg-white-primary p-10 text-center">
 		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
 			Deleting an item can not be undone.
@@ -168,9 +182,9 @@
 			>
 		</div>
 	</div>
-</Modal>
+</Modal> -->
 
-<div>
+<div class="flex flex-col px-4">
 	<h1>Events</h1>
 	<div class="mb-6 grid grid-cols-12 items-center gap-2 lg:gap-20">
 		<div class="col-span-9">
@@ -187,7 +201,7 @@
 	{#if loading}
 		<div class="w-full">Loading...</div>
 	{:else}
-		<div class="w-full">
+		<div class="events-list flex-1 overflow-x-auto">
 			<table>
 				<thead>
 					<tr>

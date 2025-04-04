@@ -7,8 +7,6 @@
 	import type { News } from '$lib/stores/ObjectStore';
 	import { initialNews } from '$lib/stores/ObjectStore';
 
-	import { Input, Textarea, Button } from 'flowbite-svelte';
-
 	import { authStore } from '$lib/stores/AuthStore';
 	import { EditModeStore, EditMode } from '$lib/stores/ObjectStore';
 
@@ -16,7 +14,6 @@
 	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
 	import UploadImage from './UploadImage.svelte';
-	import Label from './Label.svelte';
 
 	const author = $authStore.name;
 
@@ -81,36 +78,38 @@
 	};
 </script>
 
-<div class="form bg-white-primary">
-	<h1 class="">{$EditModeStore === EditMode.Update ? 'Edit news item' : 'Create news item'}</h1>
+<div class="form border-0 bg-white-primary">
+	<h1 class="mx-10">
+		{$EditModeStore === EditMode.Update ? 'Edit news item' : 'Create news item'}
+	</h1>
+</div>
 
-	<form
-		id="form-container"
-		enctype="multipart/form-data"
-		on:submit={handleSubmit}
-		on:reset={handleReset}
-	>
-		<!-- Titel -->
-		<div>
-			<Label child="title">News Headline *</Label>
-			<Input type="text" id="title" placeholder="News Title" bind:value={newItem.title} required />
+<form enctype="multipart/form-data" on:submit={handleSubmit} on:reset={handleReset}>
+	<!-- Titel -->
+	<div class="form my-4 bg-white-primary px-10 py-4">
+		<div class="component-wrapper">
+			<label class="form-label" for="title">News Headline *</label>
+			<input
+				class="form-input"
+				type="text"
+				id="title"
+				placeholder="News Title"
+				bind:value={newItem.title}
+				required
+			/>
 		</div>
 
 		<!-- Author -->
-		<div>
-			<Label child="author" disabled={true}>Author</Label>
-			<Input type="text" id="author" bind:value={newItem.author} disabled />
+		<div class="component-wrapper">
+			<label class="form-label disabled" for="author">Author</label>
+			<input class="form-input" type="text" id="author" bind:value={newItem.author} disabled />
 		</div>
 
 		<!-- News text -->
-		<div>
-			<div class="flex flex-row justify-between">
-				<Label child="news-text">News text *</Label>
-				<p class="explanation self-end text-right">
-					<strong>{newItem.text.length}</strong> characters.
-				</p>
-			</div>
-			<Textarea
+		<div class="component-wrapper mb-1">
+			<label class="form-label items-start pt-4" for="news-text">News text *</label>
+			<textarea
+				class="form-input"
 				id="news-text"
 				placeholder="News text"
 				rows="8"
@@ -119,34 +118,41 @@
 				wrap="hard"
 			/>
 		</div>
+		<p class="form-explanation self-end text-right">
+			<strong>{newItem.text.length}</strong> characters.
+		</p>
 
 		<MarkdownHelp text={newItem.text} />
 		<SlugText text={newItem.text} slugText={newItem.slug} on:slugChange={handleSlugChange} />
 
 		<!-- Publish date  -->
-		<div>
-			<Label child="publishdate">Publish Date *</Label>
-			<Input type="date" id="publishdate" bind:value={newItem.publishdate} />
-			<p class="explanation">If you don't select a publish date, it will be set to today.</p>
+		<div class="component-wrapper mb-1">
+			<label class="form-label" for="publishdate">Publish Date *</label>
+			<input class="form-input" type="date" id="publishdate" bind:value={newItem.publishdate} />
 		</div>
+		<p class="form-explanation">If you don't select a publish date, it will be set to today.</p>
 
 		<!-- Publish time  -->
-		<div>
-			<Label child="publishtime" disabled={!newItem.publishdate}>Publish Time</Label>
-			<Input
+		<div class="component-wrapper mb-1">
+			<label class="form-label {!newItem.publishdate ? 'disabled' : ''}" for="publishtime"
+				>Publish Time</label
+			>
+			<input
+				class="form-input"
 				type="time"
 				id="publishtime"
 				disabled={!newItem.publishdate}
 				bind:value={newItem.publishtime}
 			/>
-			<p class="explanation">
-				If you don't select a publish time, it will be set to 09:00 of the selected day.
-			</p>
 		</div>
+		<p class="form-explanation">
+			If you don't select a publish time, it will be set to 09:00 of the selected day.
+		</p>
 
+		<hr class="my-8" />
 		<!-- Image -->
 		<div>
-			<Label child="image">Image</Label>
+			<label class="form-label" for="image">Image</label>
 			<div class="flex flex-col items-center justify-center">
 				{#if newItem.image}
 					<UploadImage imageUrl={newItem.image} on:imageChange={handleImageChange} />
@@ -157,9 +163,12 @@
 		</div>
 		<div class="imageMeta">
 			<div class="imageAlt">
-				<div>
-					<Label child="imageAlt" disabled={!$hasImage}>Image Alt text *</Label>
-					<Input
+				<div class="component-wrapper mb-1">
+					<label class="form-label {!hasImage ? 'disabled' : ''}" for="imageAlt"
+						>Image Alt text *</label
+					>
+					<input
+						class="form-input"
 						type="text"
 						id="imageAlt"
 						bind:value={newItem.imageAlt}
@@ -167,69 +176,66 @@
 						disabled={!$hasImage}
 						placeholder={$hasImage ? 'Image Alt text' : 'Please select an image first'}
 					/>
-					<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
-						This text helps interpreting the image for visually impaired users.
-					</p>
 				</div>
+				<p class="form-explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
+					This text helps interpreting the image for visually impaired users.
+				</p>
 			</div>
-			<div class="imageCaption mt-10">
-				<div>
-					<Label child="imageCaption" disabled={!$hasImage}>Image caption</Label>
-					<Input
+			<div class="imageCaption mb-10">
+				<div class="component-wrapper mb-1">
+					<label class="form-label {!hasImage ? 'disabled' : ''}" for="imageCaption"
+						>Image caption</label
+					>
+					<input
+						class="form-input"
 						type="text"
 						id="imageCaption"
 						bind:value={newItem.imageCaption}
 						placeholder={$hasImage ? 'Image by ...' : 'Please select an image first'}
 						disabled={!$hasImage}
 					/>
-					<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
-						This text will be displayed below the image.
-					</p>
 				</div>
+				<p class="form-explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
+					This text will be displayed below the image.
+				</p>
 			</div>
 		</div>
 
 		<!-- PDF Upload -->
 		<div>
-			<Label child="pdfFile">PDF Document</Label>
+			<label class="form-label" for="pdfFile">PDF Document</label>
 			<div class="flex flex-col items-center justify-center">
 				<UploadPDF fileUrl={newItem.pdfFile} on:upload={assignPDF} />
-				<p class="explanation">
+				<p class="form-explanation">
 					Upload a PDF document that will be attached to this news item (max 5MB).
 				</p>
 			</div>
 		</div>
+	</div>
 
+	<!-- Buttons -->
+	<div class="form bg-white-primary p-10">
 		<!-- Buttons -->
-		<div class="buttons col-span-2 mb-20 mt-10">
-			<Button class="font-semibold" type="reset" color="light">Cancel</Button>
-			<Button class="bg-black-40 text-white-primary" type="reset" color="light" disabled={docRef}
-				>Empty form</Button
+		<div class="s btn col-span-2">
+			<button class="button-secondary btn" type="reset" color="light">Cancel</button>
+			<button class="btn btn-secondary" type="reset" color="light" disabled={docRef}
+				>Empty form</button
 			>
-			<Button
-				class="bg-primary-100  font-semibold text-white-primary"
-				type="submit"
-				disabled={newItem.title.length === 0}
-				>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</Button
+			<button class="btn btn-primary" type="submit" disabled={newItem.title.length === 0}
+				>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</button
 			>
 		</div>
-	</form>
-</div>
+	</div>
+</form>
 
 <div>&NonBreakingSpace;</div>
 
 <style>
 	.form {
 		margin: 40px auto;
-		padding: 20px 20px;
 		max-width: 90%;
 		border: 1px solid #eaeaea;
 		border-radius: 20px;
-	}
-
-	.explanation {
-		margin: 10px 4px;
-		font-size: 0.8rem;
 	}
 
 	.buttons {

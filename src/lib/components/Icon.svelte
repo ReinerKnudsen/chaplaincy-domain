@@ -1,3 +1,33 @@
+<script context="module" lang="ts">
+	// Exports that are shared across all instances
+	export const icons = {
+		author: { box: 24, svg: author },
+		calendar: { box: 24, svg: calendar },
+		camera: { box: 24, svg: camera },
+		clock: { box: 24, svg: clock },
+		chevronDown: { box: 512, svg: chevron_down },
+		chevronUp: { box: 512, svg: chevron_up },
+		cross: { box: 256, svg: cross },
+		churchnearyou: { box: 24, svg: churchnearyou },
+		delete: { box: 24, svg: trash },
+		email: { box: 24, svg: email },
+		facebook: { box: 24, svg: facebook },
+		info: { box: 24, svg: info },
+		left: { box: 24, svg: left },
+		location: { box: 24, svg: location },
+		news: { box: 24, svg: news },
+		onsite: { box: 24, svg: onsite },
+		sheet: { box: 24, svg: sheet },
+		tags: { box: 24, svg: tags },
+		twitter: { box: 24, svg: twitter },
+		users_online: { box: 24, svg: users_online },
+		warning: { box: 24, svg: warning },
+	};
+
+	export const iconNames = Object.keys(icons) as IconName[];
+	export type IconName = keyof typeof icons;
+</script>
+
 <script lang="ts">
 	import author from '$lib/assets/icons/author.svg?raw';
 	import calendar from '$lib/assets/icons/calendar.svg?raw';
@@ -18,35 +48,13 @@
 	import twitter from '$lib/assets/icons/twitter.svg?raw';
 	import trash from '$lib/assets/icons/delete.svg?raw';
 	import cross from '$lib/assets/icons/cross.svg?raw';
+	import warning from '$lib/assets/icons/warning.svg?raw';
+	import info from '$lib/assets/icons/info.svg?raw';
 
 	interface IconDefinition {
 		box: number;
 		svg: string;
 	}
-
-	const icons = {
-		author: { box: 24, svg: author },
-		calendar: { box: 24, svg: calendar },
-		camera: { box: 24, svg: camera },
-		clock: { box: 24, svg: clock },
-		chevronDown: { box: 512, svg: chevron_down },
-		chevronUp: { box: 512, svg: chevron_up },
-		cross: { box: 256, svg: cross },
-		churchnearyou: { box: 24, svg: churchnearyou },
-		delete: { box: 24, svg: trash },
-		email: { box: 24, svg: email },
-		facebook: { box: 24, svg: facebook },
-		left: { box: 24, svg: left },
-		location: { box: 24, svg: location },
-		news: { box: 24, svg: news },
-		onsite: { box: 24, svg: onsite },
-		sheet: { box: 24, svg: sheet },
-		tags: { box: 24, svg: tags },
-		twitter: { box: 24, svg: twitter },
-		users_online: { box: 24, svg: users_online },
-	} satisfies Record<string, IconDefinition>;
-
-	type IconName = keyof typeof icons;
 
 	export let name: IconName;
 	export let width = '1rem';

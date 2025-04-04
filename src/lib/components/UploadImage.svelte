@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher, onDestroy } from 'svelte';
 
-	import { Button } from 'flowbite-svelte';
-
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
 
 	import { FileType, checkIfFileExists } from '$lib/services/fileService';
@@ -96,7 +94,7 @@
 			<p class="mt-3 text-center text-base text-gray-700">Note: {@html imageNote}</p>
 		{/if}
 		<div class="col-span-2 text-center">
-			<Button class="mt-5 w-6/12" on:click={resetInput}>Change</Button>
+			<button class="btn btn-secondary" on:click={resetInput}>Change</button>
 		</div>
 	</div>
 {/if}

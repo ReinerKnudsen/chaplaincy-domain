@@ -130,7 +130,7 @@
 					</div>
 				{/each}
 			</ul>
-			<div class="button-container">
+			<div class="-container btn">
 				<Button
 					class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
 					on:click={handleCreateNew}>Create new</Button

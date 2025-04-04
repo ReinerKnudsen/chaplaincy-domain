@@ -167,17 +167,19 @@
 {#if loading}
 	<div>Loading...</div>
 {:else}
-	<div class="form bg-white-primary">
+	<div class="form border-0 bg-white-primary">
 		<h1 class="mx-10">{$EditModeStore === 'update' ? 'Edit event' : 'Create new event'}</h1>
 	</div>
 
 	<form enctype="multipart/form-data" on:submit={handleSubmit} on:reset={handleReset}>
 		<!-- First block -->
-		<div class="form my-8 bg-white-primary p-10">
+		<div class="form my-4 bg-white-primary px-10 py-4">
+			<h3 class="mb-8 text-2xl font-semibold text-primary-100">General Information</h3>
 			<!-- Titel -->
-			<div>
-				<Label child="title">Event Titel *</Label>
-				<Input
+			<div class="component-wrapper">
+				<label class="form-label" for="title">Event Titel *</label>
+				<input
+					class="form-input"
 					type="text"
 					id="title"
 					placeholder="Event Title"
@@ -187,31 +189,36 @@
 			</div>
 
 			<!-- Sub Title -->
-			<div>
-				<Label child="subtitle">Sub Title</Label>
-				<Input type="text" id="subtitle" placeholder="Sub Title" bind:value={newEvent.subtitle} />
+			<div class="component-wrapper">
+				<label class="form-label" for="subtitle">Sub Title</label>
+				<input
+					class="form-input"
+					type="text"
+					id="subtitle"
+					placeholder="Sub Title"
+					bind:value={newEvent.subtitle}
+				/>
 			</div>
 
 			<!-- Description -->
-			<div>
-				<div class="flex-rows flex justify-between">
-					<Label child="description">Description *</Label>
-					<p class="self-end text-right text-base">
-						<strong>{newEvent.description.length}</strong> characters.
-					</p>
-				</div>
-				<Textarea
+			<div class="component-wrapper">
+				<label class="form-label items-start pt-4" for="description">Description *</label>
+				<textarea
+					class="form-input z-0"
 					id="description"
 					placeholder="Description text"
 					rows="14"
 					name="description"
 					bind:value={newEvent.description}
 					wrap="hard"
-					class="z-0"
 				/>
 			</div>
+			<p class="self-end text-right text-base">
+				<strong>{newEvent.description.length}</strong> characters.
+			</p>
 
 			<MarkdownHelp text={newEvent.description} />
+
 			<SlugText
 				text={newEvent.description}
 				slugText={newEvent.slug}
@@ -219,161 +226,233 @@
 			/>
 
 			<!-- Location -->
-			<div class="form-area">
-				<div>
-					<Label child="Location">Location *</Label>
-					<LocationDropdown on:change={handleLocationChange} />
+			<div class="component-wrapper">
+				<label class="form-label" for="Location">Location *</label>
+				<LocationDropdown on:change={handleLocationChange} />
 
-					<!-- Modal for new location -->
-					{#if showModal}
-						<NewLocationModal
-							on:locationAdded={handleLocationAddedModal}
-							on:close={() => (showModal = false)}
-						/>
-					{/if}
-				</div>
+				<!-- Modal for new location -->
+				{#if showModal}
+					<NewLocationModal
+						on:locationAdded={handleLocationAddedModal}
+						on:close={() => (showModal = false)}
+					/>
+				{/if}
 			</div>
 
 			<!-- Conditions -->
-			<div>
-				<Label child="conditions">Conditions</Label>
-				<Input type="text" id="conditions" bind:value={newEvent.condition} />
-				<div class="mt-1 p-1">
-					<Checkbox
-						aria-describedby="helper-checkbox-text"
-						id="condition"
-						on:change={handleConditionChange}>Default</Checkbox
-					>
-					<Helper id="helper-checkbox-text" class="ps-6"
-						>"Entry is free, donations are welcome"</Helper
-					>
+			<div class="component-wrapper">
+				<label class="form-label" for="conditions">Conditions</label>
+				<div class="flex w-full flex-col">
+					<input
+						class="form-input"
+						type="text"
+						id="conditions"
+						placeholder="Conditions"
+						bind:value={newEvent.condition}
+					/>
+					<div class="mt-2 flex flex-row items-center gap-2 pl-4">
+						<input
+							type="checkbox"
+							aria-describedby="helper-checkbox-text"
+							id="condition"
+							on:change={handleConditionChange}
+						/>
+						<label for="condition">Default: "Entry is free, donations are welcome"</label>
+					</div>
 				</div>
 			</div>
 		</div>
 
 		<!-- Second block -->
-		<div class="form my-8 bg-white-primary p-10">
+		<div class="form my-4 bg-white-primary px-10 py-4">
+			<h3 class="mb-6 text-2xl font-semibold text-primary-100">Dates and times for the event</h3>
+			<p class="form-explanation mb-2">Please enter all dates as dd mm yyyy.</p>
 			<!-- Start date -->
-			<div>
-				<Label child="startdate">Start Date *</Label>
-				<Input type="date" id="startdate" bind:value={newEvent.startdate} required />
-			</div>
-			<p class="explanation">Please enter all dates as dd mm yyyy.</p>
-
-			<!-- Start time -->
-			<div>
-				<Label child="starttime" disabled={!newEvent.startdate}>Start Time *</Label>
-				<Input
-					type="time"
-					id="starttime"
-					bind:value={newEvent.starttime}
+			<div class="component-wrapper">
+				<label class="form-label" for="startdate">Start Date *</label>
+				<input
+					class="form-input"
+					type="date"
+					id="startdate"
+					bind:value={newEvent.startdate}
 					required
-					disabled={!newEvent.startdate}
 				/>
 			</div>
 
-			<!-- End date -->
-			<div class="flex-1">
-				<Label child="enddate" disabled={!newEvent.startdate}>End Date</Label>
-				<div class="flex w-full flex-row items-center gap-4">
-					<Input
-						type="date"
-						id="enddate"
-						bind:value={newEvent.enddate}
-						disabled={!newEvent.startdate}
+			<!-- Start time -->
+			<div class="component-wrapper">
+				<label class="form-label {!newEvent.startdate ? 'disabled' : ''}" for="starttime"
+					>Start Time *</label
+				>
+				{#if newEvent.startdate}
+					<input
+						class="form-input"
+						type="time"
+						id="starttime"
+						bind:value={newEvent.starttime}
+						required
 					/>
-					<Button
-						class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
+				{:else}
+					<input
+						class="form-input"
+						type="text"
+						placeholder="Please select a start date "
+						disabled
+					/>
+				{/if}
+			</div>
+
+			<!-- End date -->
+			<div class="component-wrapper">
+				<label class="form-label {!newEvent.startdate ? 'disabled' : ''}" for="enddate"
+					>End Date</label
+				>
+				<div class="flex w-full flex-row items-center gap-4">
+					{#if newEvent.startdate}
+						<input class="form-input" type="date" id="enddate" bind:value={newEvent.enddate} />
+					{:else}
+						<input
+							class="form-input"
+							type="text"
+							placeholder="Please select a start date "
+							disabled
+						/>
+					{/if}
+					<button
+						class="btn btn-primary"
 						on:click={handleSetEndDate}
 						disabled={!newEvent.startdate}
+						title="Sets the end date tothe start date"
 						>Auto set
-					</Button>
-					<Tooltip type="light">Sets the end date tothe start date</Tooltip>
+					</button>
 				</div>
 			</div>
 
 			<!-- End time -->
-			<div>
-				<Label child="endtime" disabled={!newEvent.enddate}>End Time</Label>
-				<Input
-					type="time"
-					id="endtime"
-					bind:value={newEvent.endtime}
-					disabled={!newEvent.enddate}
-				/>
+			<div class="component-wrapper">
+				<label class="form-label {!newEvent.enddate ? 'disabled' : ''}" for="endtime"
+					>End Time</label
+				>
+				{#if newEvent.enddate}
+					<input class="form-input" type="time" id="endtime" bind:value={newEvent.endtime} />
+				{:else}
+					<input class="form-input" type="text" placeholder="Please select an end date " disabled />
+				{/if}
 			</div>
 		</div>
 
 		<!-- Third block -->
-		<div class="form my-8 bg-white-primary p-10">
+		<div class="form my-4 bg-white-primary px-10 py-4">
+			<h3 class="mb-6 text-2xl font-semibold text-primary-100">Dates and times for publication</h3>
+			<p class="form-explanation mb-2">Please enter all dates as dd mm yyyy.</p>
+
 			<!-- Publish date  -->
-			<div>
-				<Label child="publishdate">Publish Date</Label>
+			<div class="component-wrapper mb-1">
+				<label class="form-label" for="publishdate">Publish Date</label>
 				<div class="flex w-full flex-row items-center gap-4">
-					<Input type="date" id="publishdate" bind:value={newEvent.publishdate} />
-					<Button
-						class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
+					<input
+						class="form-input"
+						type="date"
+						id="publishdate"
+						bind:value={newEvent.publishdate}
+					/>
+					<button
+						class="btn btn-primary"
 						on:click={handleSetPublishDate}
+						title="Sets the publish date to 14 days before the start date"
 						>Auto set
-					</Button>
-					<Tooltip type="light">Sets the publish date to 14 days before the start date</Tooltip>
+					</button>
 				</div>
-				<p class="explanation">
-					If you don't select a publish date, the event will be published immediately.
-				</p>
 			</div>
+			<p class="form-explanation">
+				If you don't select a publish date, the event will be published immediately.
+			</p>
 
 			<!-- Publish time  -->
-			<div>
-				<div>
-					<Label child="publishTime" disabled={!newEvent.publishdate}>Publish Time</Label>
-					<Input
+			<div class="component-wrapper mb-1">
+				<label class="form-label {!newEvent.publishdate ? 'disabled' : ''}" for="publishTime"
+					>Publish Time</label
+				>
+				{#if newEvent.publishdate}
+					<input
+						class="form-input"
 						type="time"
 						id="publishtime"
 						bind:value={newEvent.publishtime}
-						disabled={!newEvent.publishdate}
 					/>
-				</div>
-				<p class="explanation {newEvent.publishdate ? 'opacity-100' : 'opacity-30'}">
-					If you don't select a publish time, it will be set to 09:00 of the selected day.
-				</p>
+				{:else}
+					<input
+						class="form-input"
+						type="text"
+						placeholder="Please select a publish date "
+						disabled
+					/>
+				{/if}
 			</div>
+			<p class="form-explanation {!newEvent.publishdate ? 'disabled' : ''}">
+				If you don't select a publish time, it will be set to 09:00 of {newEvent.publishdate ||
+					'publish date'}.
+			</p>
 
 			<!-- Unpublish Date -->
-			<div>
-				<Label child="unpublishdate" disabled={!newEvent.publishdate}>Unpublish Date</Label>
-				<Input
-					type="date"
-					id="unpublishdate"
-					title="Select a date when the event shall be unpublished (optional)"
-					bind:value={newEvent.unpublishdate}
-					disabled={!newEvent.publishdate}
-				/>
-
-				<p class="explanation {newEvent.publishdate ? 'opacity-100' : 'opacity-30'}">
-					If you don't set a date and time here the event will automatically be unpublished at the
-					given start time.
-				</p>
+			<div class="component-wrapper mb-1">
+				<label class="form-label {!newEvent.publishdate ? 'disabled' : ''}" for="unpublishdate"
+					>Unpublish Date</label
+				>
+				{#if newEvent.publishdate}
+					<input
+						class="form-input"
+						type="date"
+						id="unpublishdate"
+						title="Select a date when the event shall be unpublished (optional)"
+						bind:value={newEvent.unpublishdate}
+					/>
+				{:else}
+					<input
+						class="form-input"
+						type="text"
+						placeholder="Please select a publish date "
+						disabled
+					/>
+				{/if}
 			</div>
+			<p class="form-explanation {!newEvent.publishdate ? 'disabled' : ''}">
+				If you don't select an unpublish date the event will automatically be unpublished on {newEvent.startdate ||
+					'start date'} at {newEvent.starttime || 'start time'}.
+			</p>
 
 			<!-- Unpublish Time -->
-			<div>
-				<Label child="unpublishtime" disabled={!newEvent.unpublishdate}>Unpublish Time</Label>
-				<Input
-					type="time"
-					id="unpublishtime"
-					title="Select a time when the event shall be unpublished. (optional) "
-					bind:value={newEvent.unpublishtime}
-					disabled={!newEvent.unpublishdate}
-				/>
+			<div class="component-wrapper mb-1">
+				<label class="form-label {!newEvent.unpublishdate ? 'disabled' : ''}" for="unpublishtime"
+					>Unpublish Time</label
+				>
+				{#if newEvent.unpublishdate}
+					<input
+						class="form-input"
+						type="time"
+						id="unpublishtime"
+						title="Select a time when the event shall be unpublished. (optional) "
+						bind:value={newEvent.unpublishtime}
+						disabled={!newEvent.unpublishdate}
+					/>
+				{:else}
+					<input
+						class="form-input"
+						type="text"
+						placeholder="Please select an unpublish date "
+						disabled
+					/>
+				{/if}
 			</div>
 		</div>
 
-		<!-- Fifth block -->
-		<div class="form my-8 bg-white-primary p-10">
+		<!-- Fourth block -->
+		<div class="form my-4 bg-white-primary px-10 py-4">
+			<h3 class="mb-6 text-2xl font-semibold text-primary-100">Attachments</h3>
+
 			<!-- Image -->
 			<div>
-				<Label child="image">Image</Label>
+				<label class="form-label" for="image">Image</label>
 				<div class="flex items-center justify-center">
 					{#if newEvent.image}
 						<UploadImage imageUrl={newEvent.image} on:imageChange={handleImageChange} />
@@ -384,9 +463,12 @@
 			</div>
 			<div class="imageMeta">
 				<div class="imageAlt">
-					<div>
-						<Label child="imageAlt" disabled={!$hasImage}>Image Alt text *</Label>
-						<Input
+					<div class="component-wrapper mb-1">
+						<label class="form-label {!$hasImage ? 'disabled' : ''}" for="imageAlt"
+							>Image Alt text *</label
+						>
+						<input
+							class="form-input"
 							type="text"
 							id="imageAlt"
 							bind:value={newEvent.imageAlt}
@@ -394,32 +476,34 @@
 							disabled={!$hasImage}
 							placeholder={$hasImage ? 'Image Alt text' : 'Please select an image first'}
 						/>
-						<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
-							This text helps interpreting the image for visually impaired users.
-						</p>
 					</div>
+					<p class="form-explanation {!$hasImage ? 'disabled' : ''}">
+						This text helps interpreting the image for visually impaired users.
+					</p>
 				</div>
-				<div class="imageCaption mt-10">
-					<div>
-						<Label child="imageCaption" disabled={!$hasImage} text="Image caption"
-							>Image caption</Label
+
+				<div class="imageCaption mb-10">
+					<div class="component-wrapper mb-1">
+						<label class="form-label {!$hasImage ? 'disabled' : ''}" for="imageCaption"
+							>Image caption</label
 						>
-						<Input
+						<input
+							class="form-input"
 							type="text"
 							id="imageCaption"
 							bind:value={newEvent.imageCaption}
 							disabled={!$hasImage}
 							placeholder={$hasImage ? 'Image by ...' : 'Please select an image first'}
 						/>
-						<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
-							This text will be displayed below the image.
-						</p>
 					</div>
+					<p class="form-explanation {!$hasImage ? 'disabled' : ''}">
+						This text will be displayed below the image.
+					</p>
 				</div>
 			</div>
 
 			<div>
-				<Label child="pdfFile">PDF Document</Label>
+				<label class="form-label" for="pdfFile">PDF Document</label>
 				<div class="flex flex-col items-center justify-center">
 					<UploadPDF fileUrl={newEvent.pdfFile} on:upload={assignPDF} />
 					<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
@@ -429,18 +513,20 @@
 			</div>
 		</div>
 
-		<!-- Fourth block -->
-		<div class="form my-8 bg-white-primary p-10">
+		<!-- Fifth block -->
+		<div class="form my-4 bg-white-primary px-10 py-4">
+			<h3 class="mb-6 text-2xl font-semibold text-primary-100">Comments</h3>
 			<!-- Comments -->
-			<div class="col-span-2">
-				<Label child="comments">Comments</Label>
-				<Textarea
+			<div class="component-wrapper">
+				<label class="form-label items-start pt-4" for="comments">Comments</label>
+				<textarea
 					id="comments"
-					placeholder="Comments"
+					class="form-input z-0"
 					rows="10"
 					name="comments"
-					title="If there is anything people should need to know about this event? Put it here. (Parking instructions, public transport connections...)"
+					placeholder="If there is anything people should need to know about this event? Put it here. (Parking instructions, public transport connections...)"
 					bind:value={newEvent.comments}
+					wrap="hard"
 				/>
 			</div>
 		</div>
@@ -448,20 +534,13 @@
 		<!-- Buttons block -->
 		<div class="form bg-white-primary p-10">
 			<!-- Buttons -->
-			<div class="buttons col-span-2">
-				<Button
-					class="font-semibold"
-					type="reset"
-					color="light"
-					on:click={() => goto('/admin/eventsadmin')}>Cancel</Button
+			<div class="s btn col-span-2">
+				<button class="btn btn-secondary" type="reset" on:click={() => goto('/admin/eventsadmin')}
+					>Cancel</button
 				>
-				<Button class="bg-black-40 text-white-primary" type="reset" color="light">Empty form</Button
-				>
-				<Button
-					class="bg-primary-100  font-semibold text-white-primary"
-					type="submit"
-					disabled={newEvent.length === 0}
-					>{$EditModeStore === 'update' ? 'Update' : 'Save'} event</Button
+				<button class="btn btn-secondary" type="reset">Empty form</button>
+				<button class="btn btn-primary" type="submit" disabled={newEvent.title.length === 0}
+					>{$EditModeStore === 'update' ? 'Update' : 'Save'} event</button
 				>
 			</div>
 		</div>

@@ -176,7 +176,7 @@
 			>
 		</div>
 		<div class="col-span-2 text-center">
-			<Button class="mt-5 w-6/12" on:click={resetInput}>Change</Button>
+			<button class="btn btn-secondary" on:click={resetInput}>Change</button>
 		</div>
 	</div>
 {/if}

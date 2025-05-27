@@ -4,10 +4,15 @@
 <div class="my-3 w-full">
 	<h1>Safeguarding</h1>
 </div>
-<img
-	src="https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fsafeguarding_crop.jpg?alt=media&token=a831da11-e619-4d32-822d-86de24e6d0e1"
-	class="mx-auto my-4 w-[80%] rounded-xl shadow-2xl"
-/>
+<figure class="mb-4">
+	<img
+		src="https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fsafeguarding_crop.jpg?alt=media&token=a831da11-e619-4d32-822d-86de24e6d0e1"
+		class="mx-auto my-4 w-[80%] rounded-xl shadow-2xl"
+	/>
+	<figcaption>
+		Image by <a href="https://unsplash.com/@translytranslations">Transly Translation Agency</a>
+	</figcaption>
+</figure>
 <div class="fliesstext mx-auto mb-20 text-lg">
 	<p>
 		In our chaplaincy, we are committed to the safeguarding and well-being of all — especially
@@ -22,7 +27,7 @@
 	</p>
 	<div class="flex flex-col gap-2 py-4">
 		<p><strong>Safeguarding Officer</strong>: Patra Al-Saadi</p>
-		<p><strong>Deputy Safeguarding Officer (Bonn)</strong>: Caroline Ulrich</p>
+		<p><strong>Deputy Safeguarding Officer (Bonn)</strong>: Caroline Ullrich</p>
 	</div>
 	<p>
 		If you have a safeguarding concern or wish to speak with someone, please don't hesitate to get
@@ -42,5 +47,9 @@
 <style>
 	p {
 		padding: 10px 0;
+	}
+	figcaption {
+		font-size: 0.75rem;
+		text-align: right;
 	}
 </style>

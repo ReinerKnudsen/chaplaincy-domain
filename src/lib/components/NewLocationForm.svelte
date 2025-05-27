@@ -16,15 +16,7 @@
 	}
 
 	function resetForm() {
-		// Reset the form element
-		const formElement = document.querySelector('form');
-		if (formElement) formElement.reset();
-	}
-
-	// Reset form when store changes
-	$: {
-		$CurrentLocation; // Track store changes
-		resetForm();
+		resetCurrentLocation();
 	}
 
 	$: openStreetUrl = `https://www.openstreetmap.org/search?query=${$CurrentLocation.street}+${$CurrentLocation.city}`;

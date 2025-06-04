@@ -111,6 +111,11 @@
 									onClick={toggleMobileMenu}
 								/>
 								<NavigationItem
+									url="/about/facbc"
+									label="The FACBC e.V."
+									onClick={toggleMobileMenu}
+								/>
+								<NavigationItem
 									url="/about/safeguarding"
 									label="Safeguarding"
 									onClick={toggleMobileMenu}

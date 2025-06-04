@@ -144,14 +144,14 @@
 {/if}
 <hr class="mx-auto w-[80%]" />
 
-<!-- About us -->
+<!-- About us 
 <div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Who we are</div>
 <div class="single-post">
 	<div class="more-link">
 		<a class="border-b-2 border-b-purple-100 pb-1" href="/about">Learn more</a>
 	</div>
 </div>
-<hr class="mx-auto w-[80%]" />
+<hr class="mx-auto w-[80%]" /> -->
 
 <!-- Safeguarding -->
 <div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>

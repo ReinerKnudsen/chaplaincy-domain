@@ -6,9 +6,12 @@
 	const dispatch = createEventDispatcher();
 	let selectedId = $selectedLocation?.id || '';
 
+	// Make selectedId reactive to selectedLocation changes
 	$: {
-		if ($selectedLocation) {
+		console.log('selectedLocation changed:', $selectedLocation);
+		if ($selectedLocation && $selectedLocation.id) {
 			selectedId = $selectedLocation.id;
+			console.log('Setting selectedId to:', selectedId);
 		}
 	}
 

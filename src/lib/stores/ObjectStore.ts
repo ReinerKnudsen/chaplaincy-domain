@@ -11,6 +11,7 @@ import {
 	where,
 	limit,
 	type DocumentReference,
+	Timestamp,
 } from 'firebase/firestore';
 import { database } from '$lib/firebase/firebaseConfig';
 
@@ -32,10 +33,10 @@ export interface Event {
 	condition?: string;
 	publishdate: string;
 	publishtime: string;
-	publishDateTime: string;
+	publishDateTime: Timestamp;
 	unpublishdate: string;
 	unpublishtime: string;
-	unpublishDateTime: string;
+	unpublishDateTime: Timestamp;
 	comments: string;
 	image?: string | null;
 	imageAlt?: string;
@@ -57,11 +58,11 @@ export const initialEvent: Event = {
 	location: '',
 	condition: '',
 	publishdate: '',
-	publishDateTime: '',
 	publishtime: '',
+	publishDateTime: Timestamp.fromDate(new Date(0)), // Unix epoch as default
 	unpublishdate: '',
 	unpublishtime: '',
-	unpublishDateTime: '',
+	unpublishDateTime: Timestamp.fromDate(new Date(0)), // Unix epoch as default
 	comments: '',
 	image: null,
 	imageAlt: '',

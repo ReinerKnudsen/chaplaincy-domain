@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
+	import { writable, type Writable } from 'svelte/store';
 	import { pathName } from '$lib/stores/NavigationStore';
 
 	import { goto } from '$app/navigation';
@@ -36,9 +36,37 @@
 	});
 
 	// Sort table items
-	const sortKey = writable<NewsSortableFields>('title');
-	const sortDirection = writable<1 | -1>(1);
-	$: sortItems = writable($NewsItemsStore.slice());
+	const STORAGE_KEY = 'news_sort';
+
+	const getStoredSortSettings = () => {
+		if (typeof window === 'undefined') return { key: 'title', direction: 1 };
+
+		const stored = sessionStorage.getItem(STORAGE_KEY);
+		if (stored) {
+			try {
+				return JSON.parse(stored);
+			} catch (e) {
+				console.error('Failed to parse sort settings:', e);
+				return { key: 'title', direction: 1 };
+			}
+		}
+		return { key: 'title', direction: 1 };
+	};
+
+	const { key: initialKey, direction: initialDirection } = getStoredSortSettings();
+	const sortKey: Writable<NewsSortableFields> = writable(initialKey);
+	const sortDirection: Writable<1 | -1> = writable(initialDirection as 1 | -1);
+	const sortItems: Writable<typeof $NewsItemsStore> = writable($NewsItemsStore.slice());
+
+	// Update sessionStorage when sort settings change
+	$: {
+		if (typeof window !== 'undefined') {
+			sessionStorage.setItem(
+				STORAGE_KEY,
+				JSON.stringify({ key: $sortKey, direction: $sortDirection }),
+			);
+		}
+	}
 
 	const sortTable = (key: NewsSortableFields) => {
 		if ($sortKey === key) {

@@ -10,7 +10,7 @@
 	import NavigationRollUp from '$lib/components/NavigationRollUp.svelte';
 
 	let user;
-	let menuOpen = true;
+	let menuOpen = false;
 	let aboutMenuOpen = true;
 
 	$: authStore.subscribe((store) => {
@@ -41,6 +41,8 @@
 		goto('/login');
 		toggleMobileMenu();
 	};
+
+	const noop = () => {}; // No-operation function for default onClick
 </script>
 
 <nav
@@ -109,6 +111,11 @@
 									onClick={toggleMobileMenu}
 								/>
 								<NavigationItem
+									url="/about/facbc"
+									label="The FACBC e.V."
+									onClick={toggleMobileMenu}
+								/>
+								<NavigationItem
 									url="/about/safeguarding"
 									label="Safeguarding"
 									onClick={toggleMobileMenu}
@@ -148,17 +155,17 @@
 			<ul
 				class="mt-4 flex flex-col p-4 text-primary-100 lg:mt-0 lg:flex-row lg:space-x-8 lg:text-sm lg:font-medium"
 			>
-				<NavigationItem url="/" label="Home" />
-				<NavigationItem url="/worship" label="Worship" />
-				<NavigationItem url="/news" label="News" />
-				<NavigationItem url="/events" label="Events" />
-				<NavigationItem url="/groups" label="Groups" />
+				<NavigationItem url="/" label="Home" onClick={noop} />
+				<NavigationItem url="/worship" label="Worship" onClick={noop} />
+				<NavigationItem url="/news" label="News" onClick={noop} />
+				<NavigationItem url="/events" label="Events" onClick={noop} />
+				<NavigationItem url="/groups" label="Groups" onClick={noop} />
 				<NavigationRollUp menuItems={aboutItems} title="About us" />
 				{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
-					<NavigationItem url="/admin" label="Admin" />
+					<NavigationItem url="/admin" label="Admin" onClick={noop} />
 				{/if}
 				{#if !$authStore.isLoggedIn}
-					<NavigationItem url="/login" label="Login" />
+					<NavigationItem url="/login" label="Login" onClick={noop} />
 				{:else}
 					<li>
 						<button

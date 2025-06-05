@@ -4,7 +4,6 @@
 	import { goto } from '$app/navigation';
 
 	import { Timestamp } from 'firebase/firestore';
-
 	import { Input, Checkbox, Textarea, Helper, Button, Tooltip } from 'flowbite-svelte';
 
 	import { uploadImage } from '$lib/services/fileService';
@@ -36,10 +35,10 @@
 		condition: '',
 		publishdate: '',
 		publishtime: '',
-		publishDateTime: '',
+		publishDateTime: Timestamp.fromDate(new Date(0)),
 		unpublishdate: '',
 		unpublishtime: '',
-		unpublishDateTime: '',
+		unpublishDateTime: Timestamp.fromDate(new Date(0)),
 		comments: '',
 		image: '',
 		imageAlt: '',
@@ -77,7 +76,7 @@
 		loading = false;
 	});
 
-	const handleConditionChange = (e: Event) => {
+	const handleConditionChange = (e: Event & { target: HTMLInputElement }) => {
 		if (e.target.checked) {
 			newEvent.condition = 'Entry is free, donations are welcome.';
 		} else {
@@ -124,10 +123,20 @@
 	};
 
 	const handleLocationAddedModal = async (event: CustomEvent) => {
-		await fetchLocations();
-		selectedLocation.set(event.detail.id);
-		newEvent.location = event.detail.id;
+		// First close the modal to prevent any component refresh issues
 		showModal = false;
+		// Then fetch updated locations
+		await fetchLocations();
+
+		// Find the newly created location by ID
+		const newLocId = event.detail.id;
+		const foundLocation = $AllLocations.find((loc) => loc.id === newLocId);
+
+		if (foundLocation) {
+			selectedLocation.set(foundLocation);
+			newEvent.location = newLocId;
+			newEvent = { ...newEvent };
+		}
 	};
 
 	const assignPDF = (e: CustomEvent) => {
@@ -148,10 +157,16 @@
 		!newEvent.publishtime && (newEvent.publishtime = '09:00');
 		!newEvent.unpublishdate && (newEvent.unpublishdate = newEvent.startdate);
 		!newEvent.unpublishtime && (newEvent.unpublishtime = newEvent.starttime!);
-		const publishDateTime = new Date(newEvent.publishdate + 'T' + newEvent.publishtime);
-		newEvent.publishDateTime = Timestamp.fromDate(publishDateTime!);
-		const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
-		newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
+		// Ensure we have valid date strings before creating Date objects
+		if (newEvent.publishdate && newEvent.publishtime) {
+			const publishDateTime = new Date(newEvent.publishdate + 'T' + newEvent.publishtime);
+			newEvent.publishDateTime = Timestamp.fromDate(publishDateTime);
+		}
+
+		if (newEvent.unpublishdate && newEvent.unpublishtime) {
+			const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
+			newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
+		}
 		newEvent.image = await uploadImage(selectedImage);
 		dispatch($EditModeStore, newEvent);
 		newEvent = defaultEvent;

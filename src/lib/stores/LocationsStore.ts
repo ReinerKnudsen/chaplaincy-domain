@@ -14,7 +14,7 @@ export interface Location {
 
 // Location Store
 // Define the initial state of the form
-const initialLocationState: Location = {
+export const initialLocationState: Location = {
 	id: '',
 	name: '',
 	description: '',

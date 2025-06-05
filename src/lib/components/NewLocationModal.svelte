@@ -9,6 +9,7 @@
 		selectedLocation,
 		fetchLocations,
 	} from '$lib/stores/LocationsStore';
+
 	import NewLocationForm from './NewLocationForm.svelte';
 
 	const db = database;
@@ -40,7 +41,12 @@
 <div class="overlay">
 	<div class="modal">
 		<h2>Add New Location</h2>
-		<NewLocationForm on:save={handleSave} on:close={() => dispatch('close')} showClose={true} />
+		<NewLocationForm
+			on:save={handleSave}
+			on:close={() => dispatch('close')}
+			showClose={true}
+			mode="create"
+		/>
 	</div>
 </div>
 

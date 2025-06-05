@@ -41,7 +41,10 @@ interface CreateUserResponse {
 // List all users (only for admins)
 // *****
 
-const listAllUsersFunction = httpsCallable<unknown, { users: AdminUserData[] }>(functions, 'listUsers');
+const listAllUsersFunction = httpsCallable<unknown, { users: AdminUserData[] }>(
+	functions,
+	'listUsers',
+);
 export const listAllUsers = async (): Promise<AdminUserData[]> => {
 	try {
 		const result = await listAllUsersFunction();
@@ -306,10 +309,19 @@ export async function signOut(): Promise<void> {
 // Get current user
 // *****
 
-export function getCurrentUser(): User | null {
-	if (auth.currentUser) {
-		return auth.currentUser;
-	} else {
-		return null;
+export const getCurrentUser = () => {
+	return auth.currentUser;
+};
+
+// *****
+// Request password reset email
+// *****
+
+export const requestPasswordReset = async (email: string): Promise<void> => {
+	try {
+		await sendPasswordResetEmail(auth, email);
+	} catch (error: unknown) {
+		console.error('Error sending password reset email:', error);
+		throw error;
 	}
-}
+};

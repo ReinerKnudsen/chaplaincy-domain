@@ -41,7 +41,10 @@ interface CreateUserResponse {
 // List all users (only for admins)
 // *****
 
-const listAllUsersFunction = httpsCallable<unknown, { users: AdminUserData[] }>(functions, 'listUsers');
+const listAllUsersFunction = httpsCallable<unknown, { users: AdminUserData[] }>(
+	functions,
+	'listUsers',
+);
 export const listAllUsers = async (): Promise<AdminUserData[]> => {
 	try {
 		const result = await listAllUsersFunction();

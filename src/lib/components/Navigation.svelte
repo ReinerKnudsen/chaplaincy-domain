@@ -133,19 +133,6 @@
 							<NavigationItem url="/admin" label="Admin" onClick={toggleMobileMenu} />
 						{/if}
 					</ul>
-					<div class="flex flex-col">
-						{#if !$authStore.isLoggedIn}
-							<button
-								class="text-md rounded-lg bg-primary-20 py-2 text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:text-xl"
-								on:click={handleLogin}>Login</button
-							>
-						{:else}
-							<button
-								class="text-md rounded-lg bg-primary-20 py-2 text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:text-xl"
-								on:click={handleLogout}>Sign out</button
-							>
-						{/if}
-					</div>
 				</div>
 			{/if}
 		</div>
@@ -163,16 +150,6 @@
 				<NavigationRollUp menuItems={aboutItems} title="About us" />
 				{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
 					<NavigationItem url="/admin" label="Admin" onClick={noop} />
-				{/if}
-				{#if !$authStore.isLoggedIn}
-					<NavigationItem url="/login" label="Login" onClick={noop} />
-				{:else}
-					<li>
-						<button
-							class="lg:hover:text-primary-700 lg:dark:hover:text-white dark:hover:text-white text-md block rounded py-2 pe-4 ps-3 text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent xl:text-xl"
-							on:click={handleLogout}>Sign out</button
-						>
-					</li>
 				{/if}
 			</ul>
 		</div>

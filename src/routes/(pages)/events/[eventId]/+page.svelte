@@ -8,6 +8,8 @@
 	import { loadItem, CollectionType, EventStore } from '$lib/stores/ObjectStore';
 	import { fetchLocations, type Location, AllLocations } from '$lib/stores/LocationsStore';
 
+	import MarkdownViewer from '$lib/components/MarkdownViewer.svelte';
+
 	let locations: Location[] | null = null;
 	let loading = true;
 
@@ -51,9 +53,7 @@
 				</div>
 			{/if}
 			{#if description}
-				<div class={`event-description ${formats.itemDescription}`}>
-					{@html description}
-				</div>
+				<MarkdownViewer content={description} />
 			{/if}
 		</div>
 	</div>

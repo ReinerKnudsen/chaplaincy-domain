@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
 	import Editor from '@toast-ui/editor';
 	import '@toast-ui/editor/dist/toastui-editor.css';
 	import '$lib/styles/markdown.css';
 	import { onMount, createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
-	
+
 	export let initialContent = '';
 	let editorElement;
 	let editor;
@@ -31,19 +31,19 @@
 			initialValue: initialContent,
 			hooks: {
 				addImageBlobHook: (blob, callback) => {
-					dispatch('imageUpload', { 
+					dispatch('imageUpload', {
 						blob,
-						callback: (imageUrl) => callback(imageUrl)
+						callback: (imageUrl) => callback(imageUrl),
 					});
 					return false;
-				}
-			}
+				},
+			},
 		});
 
 		editor.on('change', () => {
 			dispatch('change', {
 				markdown: editor.getMarkdown(),
-				html: editor.getHTML()
+				html: editor.getHTML(),
 			});
 		});
 

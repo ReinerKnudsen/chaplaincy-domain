@@ -25,9 +25,9 @@
 	}
 </script>
 
-<div>
+<div class="my-8 rounded-xl border p-4">
 	<div class="flex flex-row justify-between">
-		<Label class="mb-2 mt-8 self-center text-xl font-semibold">Short text (slug)</Label>
+		<Label class="mb-2 mt-2 self-center text-xl font-semibold">Short text (slug)</Label>
 		<p class="explanation self-end text-right">
 			<strong>{slugText.length} of {MAX_SLUG_TEXT} </strong> characters.
 		</p>

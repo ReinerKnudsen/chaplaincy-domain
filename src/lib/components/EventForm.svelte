@@ -11,13 +11,13 @@
 	import { selectedLocation, AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 	import { authStore } from '$lib/stores/AuthStore';
 
-	import SlugText from './SlugText.svelte';
-	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadImage from '$lib/components/UploadImage.svelte';
 	import LocationDropdown from './LocationDropdown.svelte';
 	import NewLocationModal from './NewLocationModal.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
 	import Label from './Label.svelte';
+	import Editor from './Editor.svelte';
+	import SlugText from './SlugText.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -51,10 +51,7 @@
 	let hasImage = writable(false);
 	let selectedImage: File;
 	let showModal = false;
-	let locationAdded = false;
 	let loading = true;
-
-	let locations;
 
 	onMount(async () => {
 		await fetchLocations();
@@ -107,7 +104,6 @@
 	const handleImageChange = (e: CustomEvent) => {
 		selectedImage = e.detail;
 		hasImage.set(!!e.detail);
-		console.log('Image changed: ', e.detail, $hasImage);
 	};
 
 	const handleLocationChange = (event: CustomEvent<{ value: string }>) => {
@@ -215,18 +211,8 @@
 						<strong>{newEvent.description.length}</strong> characters.
 					</p>
 				</div>
-				<Textarea
-					id="description"
-					placeholder="Description text"
-					rows="14"
-					name="description"
-					bind:value={newEvent.description}
-					wrap="hard"
-					class="z-0"
-				/>
+				<Editor bind:content={newEvent.description} />
 			</div>
-
-			<MarkdownHelp text={newEvent.description} />
 			<SlugText
 				text={newEvent.description}
 				slugText={newEvent.slug}

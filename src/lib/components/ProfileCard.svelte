@@ -40,7 +40,8 @@
 		<div class="profile-data my-auto flex w-full flex-col px-6">
 			<div class="mb-2 text-2xl font-bold">{profile.name}</div>
 			<div class="mb-2 text-xl font-semibold">{profile.role}</div>
-			<quote class="text-md mb-2 font-medium lg:block lg:text-lg">{profile.description}</quote>
+			<quote class="text-md mb-2 font-medium lg:block lg:text-lg">{@html profile.description}</quote
+			>
 		</div>
 	</div>
 {:else}

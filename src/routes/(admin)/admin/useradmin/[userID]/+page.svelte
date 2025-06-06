@@ -53,7 +53,7 @@
 					});
 				}
 			} catch (error) {
-				console.log("Couldn't update user profile: ", error);
+				console.error("Couldn't update user profile: ", error);
 			}
 			goto('/admin/useradmin');
 		}

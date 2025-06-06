@@ -421,7 +421,7 @@ export const duplicateItem = async (
 		const newDocRef = await addDoc(collection(database, type), newData);
 		return newDocRef.id;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return undefined;
 	}
 };

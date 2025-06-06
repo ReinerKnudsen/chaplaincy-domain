@@ -16,10 +16,10 @@
 			if (!data.docRef) {
 				throw new Error('No document reference provided');
 			}
-			await updateDoc(data.docRef, event.detail);
+			//await updateDoc(data.docRef, event.detail);
 			EditModeStore.set('');
 		} catch (error) {
-			console.log('Error updating the event: ', error);
+			console.error('Error updating the event: ', error);
 		}
 	};
 </script>

@@ -17,7 +17,6 @@
 
 	const updateNews = async (event: CustomEvent<Record<string, any>>) => {
 		await updateDoc(currentDocRef!, event.detail);
-		console.log('News updated: ', event.detail);
 	};
 </script>
 

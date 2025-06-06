@@ -126,7 +126,7 @@ exports.listUsers = functions.https.onCall((data, context) => {
 			return { users: users };
 		})
 		.catch((error) => {
-			console.log('Error listing users:', error);
+			console.error('Error listing users:', error);
 			return { error: 'Error listing users' };
 		});
 });

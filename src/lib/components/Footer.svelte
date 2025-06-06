@@ -38,7 +38,6 @@
 		try {
 			await signOut(auth);
 			goto('/');
-			console.log('User signed out');
 			unloadUser();
 		} catch (error) {
 			console.error('Error signing out:', error);

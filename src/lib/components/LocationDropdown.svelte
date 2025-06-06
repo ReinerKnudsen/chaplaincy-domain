@@ -8,10 +8,8 @@
 
 	// Make selectedId reactive to selectedLocation changes
 	$: {
-		console.log('selectedLocation changed:', $selectedLocation);
 		if ($selectedLocation && $selectedLocation.id) {
 			selectedId = $selectedLocation.id;
-			console.log('Setting selectedId to:', selectedId);
 		}
 	}
 

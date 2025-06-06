@@ -163,7 +163,9 @@
 			const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
 			newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
 		}
-		newEvent.image = await uploadImage(selectedImage);
+		if (selectedImage) {
+			newEvent.image = await uploadImage(selectedImage);
+		}
 		dispatch($EditModeStore, newEvent);
 		newEvent = defaultEvent;
 		goto('/admin/eventsadmin');

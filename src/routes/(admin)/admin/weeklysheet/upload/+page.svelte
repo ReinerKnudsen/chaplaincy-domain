@@ -34,7 +34,6 @@
 			await updateDoc(newItem.docRef, {
 				date: newItem.date,
 			});
-			console.log('Document updated');
 			goto('/admin/weeklysheet');
 		} catch (error) {
 			console.error('Error updating document:', error);

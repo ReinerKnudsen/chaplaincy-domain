@@ -28,7 +28,7 @@ export const uploadImage = async (selectedImage: File): Promise<string | null> =
 			} as ImageDocument);
 			return imageUrl;
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 		}
 	}
 	return null;

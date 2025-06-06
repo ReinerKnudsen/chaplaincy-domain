@@ -25,7 +25,7 @@ Try editing this content to see the preview update in real-time!`;
 		if (browser) {
 			const [editorModule, viewerModule] = await Promise.all([
 				import('$lib/components/ToastEditor.svelte'),
-				import('$lib/components/MarkdownViewer.svelte')
+				import('$lib/components/MarkdownViewer.svelte'),
 			]);
 			ToastEditor = editorModule.default;
 			MarkdownViewer = viewerModule.default;
@@ -49,16 +49,11 @@ Try editing this content to see the preview update in real-time!`;
 	function handleChange(event) {
 		const { markdown, html } = event.detail;
 		savedContent = markdown;
-		// You can save the content here or use it as needed
-		console.log('Markdown content:', markdown);
-		console.log('HTML content:', html);
 	}
 
 	function saveContent() {
 		if (editorInstance) {
 			const markdown = editorInstance.getMarkdown();
-			// Here you would typically save the markdown to your backend
-			console.log('Saving markdown:', markdown);
 		}
 	}
 </script>

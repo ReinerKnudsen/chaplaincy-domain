@@ -23,7 +23,7 @@
 		} else {
 			let result = await changeUserRole(auth.user.email, 'admin');
 			if (result) {
-				console.log('Benutzer ist nun Admin');
+				console.info('Benutzer ist nun Admin');
 				goto('/');
 			}
 		}

@@ -40,7 +40,6 @@
 	} else {
 		resetCurrentLocation();
 	}
-	$: console.log($CurrentLocation.name);
 
 	const handleLocationChange = (location: Location, index: number) => {
 		updateItem = true;

@@ -247,6 +247,7 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 		// For FutureEvents, we still query the events collection but filter the results
 		const collectionPath = type === CollectionType.FutureEvents ? CollectionType.Events : type;
 		const snapshot = await getDocs(collection(database, collectionPath));
+		// Generate items array with doc.id and data
 		const items = snapshot.docs.map((doc) => ({
 			id: doc.id,
 			data: doc.data(),

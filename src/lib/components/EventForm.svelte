@@ -53,8 +53,9 @@
 	let showModal = false;
 	let loading = true;
 
+	$: console.log("Event's current location", newEvent.location);
+
 	onMount(async () => {
-		await fetchLocations();
 		if ($EditModeStore === EditMode.Update) {
 			newEvent = thisEvent;
 			const location = $AllLocations.find((loc) => loc.id === thisEvent.location);
@@ -69,6 +70,8 @@
 					openMapUrl: '',
 				},
 			);
+		} else {
+			newEvent = { ...defaultEvent };
 		}
 		loading = false;
 	});
@@ -111,10 +114,6 @@
 			showModal = true;
 		} else {
 			newEvent.location = event.detail.value;
-			const newLocation = $AllLocations.find((loc) => loc.id === event.detail.value);
-			if (newLocation) {
-				selectedLocation.set(newLocation);
-			}
 		}
 	};
 
@@ -167,12 +166,12 @@
 			newEvent.image = await uploadImage(selectedImage);
 		}
 		dispatch($EditModeStore, newEvent);
-		newEvent = defaultEvent;
+
 		goto('/admin/eventsadmin');
 	};
 
 	const handleReset = () => {
-		newEvent = defaultEvent;
+		newEvent = { ...defaultEvent };
 		EditModeStore.set('');
 	};
 </script>

@@ -10,8 +10,8 @@
 
 	import MarkdownViewer from '$lib/components/MarkdownViewer.svelte';
 
-	let locations: Location[] | null = null;
 	let loading = true;
+	let location: Location | undefined;
 
 	onMount(async () => {
 		const eventId = $page.params.eventId;
@@ -21,6 +21,13 @@
 	});
 
 	$: description = $EventStore?.description ? marked.parse($EventStore.description) : '';
+
+	$: {
+		$EventStore?.location
+			? (location = $AllLocations.find((location) => location.id === $EventStore.location))
+			: (location = undefined);
+		console.log(location);
+	}
 </script>
 
 {#if loading}
@@ -43,7 +50,9 @@
 				{#if $EventStore.location}
 					<div class={`entry ${formats.itemMetaDataEntry}`}>
 						<Icon name="location" />
-						{$AllLocations.find((location) => location.id === $EventStore.location)?.name}
+						<a target="_blank" href={location?.openMapUrl}
+							>{`${location?.name}, ${location?.city}`}</a
+						>
 					</div>
 				{/if}
 			</div>

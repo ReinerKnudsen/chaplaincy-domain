@@ -10,7 +10,7 @@
 	import NavigationRollUp from '$lib/components/NavigationRollUp.svelte';
 
 	let user;
-	let menuOpen = true;
+	let menuOpen = false;
 	let aboutMenuOpen = true;
 
 	$: authStore.subscribe((store) => {
@@ -41,6 +41,8 @@
 		goto('/login');
 		toggleMobileMenu();
 	};
+
+	const noop = () => {}; // No-operation function for default onClick
 </script>
 
 <nav
@@ -109,6 +111,11 @@
 									onClick={toggleMobileMenu}
 								/>
 								<NavigationItem
+									url="/about/facbc"
+									label="The FACBC e.V."
+									onClick={toggleMobileMenu}
+								/>
+								<NavigationItem
 									url="/about/safeguarding"
 									label="Safeguarding"
 									onClick={toggleMobileMenu}
@@ -126,19 +133,6 @@
 							<NavigationItem url="/admin" label="Admin" onClick={toggleMobileMenu} />
 						{/if}
 					</ul>
-					<div class="flex flex-col">
-						{#if !$authStore.isLoggedIn}
-							<button
-								class="text-md rounded-lg bg-primary-20 py-2 text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:text-xl"
-								on:click={handleLogin}>Login</button
-							>
-						{:else}
-							<button
-								class="text-md rounded-lg bg-primary-20 py-2 text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 md:text-xl"
-								on:click={handleLogout}>Sign out</button
-							>
-						{/if}
-					</div>
 				</div>
 			{/if}
 		</div>
@@ -148,24 +142,14 @@
 			<ul
 				class="mt-4 flex flex-col p-4 text-primary-100 lg:mt-0 lg:flex-row lg:space-x-8 lg:text-sm lg:font-medium"
 			>
-				<NavigationItem url="/" label="Home" />
-				<NavigationItem url="/worship" label="Worship" />
-				<NavigationItem url="/news" label="News" />
-				<NavigationItem url="/events" label="Events" />
-				<NavigationItem url="/groups" label="Groups" />
+				<NavigationItem url="/" label="Home" onClick={noop} />
+				<NavigationItem url="/worship" label="Worship" onClick={noop} />
+				<NavigationItem url="/news" label="News" onClick={noop} />
+				<NavigationItem url="/events" label="Events" onClick={noop} />
+				<NavigationItem url="/groups" label="Groups" onClick={noop} />
 				<NavigationRollUp menuItems={aboutItems} title="About us" />
 				{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
-					<NavigationItem url="/admin" label="Admin" />
-				{/if}
-				{#if !$authStore.isLoggedIn}
-					<NavigationItem url="/login" label="Login" />
-				{:else}
-					<li>
-						<button
-							class="lg:hover:text-primary-700 lg:dark:hover:text-white dark:hover:text-white text-md block rounded py-2 pe-4 ps-3 text-primary-100 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent xl:text-xl"
-							on:click={handleLogout}>Sign out</button
-						>
-					</li>
+					<NavigationItem url="/admin" label="Admin" onClick={noop} />
 				{/if}
 			</ul>
 		</div>

@@ -1,6 +1,6 @@
 {
 	"extends": "./.svelte-kit/tsconfig.json",
-	"include": ["src/**/*", "types/**/*"],
+	"include": ["src/**/*", "types/**/*", "static/data/groups.json"],
 	"exclude": ["node_modules/*", "__sapper__/*", "public/*"],
 	"compilerOptions": {
 		"target": "es2016",

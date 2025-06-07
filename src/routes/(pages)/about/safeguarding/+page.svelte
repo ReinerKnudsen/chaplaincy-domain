@@ -65,8 +65,7 @@
 		For further information about safeguarding, please see the Diocese in Europe's safeguarding
 		information: <a
 			href="https://www.europe.anglican.org/resources/safeguarding-diocese-europe"
-			class="border-b-2 border-b-purple-100 pb-1 hover:border-b-slate-300 hover:font-semibold hover:text-slate-300"
-			>https://www.europe.anglican.org/resources/safeguarding-diocese-europe</a
+			class="link">https://www.europe.anglican.org/resources/safeguarding-diocese-europe</a
 		>
 	</p>
 </div>

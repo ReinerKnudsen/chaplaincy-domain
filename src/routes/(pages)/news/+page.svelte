@@ -71,7 +71,7 @@
 		photoName: 'Reiner Knudsen',
 		photoUrl: 'https://unsplash.com/@reinerknudsen',
 		imageUrl:
-			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fstock%2Fnews.jpg?alt=media&token=c783cad1-946a-4a47-9917-56c24bb74872',
+			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fheaders%2Fnews.jpg?alt=media&token=aa27a23c-2004-4f8b-be58-2930c5bbedff',
 		title: 'News and Notices',
 	};
 </script>

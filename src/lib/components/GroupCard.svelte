@@ -25,29 +25,23 @@
 			{#if extraLink && eventsLink}
 				<div class="flex flex-row justify-between gap-20 py-4">
 					<p class="bg-slate-200 p-4">
-						<a class="border-b-2 border-b-purple-100 pb-1" href={extraLink} target="_blank"
-							>{extraLinkText}</a
-						>
+						<a class="link" href={extraLink} target="_blank">{extraLinkText}</a>
 					</p>
 					<p class="bg-slate-200 p-4">
-						Please check our <a class="border-b-2 border-b-purple-100 pb-1" href="/events">Events</a
-						> page for upcoming meetings.
+						Please check our <a class="link" href="/events">Events</a> page for upcoming meetings.
 					</p>
 				</div>
 			{:else if extraLink}
 				<div class=" bg-slate-200 py-4 pl-4">
 					<p>
 						{extraLinkText}
-						<a class="border-b-2 border-b-purple-100 pb-1" href={extraLink} target="_blank"
-							>{extraLinkText}</a
-						>.
+						<a class="link" href={extraLink} target="_blank">{extraLinkText}</a>.
 					</p>
 				</div>
 			{:else if eventsLink}
 				<div class=" bg-slate-200 py-4 pl-4">
 					<p>
-						Please check our <a class="border-b-2 border-b-purple-100 pb-1" href="/events">Events</a
-						> page for upcoming meetings.
+						Please check our <a class="link" href="/events">Events</a> page for upcoming meetings.
 					</p>
 				</div>
 			{/if}

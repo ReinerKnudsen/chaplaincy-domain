@@ -58,7 +58,7 @@
 				{error}
 			</div>
 			<div class="flex items-start">
-				<a href="/passwordreset" class="border-b-2 border-b-purple-100 pb-1 hover:border-b-purple-300">Forgot password?</a>
+				<a href="/passwordreset" class="link">Forgot password?</a>
 			</div>
 			<Button type="submit" class="w-full bg-primary-80 text-white-primary">Sign in</Button>
 		</form>

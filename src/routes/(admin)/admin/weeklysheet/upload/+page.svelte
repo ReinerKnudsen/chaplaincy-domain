@@ -46,7 +46,7 @@
 	<form class="mx-10" enctype="multipart/form-data" on:submit={handleSubmit}>
 		<!-- Date -->
 		<div>
-			<Label for="date" class="mb-2 mt-8 text-xl font-semibold">Date</Label>
+			<Label for="date" class="mb-2 mt-8 text-xl font-semibold">Date *</Label>
 			<Input type="date" id="date" bind:value={newItem.date} required />
 		</div>
 

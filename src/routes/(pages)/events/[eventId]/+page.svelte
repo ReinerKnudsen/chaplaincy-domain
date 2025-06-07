@@ -50,7 +50,7 @@
 				{#if $EventStore.location}
 					<div class={`entry ${formats.itemMetaDataEntry}`}>
 						<Icon name="location" />
-						<a target="_blank" href={location?.openMapUrl}
+						<a class="link" target="_blank" href={location?.openMapUrl}
 							>{`${location?.name}, ${location?.city}`}</a
 						>
 					</div>
@@ -68,14 +68,11 @@
 	</div>
 	<div class={`back-link ${formats.backLink}`}>
 		<Icon name="left" />
-		<a class={formats.aLink} href="/events">Take me back to overview</a>
+		<a class="link" href="/events">Take me back to overview</a>
 	</div>
 {:else}
 	<p>Event not found</p>
 {/if}
 
 <style>
-	a {
-		color: blue; /* Example style */
-	}
 </style>

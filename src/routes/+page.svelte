@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import ServiceCard from '$lib/components/ServiceCard.svelte';
 	import ItemCard from '$lib/components/ItemCard.svelte';
-	import Spinner from '$lib/components/Spinner.svelte';
 	import { authStore } from '$lib/stores/AuthStore';
 	import mainhero from '$lib/assets/mainhero.webp';
 	import Icon from '$lib/components/Icon.svelte';
@@ -76,7 +75,7 @@
 
 <!-- Section: Service Times -->
 <div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
-	Our regular worship services
+	Come and worship with us
 </div>
 <div class=" w-full">
 	<div class={`services ${services} ${servicesMd} ${servicesXL}`}>
@@ -114,14 +113,14 @@
 	<!-- News section -->
 	{#if $LatestNewsStore.length > 0}
 		<div class={container + ' ' + containerLg}>
-			<h2 class={sectionHeader + ' ' + sectionHeaderMd + ' ' + sectionHeaderXl}>Latest News</h2>
+			<h2 class={sectionHeader + ' ' + sectionHeaderMd + ' ' + sectionHeaderXl}>What's up?</h2>
 			<div class={itemContainer + ' ' + itemContainerLg + ' ' + itemContainerXL}>
 				{#each $LatestNewsStore as item}
 					<ItemCard {item} kind="news" />
 				{/each}
 			</div>
-			<div class="mt-4 text-center">
-				<a href="/news" class="text-purple-600 underline hover:text-purple-800">See all news</a>
+			<div class="more-link">
+				<a href="/news" class="link">See all news</a>
 			</div>
 		</div>
 	{/if}
@@ -136,8 +135,8 @@
 					<ItemCard {item} kind="events" />
 				{/each}
 			</div>
-			<div class="mt-4 text-center">
-				<a href="/events" class="text-purple-600 underline hover:text-purple-800">See all events</a>
+			<div class="more-link">
+				<a href="/events" class="link">See all events</a>
 			</div>
 		</div>
 	{/if}
@@ -176,7 +175,7 @@
 		local authority’s children or adult social care services.
 	</p>
 	<div class="more-link">
-		<a class="border-b-2 border-b-purple-100 pb-1" href="/about">Learn more</a>
+		<a class="link" href="/about">Learn more</a>
 	</div>
 </div>
 <hr class="mx-auto w-[80%]" />

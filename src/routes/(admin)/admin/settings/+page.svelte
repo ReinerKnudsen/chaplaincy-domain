@@ -29,11 +29,7 @@
 					path: `${folderPath}/${fileName}`,
 					createdAt: new Date(), // Optional: Store the timestamp of this operation
 				});
-
-				console.log(`File: ${fileName} has been added to Firestore.`);
 			}
-
-			console.log('All file names have been pushed to Firestore.');
 		} catch (error) {
 			console.error('Error listing files or pushing data to Firestore:', error);
 		}

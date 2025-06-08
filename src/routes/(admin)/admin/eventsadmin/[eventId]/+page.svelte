@@ -19,7 +19,7 @@
 			await updateDoc(data.docRef, event.detail);
 			EditModeStore.set('');
 		} catch (error) {
-			console.log('Error updating the event: ', error);
+			console.error('Error updating the event: ', error);
 		}
 	};
 </script>

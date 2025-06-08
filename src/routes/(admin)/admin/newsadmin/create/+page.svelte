@@ -13,7 +13,6 @@
 			/**
 			 * TODO: Report completion or error
 			 */
-			console.log('Document created: ', e.detail);
 			goto('/admin/newsadmin');
 		} catch (error) {
 			console.error('Error writing document:', error);

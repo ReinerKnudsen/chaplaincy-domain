@@ -22,9 +22,18 @@ module.exports = {
 		es2020: true,
 		node: true,
 	},
+	overrides: [
+		{
+			files: ['*.svelte'],
+			parser: 'svelte-eslint-parser',
+			parserOptions: {
+				parser: '@typescript-eslint/parser',
+			},
+		},
+	],
 	rules: {
 		'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
-		'no-console': ['warn', { allow: ['warn', 'error'] }],
+		'no-console': ['error', { allow: ['warn', 'error'] }],
 		quotes: ['error', 'single'],
 	},
 };

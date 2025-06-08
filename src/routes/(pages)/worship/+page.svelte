@@ -6,7 +6,7 @@
 		photoName: 'Milada Vigerova',
 		photoUrl: 'https://unsplash.com/@milada_vigerova',
 		imageUrl:
-			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fstock%2Fprayer.jpg?alt=media&token=d2840015-356f-43dc-8408-19637a86e9bd',
+			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fheaders%2Fprayer.jpg?alt=media&token=3f242a9a-0ade-40d7-952b-a514eb2ccb14',
 	};
 </script>
 
@@ -164,7 +164,7 @@
 		<p>
 			Each year, we offer a one-day pilgrimage to Echternach in Luxembourg (with our Old Catholic
 			sister congregation from <a
-				class="border-b-2 border-b-purple-100 pb-1"
+				class="link"
 				href="https://www.alt-katholisch.de/unsere-gemeinden/gemeinde-bonn-startseite/"
 				target="_blank">St. Cyprian’s church</a
 			> in Bonn), and a weekend pilgrimage within Germany. Previous destinations have included Fulda,

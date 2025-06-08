@@ -1,11 +1,14 @@
 <script>
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
+
 	import { collection, doc, getDocs, getDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
-	import { marked } from 'marked';
+
 	import Icon from '$lib/components/Icon.svelte';
 	import * as formats from '$lib/formats';
-	import { onMount } from 'svelte';
+
+	import MarkdownViewer from '$lib/components/MarkdownViewer.svelte';
 
 	let thisItem = {};
 	let loading = true; // Initialize loading state
@@ -18,17 +21,13 @@
 			if (docSnapshot.exists()) {
 				thisItem = docSnapshot.data();
 			} else {
-				console.log('Could not load news document!');
+				console.error('Could not load news document!');
 			}
 		} catch (err) {
-			console.log('Error while loading news:', err);
+			console.error('Error while loading news:', err);
 		}
 		loading = false;
 	});
-
-	$: if (thisItem.text) {
-		thisItem.text = marked.parse(thisItem.text);
-	} //.replace(/\n/g, '<br />');
 </script>
 
 {#if loading}
@@ -64,9 +63,7 @@
 			<div class={`news-image ${formats.itemImageContainer}`}>
 				<img class={formats.itemImage} src={thisItem.image} alt={thisItem.title} />
 			</div>
-			<div class={`news-description ${formats.itemDescription}`}>
-				{@html thisItem.text}
-			</div>
+			<MarkdownViewer content={thisItem.text} />
 		</div>
 	</div>
 	<div class={`back-link ${formats.backLink}`}>

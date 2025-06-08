@@ -13,10 +13,10 @@
 	import { EditModeStore, EditMode } from '$lib/stores/ObjectStore';
 
 	import SlugText from './SlugText.svelte';
-	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
 	import UploadImage from './UploadImage.svelte';
 	import Label from './Label.svelte';
+	import Editor from './Editor.svelte';
 
 	const author = $authStore.name;
 
@@ -42,7 +42,6 @@
 	};
 
 	const handleSubmit = async (e: SubmitEvent) => {
-		console.log('Called handleSubmit');
 		e.preventDefault();
 		if (!newItem.publishdate) {
 			const now = new Date();
@@ -110,19 +109,11 @@
 					<strong>{newItem.text.length}</strong> characters.
 				</p>
 			</div>
-			<Textarea
-				id="news-text"
-				placeholder="News text"
-				rows="8"
-				name="news-text"
-				bind:value={newItem.text}
-				wrap="hard"
-			/>
+			<Editor bind:content={newItem.text} />
 		</div>
-
-		<MarkdownHelp text={newItem.text} />
-		<SlugText text={newItem.text} slugText={newItem.slug} on:slugChange={handleSlugChange} />
-
+		<div>
+			<SlugText text={newItem.text} slugText={newItem.slug} on:slugChange={handleSlugChange} />
+		</div>
 		<!-- Publish date  -->
 		<div>
 			<Label child="publishdate">Publish Date *</Label>

@@ -14,12 +14,12 @@
 	<div>
 		<figure class="image mx-2 max-h-60 md:mx-10 md:justify-self-end">
 			<img
-				class="max-h-60"
+				class="max-h-60 rounded-lg"
 				src="https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fstock%2Fgroup.jpg?alt=media&token=aee71f28-1a42-4564-8865-6c213af46562"
 				alt="a group of people talking"
 			/>
-			<figcaption class="text-center text-sm">
-				<a href="https://unsplash.com/@priscilladupreez">Image by Priscilla Dupreez</a>
+			<figcaption>
+				<a class="link" href="https://unsplash.com/@priscilladupreez">Image by Priscilla Dupreez</a>
 			</figcaption>
 		</figure>
 	</div>
@@ -27,12 +27,12 @@
 	<div>
 		<figure class="image mx-10 mb-10 max-h-60 justify-self-start">
 			<img
-				class="max-h-60"
+				class="max-h-60 rounded-lg"
 				src="https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fstock%2Fseniors.jpg?alt=media&token=d2ff3d4c-e1be-45ad-95d5-a031dd98a991"
 				alt="a group of people talking"
 			/>
-			<figcaption class="text-center text-sm">
-				<a href="https://unsplash.com/@abicarys">Image by Abi Howard</a>
+			<figcaption>
+				<a class="link" href="https://unsplash.com/@abicarys">Image by Abi Howard</a>
 			</figcaption>
 		</figure>
 	</div>
@@ -54,12 +54,12 @@
 	</div>
 	<figure class="image mx-10 max-h-60 justify-self-end">
 		<img
-			class="max-h-60"
+			class="max-h-60 rounded-lg"
 			src="https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fstock%2Fsupport.jpg?alt=media&token=80cd44ae-4633-473e-9e8d-b65997a19d02"
 			alt="a group of people talking"
 		/>
-		<figcaption class="text-center text-sm">
-			<a href="https://unsplash.com/@vidarnm">Image by Vidar Nordli-Mathisen</a>
+		<figcaption>
+			<a class="link" href="https://unsplash.com/@vidarnm">Image by Vidar Nordli-Mathisen</a>
 		</figcaption>
 	</figure>
 </div>
@@ -68,5 +68,10 @@
 <style>
 	.image {
 		max-height: 300px;
+	}
+	figcaption {
+		margin-top: 8px;
+		text-align: right;
+		font-size: 0.8rem;
 	}
 </style>

@@ -4,11 +4,11 @@
 	import '@fontsource/inter';
 
 	import { getAuth, onAuthStateChanged, type User } from 'firebase/auth';
-	
+
 	import { authStore, unloadUser, type AuthState } from '$lib/stores/AuthStore';
 	import { stopListening } from '$lib/stores/ScreenSizeStore';
 	import { getUserRole } from '$lib/services/authService';
-	
+
 	import Navigation from '$lib/components/Navigation.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 
@@ -57,9 +57,5 @@
 </script>
 
 <Navigation />
-
-<div class="main-layout md:my-10 xl:my-10">
-	<slot />
-</div>
-
+<slot />
 <Footer />

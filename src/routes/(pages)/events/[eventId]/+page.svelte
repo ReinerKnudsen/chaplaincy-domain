@@ -8,8 +8,10 @@
 	import { loadItem, CollectionType, EventStore } from '$lib/stores/ObjectStore';
 	import { fetchLocations, type Location, AllLocations } from '$lib/stores/LocationsStore';
 
-	let locations: Location[] | null = null;
+	import MarkdownViewer from '$lib/components/MarkdownViewer.svelte';
+
 	let loading = true;
+	let location: Location | undefined;
 
 	onMount(async () => {
 		const eventId = $page.params.eventId;
@@ -19,6 +21,13 @@
 	});
 
 	$: description = $EventStore?.description ? marked.parse($EventStore.description) : '';
+
+	$: {
+		$EventStore?.location
+			? (location = $AllLocations.find((location) => location.id === $EventStore.location))
+			: (location = undefined);
+		console.log(location);
+	}
 </script>
 
 {#if loading}
@@ -41,7 +50,9 @@
 				{#if $EventStore.location}
 					<div class={`entry ${formats.itemMetaDataEntry}`}>
 						<Icon name="location" />
-						{$AllLocations.find((location) => location.id === $EventStore.location)?.name}
+						<a class="link" target="_blank" href={location?.openMapUrl}
+							>{`${location?.name}, ${location?.city}`}</a
+						>
 					</div>
 				{/if}
 			</div>
@@ -51,22 +62,17 @@
 				</div>
 			{/if}
 			{#if description}
-				<div class={`event-description ${formats.itemDescription}`}>
-					{@html description}
-				</div>
+				<MarkdownViewer content={description} />
 			{/if}
 		</div>
 	</div>
 	<div class={`back-link ${formats.backLink}`}>
 		<Icon name="left" />
-		<a class={formats.aLink} href="/events">Take me back to overview</a>
+		<a class="link" href="/events">Take me back to overview</a>
 	</div>
 {:else}
 	<p>Event not found</p>
 {/if}
 
 <style>
-	a {
-		color: blue; /* Example style */
-	}
 </style>

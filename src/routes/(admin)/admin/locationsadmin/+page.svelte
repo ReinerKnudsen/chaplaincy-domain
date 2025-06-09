@@ -12,6 +12,7 @@
 	} from 'firebase/firestore';
 	import {
 		CurrentLocation,
+		initialLocationState,
 		resetCurrentLocation,
 		AllLocations,
 		updateAndSortLocations,
@@ -47,7 +48,8 @@
 	};
 
 	const handleCreateNew = () => {
-		resetCurrentLocation();
+		// Create a fresh copy of initialLocationState
+		CurrentLocation.set({ ...initialLocationState });
 		updateItem = false;
 	};
 
@@ -139,7 +141,11 @@
 		</div>
 		<div class="location-details">
 			<h2>Location Details</h2>
-			<NewLocationForm on:save={handleSave} showClose={false} />
+			<NewLocationForm
+				on:save={handleSave}
+				showClose={false}
+				mode={updateItem ? 'update' : 'create'}
+			/>
 		</div>
 	</div>
 </div>

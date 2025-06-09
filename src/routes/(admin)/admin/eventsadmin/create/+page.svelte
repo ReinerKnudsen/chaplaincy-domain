@@ -9,7 +9,6 @@
 	const saveNewEvent = async (e: CustomEvent) => {
 		try {
 			await addDoc(eventsColRef, e.detail);
-			console.log('Event saved successfully', e.detail);
 			EditModeStore.set('');
 			goto('/admin/eventsadmin');
 		} catch (error) {

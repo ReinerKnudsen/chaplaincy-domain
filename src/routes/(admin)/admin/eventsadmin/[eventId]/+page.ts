@@ -20,11 +20,11 @@ export async function load({
 			const newEvent = docSnapshot.data();
 			return { newEvent, docRef };
 		} else {
-			console.log('Error: Document does not exist!)');
+			console.error('Error: Document does not exist!)');
 			return { newEvent: undefined, docRef };
 		}
 	} catch (err) {
-		console.log('Error while loading event:', err);
+		console.error('Error while loading event:', err);
 		return { newEvent: undefined, docRef: null };
 	}
 }

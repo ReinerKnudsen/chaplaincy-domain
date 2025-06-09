@@ -9,50 +9,69 @@
 		loadItems,
 		type NewsSortableFields,
 		CollectionType,
+		type CollectionItem,
 	} from '$lib/stores/ObjectStore.js';
 	import { onMount } from 'svelte';
 
-	$: favNews = $NewsItemsStore[0];
-	$: newsItems = $NewsItemsStore ? $NewsItemsStore.slice(1) : []; // all news items except the first one
 	let loading = true;
+	let favNews: CollectionItem;
+	let newsItems: CollectionItem[];
+
+	// Sort news items
+	const sortKey = writable<NewsSortableFields>('publishdate'); // default sort key
+	const sortDirection = writable<1 | -1>(-1); // default sort direction (ascending)
+	const sortItems = writable<CollectionItem[]>([]); // Start empty
+
+	$: if ($NewsItemsStore) {
+		sortItems.set($NewsItemsStore.slice());
+	}
+
+	$: if ($sortKey || $sortDirection) {
+		sortNews();
+	}
 
 	const loadData = async () => {
-		await loadItems(CollectionType.News);
+		try {
+			await loadItems(CollectionType.News);
+		} catch (error) {
+			console.error('Failed to load news items. ', error);
+		}
+	};
+
+	const sortNews = async () => {
+		try {
+			const key = $sortKey;
+			const direction = $sortDirection;
+			const sorted = [...$sortItems].sort((a, b) => {
+				// since the data sits deeper in the news object we must dig deeper here
+				const aVal = a.data[key];
+				const bVal = b.data[key];
+				if (aVal < bVal) {
+					return -direction;
+				} else if (aVal > bVal) {
+					return direction;
+				}
+				return 0;
+			});
+			sortItems.set(sorted);
+			newsItems = sorted.slice(1);
+			favNews = sorted[0];
+		} catch (error) {
+			console.error('Error sorting the news items. ', error);
+		}
 	};
 
 	onMount(async () => {
 		await loadData();
+		await sortNews();
 		loading = false;
 	});
-
-	// Sort table items
-	const sortKey = writable<NewsSortableFields>('publishdate'); // default sort key
-	const sortDirection = writable<1 | -1>(-1); // default sort direction (ascending)
-	const sortItems = writable($NewsItemsStore.slice()); // make a copy of the news array
-
-	$: {
-		const key = $sortKey;
-		const direction = $sortDirection;
-		const sorted = [...$sortItems].sort((a, b) => {
-			// since the data sits deeper in the news object we must dig deeper here
-			const aVal = a.data[key];
-			const bVal = b.data[key];
-			if (aVal < bVal) {
-				return -direction;
-			} else if (aVal > bVal) {
-				return direction;
-			}
-			return 0;
-		});
-		sortItems.set(sorted);
-		favNews = sorted[0];
-	}
 
 	const headerData = {
 		photoName: 'Reiner Knudsen',
 		photoUrl: 'https://unsplash.com/@reinerknudsen',
 		imageUrl:
-			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-bncgn.appspot.com/o/images%2Fstock%2Fnews.jpg?alt=media&token=c783cad1-946a-4a47-9917-56c24bb74872',
+			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fheaders%2Fnews.jpg?alt=media&token=aa27a23c-2004-4f8b-be58-2930c5bbedff',
 		title: 'News and Notices',
 	};
 </script>

@@ -17,9 +17,7 @@
 		</h1>
 	</div>
 	<div class="pt-2 text-right text-sm">
-		Image by: <a class=" font-semibold text-blue-400" href={headerData.photoUrl} target="_blank"
-			>{headerData.photoName}</a
-		>
+		Image by: <a class="link" href={headerData.photoUrl} target="_blank">{headerData.photoName}</a>
 	</div>
 </div>
 

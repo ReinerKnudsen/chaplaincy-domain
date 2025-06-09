@@ -1,13 +1,17 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import { selectedLocation, AllLocations } from '$lib/stores/LocationsStore';
-	import { ChevronSortOutline } from 'flowbite-svelte-icons';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import { selectedLocation, AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 
 	const dispatch = createEventDispatcher();
 	let selectedId = $selectedLocation?.id || '';
 
+	onMount(async () => {
+		await fetchLocations();
+	});
+
+	// Make selectedId reactive to selectedLocation changes
 	$: {
-		if ($selectedLocation) {
+		if ($selectedLocation && $selectedLocation.id) {
 			selectedId = $selectedLocation.id;
 		}
 	}

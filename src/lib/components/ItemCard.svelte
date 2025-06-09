@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { type CollectionItem } from '$lib/stores/ObjectStore';
+	import { decodeHtml } from '$lib/services/HTMLfunctions';
 
 	export let item: CollectionItem;
 	export let kind: 'news' | 'events';
@@ -7,7 +8,6 @@
 	const containerSM =
 		'sm:grid-col-1 my-5 grid rounded-2xl border border-slate-200 px-4 py-4 shadow-xl bg-white';
 	const containerLG = 'lg:grid-col-3';
-	//const containerXL = 'xl:bg-white';
 	const mainContent = 'justify-between';
 	const mainContentMd = 'md:flex md:gap-5';
 </script>
@@ -22,7 +22,7 @@
 		</div>
 		<div class="article w-full md:w-[60%]">
 			<div class="mb-8">
-				{item.data.slug}
+				{decodeHtml(item.data.slug)}
 			</div>
 		</div>
 	</div>

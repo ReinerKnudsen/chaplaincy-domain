@@ -22,7 +22,7 @@
 	</div>
 	<div class="location text-center">
 		<h4 class="mt-2">{service.place_church}</h4>
-		<a class="font-semibold text-link-primary" href={service.url} target="_blank"
+		<a class="underline underline-offset-4" href={service.url} target="_blank"
 			>{@html service.place_address}</a
 		>
 	</div>

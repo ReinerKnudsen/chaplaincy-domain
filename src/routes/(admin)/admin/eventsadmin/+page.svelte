@@ -46,15 +46,41 @@
 	});
 
 	// Sort table items
-	const sortKey: Writable<EventSortableFields> = writable('title');
-	const sortDirection: Writable<number> = writable(1);
+	const STORAGE_KEY = 'events_sort';
+
+	// Initialize sort settings from sessionStorage or defaults
+	const getStoredSortSettings = () => {
+		if (typeof window === 'undefined') return { key: 'title', direction: 1 };
+
+		const stored = sessionStorage.getItem(STORAGE_KEY);
+		if (stored) {
+			try {
+				return JSON.parse(stored);
+			} catch (e) {
+				console.error('Failed to parse sort settings:', e);
+				return { key: 'title', direction: 1 };
+			}
+		}
+		return { key: 'title', direction: 1 };
+	};
+
+	const { key: initialKey, direction: initialDirection } = getStoredSortSettings();
+	const sortKey: Writable<EventSortableFields> = writable(initialKey);
+	const sortDirection: Writable<number> = writable(initialDirection);
+
+	// Update sessionStorage when sort settings change
+	$: {
+		if (typeof window !== 'undefined') {
+			sessionStorage.setItem(
+				STORAGE_KEY,
+				JSON.stringify({ key: $sortKey, direction: $sortDirection }),
+			);
+		}
+	}
+
 	$: {
 		if ($EventsStore) sortItems.set($EventsStore.slice());
 	} // make a copy of the array
-
-	/**
-	 * TODO:We should store sort order in SessionStorage
-	 */
 
 	const sortTable = (key: EventSortableFields) => {
 		if ($sortKey === key) {

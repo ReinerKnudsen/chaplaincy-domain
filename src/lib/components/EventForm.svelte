@@ -4,7 +4,6 @@
 	import { goto } from '$app/navigation';
 
 	import { Timestamp } from 'firebase/firestore';
-
 	import { Input, Checkbox, Textarea, Helper, Button, Tooltip } from 'flowbite-svelte';
 
 	import { uploadImage } from '$lib/services/fileService';
@@ -12,13 +11,13 @@
 	import { selectedLocation, AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 	import { authStore } from '$lib/stores/AuthStore';
 
-	import SlugText from './SlugText.svelte';
-	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadImage from '$lib/components/UploadImage.svelte';
 	import LocationDropdown from './LocationDropdown.svelte';
 	import NewLocationModal from './NewLocationModal.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
 	import Label from './Label.svelte';
+	import Editor from './Editor.svelte';
+	import SlugText from './SlugText.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -36,10 +35,10 @@
 		condition: '',
 		publishdate: '',
 		publishtime: '',
-		publishDateTime: '',
+		publishDateTime: Timestamp.fromDate(new Date(0)),
 		unpublishdate: '',
 		unpublishtime: '',
-		unpublishDateTime: '',
+		unpublishDateTime: Timestamp.fromDate(new Date(0)),
 		comments: '',
 		image: '',
 		imageAlt: '',
@@ -52,13 +51,11 @@
 	let hasImage = writable(false);
 	let selectedImage: File;
 	let showModal = false;
-	let locationAdded = false;
 	let loading = true;
 
-	let locations;
+	$: console.log("Event's current location", newEvent.location);
 
 	onMount(async () => {
-		await fetchLocations();
 		if ($EditModeStore === EditMode.Update) {
 			newEvent = thisEvent;
 			const location = $AllLocations.find((loc) => loc.id === thisEvent.location);
@@ -73,11 +70,13 @@
 					openMapUrl: '',
 				},
 			);
+		} else {
+			newEvent = { ...defaultEvent };
 		}
 		loading = false;
 	});
 
-	const handleConditionChange = (e: Event) => {
+	const handleConditionChange = (e: Event & { target: HTMLInputElement }) => {
 		if (e.target.checked) {
 			newEvent.condition = 'Entry is free, donations are welcome.';
 		} else {
@@ -108,7 +107,6 @@
 	const handleImageChange = (e: CustomEvent) => {
 		selectedImage = e.detail;
 		hasImage.set(!!e.detail);
-		console.log('Image changed: ', e.detail, $hasImage);
 	};
 
 	const handleLocationChange = (event: CustomEvent<{ value: string }>) => {
@@ -116,18 +114,24 @@
 			showModal = true;
 		} else {
 			newEvent.location = event.detail.value;
-			const newLocation = $AllLocations.find((loc) => loc.id === event.detail.value);
-			if (newLocation) {
-				selectedLocation.set(newLocation);
-			}
 		}
 	};
 
 	const handleLocationAddedModal = async (event: CustomEvent) => {
-		await fetchLocations();
-		selectedLocation.set(event.detail.id);
-		newEvent.location = event.detail.id;
+		// First close the modal to prevent any component refresh issues
 		showModal = false;
+		// Then fetch updated locations
+		await fetchLocations();
+
+		// Find the newly created location by ID
+		const newLocId = event.detail.id;
+		const foundLocation = $AllLocations.find((loc) => loc.id === newLocId);
+
+		if (foundLocation) {
+			selectedLocation.set(foundLocation);
+			newEvent.location = newLocId;
+			newEvent = { ...newEvent };
+		}
 	};
 
 	const assignPDF = (e: CustomEvent) => {
@@ -148,18 +152,26 @@
 		!newEvent.publishtime && (newEvent.publishtime = '09:00');
 		!newEvent.unpublishdate && (newEvent.unpublishdate = newEvent.startdate);
 		!newEvent.unpublishtime && (newEvent.unpublishtime = newEvent.starttime!);
-		const publishDateTime = new Date(newEvent.publishdate + 'T' + newEvent.publishtime);
-		newEvent.publishDateTime = Timestamp.fromDate(publishDateTime!);
-		const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
-		newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
-		newEvent.image = await uploadImage(selectedImage);
+		// Ensure we have valid date strings before creating Date objects
+		if (newEvent.publishdate && newEvent.publishtime) {
+			const publishDateTime = new Date(newEvent.publishdate + 'T' + newEvent.publishtime);
+			newEvent.publishDateTime = Timestamp.fromDate(publishDateTime);
+		}
+
+		if (newEvent.unpublishdate && newEvent.unpublishtime) {
+			const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
+			newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
+		}
+		if (selectedImage) {
+			newEvent.image = await uploadImage(selectedImage);
+		}
 		dispatch($EditModeStore, newEvent);
-		newEvent = defaultEvent;
+
 		goto('/admin/eventsadmin');
 	};
 
 	const handleReset = () => {
-		newEvent = defaultEvent;
+		newEvent = { ...defaultEvent };
 		EditModeStore.set('');
 	};
 </script>
@@ -200,18 +212,8 @@
 						<strong>{newEvent.description.length}</strong> characters.
 					</p>
 				</div>
-				<Textarea
-					id="description"
-					placeholder="Description text"
-					rows="14"
-					name="description"
-					bind:value={newEvent.description}
-					wrap="hard"
-					class="z-0"
-				/>
+				<Editor bind:content={newEvent.description} />
 			</div>
-
-			<MarkdownHelp text={newEvent.description} />
 			<SlugText
 				text={newEvent.description}
 				slugText={newEvent.slug}

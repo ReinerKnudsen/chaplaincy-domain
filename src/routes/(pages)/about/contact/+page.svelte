@@ -21,19 +21,19 @@
 
 		<!-- Email -->
 		<div class="flex flex-col space-y-2">
-			<label for="email">Email *</label>
+			<label for="email">Email</label>
 			<input type="email" id="email" name="email" required class="rounded-lg border p-2" />
 		</div>
 
 		<!-- Subject -->
 		<div class="flex flex-col space-y-2">
-			<label for="subject">Subject *</label>
+			<label for="subject">Subject</label>
 			<input type="text" id="subject" name="subject" required class="rounded-lg border p-2" />
 		</div>
 
 		<!-- Message -->
 		<div class="flex flex-col space-y-2">
-			<label for="message">Message *</label>
+			<label for="message">Message</label>
 			<textarea id="message" name="message" rows="6" required class="rounded-lg border p-2" />
 		</div>
 

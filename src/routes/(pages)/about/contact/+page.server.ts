@@ -45,7 +45,7 @@ export const actions = {
 
 		try {
 			await sendEmail({
-				from: 'Chaplaincy Website  <contact@comms.anglicanbonncologne.de>',
+				from: 'Anglican Church <contact@comms.anglicanbonncologne.de>',
 				to: process.env.SMTP_TO || 'reinerknudsen@me.com',
 				subject: `Contact Form: ${subject}`,
 				text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,

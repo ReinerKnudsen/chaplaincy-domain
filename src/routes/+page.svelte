@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { enhance } from '$app/forms';
 	import ServiceCard from '$lib/components/ServiceCard.svelte';
 	import ItemCard from '$lib/components/ItemCard.svelte';
 	import Spinner from '$lib/components/Spinner.svelte';
@@ -30,6 +31,8 @@
 	let user;
 	let loading = true;
 
+	export let form: ActionData;
+
 	onMount(async () => {
 		await loadItems(CollectionType.News);
 		await loadItems(CollectionType.FutureEvents);
@@ -48,7 +51,7 @@
 	const subTitle = 'text-md text-justify px-5 py-3 w-full ';
 	const subTitleLg = 'lg:text-2xl lg:px-10 lg:py-2';
 	const subTitleXl = 'xl:text-4xl xl:px-10 xl:py-5';
-	const sectionHeader = 'text-xl text-justify w-full px-5 pt-4 font-semibold';
+	const sectionHeader = 'text-2xl text-justify w-full px-10 py-4 font-semibold';
 	const sectionHeaderMd = 'md:text-3xl md:px-10 md:pt-10 md:py-3';
 	const sectionHeaderXl = 'xl:text-4xl xl:px-10 xl:pt-14 xl:py-5 ';
 	const container = 'mb-5 w-full';
@@ -59,8 +62,8 @@
 	const itemContainer = 'px-5 grid grid-cols-1';
 	const itemContainerLg = 'lg:px-10 lg:grid lg:grid-cols-2 lg:gap-5';
 	const itemContainerXL = 'xl:px-10 xl:grid xl:grid-cols-2 xl:gap-5';
-	const downloadContainer = 'grid grid-cols-2 justify-items-center px-5';
-	const downloadContainerLg = 'lg:grid lg:grid-cols-4 lg:justify-items-center lg:px-5';
+	const downloadContainer = 'flex flex-row gap-8 justify-center px-5';
+	const downloadContainerLg = 'lg:flex lg:flex-row lg:justifycenter lg:gap-10 lg:px-5';
 	const downloadContainerXL = 'xl:flex xl:flex-row xl:justify-center gap-10 xl:px-5';
 </script>
 
@@ -163,9 +166,51 @@
 	</div>
 </div>
 <hr class="mx-auto w-[80%]" />
+<!-- signup section-->
+<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl} `}>
+	Sign up for our news
+</div>
+<div class="mb-10 pl-10 text-lg">
+	We provide you with the latest news from our chaplaincy and the diocese in our regular email news.
+
+	<form method="POST" action="?/subscribe" use:enhance class="flex w-full flex-col space-y-6 pr-10">
+		<div class="my-8 flex flex-col gap-4 md:flex-row md:gap-8">
+			<div class="flex flex-1 flex-col space-y-2">
+				<label for="firstName">First Name</label>
+				<input type="text" id="firstName" name="firstName" class="w-full rounded-lg border p-2" />
+			</div>
+
+			<div class="flex flex-1 flex-col space-y-2">
+				<label for="lastName">Last Name</label>
+				<input type="text" id="lastName" name="lastName" class="w-full rounded-lg border p-2" />
+			</div>
+
+			<div class="flex flex-1 flex-col space-y-2">
+				<label for="email">Email *</label>
+				<input type="email" id="email" name="email" required class="w-full rounded-lg border p-2" />
+			</div>
+		</div>
+
+		<button type="submit" class="calltoaction">Subscribe to Newsletter</button>
+
+		{#if form?.success}
+			<div class="rounded-lg border-2 border-green-500 p-4 text-green-500">
+				{form.message}
+			</div>
+		{/if}
+		{#if form?.error}
+			<div class="rounded-lg border-2 border-red-700 p-4 text-red-800">
+				{form.message}
+			</div>
+		{/if}
+	</form>
+</div>
+<!-- Download section-->
+<hr class="mx-auto w-[80%]" />
 <div class="downloads">
 	<h2 class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Downloads</h2>
 </div>
+
 <div class="mb-5 w-full lg:mb-10">
 	<div
 		class={`download-container ${downloadContainer} ${downloadContainerLg} ${downloadContainerXL}`}

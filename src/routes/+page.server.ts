@@ -1,6 +1,10 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { PRIVATE_BREVO_API_KEY, PRIVATE_BREVO_REDIRECTION_URL } from '$env/static/private';
+import {
+	PRIVATE_BREVO_API_KEY,
+	PRIVATE_BREVO_REDIRECTION_URL,
+	PRIVATE_BREVO_LIST,
+} from '$env/static/private';
 
 export const actions = {
 	subscribe: async ({ request }) => {
@@ -18,7 +22,7 @@ export const actions = {
 			},
 			body: JSON.stringify({
 				attributes: { FirstName: firstName, LastName: lastName },
-				includeListIds: [5],
+				includeListIds: [+PRIVATE_BREVO_LIST],
 				email: email,
 				templateId: 9,
 				redirectionUrl: PRIVATE_BREVO_REDIRECTION_URL,
@@ -37,24 +41,38 @@ export const actions = {
 				'https://api.brevo.com/v3/contacts/doubleOptinConfirmation',
 				options,
 			);
-			const result = await response.json();
 
-			if (!response.ok) {
-				return fail(400, {
+			const responseText = await response.text();
+
+			// If we got a 204 No Content or other success status, return success
+			if (response.ok) {
+				return {
+					success: true,
+					message: 'Please check your email to confirm your subscription.',
+				};
+			}
+
+			// Try to parse error response if exists
+			let result;
+			try {
+				result = responseText ? JSON.parse(responseText) : { message: 'Unknown error' };
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			} catch (_) {
+				return fail(response.status, {
 					error: true,
-					message: `Failed to subscribe: ${result.message || 'Unknown error'}`,
+					message: `Server error (${response.status}): ${responseText || 'No response body'}`,
 				});
 			}
 
-			return {
-				success: true,
-				message: 'Please check your email to confirm your subscription.',
-			};
-		} catch (error) {
-			console.error('Newsletter subscription error:', error);
+			return fail(response.status, {
+				error: true,
+				message: `Failed to subscribe: ${result.message || 'Unknown error'}`,
+			});
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (_) {
 			return fail(500, {
 				error: true,
-				message: 'Failed to subscribe. Please try again later.',
+				message: 'An unexpected error occurred. Please try again later.',
 			});
 		}
 	},

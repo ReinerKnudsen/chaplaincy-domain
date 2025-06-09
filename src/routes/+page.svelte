@@ -64,6 +64,7 @@
 	const downloadContainer = 'flex flex-row gap-8 justify-center px-5';
 	const downloadContainerLg = 'lg:flex lg:flex-row lg:justifycenter lg:gap-10 lg:px-5';
 	const downloadContainerXL = 'xl:flex xl:flex-row xl:justify-center gap-10 xl:px-5';
+
 </script>
 
 <div class={`page-title ${header} ${headerLg} ${headerXl}`}>

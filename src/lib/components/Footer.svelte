@@ -2,20 +2,11 @@
 	import { onMount } from 'svelte';
 	import { auth } from '$lib/firebase/firebaseConfig';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { signOut } from 'firebase/auth';
 	import { doc, getDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
-
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
-
-	import {
-		Footer,
-		FooterCopyright,
-		FooterLinkGroup,
-		FooterLink,
-		FooterIcon,
-	} from 'flowbite-svelte';
-
 	import Icon from '$lib/components/Icon.svelte';
 
 	let environment;
@@ -45,71 +36,93 @@
 	};
 </script>
 
-<Footer footerType="socialmedia" class=" rounded-t-2xl bg-white-primary shadow-xl ">
-	<div class="pl-8 md:flex md:justify-between">
-		<div class="grid grid-cols-1 gap-2 sm:grid-cols-4 sm:gap-6 lg:gap-8">
+<footer
+	class="w-screen"
+	class:bg-white-primary={$page.url.pathname === '/'}
+	class:bg-slate-100={$page.url.pathname !== '/'}
+>
+	<div
+		class="border-1 mx-auto max-w-[1400px] rounded-t-3xl border border-slate-300 bg-white-smoke px-4 pb-4 sm:px-6 lg:px-8"
+	>
+		<div class="grid grid-cols-1 gap-6 pt-8 sm:grid-cols-4">
+			<!-- Resources -->
 			<div>
-				<h2 class="dark:text-white mb-6 text-sm font-semibold uppercase text-gray-900">
-					Resources
-				</h2>
-				<FooterLinkGroup>
-					<FooterLink liClass="mb-4" href="/newsletter/archive">Newsletter Archive</FooterLink>
-				</FooterLinkGroup>
+				<h2 class="mb-4 text-lg font-semibold uppercase tracking-wide text-gray-800">Resources</h2>
+				<nav class="flex flex-col space-y-2">
+					<a href="/newsletter/archive" class="text-gray-600 hover:text-gray-900"
+						>Newsletter Archive</a
+					>
+				</nav>
 			</div>
+
+			<!-- Follow us -->
 			<div>
-				<h2 class="dark:text-white mb-6 text-sm font-semibold uppercase text-gray-900">
-					Follow us
-				</h2>
-				<FooterLinkGroup>
-					<FooterLink
-						liClass="mb-4"
+				<h2 class="mb-4 text-lg font-semibold uppercase tracking-wide text-gray-800">Follow us</h2>
+				<nav class="flex flex-col space-y-2">
+					<a
 						href="https://www.facebook.com/AnglicanBonnCologne"
 						target="_blank"
-						>Facebook
-					</FooterLink>
-				</FooterLinkGroup>
+						class="text-gray-600 hover:text-gray-900">Facebook</a
+					>
+				</nav>
 			</div>
+
+			<!-- Legal -->
 			<div>
-				<h2 class="dark:text-white mb-6 text-sm font-semibold uppercase text-gray-900">Legal</h2>
-				<FooterLinkGroup>
-					<FooterLink liClass="mb-4" href="/legal">Privacy Policy</FooterLink>
-					<FooterLink liClass="mb-4" href="/impressum">Impressum</FooterLink>
-				</FooterLinkGroup>
+				<h2 class="mb-4 text-lg font-semibold uppercase tracking-wide text-gray-800">Legal</h2>
+				<nav class="flex flex-col space-y-2">
+					<a href="/legal" class="text-gray-600 hover:text-gray-900">Privacy Policy</a>
+					<a href="/impressum" class="text-gray-600 hover:text-gray-900">Impressum</a>
+				</nav>
 			</div>
+
+			<!-- User -->
 			<div>
-				<h2 class="dark:text-white mb-6 text-sm font-semibold uppercase text-gray-900">User</h2>
-				<FooterLinkGroup>
+				<h2 class="mb-4 text-lg font-extrabold uppercase tracking-wide text-gray-800">User</h2>
+				<nav class="flex flex-col space-y-2">
 					{#if !$authStore.isLoggedIn}
-						<button class="text-md" on:click={handleLogin}>Login</button>
+						<button class="text-left text-gray-600 hover:text-gray-900" on:click={handleLogin}
+							>Login</button
+						>
 					{:else}
-						<button class="text-md" on:click={handleLogout}>Sign out</button>
+						<button class="text-left text-gray-600 hover:text-gray-900" on:click={handleLogout}
+							>Sign out</button
+						>
 					{/if}
-				</FooterLinkGroup>
+				</nav>
+			</div>
+		</div>
+
+		<hr class="my-4 border-gray-200" />
+
+		<div class="flex flex-col items-center justify-between py-4 sm:flex-row">
+			<div class="text-gray-500">© {new Date().getFullYear()} Sleepy Panda</div>
+			<div class="mt-4 flex space-x-6 sm:mt-0">
+				<a
+					href="https://www.facebook.com/AnglicanBonnCologne/"
+					class="text-gray-500 hover:text-gray-900"
+					target="_blank"
+				>
+					<Icon name="facebook" class="h-5 w-5" />
+				</a>
+				<a
+					href="https://www.achurchnearyou.com/church/8388/"
+					class="text-gray-500 hover:text-gray-900"
+					target="_blank"
+				>
+					<Icon name="churchnearyou" class="h-5 w-5" />
+				</a>
+				<a
+					href="https://www.achurchnearyou.com/church/8389/"
+					class="text-gray-500 hover:text-gray-900"
+					target="_blank"
+				>
+					<Icon name="churchnearyou" class="h-5 w-5" />
+				</a>
+				<a href="/about/contact" class="text-gray-500 hover:text-gray-900">
+					<Icon name="email" class="h-5 w-5" />
+				</a>
 			</div>
 		</div>
 	</div>
-	<hr class="my-6 border-gray-200 dark:border-gray-700 sm:mx-auto lg:my-8" />
-	<div class=" pl-8 pr-8 sm:flex sm:items-center sm:justify-between">
-		<FooterCopyright href="/" by="Sleepy Panda " />
-		<div class="mt-4 flex space-x-6 sm:mt-0 sm:justify-center rtl:space-x-reverse">
-			<FooterIcon href="https://www.facebook.com/AnglicanBonnCologne/">
-				<Icon
-					name="facebook"
-					class="dark:hover:text-white h-5 w-5 text-gray-500 hover:text-gray-900 dark:text-gray-500"
-				/>
-			</FooterIcon>
-			<FooterIcon href="https://www.achurchnearyou.com/church/8388/">
-				<Icon
-					name="churchnearyou"
-					class="dark:hover:text-white h-5 w-5 text-gray-500 hover:text-gray-900 dark:text-gray-500"
-				/>
-			</FooterIcon>
-			<FooterIcon href="/">
-				<Icon
-					name="email"
-					class="dark:hover:text-white h-5 w-5 text-gray-500 hover:text-gray-900 dark:text-gray-500"
-				/>
-			</FooterIcon>
-		</div>
-	</div>
-</Footer>
+</footer>

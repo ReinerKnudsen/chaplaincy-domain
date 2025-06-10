@@ -11,7 +11,7 @@
 	onMount(() => {});
 </script>
 
-<div class="w-100 ml-3">
+<div class="ml-3 flex-1">
 	<h1>Administration</h1>
 	<div>
 		<p>This page provides a list of available administration tasks.</p>

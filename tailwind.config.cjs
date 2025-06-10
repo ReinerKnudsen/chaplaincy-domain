@@ -57,6 +57,7 @@ const config = {
 				},
 				white: {
 					primary: 'rgba(255,255,255,1)',
+					smoke: 'rgba(245,245,245,1)',
 				},
 				link: {
 					primary: 'rgba(100, 18, 129, 1)',

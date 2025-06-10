@@ -57,4 +57,11 @@
 </script>
 
 <Navigation />
-<slot />
+<div id="main-container" class="mt-10 flex min-h-screen flex-col">
+	<div id="main-content" class="">
+		<slot />
+	</div>
+	<div class=" bg-white-smoke">
+		<Footer />
+	</div>
+</div>

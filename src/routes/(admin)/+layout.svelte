@@ -63,11 +63,11 @@
 </script>
 
 {#if loading}
-	<div class="w-100 ml-3 min-h-screen">
+	<div class="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
 		<h1>Loading...</h1>
 	</div>
 {:else}
-	<div class="flex min-h-screen flex-col">
+	<div class="mx-auto mb-20 flex max-w-[1400px] flex-col px-4 sm:px-6 lg:px-8">
 		<nav>
 			<div class="subNav">
 				{#each adminMenu as item}
@@ -82,11 +82,9 @@
 			</div>
 		</nav>
 
-		<div id="main-content" class="mx-5 mb-10 mt-10 flex-grow md:mx-10 lg:mx-20">
+		<div id="main-content" class="mb-10 mt-10">
 			<slot />
 		</div>
-
-		<Footer />
 	</div>
 {/if}
 

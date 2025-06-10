@@ -42,7 +42,7 @@
 	class:bg-slate-100={$page.url.pathname !== '/'}
 >
 	<div
-		class="bg-white-smoke border-1 mx-auto max-w-[1400px] rounded-t-3xl border border-slate-300 px-4 pb-4 sm:px-6 lg:px-8"
+		class="border-1 mx-auto max-w-[1400px] rounded-t-3xl border border-slate-300 bg-white-smoke px-4 pb-4 sm:px-6 lg:px-8"
 	>
 		<div class="grid grid-cols-1 gap-6 pt-8 sm:grid-cols-4">
 			<!-- Resources -->
@@ -101,16 +101,25 @@
 				<a
 					href="https://www.facebook.com/AnglicanBonnCologne/"
 					class="text-gray-500 hover:text-gray-900"
+					target="_blank"
 				>
 					<Icon name="facebook" class="h-5 w-5" />
 				</a>
 				<a
 					href="https://www.achurchnearyou.com/church/8388/"
 					class="text-gray-500 hover:text-gray-900"
+					target="_blank"
 				>
 					<Icon name="churchnearyou" class="h-5 w-5" />
 				</a>
-				<a href="/" class="text-gray-500 hover:text-gray-900">
+				<a
+					href="https://www.achurchnearyou.com/church/8389/"
+					class="text-gray-500 hover:text-gray-900"
+					target="_blank"
+				>
+					<Icon name="churchnearyou" class="h-5 w-5" />
+				</a>
+				<a href="/about/contact" class="text-gray-500 hover:text-gray-900">
 					<Icon name="email" class="h-5 w-5" />
 				</a>
 			</div>

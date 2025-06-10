@@ -5,6 +5,7 @@
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { getAuth, type Auth, onAuthStateChanged, type User } from 'firebase/auth';
 	import { screenSize } from '$lib/stores/ScreenSizeStore';
+	import Footer from '$lib/components/Footer.svelte';
 
 	let auth: Auth = getAuth();
 	let loading = true;
@@ -62,26 +63,30 @@
 </script>
 
 {#if loading}
-	<div class="w-100 ml-3">
+	<div class="w-100 ml-3 min-h-screen">
 		<h1>Loading...</h1>
 	</div>
 {:else}
-	<nav>
-		<div class="subNav">
-			{#each adminMenu as item}
-				<div class="subNavItem">
-					{#if item.url === $pathName}
-						<div class="inactive">{item.name}</div>
-					{:else}
-						<a href={item.url}>{item.name}</a>
-					{/if}
-				</div>
-			{/each}
-		</div>
-	</nav>
+	<div class="flex min-h-screen flex-col">
+		<nav>
+			<div class="subNav">
+				{#each adminMenu as item}
+					<div class="subNavItem">
+						{#if item.url === $pathName}
+							<div class="inactive">{item.name}</div>
+						{:else}
+							<a href={item.url}>{item.name}</a>
+						{/if}
+					</div>
+				{/each}
+			</div>
+		</nav>
 
-	<div class="main-content p-5">
-		<slot />
+		<div id="main-content" class="mx-5 mb-10 mt-10 flex-grow md:mx-10 lg:mx-20">
+			<slot />
+		</div>
+
+		<Footer />
 	</div>
 {/if}
 

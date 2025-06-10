@@ -58,4 +58,3 @@
 
 <Navigation />
 <slot />
-<Footer />

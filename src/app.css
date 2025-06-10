@@ -1,5 +1,6 @@
 /* Write your global styles here, in PostCSS syntax */
 @import 'tailwindcss';
+@plugin "daisyui";
 
 @source '../node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}';
 @source '../node_modules/flowbite-svelte-blocks/**/*.{html,js,svelte,ts}';

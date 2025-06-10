@@ -42,7 +42,7 @@
 	class:bg-slate-100={$page.url.pathname !== '/'}
 >
 	<div
-		class="border-1 mx-auto max-w-[1400px] rounded-t-3xl border border-slate-300 bg-white-smoke px-4 pb-4 sm:px-6 lg:px-8"
+		class="border mx-auto max-w-[1400px] rounded-t-3xl border border-slate-300 bg-white-smoke px-4 pb-4 sm:px-6 lg:px-8"
 	>
 		<div class="grid grid-cols-1 gap-6 pt-8 sm:grid-cols-4">
 			<!-- Resources -->

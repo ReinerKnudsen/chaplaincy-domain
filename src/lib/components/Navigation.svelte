@@ -61,7 +61,7 @@
 			<button
 				type="button"
 				id="mobile-menu"
-				class="m-0.5 ms-3 whitespace-normal rounded-lg p-1.5 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:hover:bg-gray-600 lg:hidden"
+				class="m-0.5 ms-3 whitespace-normal rounded-lg p-1.5 hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-gray-400 dark:hover:bg-gray-600 lg:hidden"
 				aria-label="Open main menu"
 				on:click={toggleMobileMenu}
 				><span class="sr-only">Open main menu</span>
@@ -87,7 +87,7 @@
 			>
 			{#if menuOpen}
 				<div
-					class="mobile-menu absolute left-[20%] top-28 z-20 w-[80%] cursor-pointer rounded-lg bg-white-primary px-4 py-4"
+					class="mobile-menu fixed right-0 top-28 z-20 w-[80%] max-w-md cursor-pointer rounded-lg bg-white-primary/95 px-4 py-4 shadow-xl backdrop-blur-sm"
 				>
 					<ul class="mt-4 flex flex-col gap-2 p-4 text-primary-100">
 						<NavigationItem url="/" label="Home" onClick={toggleMobileMenu} />
@@ -97,7 +97,7 @@
 						<NavigationItem url="/groups" label="Groups" onClick={toggleMobileMenu} />
 						<NavigationItem url="#" label="About us" onClick={toggleAboutMenu} />
 						{#if aboutMenuOpen}
-							<div class="pl-4">
+							<div class="relative w-full bg-white-primary/95 rounded-lg shadow-lg py-2">
 								<NavigationItem url="/about" label="Who we are" onClick={toggleMobileMenu} />
 								<NavigationItem
 									url="/about/responsibilities"

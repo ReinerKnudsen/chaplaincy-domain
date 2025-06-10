@@ -48,13 +48,13 @@
 		>
 		{#if showDropdown}
 			<div
-				class="dropdown ring-black absolute left-0 mt-2 w-48 rounded-md bg-white-primary shadow-lg ring-1 ring-opacity-5"
+				class="dropdown bg-white-primary ring-opacity-5 absolute right-0 z-50 mt-2 w-48 rounded-md shadow-lg ring-1 ring-black"
 			>
 				{#each menuItems as menuItem}
 					<div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
 						<a
 							href={menuItem.url}
-							class="block px-4 py-2 text-sm text-primary-100 hover:bg-gray-100 hover:text-gray-900"
+							class="text-primary-100 block px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900"
 							role="menuitem"
 							on:click={toggleDropdown}>{menuItem.title}</a
 						>

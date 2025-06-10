@@ -201,7 +201,7 @@
 <section class={shouldBeWhite(2) ? 'bg-white-primary' : ''}>
 	<div class="content-container">
 		<div class={`sectionHeader  ${sectionHeader}`}>Sign up for our news</div>
-		<div class="mb-10 pl-10 text-lg">
+		<div class="mt-4 mb-10 pl-10 text-lg">
 			We provide you with the latest news from our chaplaincy and the diocese in our regular email
 			news.
 

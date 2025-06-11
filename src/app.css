@@ -4,15 +4,31 @@
 
 @source '../node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}';
 @source '../node_modules/flowbite-svelte-blocks/**/*.{html,js,svelte,ts}';
-@source '../node_modules/flowbite-svelte-icons/**/*.{html,js,svelte,ts}';
+@source '../node_modules/flowbite-svelte-icons/**/*.{html,js,svelte,ts}'; 
 
 @custom-variant dark (&:is(.dark *));
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/font/Inter-VariableFont_opsz,wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/font/Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
 
 @theme {
   --breakpoint-*: initial;
   --breakpoint-sm: 480px;
   --breakpoint-md: 768px;
-  --breakpoint-lg: 976px;
+  --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
 
   --font-*: initial;
@@ -113,6 +129,8 @@
 		@apply cursor-pointer pb-1 text-purple-60;
 	}
 
+
+
 	.link {
 		@apply relative no-underline transition-colors duration-200;
 	}
@@ -132,6 +150,10 @@
 	.calltoaction:hover {
 		@apply bg-purple-300 text-black-100;
 	}
+
+  /* Daisy UI overwrite */
+
+
 
 	h1 {
 		color: black;
@@ -164,4 +186,25 @@
 	h4 {
 		@apply text-lg font-semibold;
 	}
+}
+
+@layer components {
+  .btn-custom-delete {
+    background-color: var(--color-red-700);
+    border: var(--color-red-950);
+    color: var(--color-white-primary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+
+  .label {
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .label-text {
+    color: var(--primary-100)
+  }
 }

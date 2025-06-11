@@ -5,7 +5,6 @@
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { getAuth, type Auth, onAuthStateChanged, type User } from 'firebase/auth';
 	import { screenSize } from '$lib/stores/ScreenSizeStore';
-	import Footer from '$lib/components/Footer.svelte';
 
 	let auth: Auth = getAuth();
 	let loading = true;
@@ -64,59 +63,34 @@
 
 {#if loading}
 	<div class="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-		<h1>Loading...</h1>
+		<h1 class="text-3xl font-bold text-gray-900">Loading...</h1>
 	</div>
 {:else}
-	<div class="mx-auto mb-20 flex max-w-[1400px] flex-col px-4 sm:px-6 lg:px-8">
+	<div
+		id="content-container"
+		class="mx-auto mb-20 flex max-w-[1400px] flex-col px-4 sm:px-6 lg:px-8"
+	>
 		<nav>
-			<div class="subNav">
-				{#each adminMenu as item}
-					<div class="subNavItem">
+			<div
+				id="subNav"
+				class="flex h-[60px] w-full flex-row items-center rounded-lg bg-white p-5 shadow-xl"
+			>
+				{#each adminMenu as item, i}
+					<div class="px-8 {i !== adminMenu.length - 1 ? 'border-r border-gray-300' : ''}">
 						{#if item.url === $pathName}
-							<div class="inactive">{item.name}</div>
+							<div class="cursor-not-allowed font-light text-gray-500">{item.name}</div>
 						{:else}
-							<a href={item.url}>{item.name}</a>
+							<a href={item.url} class="hover:text-primary-600 font-semibold transition-colors"
+								>{item.name}</a
+							>
 						{/if}
 					</div>
 				{/each}
 			</div>
 		</nav>
 
-		<div id="main-content" class="mb-10 mt-10">
+		<div id="main-content" class="mt-10 mb-10">
 			<slot />
 		</div>
 	</div>
 {/if}
-
-<style>
-	.subNav {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		padding: 0 20px;
-		background-color: white;
-		width: 100%;
-		border-radius: 10px;
-		height: 60px;
-
-		@apply shadow-xl;
-	}
-
-	.subNavItem {
-		border-right: 1px solid #c3c3c3;
-		padding: 0 30px;
-	}
-
-	.inactive {
-		cursor: not-allowed;
-		font-weight: 300;
-	}
-
-	.subNavItem > a {
-		font-weight: 900;
-	}
-
-	.subNavItem:last-child {
-		border-right: none;
-	}
-</style>

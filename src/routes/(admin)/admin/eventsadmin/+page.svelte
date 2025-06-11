@@ -23,7 +23,7 @@
 	} from '$lib/stores/ObjectStore';
 	import { AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 
-	import { Button, Modal } from 'flowbite-svelte';
+	import { Modal } from 'flowbite-svelte';
 
 	let showModal = false;
 	let showDuplicateModal = false;
@@ -31,8 +31,6 @@
 	let dupeID: string = '';
 	let loading: boolean = true;
 	let sortItems: Writable<CollectionItem[]> = writable([]);
-
-	let locationMap: Record<string, string> = {};
 
 	const loadData = async () => {
 		await loadItems(CollectionType.Events);
@@ -166,31 +164,28 @@
 </script>
 
 <Modal bind:open={showModal} size="md" autoclose>
-	<div class="rounded-xl bg-white-primary p-10 text-center">
+	<div class="bg-white-primary rounded-xl p-10 text-center">
 		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
 			Deleting an item can not be undone.
 			<p><strong>Do you really want to delete this item?</strong></p>
 		</h3>
 		<div class="flex justify-between px-36">
-			<Button color="alternative">Cancel</Button>
-			<Button color="red" class=" me-2 text-white-primary" on:click={() => handleDelete()}
-				>Delete</Button
-			>
+			<button class="btn btn-active btn-default px-8">Cancel</button>
+			<button class="btn-custom-delete px-8" on:click={() => handleDelete()}>Delete</button>
 		</div>
 	</div>
 </Modal>
 
 <Modal bind:open={showDuplicateModal} size="md" autoclose>
-	<div class="rounded-xl bg-white-primary p-10 text-center">
+	<div class="bg-white-primary rounded-xl p-10 text-center">
 		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
 			Do you want to duplicate this event?
 			<p>All information will be kept but all dates will be reset.</p>
 		</h3>
 		<div class="flex justify-between px-36">
-			<Button color="alternative">Cancel</Button>
-			<Button
-				class="bg-primary-100 text-lg font-semibold text-white-primary"
-				on:click={() => handleDuplicate()}>Confirm</Button
+			<button class="btn btn-active btn-default px-8">Cancel</button>
+			<button class="btn btn-active btn-primary px-8" on:click={() => handleDuplicate()}
+				>Confirm</button
 			>
 		</div>
 	</div>
@@ -202,11 +197,8 @@
 		<div class="col-span-9">
 			<input class="w-full rounded-lg" placeholder="Search (not yet active)" type="text" />
 		</div>
-		<div class="col-span-3 justify-self-end">
-			<Button
-				on:click={handleCreateNew}
-				class="bg-primary-100 text-lg font-semibold text-white-primary">Create Event</Button
-			>
+		<div class="col-span-3 justify-self-end py-2">
+			<button on:click={handleCreateNew} class="btn btn-primary btn-lg">Create Event</button>
 		</div>
 	</div>
 
@@ -214,38 +206,41 @@
 		<div class="w-full">Loading...</div>
 	{:else}
 		<div class="w-full">
-			<table>
-				<thead>
-					<tr>
-						<th on:click={() => sortTable('title')}>Title</th>
-						<th on:click={() => sortTable('startdate')}>Date</th>
-						<th on:click={() => sortTable('publishdate')}>Publish date</th>
-						<th on:click={() => sortTable('location')}>Location</th>
-						<th on:click={() => sortTable('author')}>Author</th>
-						<th>Action</th>
+			<table class="admin-table">
+				<thead class="table-row">
+					<tr class="table-row">
+						<th class="table-header table-cell" on:click={() => sortTable('title')}>Title</th>
+						<th class="table-header table-cell" on:click={() => sortTable('startdate')}
+							>Start Date</th
+						>
+						<th class="table-header table-cell" on:click={() => sortTable('enddate')}>End Date</th>
+						<th class="table-header table-cell" on:click={() => sortTable('location')}>Location</th>
+						<th class="table-header table-cell" on:click={() => sortTable('publishdate')}
+							>Publish Date</th
+						>
+						<th class="table-header table-cell">Actions</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody class="table-row">
 					{#each $sortItems as item}
-						<tr>
-							<td
-								><button class="underline" on:click={() => handleOpenItem(item.id)}
-									>{item.data.title}</button
-								></td
-							>
-							<td>{item.data.startdate}</td>
-							<td>{item.data.publishdate}</td>
-							<td>{printLocation(item.data.location)}</td>
-							<td>{item.data.author}</td>
-							<td>
-								<div class="flex justify-between">
-									<button
-										class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-										on:click={() => openModal(item.id)}>Delete</button
+						<tr class="table-row">
+							<td class="table-data table-cell">
+								<button class="btn btn-link px-0" on:click={() => handleOpenItem(item.id)}>
+									{item.data.title}
+								</button>
+							</td>
+							<td class="table-data table-cell">{item.data.startdate}</td>
+							<td class="table-data table-cell">{item.data.enddate}</td>
+							<td class="table-data table-cell">{printLocation(item.data.location)}</td>
+							<td class="table-data table-cell">{item.data.publishdate}</td>
+							<td class="table-data table-cell">
+								<div class="flex flex-row gap-2">
+									<button class="btn-sm btn-custom-delete" on:click={() => openModal(item.id)}
+										>Delete</button
 									>
-									|
 									<button
-										class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+										class="btn btn-active btn-sm btn-default"
+										color="alternative"
 										on:click={() => openDuplicateModal(item.id)}>Duplicate</button
 									>
 								</div>
@@ -259,49 +254,41 @@
 </div>
 
 <style>
-	table {
+	.admin-table {
 		display: grid;
 		border-collapse: collapse;
 		min-width: 100%;
 		grid-template-columns:
-			minmax(150px, 2.5fr)
-			minmax(130px, 1fr)
-			minmax(130px, 1fr)
-			minmax(150px, 2fr)
-			minmax(150px, 1fr)
-			minmax(100px, 1fr);
+			minmax(150px, 2.5fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(150px, 2fr)
+			minmax(150px, 1fr) minmax(100px, 1fr);
 	}
-	thead,
-	tbody,
-	tr {
+
+	.table-row {
 		display: contents;
 	}
 
-	th {
-		cursor: pointer;
+	.table-header {
 		background-color: white;
+		cursor: pointer;
+		padding: 0.75rem 0.5rem;
+		text-align: left;
 		font-size: 0.875rem;
 		font-weight: 600;
+		color: rgb(17 24 39);
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		text-align: left;
-		padding-top: 0.8rem;
-		padding-bottom: 0.8rem;
-		padding-left: 0.5rem;
 	}
-	th,
-	td {
+
+	.table-cell {
 		font-size: 0.875rem;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-		@apply text-slate-600;
+		color: rgb(71 85 105);
 	}
 
-	td {
-		padding-top: 1.2rem;
-		padding-bottom: 1.2rem;
-		padding-left: 0.5rem;
-		@apply border-b border-slate-300;
+	.table-data {
+		padding: 1.25rem 0.5rem;
+		border-bottom: 1px solid rgb(203 213 225);
+		align-content: center;
 	}
 </style>

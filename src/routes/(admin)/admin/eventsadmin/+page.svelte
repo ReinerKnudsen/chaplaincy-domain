@@ -23,10 +23,8 @@
 	} from '$lib/stores/ObjectStore';
 	import { AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 
-	import { Modal } from 'flowbite-svelte';
-
-	let showModal = false;
-	let showDuplicateModal = false;
+	let deleteDialog: HTMLDialogElement;
+	let duplicateDialog: HTMLDialogElement;
 	let deleteID: string = '';
 	let dupeID: string = '';
 	let loading: boolean = true;
@@ -130,7 +128,6 @@
 		if (!newEvent) {
 			return;
 		}
-		showDuplicateModal = false;
 		loading = true;
 		await loadData();
 		loading = false;
@@ -139,19 +136,18 @@
 	};
 
 	const handleDelete = async () => {
-		showModal = false;
 		await deleteDoc(doc(eventsColRef, deleteID));
 		await loadData();
 	};
 
 	const openModal = (id: string) => {
 		deleteID = id;
-		showModal = true;
+		deleteDialog?.showModal();
 	};
 
 	const openDuplicateModal = (id: string) => {
 		dupeID = id;
-		showDuplicateModal = true;
+		duplicateDialog?.showModal();
 	};
 
 	const printLocation = (id: string) => {
@@ -163,33 +159,37 @@
 	};
 </script>
 
-<Modal bind:open={showModal} size="md" autoclose>
-	<div class="bg-white-primary rounded-xl p-10 text-center">
-		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-			Deleting an item can not be undone.
-			<p><strong>Do you really want to delete this item?</strong></p>
-		</h3>
-		<div class="flex justify-between px-36">
-			<button class="btn btn-active btn-default px-8">Cancel</button>
-			<button class="btn-custom-delete px-8" on:click={() => handleDelete()}>Delete</button>
+<dialog bind:this={deleteDialog} class="modal">
+	<div class="modal-box">
+		<h3 class="text-lg font-bold">Confirm Delete</h3>
+		<p class="py-4">Deleting an item can not be undone.<br><strong>Do you really want to delete this item?</strong></p>
+		<div class="modal-action">
+			<form method="dialog">
+				<button class="btn btn-default mr-2">Cancel</button>
+				<button class="btn btn-error" on:click|preventDefault={() => handleDelete()}>Delete</button>
+			</form>
 		</div>
 	</div>
-</Modal>
+	<form method="dialog" class="modal-backdrop">
+		<button>close</button>
+	</form>
+</dialog>
 
-<Modal bind:open={showDuplicateModal} size="md" autoclose>
-	<div class="bg-white-primary rounded-xl p-10 text-center">
-		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-			Do you want to duplicate this event?
-			<p>All information will be kept but all dates will be reset.</p>
-		</h3>
-		<div class="flex justify-between px-36">
-			<button class="btn btn-active btn-default px-8">Cancel</button>
-			<button class="btn btn-active btn-primary px-8" on:click={() => handleDuplicate()}
-				>Confirm</button
-			>
+<dialog bind:this={duplicateDialog} class="modal">
+	<div class="modal-box">
+		<h3 class="text-lg font-bold">Duplicate Event</h3>
+		<p class="py-4">Do you want to duplicate this event?<br>All information will be kept but all dates will be reset.</p>
+		<div class="modal-action">
+			<form method="dialog">
+				<button class="btn btn-default mr-2">Cancel</button>
+				<button class="btn btn-primary" on:click|preventDefault={() => handleDuplicate()}>Duplicate</button>
+			</form>
 		</div>
 	</div>
-</Modal>
+	<form method="dialog" class="modal-backdrop">
+		<button>close</button>
+	</form>
+</dialog>
 
 <div>
 	<h1>Events</h1>

@@ -198,6 +198,21 @@
     cursor: pointer;
   }
 
+  .btn-custom {
+    min-height: 40px;
+    border-radius: 8px;
+    min-width: 120px;
+  }
+
+  .btn-custom-primary {
+    color: var(--color-white-primary);
+    background-color: var(--color-purple-100);
+  }
+
+  .btn-custom-secondary {
+    color: var(--color-primary-text);
+    background-color: var(--color-secondary-40);
+  }
 
   .label {
     margin-bottom: 8px;

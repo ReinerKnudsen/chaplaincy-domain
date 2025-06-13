@@ -8,7 +8,8 @@
 	import { doc, deleteDoc, type DocumentData } from 'firebase/firestore';
 	import { newsColRef } from '$lib/firebase/firebaseConfig';
 
-	import { Button, Modal } from 'flowbite-svelte';
+	import { decodeHtml } from '$lib/services/HTMLfunctions';
+
 	import {
 		resetNewsStore,
 		EditMode,
@@ -25,7 +26,7 @@
 		await loadItems(CollectionType.News);
 	};
 
-	let showModal = false;
+	let deleteDialog: HTMLDialogElement;
 	let deleteID: string = '';
 	let loading = true;
 
@@ -114,31 +115,35 @@
 	};
 
 	const handleDelete = async () => {
-		showModal = false;
 		await deleteDoc(doc(newsColRef, deleteID));
 		await loadData();
 	};
 
 	const openModal = (id: string) => {
 		deleteID = id;
-		showModal = true;
+		deleteDialog?.showModal();
 	};
 </script>
 
-<Modal bind:open={showModal} size="md" autoclose>
-	<div class="rounded-xl bg-white-primary p-10 text-center">
-		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+<dialog bind:this={deleteDialog} class="modal">
+	<div class="modal-box">
+		<h3 class="py-4">Confirm Delete</h3>
+		<hr class="py-2" />
+		<p class="py-4">
 			Deleting an item can not be undone.
-			<p><strong>Do you really want to delete this item?</strong></p>
-		</h3>
-		<div class="flex justify-between px-36">
-			<Button color="alternative">Cancel</Button>
-			<Button color="red" class=" me-2 text-white-primary" on:click={() => handleDelete()}
-				>Delete</Button
-			>
+			<br /><strong>Do you really want to delete this item?</strong>
+		</p>
+		<div class="modal-action">
+			<form method="dialog">
+				<button class="btn btn-default mr-2">Cancel</button>
+				<button class="btn btn-error" on:click|preventDefault={() => handleDelete()}>Delete</button>
+			</form>
 		</div>
 	</div>
-</Modal>
+	<form method="dialog" class="modal-backdrop">
+		<button>Cancel</button>
+	</form>
+</dialog>
 
 <div>
 	<h1>News</h1>
@@ -151,43 +156,42 @@
 				on:input={handleSearchInput}
 			/>
 		</div>
-		<div class="col-span-3 justify-self-end">
-			<Button
-				on:click={handleCreateNew}
-				class="bg-primary-100 text-lg font-semibold text-white-primary">Create News</Button
-			>
+		<div class="col-span-3 justify-self-end py-2">
+			<button on:click={handleCreateNew} class="btn btn-primary btn-lg">Create News</button>
 		</div>
 	</div>
+
 	{#if loading}
 		<div class="w-full">Loading...</div>
 	{:else}
 		<div class="w-full">
-			<table>
-				<thead>
-					<tr>
-						<th on:click={() => sortTable('title')}>Title</th>
-						<th on:click={() => sortTable('text')}>News Text</th>
-						<th on:click={() => sortTable('publishdate')}>Publish date</th>
-						<th on:click={() => sortTable('author')}>Author</th>
-						<th>Edit</th>
+			<table class="admin-table">
+				<thead class="table-row">
+					<tr class="table-row">
+						<th class="table-header table-cell" on:click={() => sortTable('title')}>Title</th>
+						<th class="table-header table-cell" on:click={() => sortTable('text')}>News Text</th>
+						<th class="table-header table-cell" on:click={() => sortTable('publishdate')}
+							>Publish date</th
+						>
+						<th class="table-header table-cell" on:click={() => sortTable('author')}>Author</th>
+						<th class="table-header table-cell">Actions</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody class="table-row">
 					{#each $sortItems as item}
-						<tr>
-							<td
-								><button class="underline" on:click={() => handleOpenItem(item.id)}
+						<tr class="table-row">
+							<td class="table-data table-cell">
+								<button class="btn btn-link px-0" on:click={() => handleOpenItem(item.id)}
 									>{item.data.title}</button
-								></td
-							>
-							<td>{item.data.text}</td>
-							<td>{item.data.publishdate}</td>
-							<td>{item.data.author}</td>
-							<td>
-								<div class="flex justify-between">
-									<button
-										class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-										on:click={() => openModal(item.id)}>Delete</button
+								>
+							</td>
+							<td class="table-data table-cell">{decodeHtml(item.data.text)}</td>
+							<td class="table-data table-cell">{item.data.publishdate}</td>
+							<td class="table-data table-cell">{item.data.author}</td>
+							<td class="table-data table-cell">
+								<div class="flex flex-row justify-between">
+									<button class="btn-sm btn-custom-delete" on:click={() => openModal(item.id)}
+										>Delete</button
 									>
 								</div>
 							</td>
@@ -200,48 +204,41 @@
 </div>
 
 <style>
-	table {
+	.admin-table {
 		display: grid;
 		border-collapse: collapse;
 		min-width: 100%;
 		grid-template-columns:
-			minmax(150px, 3fr)
-			minmax(150px, 4fr)
-			minmax(130px, 1fr)
-			minmax(150px, 1fr)
-			minmax(100px, 1fr);
+			minmax(150px, 2.5fr) minmax(130px, 2.5fr) minmax(130px, 1fr) minmax(150px, 1fr)
+			minmax(150px, 1fr);
 	}
-	thead,
-	tbody,
-	tr {
+
+	.table-row {
 		display: contents;
 	}
 
-	th {
-		cursor: pointer;
+	.table-header {
 		background-color: white;
+		cursor: pointer;
+		padding: 0.75rem 0.5rem;
+		text-align: left;
 		font-size: 0.875rem;
 		font-weight: 600;
+		color: rgb(17 24 39);
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		text-align: left;
-		padding-top: 0.8rem;
-		padding-bottom: 0.8rem;
-		padding-left: 0.5rem;
 	}
-	th,
-	td {
+
+	.table-cell {
 		font-size: 0.875rem;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-		@apply text-slate-600;
+		color: rgb(71 85 105);
 	}
 
-	td {
-		padding-top: 1.2rem;
-		padding-bottom: 1.2rem;
-		padding-left: 0.5rem;
-		@apply border-b border-slate-300;
+	.table-data {
+		padding: 1.25rem 0.5rem;
+		border-bottom: 1px solid rgb(203 213 225);
+		align-content: center;
 	}
 </style>

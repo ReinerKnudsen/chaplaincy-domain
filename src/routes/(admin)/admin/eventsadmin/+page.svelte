@@ -162,7 +162,12 @@
 <dialog bind:this={deleteDialog} class="modal">
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">Confirm Delete</h3>
-		<p class="py-4">Deleting an item can not be undone.<br><strong>Do you really want to delete this item?</strong></p>
+		<hr class="py-2" />
+		<p class="py-4">
+			Deleting an item can not be undone.<br /><strong
+				>Do you really want to delete this item?</strong
+			>
+		</p>
 		<div class="modal-action">
 			<form method="dialog">
 				<button class="btn btn-default mr-2">Cancel</button>
@@ -171,23 +176,28 @@
 		</div>
 	</div>
 	<form method="dialog" class="modal-backdrop">
-		<button>close</button>
+		<button>Cancel</button>
 	</form>
 </dialog>
 
 <dialog bind:this={duplicateDialog} class="modal">
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">Duplicate Event</h3>
-		<p class="py-4">Do you want to duplicate this event?<br>All information will be kept but all dates will be reset.</p>
+		<p class="py-4">
+			Do you want to duplicate this event?<br />All information will be kept but all dates will be
+			reset.
+		</p>
 		<div class="modal-action">
 			<form method="dialog">
 				<button class="btn btn-default mr-2">Cancel</button>
-				<button class="btn btn-primary" on:click|preventDefault={() => handleDuplicate()}>Duplicate</button>
+				<button class="btn btn-primary" on:click|preventDefault={() => handleDuplicate()}
+					>Duplicate</button
+				>
 			</form>
 		</div>
 	</div>
 	<form method="dialog" class="modal-backdrop">
-		<button>close</button>
+		<button>Cancel</button>
 	</form>
 </dialog>
 

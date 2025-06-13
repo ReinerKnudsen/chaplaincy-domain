@@ -11,6 +11,7 @@ import {
 	where,
 	limit,
 	type DocumentReference,
+	type Timestamp,
 } from 'firebase/firestore';
 import { database } from '$lib/firebase/firebaseConfig';
 
@@ -32,10 +33,10 @@ export interface Event {
 	condition?: string;
 	publishdate: string;
 	publishtime: string;
-	publishDateTime: string;
+	publishDateTime: Timestamp;
 	unpublishdate: string;
 	unpublishtime: string;
-	unpublishDateTime: string;
+	unpublishDateTime: Timestamp;
 	comments: string;
 	image?: string | null;
 	imageAlt?: string;
@@ -252,6 +253,8 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 			id: doc.id,
 			data: doc.data(),
 		}));
+
+		console.log(items);
 
 		// Filter and store based on type
 		if (type === CollectionType.Events) {

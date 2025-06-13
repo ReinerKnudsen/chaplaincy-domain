@@ -4,7 +4,9 @@
 
 	export let content = '';
 
-	async function handleImageUpload(event) {
+	async function handleImageUpload(
+		event: CustomEvent<{ blob: Blob; callback: (url: string) => void }>,
+	) {
 		const { blob, callback } = event.detail;
 		try {
 			const imageUrl = await uploadEditorImage(blob, blob.type);
@@ -15,7 +17,7 @@
 		}
 	}
 
-	function handleChange(event) {
+	function handleChange(event: CustomEvent<{ markdown: string; html: string }>) {
 		const { markdown } = event.detail;
 		content = markdown;
 	}

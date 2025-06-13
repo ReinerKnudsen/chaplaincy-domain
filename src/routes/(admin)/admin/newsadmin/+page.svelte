@@ -8,7 +8,7 @@
 	import { doc, deleteDoc, type DocumentData } from 'firebase/firestore';
 	import { newsColRef } from '$lib/firebase/firebaseConfig';
 
-	import { decodeHtml } from '$lib/services/HTMLfunctions';
+	import { decodeHtml } from '$lib/utils/HTMLfunctions';
 
 	import {
 		resetNewsStore,
@@ -33,6 +33,7 @@
 	onMount(async () => {
 		$pathName = $page.url.pathname;
 		await loadData();
+		sortItems.set([...$NewsItemsStore]);
 		loading = false;
 	});
 

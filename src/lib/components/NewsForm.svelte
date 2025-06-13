@@ -7,7 +7,7 @@
 	import type { News } from '$lib/stores/ObjectStore';
 	import { initialNews } from '$lib/stores/ObjectStore';
 
-	import { Input, Textarea, Button } from 'flowbite-svelte';
+	// DaisyUI components are used via classes
 
 	import { authStore } from '$lib/stores/AuthStore';
 	import { EditModeStore, EditMode } from '$lib/stores/ObjectStore';
@@ -92,13 +92,26 @@
 		<!-- Titel -->
 		<div>
 			<Label child="title">News Headline *</Label>
-			<Input type="text" id="title" placeholder="News Title" bind:value={newItem.title} required />
+			<input
+				type="text"
+				id="title"
+				class="input input-bordered w-full"
+				placeholder="News Title"
+				bind:value={newItem.title}
+				required
+			/>
 		</div>
 
 		<!-- Author -->
 		<div>
 			<Label child="author" disabled={true}>Author</Label>
-			<Input type="text" id="author" bind:value={newItem.author} disabled />
+			<input
+				type="text"
+				id="author"
+				class="input input-bordered w-full"
+				bind:value={newItem.author}
+				disabled
+			/>
 		</div>
 
 		<!-- News text -->
@@ -117,16 +130,22 @@
 		<!-- Publish date  -->
 		<div>
 			<Label child="publishdate">Publish Date *</Label>
-			<Input type="date" id="publishdate" bind:value={newItem.publishdate} />
+			<input
+				type="date"
+				id="publishdate"
+				class="input input-bordered w-full"
+				bind:value={newItem.publishdate}
+			/>
 			<p class="explanation">If you don't select a publish date, it will be set to today.</p>
 		</div>
 
 		<!-- Publish time  -->
 		<div>
 			<Label child="publishtime" disabled={!newItem.publishdate}>Publish Time</Label>
-			<Input
+			<input
 				type="time"
 				id="publishtime"
+				class="input input-bordered w-full"
 				disabled={!newItem.publishdate}
 				bind:value={newItem.publishtime}
 			/>
@@ -150,9 +169,10 @@
 			<div class="imageAlt">
 				<div>
 					<Label child="imageAlt" disabled={!$hasImage}>Image Alt text *</Label>
-					<Input
+					<input
 						type="text"
 						id="imageAlt"
+						class="input input-bordered w-full"
 						bind:value={newItem.imageAlt}
 						required={$hasImage}
 						disabled={!$hasImage}
@@ -166,9 +186,10 @@
 			<div class="imageCaption mt-10">
 				<div>
 					<Label child="imageCaption" disabled={!$hasImage}>Image caption</Label>
-					<Input
+					<input
 						type="text"
 						id="imageCaption"
+						class="input input-bordered w-full"
 						bind:value={newItem.imageCaption}
 						placeholder={$hasImage ? 'Image by ...' : 'Please select an image first'}
 						disabled={!$hasImage}
@@ -192,16 +213,11 @@
 		</div>
 
 		<!-- Buttons -->
-		<div class="buttons col-span-2 mb-20 mt-10">
-			<Button class="font-semibold" type="reset" color="light">Cancel</Button>
-			<Button class="bg-black-40 text-white-primary" type="reset" color="light" disabled={docRef}
-				>Empty form</Button
-			>
-			<Button
-				class="bg-primary-100  font-semibold text-white-primary"
-				type="submit"
-				disabled={newItem.title.length === 0}
-				>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</Button
+		<div class="buttons col-span-2 mt-10 mb-20">
+			<button class="btn" type="reset">Cancel</button>
+			<button class="btn btn-neutral" type="reset" disabled={docRef}>Empty form</button>
+			<button class="btn btn-primary" type="submit" disabled={newItem.title.length === 0}
+				>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</button
 			>
 		</div>
 	</form>

@@ -50,7 +50,7 @@
 			The slug text is a short version of your text to be shown in cards view. <br />The system will
 			suggest a slug text for you which you can change.
 		</div>
-		<button class="btn btn-primary" disabled={editSlug} on:click={handleChangeSlug}
+		<button type="button" class="btn btn-primary" disabled={editSlug} on:click={handleChangeSlug}
 			>{slugText.length === 0 ? 'Create' : 'Change'} slug text</button
 		>
 	</div>

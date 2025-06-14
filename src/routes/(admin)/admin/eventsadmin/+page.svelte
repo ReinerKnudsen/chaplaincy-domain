@@ -138,6 +138,7 @@
 	const handleDelete = async () => {
 		await deleteDoc(doc(eventsColRef, deleteID));
 		await loadData();
+		deleteDialog?.close();
 	};
 
 	const openModal = (id: string) => {

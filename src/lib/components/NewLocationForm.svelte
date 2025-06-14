@@ -118,7 +118,7 @@
 				>Cancel</button
 			>
 		{/if}
-		<button class="btn-custom btn-custom-primary" type="submit">Save</button>
+		<button class="btn btn-primary min-w-28" type="submit">Save</button>
 	</div>
 </form>
 

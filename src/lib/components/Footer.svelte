@@ -1,26 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 
 	import { auth } from '$lib/firebase/firebaseConfig';
 	import { signOut } from 'firebase/auth';
-	import { doc, getDoc } from 'firebase/firestore';
-	import { database } from '$lib/firebase/firebaseConfig';
 
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
 	import Icon from '$lib/components/Icon.svelte';
-
-	let environment;
-	let loading = true;
-
-	onMount(async () => {
-		const docRef = doc(database, 'settings', 'env');
-		const docSnapshot = await getDoc(docRef);
-		if (docSnapshot.exists()) {
-			environment = docSnapshot.data().name;
-		}
-		loading = false;
-	});
 
 	const handleLogin = () => {
 		goto('/login');

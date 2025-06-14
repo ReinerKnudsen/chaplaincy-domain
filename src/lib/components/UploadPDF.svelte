@@ -1,14 +1,11 @@
 <script lang="ts">
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-	import { Button } from 'flowbite-svelte';
 	import { ref, uploadBytes, getDownloadURL, getMetadata } from 'firebase/storage';
-	import { getDoc, addDoc, query, doc } from 'firebase/firestore';
+	import { getDoc, addDoc, doc } from 'firebase/firestore';
 
 	import {
 		storage,
-		database,
 		documentsColRef,
-		docsStorageRef,
 		pdfStorageRef,
 		pdfColRef,
 		weeklysheetStorageRef,
@@ -133,7 +130,7 @@
 	<form class={moduleWidth}>
 		<label
 			class={moduleWidth +
-				'border group flex h-[200px] flex-col rounded-lg bg-slate-100 p-10 text-center '}
+				'group flex h-[200px] flex-col rounded-lg border bg-slate-100 p-10 text-center '}
 		>
 			<div class="flex h-full w-full flex-col items-center justify-center text-center">
 				<p class="pointer-none font-semibold text-gray-600">
@@ -176,7 +173,7 @@
 			>
 		</div>
 		<div class="col-span-2 text-center">
-			<Button class="mt-5 w-6/12" on:click={resetInput}>Change</Button>
+			<button class="btn btn-primary w-1/2" on:click={resetInput}>Change</button>
 		</div>
 	</div>
 {/if}

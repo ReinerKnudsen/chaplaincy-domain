@@ -1,8 +1,9 @@
 <script lang="ts">
+	import { onMount, createEventDispatcher } from 'svelte';
+
 	import Editor from '@toast-ui/editor';
 	import '@toast-ui/editor/dist/toastui-editor.css';
 	import '$lib/styles/markdown.css';
-	import { onMount, createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 

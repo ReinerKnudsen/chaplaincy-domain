@@ -2,10 +2,6 @@
 @import 'tailwindcss';
 @plugin "daisyui";
 
-@source '../node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}';
-@source '../node_modules/flowbite-svelte-blocks/**/*.{html,js,svelte,ts}';
-@source '../node_modules/flowbite-svelte-icons/**/*.{html,js,svelte,ts}'; 
-
 @custom-variant dark (&:is(.dark *));
 
 @font-face {

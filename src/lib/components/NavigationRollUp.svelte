@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { MenuItem } from '$lib/types';
+	import type { MenuItem } from '$lib/types.d';
 	import { onMount } from 'svelte';
 
 	export let title: string;
@@ -38,28 +38,28 @@
 </script>
 
 <div>
-	<li class="group relative">
-		<!-- svelte-ignore a11y-invalid-attribute -->
-		<button
-			class="menuitem btn btn-outline text-primary-80 border-0 text-xl font-semibold"
-			on:click|preventDefault={toggleDropdown}
-			><a href="#" class="text-primary-80">{title}</a></button
+	<button
+		type="button"
+		class="menuitem btn btn-outline text-primary-80 border-0 text-xl font-semibold"
+		on:click|preventDefault={toggleDropdown}>{title}</button
+	>
+	{#if showDropdown}
+		<div
+			class="nav-menu bg-white-primary absolute right-8 z-50 mt-2 w-48 rounded-md border border-gray-200 py-4 shadow-lg"
+			role="menu"
+			aria-orientation="vertical"
+			aria-labelledby="options-menu"
 		>
-		{#if showDropdown}
-			<div
-				class="dropdown bg-white-primary ring-opacity-5 absolute right-0 z-50 mt-14 w-48 rounded-md shadow-lg ring-1 ring-black"
-			>
-				{#each menuItems as menuItem}
-					<div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-						<a
-							href={menuItem.url}
-							class="text-primary-100 block px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900"
-							role="menuitem"
-							on:click={toggleDropdown}>{menuItem.title}</a
-						>
-					</div>
-				{/each}
-			</div>
-		{/if}
-	</li>
+			{#each menuItems as menuItem}
+				<a
+					href={menuItem.url}
+					class="text-primary-100 block px-6 py-3 text-sm transition-colors first:rounded-t-md last:rounded-b-md hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-50"
+					role="menuitem"
+					on:click={toggleDropdown}
+				>
+					{menuItem.title}
+				</a>
+			{/each}
+		</div>
+	{/if}
 </div>

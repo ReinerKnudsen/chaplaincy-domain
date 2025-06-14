@@ -36,3 +36,8 @@ export type HeaderData = {
 	imageUrl: string /** Url of image */;
 	title: string /** Title of page */;
 };
+
+export type MenuItem = {
+	title: string;
+	url: string;
+};

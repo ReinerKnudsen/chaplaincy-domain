@@ -7,7 +7,6 @@
 	import { requestPasswordReset } from '$lib/services/authService';
 
 	import Label from '$lib/components/Label.svelte';
-	import { Icon, CheckCircle } from 'svelte-hero-icons';
 	import Alert from '$lib/components/Alert.svelte';
 
 	let email = '';

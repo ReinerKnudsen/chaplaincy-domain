@@ -11,7 +11,7 @@
 
 	export let imagePosition: 'left' | 'right';
 	export let profile: ProfileData;
-	export let index: number;
+	//export let index: number;
 
 	let screenWidth: number;
 	let photo = { url: profile.photoUrl, name: profile.name };

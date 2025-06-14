@@ -70,20 +70,22 @@
 	const downloadContainerXL = 'xl:flex xl:flex-row xl:justify-center gap-10 xl:px-5';
 </script>
 
-<main class="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-	<div class={`page-title ${header} ${headerLg} ${headerXl}`}>
-		Anglican Chaplaincy of Bonn and Cologne
-	</div>
-	<div class={`sub-title ${subTitle} ${subTitleLg} ${subTitleXl} `}>
-		St. Boniface, Bonn and All Saints, Cologne
-	</div>
-	<div class="image-container">
-		<img src={mainhero} alt="main hero" />
-	</div>
-</main>
+<section class="bg-white-smoke">
+	<main class="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+		<div class={`page-title ${header} ${headerLg} ${headerXl}`}>
+			Anglican Chaplaincy of Bonn and Cologne
+		</div>
+		<div class={`sub-title ${subTitle} ${subTitleLg} ${subTitleXl} `}>
+			St. Boniface, Bonn and All Saints, Cologne
+		</div>
+		<div class="image-container">
+			<img src={mainhero} alt="main hero" />
+		</div>
+	</main>
+</section>
 
 <!-- Section: Service Times -->
-<section class="bg-white-primary">
+<section>
 	<div class="content-container">
 		<div class={`sectionHeader  ${sectionHeader}`}>Come and worship with us</div>
 		<div class="w-full">
@@ -97,7 +99,7 @@
 </section>
 
 <!-- Section: Mission Statement-->
-<section>
+<section class="bg-white-smoke">
 	<div class="content-container">
 		<div class="ml-[10%] flex w-[80%] flex-col">
 			<h2 class="text-xl font-bold">Our Mission Statement</h2>
@@ -141,7 +143,7 @@
 
 	<!-- Events section -->
 	{#if $NextEventsStore.length > 0}
-		<section class={$LatestNewsStore.length > 0 ? '' : 'bg-white-primary'}>
+		<section class={$LatestNewsStore.length > 0 ? 'bg-white-smoke' : 'bg-white-primary'}>
 			<div class="content-container">
 				<h2 class={`sectionHeader  ${sectionHeader}`}>Upcoming Events</h2>
 				<div class={itemContainer}>
@@ -168,7 +170,7 @@
 <hr class="mx-auto w-[80%]" /> -->
 
 <!-- Safeguarding -->
-<section class={shouldBeWhite(3) ? 'bg-white-primary' : ''}>
+<section class={shouldBeWhite(3) ? 'bg-white-primary' : 'bg-white-smoke'}>
 	<div class="content-container">
 		<h2 class={`sectionHeader  ${sectionHeader}`}>Safeguarding</h2>
 		<div class="pl-10 text-lg">
@@ -198,7 +200,7 @@
 <hr class="mx-auto w-[80%]" />
 
 <!-- signup section-->
-<section class={shouldBeWhite(2) ? 'bg-white-primary' : ''}>
+<section class={shouldBeWhite(2) ? 'bg-white-primary' : 'bg-white-smoke'}>
 	<div class="content-container">
 		<div class={`sectionHeader  ${sectionHeader}`}>Sign up for our news</div>
 		<div class="mt-4 mb-10 pl-10 text-lg">
@@ -257,7 +259,7 @@
 </section>
 
 <!-- Download section-->
-<section class={shouldBeWhite(1) ? 'bg-white-primary' : ''}>
+<section class={shouldBeWhite(1) ? 'bg-white-primary' : 'bg-white-smoke'}>
 	<div class="content-container">
 		<div class="downloads">
 			<h2 class={`sectionHeader  ${sectionHeader}`}>Downloads</h2>

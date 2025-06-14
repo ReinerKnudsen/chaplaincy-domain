@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { Button } from 'flowbite-svelte';
+
 	import {
 		getFirestore,
 		getDoc,
@@ -10,6 +10,8 @@
 		collection,
 		updateDoc,
 	} from 'firebase/firestore';
+	import { database } from '$lib/firebase/firebaseConfig';
+
 	import {
 		CurrentLocation,
 		initialLocationState,
@@ -19,8 +21,6 @@
 		fetchLocations,
 		type Location,
 	} from '$lib/stores/LocationsStore';
-
-	import { database } from '$lib/firebase/firebaseConfig';
 
 	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
 	import Icon from '$lib/components/Icon.svelte';
@@ -133,10 +133,7 @@
 				{/each}
 			</ul>
 			<div class="button-container">
-				<Button
-					class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
-					on:click={handleCreateNew}>Create new</Button
-				>
+				<button class="btn btn-primary" on:click={handleCreateNew}>Create new</button>
 			</div>
 		</div>
 		<div class="location-details">

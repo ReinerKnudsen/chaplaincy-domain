@@ -61,7 +61,7 @@
 	<div id="main-content" class="">
 		<slot />
 	</div>
-	<div class=" bg-white-smoke">
+	<div class="bg-white-smoke">
 		<Footer />
 	</div>
 </div>

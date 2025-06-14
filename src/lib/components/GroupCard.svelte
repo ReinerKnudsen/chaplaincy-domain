@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { decodeHtml } from '$lib/services/HTMLfunctions';
+	import { decodeHtml } from '$lib/utils/HTMLfunctions';
 
 	type Group = {
 		name: string;
@@ -16,7 +16,7 @@
 
 <div class="group border-b-2 border-slate-300">
 	<div class="group-header">
-		<h2 class="group-title pb-4 pt-6 text-2xl font-semibold">{name}</h2>
+		<h2 class="group-title pt-6 pb-4 text-2xl font-semibold">{name}</h2>
 	</div>
 	<div class="group-text flex flex-col space-y-8 pb-4">
 		{decodeHtml(text)}

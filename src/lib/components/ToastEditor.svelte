@@ -1,14 +1,15 @@
 <script lang="ts">
+	import { onMount, createEventDispatcher } from 'svelte';
+
 	import Editor from '@toast-ui/editor';
 	import '@toast-ui/editor/dist/toastui-editor.css';
 	import '$lib/styles/markdown.css';
-	import { onMount, createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 
 	export let initialContent = '';
-	let editorElement;
-	let editor;
+	let editorElement: HTMLElement;
+	let editor: Editor;
 
 	// Function to get markdown content
 	export function getMarkdown() {
@@ -16,7 +17,7 @@
 	}
 
 	// Function to set markdown content
-	export function setMarkdown(content) {
+	export function setMarkdown(content: string) {
 		if (editor) {
 			editor.setMarkdown(content);
 		}
@@ -33,7 +34,7 @@
 				addImageBlobHook: (blob, callback) => {
 					dispatch('imageUpload', {
 						blob,
-						callback: (imageUrl) => callback(imageUrl),
+						callback: (imageUrl: string) => callback(imageUrl),
 					});
 					return false;
 				},

@@ -1,25 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { auth } from '$lib/firebase/firebaseConfig';
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+
+	import { auth } from '$lib/firebase/firebaseConfig';
 	import { signOut } from 'firebase/auth';
-	import { doc, getDoc } from 'firebase/firestore';
-	import { database } from '$lib/firebase/firebaseConfig';
+
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
 	import Icon from '$lib/components/Icon.svelte';
-
-	let environment;
-	let loading = true;
-
-	onMount(async () => {
-		const docRef = doc(database, 'settings', 'env');
-		const docSnapshot = await getDoc(docRef);
-		if (docSnapshot.exists()) {
-			environment = docSnapshot.data().name;
-		}
-		loading = false;
-	});
 
 	const handleLogin = () => {
 		goto('/login');
@@ -36,18 +22,14 @@
 	};
 </script>
 
-<footer
-	class="w-screen"
-	class:bg-white-primary={$page.url.pathname === '/'}
-	class:bg-slate-100={$page.url.pathname !== '/'}
->
+<footer class="bg-white-primary w-screen">
 	<div
-		class="border mx-auto max-w-[1400px] rounded-t-3xl border border-slate-300 bg-white-smoke px-4 pb-4 sm:px-6 lg:px-8"
+		class="bg-white-smoke mx-auto max-w-[1400px] rounded-t-3xl border border-slate-300 px-4 pb-4 sm:px-6 lg:px-8"
 	>
 		<div class="grid grid-cols-1 gap-6 pt-8 sm:grid-cols-4">
 			<!-- Resources -->
 			<div>
-				<h2 class="mb-4 text-lg font-semibold uppercase tracking-wide text-gray-800">Resources</h2>
+				<h2 class="mb-4 text-lg font-semibold tracking-wide text-gray-800 uppercase">Resources</h2>
 				<nav class="flex flex-col space-y-2">
 					<a href="/newsletter/archive" class="text-gray-600 hover:text-gray-900"
 						>Newsletter Archive</a
@@ -57,7 +39,7 @@
 
 			<!-- Follow us -->
 			<div>
-				<h2 class="mb-4 text-lg font-semibold uppercase tracking-wide text-gray-800">Follow us</h2>
+				<h2 class="mb-4 text-lg font-semibold tracking-wide text-gray-800 uppercase">Follow us</h2>
 				<nav class="flex flex-col space-y-2">
 					<a
 						href="https://www.facebook.com/AnglicanBonnCologne"
@@ -69,7 +51,7 @@
 
 			<!-- Legal -->
 			<div>
-				<h2 class="mb-4 text-lg font-semibold uppercase tracking-wide text-gray-800">Legal</h2>
+				<h2 class="mb-4 text-lg font-semibold tracking-wide text-gray-800 uppercase">Legal</h2>
 				<nav class="flex flex-col space-y-2">
 					<a href="/legal" class="text-gray-600 hover:text-gray-900">Privacy Policy</a>
 					<a href="/impressum" class="text-gray-600 hover:text-gray-900">Impressum</a>
@@ -78,7 +60,7 @@
 
 			<!-- User -->
 			<div>
-				<h2 class="mb-4 text-lg font-extrabold uppercase tracking-wide text-gray-800">User</h2>
+				<h2 class="mb-4 text-lg font-extrabold tracking-wide text-gray-800 uppercase">User</h2>
 				<nav class="flex flex-col space-y-2">
 					{#if !$authStore.isLoggedIn}
 						<button class="text-left text-gray-600 hover:text-gray-900" on:click={handleLogin}

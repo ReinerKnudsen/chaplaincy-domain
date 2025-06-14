@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { type CollectionItem } from '$lib/stores/ObjectStore';
-	import { decodeHtml } from '$lib/services/HTMLfunctions';
+	import { decodeHtml } from '$lib/utils/HTMLfunctions';
 
 	export let item: CollectionItem;
 	export let kind: 'news' | 'events';
@@ -31,7 +31,7 @@
 		<div class="justify-self-start font-medium text-slate-400 md:justify-self-center">
 			{kind === 'news' ? item.data.publishdate : item.data.startdate}
 		</div>
-		<div class="justify-self-end font-medium text-link-primary">
+		<div class="text-link-primary justify-self-end font-medium">
 			<a href="/{kind}/{item.id}">Read more...</a>
 		</div>
 	</div>

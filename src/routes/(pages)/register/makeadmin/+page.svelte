@@ -1,9 +1,8 @@
 <script>
+	import { goto } from '$app/navigation';
+
 	import { authStore } from '$lib/stores/AuthStore';
 	import { changeUserRole } from '$lib/services/authService';
-	import { Button } from 'flowbite-svelte';
-	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
 
 	const isEnabled = import.meta.env.VITE_ENABLE_MAKEADMIN === 'true';
 
@@ -38,7 +37,7 @@
 			{`Hier kannst Du den User ${auth.user.email} zum Admin machen :) `}
 		</div>
 		<form on:submit|preventDefault={makeadmin}>
-			<Button type="submit">Make admin</Button>
+			<button class="btn btn-custom btn-primary" type="submit">Make admin</button>
 		</form>
 	{:else}
 		<div>Es ist kein Benutzer eingeloggt</div>

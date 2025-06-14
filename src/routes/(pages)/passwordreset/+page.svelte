@@ -1,10 +1,13 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { Button, Label, Input, Helper, Alert } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
-	import { requestPasswordReset } from '$lib/services/authService';
+	import { goto } from '$app/navigation';
+
 	import { auth } from '$lib/firebase/firebaseConfig';
 	import { confirmPasswordReset } from 'firebase/auth';
+	import { requestPasswordReset } from '$lib/services/authService';
+
+	import Label from '$lib/components/Label.svelte';
+	import Alert from '$lib/components/Alert.svelte';
 
 	let email = '';
 	let newPassword = '';
@@ -73,50 +76,49 @@
 </script>
 
 <div class="flex flex-row justify-center">
-	<div class="w-5/12 space-y-4 rounded-xl bg-white-primary p-6 shadow-xl sm:p-8 md:space-y-6">
+	<div class="bg-white-primary w-5/12 space-y-4 rounded-xl p-6 shadow-xl sm:p-8 md:space-y-6">
 		{#if oobCode}
 			<!-- Reset Password Form -->
-			<form class="flex flex-col space-y-6" on:submit={resetUserPassword}>
-				<h3 class="dark:text-white p-0 text-xl font-medium text-gray-900">Reset your password</h3>
-				<Label class="space-y-2" for="new-password">
-					<span>New Password</span>
-					<Input
-						type="password"
-						name="new-password"
-						id="new-password"
-						bind:value={newPassword}
-						on:change={setErrorState}
-						on:input={verifyInput}
-						required
-					/>
-				</Label>
-				<Label class="space-y-2" for="check-password">
-					<span>Confirm Password</span>
-					<Input
-						type="password"
-						name="check-password"
-						id="check-password"
-						bind:value={checkPassword}
-						on:change={setErrorState}
-						on:input={verifyInput}
-						required
-					/>
-				</Label>
+			<form class="flex flex-col" on:submit={resetUserPassword}>
+				<h3 class="p-0 text-xl font-medium text-gray-900 dark:text-white">Reset your password</h3>
+				<Label child="new-password">New Password</Label>
+				<input
+					class="input input-bordered input-lg w-full"
+					type="password"
+					name="new-password"
+					id="new-password"
+					bind:value={newPassword}
+					on:change={setErrorState}
+					on:input={verifyInput}
+					required
+				/>
+				<Label child="check-password">Confirm Password</Label>
+				<input
+					class="input input-bordered input-lg w-full"
+					type="password"
+					name="check-password"
+					id="check-password"
+					bind:value={checkPassword}
+					on:change={setErrorState}
+					on:input={verifyInput}
+					required
+				/>
 				{#if isError}
-					<Alert color="red" class="mt-2">{errorMessage}</Alert>
+					<Alert role="error" message={errorMessage} />
 				{/if}
-				<Button type="submit" class="w-full bg-primary-80 text-white-primary">Change password</Button>
+				<button type="submit" class="btn btn-custom btn-primary">Change password</button>
 			</form>
 		{:else}
 			<!-- Request Reset Form -->
-			<form class="flex flex-col space-y-6" on:submit={requestReset}>
-				<h3 class="dark:text-white p-0 text-xl font-medium text-gray-900">Reset your password</h3>
+			<form class="flex flex-col" on:submit={requestReset}>
+				<h3 class="p-0 text-xl font-medium text-gray-900 dark:text-white">Reset your password</h3>
 				<p class="text-sm text-gray-600">
 					Enter your email address and we'll send you a link to reset your password.
 				</p>
-				<Label class="space-y-2" for="email">
-					<span>Email</span>
-					<Input
+				<div class="mb-6">
+					<Label child="email">Email</Label>
+					<input
+						class="input input-bordered input-lg w-full"
 						type="email"
 						name="email"
 						id="email"
@@ -124,16 +126,14 @@
 						bind:value={email}
 						required
 					/>
-				</Label>
+				</div>
 				{#if isSuccess}
-					<Alert color="green" class="mt-2">
-						Check your email for a link to reset your password.
-					</Alert>
+					<Alert role="success" message="Check your email for a link to reset your password." />
 				{/if}
 				{#if isError}
-					<Alert color="red" class="mt-2">{errorMessage}</Alert>
+					<Alert role="error" message={errorMessage} />
 				{/if}
-				<Button type="submit" class="w-full bg-primary-80 text-white-primary">Send reset link</Button>
+				<button type="submit" class="btn btn-custom btn-primary">Send reset link</button>
 			</form>
 		{/if}
 	</div>

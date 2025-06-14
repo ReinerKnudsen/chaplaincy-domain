@@ -1,8 +1,10 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
 	import { auth } from '$lib/firebase/firebaseConfig';
-	import { goto } from '$app/navigation';
 	import { signOut } from 'firebase/auth';
+
 	import caplogo from '$lib/assets/chaplaincy_logo.png';
 	import { about as aboutItems } from '$lib/data/data.json';
 
@@ -45,9 +47,9 @@
 </script>
 
 <nav
-	class="sticky top-0 z-50 flex h-full min-h-28 w-full
-	items-center justify-between divide-gray-100 rounded-b-2xl border-b
-	border-gray-100 bg-white-primary px-4 py-2.5 text-gray-700 shadow-xl
+	class="bg-white-primary sticky top-0 z-50 flex h-full min-h-28
+	w-full items-center justify-between divide-gray-100 rounded-b-2xl
+	border-b border-gray-100 px-4 py-2.5 text-gray-700 shadow-xl
 	dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
 >
 	<!-- Logo -->
@@ -61,7 +63,7 @@
 			<button
 				type="button"
 				id="mobile-menu"
-				class="m-0.5 ms-3 whitespace-normal rounded-lg p-1.5 hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-gray-400 dark:hover:bg-gray-600 lg:hidden"
+				class="m-0.5 ms-3 rounded-lg p-1.5 whitespace-normal hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:outline-hidden lg:hidden dark:hover:bg-gray-600"
 				aria-label="Open main menu"
 				on:click={toggleMobileMenu}
 				><span class="sr-only">Open main menu</span>
@@ -87,9 +89,9 @@
 			>
 			{#if menuOpen}
 				<div
-					class="mobile-menu fixed right-0 top-28 z-20 w-[80%] max-w-md cursor-pointer rounded-lg bg-white-primary/95 px-4 py-4 shadow-xl backdrop-blur-sm"
+					class="mobile-menu bg-white-primary/95 fixed top-28 right-0 z-20 w-[80%] max-w-md cursor-pointer rounded-lg px-4 py-4 shadow-xl backdrop-blur-sm"
 				>
-					<ul class="mt-4 flex flex-col gap-2 p-4 text-primary-100">
+					<ul class="text-primary-100 mt-4 flex flex-col gap-2 p-4">
 						<NavigationItem url="/" label="Home" onClick={toggleMobileMenu} />
 						<NavigationItem url="/worship" label="Worship" onClick={toggleMobileMenu} />
 						<NavigationItem url="/news" label="News" onClick={toggleMobileMenu} />
@@ -97,7 +99,7 @@
 						<NavigationItem url="/groups" label="Groups" onClick={toggleMobileMenu} />
 						<NavigationItem url="#" label="About us" onClick={toggleAboutMenu} />
 						{#if aboutMenuOpen}
-							<div class="relative w-full bg-white-primary/95 rounded-lg shadow-lg py-2">
+							<div class="bg-white-primary/95 relative w-full rounded-lg py-2 shadow-lg">
 								<NavigationItem url="/about" label="Who we are" onClick={toggleMobileMenu} />
 								<NavigationItem
 									url="/about/responsibilities"
@@ -138,9 +140,7 @@
 
 		<!-- Desktop Menu -->
 		<div class="menu hidden w-full cursor-pointer lg:block lg:w-auto">
-			<ul
-				class="mt-4 flex flex-col p-4 text-primary-100 lg:mt-0 lg:flex-row lg:space-x-8 lg:text-sm lg:font-medium"
-			>
+			<ul class="text-primary-100 mt-4 flex flex-row items-center justify-center space-x-6 p-4">
 				<NavigationItem url="/" label="Home" onClick={noop} />
 				<NavigationItem url="/worship" label="Worship" onClick={noop} />
 				<NavigationItem url="/news" label="News" onClick={noop} />

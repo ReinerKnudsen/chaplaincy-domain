@@ -10,6 +10,7 @@ export interface Location {
 	city: string;
 	zip: string;
 	openMapUrl: string;
+	online?: boolean;
 }
 
 // Location Store
@@ -22,6 +23,7 @@ export const initialLocationState: Location = {
 	city: '',
 	zip: '',
 	openMapUrl: '',
+	online: false,
 };
 
 const initialLocationsState: Location[] = [];

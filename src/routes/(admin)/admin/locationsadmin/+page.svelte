@@ -31,7 +31,7 @@
 		fetchLocations();
 	});
 
-	let updateItem = true;
+	let updateItem = false;
 	let currentLocationId = 0;
 
 	// Only set CurrentLocation when AllLocations has items
@@ -43,7 +43,7 @@
 
 	const handleLocationChange = (location: Location, index: number) => {
 		updateItem = true;
-		CurrentLocation.set(location);
+		CurrentLocation.set({ ...location });
 		currentLocationId = index;
 	};
 

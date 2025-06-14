@@ -16,10 +16,12 @@
 
 	let thisLocation: Location = { ...initialLocationState };
 
-	$: if (mode === 'update') {
+	// Watch for mode and CurrentLocation changes
+	$: if (mode === 'update' && $CurrentLocation.id !== thisLocation.id) {
+		// Only update if we're switching to a different location
 		thisLocation = { ...$CurrentLocation };
-	} else if (mode === 'create' && thisLocation.id !== '') {
-		// Only reset if we're switching to create mode and have existing data
+	} else if (mode === 'create') {
+		// Reset when switching to create mode
 		thisLocation = { ...initialLocationState };
 	}
 
@@ -37,8 +39,6 @@
 	function resetForm() {
 		resetCurrentLocation();
 	}
-
-	$: openStreetUrl = `https://www.openstreetmap.org/search?query=${thisLocation.street}+${thisLocation.city}`;
 </script>
 
 <div class="py-2 text-sm">All fields marked with * are required</div>
@@ -65,50 +65,51 @@
 		/>
 	</div>
 	<div>
-		<Label class="mt-4 mb-2 font-semibold" child="street">Street *</Label>
+		<Label class="mt-4 mb-2 font-semibold" child="street">Street</Label>
 		<input
 			id="street"
 			type="text"
 			class="input input-bordered w-full"
 			placeholder="Street"
 			bind:value={thisLocation.street}
-			required
 		/>
 	</div>
 	<div>
-		<Label class="mt-4 mb-2 font-semibold" child="city">City *</Label>
+		<Label class="mt-4 mb-2 font-semibold" child="city">City</Label>
 		<input
 			id="city"
 			type="text"
 			class="input input-bordered w-full"
 			placeholder="City"
 			bind:value={thisLocation.city}
-			required
 		/>
 	</div>
 	<div>
-		<Label class="mt-4 mb-2 font-semibold" child="zip">Zip *</Label>
+		<Label class="mt-4 mb-2 font-semibold" child="zip">Zip</Label>
 		<input
 			id="zip"
 			type="text"
 			class="input input-bordered w-full"
 			placeholder="Zip"
 			bind:value={thisLocation.zip}
-			required
 		/>
 	</div>
+
 	<div>
-		<Label class="mt-4 mb-2 font-semibold" child="url">Open Street Map URL</Label>
+		<Label class="mt-4 mb-2 font-semibold" child="url">URL</Label>
 		<input
 			id="url"
 			type="url"
 			class="input input-bordered w-full"
-			placeholder="OpenStreetMap URL"
+			placeholder="OpenStreetMap URL or Zoom URL"
 			bind:value={thisLocation.openMapUrl}
 		/>
 		<div class="text-md mt-2 flex flex-row justify-end">
-			<a href={openStreetUrl} class="link no-underline" target="_blank" rel="noopener noreferrer"
-				>Check OpenStreetMap URL</a
+			<a
+				href={thisLocation.openMapUrl}
+				class="link no-underline"
+				target="_blank"
+				rel="noopener noreferrer">Check URL</a
 			>
 		</div>
 	</div>
@@ -117,8 +118,8 @@
 			<button class="btn-custom btn-custom-secondary" on:click={() => dispatch('close')}
 				>Cancel</button
 			>
+			<button class="btn btn-primary min-w-28" type="submit">Save</button>
 		{/if}
-		<button class="btn btn-primary min-w-28" type="submit">Save</button>
 	</div>
 </form>
 

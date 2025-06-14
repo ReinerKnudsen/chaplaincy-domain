@@ -254,8 +254,6 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 			data: doc.data(),
 		}));
 
-		console.log(items);
-
 		// Filter and store based on type
 		if (type === CollectionType.Events) {
 			EventsStore.set(items);

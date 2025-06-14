@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { auth } from '$lib/firebase/firebaseConfig';
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+
+	import { auth } from '$lib/firebase/firebaseConfig';
 	import { signOut } from 'firebase/auth';
 	import { doc, getDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
+
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
 	import Icon from '$lib/components/Icon.svelte';
 

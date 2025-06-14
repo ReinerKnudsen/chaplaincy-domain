@@ -12,23 +12,20 @@
 	};
 
 	const handleClickOutside = (event: MouseEvent) => {
-		if (event.target) {
-			/** if the target of the click was the menu item, don't close the dropdown */
-			if (showDropdown && (event.target as HTMLElement).classList.contains('menuitem')) {
-				return;
-			}
+		if (!event.target) return;
 
-			/** if the target of the click was the dropdown, don't close the dropdown */
-			const dropdownElement = document.querySelector('.dropdown');
-			if (!dropdownElement) {
-				return;
-			}
+		const target = event.target as HTMLElement;
+		const isMenuButton = target.closest('button.menuitem');
+		const isDropdown = target.closest('.dropdown');
 
-			/** if the event target is NOT child of the dropdown, close the dropdown */
-			if (!dropdownElement.contains(event.target as Node)) {
-				showDropdown = false;
-			}
-		}
+		// Don't close if clicking the menu button (let toggleDropdown handle it)
+		if (isMenuButton) return;
+
+		// Don't close if clicking inside the dropdown
+		if (isDropdown) return;
+
+		// Close the dropdown for clicks outside
+		showDropdown = false;
 	};
 
 	onMount(() => {
@@ -43,12 +40,14 @@
 <div>
 	<li class="group relative">
 		<!-- svelte-ignore a11y-invalid-attribute -->
-		<button class="menuitem text-md xl:text-xl" on:click|preventDefault={toggleDropdown}
-			>{title}</button
+		<button
+			class="menuitem btn btn-outline text-primary-80 border-0 text-xl font-semibold"
+			on:click|preventDefault={toggleDropdown}
+			><a href="#" class="text-primary-80">{title}</a></button
 		>
 		{#if showDropdown}
 			<div
-				class="dropdown bg-white-primary ring-opacity-5 absolute right-0 z-50 mt-2 w-48 rounded-md shadow-lg ring-1 ring-black"
+				class="dropdown bg-white-primary ring-opacity-5 absolute right-0 z-50 mt-14 w-48 rounded-md shadow-lg ring-1 ring-black"
 			>
 				{#each menuItems as menuItem}
 					<div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">

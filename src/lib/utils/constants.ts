@@ -11,3 +11,9 @@ export const size = {
 	lg: 1024,
 	xl: 1280,
 };
+
+export const userRoles = [
+	{ value: 'user', name: 'User' },
+	{ value: 'editor', name: 'Editor' },
+	{ value: 'admin', name: 'Admin' },
+];

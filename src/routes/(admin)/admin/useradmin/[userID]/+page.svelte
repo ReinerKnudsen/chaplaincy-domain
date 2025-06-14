@@ -9,6 +9,7 @@
 	import { updateUserProfile, countAdmins } from '$lib/services/authService';
 
 	import Label from '$lib/components/Label.svelte';
+	import { userRoles } from '$lib/utils/constants';
 
 	const userID = $page.params.userID;
 	export let data;
@@ -21,12 +22,6 @@
 		roleErr: '',
 	};
 
-	const userRoles = [
-		{ value: 'user', name: 'User' },
-		{ value: 'editor', name: 'Editor' },
-		{ value: 'admin', name: 'Admin' },
-	];
-	$: console.log(currentUser);
 	onMount(async () => {
 		const doc = await getDoc(docRef);
 		currentUser = {

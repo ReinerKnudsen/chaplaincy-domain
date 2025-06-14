@@ -2,19 +2,13 @@
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
-	import Icon from '$lib/components/Icon.svelte';
-	import { Button } from 'flowbite-svelte';
-
 	// Get the data from the server
 	export let data: { documents: Array<Record<string, any>> };
-
-	type IconName = 'chevronDown' | 'chevronUp';
 
 	// Sort table items
 	const sortKey = writable<string>('date'); // default sort key
 	const sortDirection = writable<number>(1); // default sort direction (ascending)
 	const sortItems = writable(data.documents);
-	const sortIcon = writable<IconName>('chevronDown');
 
 	// Define a function to sort the items
 	const sortTable = (key: string) => {
@@ -44,10 +38,6 @@
 		sortItems.set(sorted);
 	}
 
-	$: {
-		sortIcon.set($sortDirection === 1 ? 'chevronDown' : 'chevronUp');
-	}
-
 	const handleSearchInput = (event: Event) => {
 		const target = event.target as HTMLInputElement;
 		//console.log(target.value);
@@ -70,76 +60,67 @@
 			/>
 		</div>
 		<div class="justify-self-end">
-			<Button on:click={handleClick} class="bg-primary-100 text-lg font-semibold text-white-primary"
-				>Upload</Button
-			>
+			<button on:click={handleClick} class="btn btn-c btn-primary">Upload</button>
 		</div>
 	</div>
 	<div class="">
-		<table>
-			<thead>
-				<tr>
-					<th class="flex flex-row justify-between" on:click={() => sortTable('date')}>
+		<table class="admin-table">
+			<thead class="table-row">
+				<tr class="table-row">
+					<th class="table-header table-cell" on:click={() => sortTable('date')}>
 						<div>Date</div>
-						<div class="mr-4">
-							<Icon name={$sortIcon} />
-						</div>
 					</th>
-					<th>Link</th>
+					<th class="table-header table-cell">Link</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody class="table-row">
 				{#each $sortItems as item}
-					<tr>
-						<td>{item.date}</td>
-						<td><a href={item.path} target="_blank">Open in browser</a></td>
+					<tr class="table-row">
+						<td class="table-data table-cell">{item.date}</td>
+						<td class="table-data table-cell"
+							><a href={item.path} target="_blank">Open in browser</a></td
+						>
 					</tr>
 				{/each}
 			</tbody>
 		</table>
 	</div>
-
-	<style>
-		table {
-			display: grid;
-			border-collapse: collapse;
-			min-width: 100%;
-			grid-template-columns:
-				minmax(150px, 2.5fr)
-				minmax(130px, 1fr);
-		}
-		thead,
-		tbody,
-		tr {
-			display: contents;
-		}
-
-		th {
-			cursor: pointer;
-			background-color: white;
-			font-size: 0.875rem;
-			font-weight: 600;
-			text-transform: uppercase;
-			letter-spacing: 0.05em;
-			text-align: left;
-			padding-top: 0.8rem;
-			padding-bottom: 0.8rem;
-			padding-left: 0.5rem;
-		}
-		th,
-		td {
-			font-size: 0.875rem;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			@apply text-slate-600;
-		}
-
-		td {
-			padding-top: 1.2rem;
-			padding-bottom: 1.2rem;
-			padding-left: 0.5rem;
-			@apply border-b border-slate-300;
-		}
-	</style>
 </div>
+
+<style>
+	.admin-table {
+		display: grid;
+		border-collapse: collapse;
+		min-width: 100%;
+		grid-template-columns: minmax(150px, 2.5fr) minmax(130px, 2.5fr);
+	}
+
+	.table-row {
+		display: contents;
+	}
+
+	.table-header {
+		background-color: white;
+		cursor: pointer;
+		padding: 0.75rem 0.5rem;
+		text-align: left;
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: rgb(17 24 39);
+		text-transform: uppercase;
+	}
+
+	.table-cell {
+		font-size: 0.875rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		color: rgb(71 85 105);
+	}
+
+	.table-data {
+		padding: 1.25rem 0.5rem;
+		border-bottom: 1px solid rgb(203 213 225);
+		align-content: center;
+	}
+</style>

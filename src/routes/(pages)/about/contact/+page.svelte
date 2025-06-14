@@ -2,6 +2,8 @@
 	import { enhance } from '$app/forms';
 	import type { ActionData } from './$types';
 
+	import { Icon, InformationCircle } from 'svelte-hero-icons';
+
 	export let form: ActionData;
 </script>
 
@@ -11,7 +13,7 @@
 	<p>Please leave us a message. We will reply to you as soon as possible.</p>
 </div>
 
-<div class="mx-auto mb-20 mt-10 max-w-2xl">
+<div class="mx-auto mt-10 mb-20 max-w-2xl">
 	<form method="POST" class="flex flex-col space-y-6" use:enhance>
 		<!-- Name -->
 		<div class="flex flex-col space-y-2">
@@ -35,6 +37,15 @@
 		<div class="flex flex-col space-y-2">
 			<label for="message">Message</label>
 			<textarea id="message" name="message" rows="6" required class="rounded-lg border p-2" />
+		</div>
+
+		<!-- Disclaimer -->
+		<div class="flex flex-row items-center gap-4">
+			<Icon src={InformationCircle} class="h-8 w-8" />
+			<div>
+				Your data is safe with us. We will not share your information.<br />
+				Your message will be delivered by email and deleted after processing.
+			</div>
 		</div>
 
 		{#if form?.success}

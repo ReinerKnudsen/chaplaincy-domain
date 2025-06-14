@@ -70,6 +70,10 @@
 		}
 	}
 
+	$: {
+		if ($NewsItemsStore) sortItems.set($NewsItemsStore.slice());
+	} // make a copy of the array
+
 	const sortTable = (key: NewsSortableFields) => {
 		if ($sortKey === key) {
 			sortDirection.update((val) => (val === 1 ? -1 : 1));
@@ -118,6 +122,8 @@
 	const handleDelete = async () => {
 		await deleteDoc(doc(newsColRef, deleteID));
 		await loadData();
+		NewsItemsStore.set($NewsItemsStore.filter((item) => item.id !== deleteID));
+		deleteDialog?.close();
 	};
 
 	const openModal = (id: string) => {
@@ -137,7 +143,7 @@
 		<div class="modal-action">
 			<form method="dialog">
 				<button class="btn btn-default mr-2">Cancel</button>
-				<button class="btn btn-error" on:click|preventDefault={() => handleDelete()}>Delete</button>
+				<button class="btn btn-error" on:click={() => handleDelete()}>Delete</button>
 			</form>
 		</div>
 	</div>

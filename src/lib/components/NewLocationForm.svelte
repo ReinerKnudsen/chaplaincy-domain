@@ -80,7 +80,7 @@
 			id="city"
 			type="text"
 			class="input input-bordered w-full"
-			placeholder="City"
+			placeholder="City or online"
 			bind:value={thisLocation.city}
 		/>
 	</div>
@@ -118,8 +118,8 @@
 			<button class="btn-custom btn-custom-secondary" on:click={() => dispatch('close')}
 				>Cancel</button
 			>
-			<button class="btn btn-primary min-w-28" type="submit">Save</button>
 		{/if}
+		<button class="btn btn-primary min-w-28" type="submit">Save</button>
 	</div>
 </form>
 

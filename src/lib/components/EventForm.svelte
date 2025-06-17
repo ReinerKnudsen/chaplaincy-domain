@@ -51,6 +51,7 @@
 	let selectedImage: File;
 	let showModal = false;
 	let loading = true;
+	let isOnline = false;
 
 	onMount(async () => {
 		if ($EditModeStore === EditMode.Update) {
@@ -112,6 +113,8 @@
 		} else {
 			newEvent.location = event.detail.value;
 		}
+		isOnline =
+			$AllLocations.find((loc) => loc.id === event.detail.value)?.city.toLowerCase() === 'online';
 	};
 
 	const handleLocationAddedModal = async (event: CustomEvent) => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 
 	import { loadItem, CollectionType, NewsStore } from '$lib/stores/ObjectStore';
@@ -12,7 +12,7 @@
 	 * TODO: Report completion or error
 	 */
 	onMount(async () => {
-		currentDocRef = await loadItem($page.params.newsId, CollectionType.News);
+		currentDocRef = await loadItem(page.params.newsId, CollectionType.News);
 	});
 
 	const updateNews = async (event: CustomEvent<Record<string, any>>) => {

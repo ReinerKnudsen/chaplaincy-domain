@@ -1,7 +1,11 @@
 <script lang="ts">
 	import Icon from '$lib/components/Icon.svelte';
 
-	export let service;
+	interface Props {
+		service: any;
+	}
+
+	let { service }: Props = $props();
 
 	const container = 'rounded-2xl border border-slate-200 py-5 px-3 shadow-xl';
 	const content = 'flex flex-col items-center justify-start';

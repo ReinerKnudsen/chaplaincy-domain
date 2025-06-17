@@ -63,11 +63,11 @@
 				<h2 class="mb-4 text-lg font-extrabold tracking-wide text-gray-800 uppercase">User</h2>
 				<nav class="flex flex-col space-y-2">
 					{#if !$authStore.isLoggedIn}
-						<button class="text-left text-gray-600 hover:text-gray-900" on:click={handleLogin}
+						<button class="text-left text-gray-600 hover:text-gray-900" onclick={handleLogin}
 							>Login</button
 						>
 					{:else}
-						<button class="text-left text-gray-600 hover:text-gray-900" on:click={handleLogout}
+						<button class="text-left text-gray-600 hover:text-gray-900" onclick={handleLogout}
 							>Sign out</button
 						>
 					{/if}

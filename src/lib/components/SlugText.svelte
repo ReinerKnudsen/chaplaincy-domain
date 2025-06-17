@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { createEventDispatcher } from 'svelte';
 
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
@@ -6,10 +8,14 @@
 
 	import Label from './Label.svelte';
 
-	export let text: string = '';
-	export let slugText: string = '';
+	interface Props {
+		text?: string;
+		slugText?: string;
+	}
 
-	let editSlug: boolean = false;
+	let { text = '', slugText = $bindable('') }: Props = $props();
+
+	let editSlug: boolean = $state(false);
 
 	const dispatch = createEventDispatcher<{ slugChange: string }>();
 
@@ -22,9 +28,11 @@
 		}
 	};
 
-	$: if (slugText) {
-		dispatch('slugChange', slugText);
-	}
+	run(() => {
+		if (slugText) {
+			dispatch('slugChange', slugText);
+		}
+	});
 </script>
 
 <div id="component-container" class="my-8 rounded-xl border p-4">
@@ -43,14 +51,14 @@
 		maxlength={MAX_SLUG_TEXT}
 		required
 		disabled={!editSlug}
-		on:blur={() => (editSlug = false)}
-	/>
+		onblur={() => (editSlug = false)}
+	></textarea>
 	<div id="component-footer" class="mt-2 flex items-center justify-between">
 		<div id="component-explanation" class="mx-1 my-2 text-sm">
 			The slug text is a short version of your text to be shown in cards view. <br />The system will
 			suggest a slug text for you which you can change.
 		</div>
-		<button type="button" class="btn btn-primary" disabled={editSlug} on:click={handleChangeSlug}
+		<button type="button" class="btn btn-primary" disabled={editSlug} onclick={handleChangeSlug}
 			>{slugText.length === 0 ? 'Create' : 'Change'} slug text</button
 		>
 	</div>

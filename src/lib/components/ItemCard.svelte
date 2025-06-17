@@ -2,8 +2,12 @@
 	import { type CollectionItem } from '$lib/stores/ObjectStore';
 	import { decodeHtml } from '$lib/utils/HTMLfunctions';
 
-	export let item: CollectionItem;
-	export let kind: 'news' | 'events';
+	interface Props {
+		item: CollectionItem;
+		kind: 'news' | 'events';
+	}
+
+	let { item, kind }: Props = $props();
 
 	const containerSM =
 		'sm:grid-col-1 my-5 grid rounded-2xl border border-slate-200 px-4 py-4 shadow-xl bg-white';

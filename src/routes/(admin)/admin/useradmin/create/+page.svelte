@@ -24,7 +24,7 @@
 		role: '',
 	};
 
-	let newUser = initUser;
+	let newUser = $state(initUser);
 
 	const resetForm = () => {
 		newUser = initUser;
@@ -39,7 +39,7 @@
 
 <div class="flex flex-row justify-center">
 	<div class="bg-white-primary w-5/12 space-y-4 rounded-xl p-6 shadow-xl sm:p-8 md:space-y-6">
-		<form class="flex flex-col space-y-6" on:submit={create}>
+		<form class="flex flex-col space-y-6" onsubmit={create}>
 			<h3 class="p-0 text-xl font-medium text-gray-900 dark:text-white">Create an new account</h3>
 			<Label child="firstname">First name *</Label>
 			<input

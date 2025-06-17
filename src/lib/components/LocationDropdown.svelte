@@ -1,20 +1,22 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { selectedLocation, AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 
 	const dispatch = createEventDispatcher();
-	let selectedId = $selectedLocation?.id || '';
+	let selectedId = $state($selectedLocation?.id || '');
 
 	onMount(async () => {
 		await fetchLocations();
 	});
 
 	// Make selectedId reactive to selectedLocation changes
-	$: {
+	run(() => {
 		if ($selectedLocation && $selectedLocation.id) {
 			selectedId = $selectedLocation.id;
 		}
-	}
+	});
 
 	function handleChange(event: Event) {
 		const value = (event.target as HTMLSelectElement).value;
@@ -34,7 +36,7 @@
 <select
 	class="mb-2 min-h-12 w-full rounded-md border-slate-300 bg-slate-50"
 	value={selectedId}
-	on:change={handleChange}
+	onchange={handleChange}
 >
 	<option value="" disabled>Select a location</option>
 	{#each $AllLocations as location}

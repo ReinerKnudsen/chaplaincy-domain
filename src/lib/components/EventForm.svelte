@@ -44,13 +44,17 @@
 		tags: [],
 	};
 
-	export let thisEvent: Event = defaultEvent;
+	interface Props {
+		thisEvent?: Event;
+	}
 
-	let newEvent: Event = defaultEvent;
+	let { thisEvent = defaultEvent }: Props = $props();
+
+	let newEvent: Event = $state(defaultEvent);
 	let hasImage = writable(false);
 	let selectedImage: File;
-	let showModal = false;
-	let loading = true;
+	let showModal = $state(false);
+	let loading = $state(true);
 
 	onMount(async () => {
 		if ($EditModeStore === EditMode.Update) {
@@ -183,8 +187,8 @@
 	<form
 		id="form-container"
 		enctype="multipart/form-data"
-		on:submit={handleSubmit}
-		on:reset={handleReset}
+		onsubmit={handleSubmit}
+		onreset={handleReset}
 	>
 		<!-- First block -->
 		<div class="form bg-white-primary my-8 p-10">
@@ -261,7 +265,7 @@
 							class="checkbox mr-4"
 							aria-describedby="helper-checkbox-text"
 							id="condition"
-							on:change={handleConditionChange}
+							onchange={handleConditionChange}
 						/>
 						Entry is free, donations are welcome
 					</label>
@@ -311,7 +315,7 @@
 					<div class="tooltip" data-tip="Sets the end date to the start date">
 						<button
 							class="btn btn-primary min-w-28"
-							on:click={handleSetEndDate}
+							onclick={handleSetEndDate}
 							disabled={!newEvent.startdate}
 							>Auto set
 						</button>
@@ -348,7 +352,7 @@
 						<div class="tooltip" data-tip="Sets the publish date to 14 days before the start date">
 							<button
 								class="btn btn-primary min-w-28"
-								on:click={handleSetPublishDate}
+								onclick={handleSetPublishDate}
 								disabled={!newEvent.startdate}
 								>Auto set
 							</button>
@@ -482,7 +486,7 @@
 						rows="4"
 						name="comments"
 						bind:value={newEvent.comments}
-					/>
+					></textarea>
 				</div>
 			</div>
 
@@ -490,7 +494,7 @@
 			<div class="form bg-white-primary p-10">
 				<!-- Buttons -->
 				<div class="buttons col-span-2">
-					<button class="btn" type="reset" color="light" on:click={() => goto('/admin/eventsadmin')}
+					<button class="btn" type="reset" color="light" onclick={() => goto('/admin/eventsadmin')}
 						>Cancel</button
 					>
 					<button class="btn btn-neutral" type="reset" color="light">Empty form</button>

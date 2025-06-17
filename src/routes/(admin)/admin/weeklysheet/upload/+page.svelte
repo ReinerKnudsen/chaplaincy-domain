@@ -12,10 +12,10 @@
 		docRef: DocumentReference | null;
 	};
 
-	let newItem: WeeklySheet = {
+	let newItem: WeeklySheet = $state({
 		date: '',
 		docRef: null,
-	};
+	});
 
 	const saveDocRef = (e) => {
 		newItem.docRef = e.detail.docRef;
@@ -43,7 +43,7 @@
 
 <div class="form bg-white-primary">
 	<h1 class="mx-10">Upload weekly sheet</h1>
-	<form class="mx-10" enctype="multipart/form-data" on:submit={handleSubmit}>
+	<form class="mx-10" enctype="multipart/form-data" onsubmit={handleSubmit}>
 		<!-- Date -->
 		<div>
 			<Label child="date" class="mt-8 mb-2 text-xl font-semibold">Date *</Label>
@@ -68,7 +68,7 @@
 				class="btn btn-custom btn-custom-secondary"
 				type="reset"
 				color="light"
-				on:click={() => goto('/admin/weeklysheet')}>Cancel</button
+				onclick={() => goto('/admin/weeklysheet')}>Cancel</button
 			>
 			<button class="btn btn-custom btn-primary" type="submit">Complete</button>
 		</div>

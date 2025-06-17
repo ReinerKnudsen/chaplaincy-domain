@@ -9,13 +9,13 @@
 	import Label from '$lib/components/Label.svelte';
 	import Alert from '$lib/components/Alert.svelte';
 
-	let email = '';
-	let newPassword = '';
-	let checkPassword = '';
-	let oobCode: string | null = null;
-	let isError = false;
-	let errorMessage = '';
-	let isSuccess = false;
+	let email = $state('');
+	let newPassword = $state('');
+	let checkPassword = $state('');
+	let oobCode: string | null = $state(null);
+	let isError = $state(false);
+	let errorMessage = $state('');
+	let isSuccess = $state(false);
 
 	onMount(() => {
 		const urlParams = new URLSearchParams(window.location.search);
@@ -79,7 +79,7 @@
 	<div class="bg-white-primary w-5/12 space-y-4 rounded-xl p-6 shadow-xl sm:p-8 md:space-y-6">
 		{#if oobCode}
 			<!-- Reset Password Form -->
-			<form class="flex flex-col" on:submit={resetUserPassword}>
+			<form class="flex flex-col" onsubmit={resetUserPassword}>
 				<h3 class="p-0 text-xl font-medium text-gray-900 dark:text-white">Reset your password</h3>
 				<Label child="new-password">New Password</Label>
 				<input
@@ -88,8 +88,8 @@
 					name="new-password"
 					id="new-password"
 					bind:value={newPassword}
-					on:change={setErrorState}
-					on:input={verifyInput}
+					onchange={setErrorState}
+					oninput={verifyInput}
 					required
 				/>
 				<Label child="check-password">Confirm Password</Label>
@@ -99,8 +99,8 @@
 					name="check-password"
 					id="check-password"
 					bind:value={checkPassword}
-					on:change={setErrorState}
-					on:input={verifyInput}
+					onchange={setErrorState}
+					oninput={verifyInput}
 					required
 				/>
 				{#if isError}
@@ -110,7 +110,7 @@
 			</form>
 		{:else}
 			<!-- Request Reset Form -->
-			<form class="flex flex-col" on:submit={requestReset}>
+			<form class="flex flex-col" onsubmit={requestReset}>
 				<h3 class="p-0 text-xl font-medium text-gray-900 dark:text-white">Reset your password</h3>
 				<p class="text-sm text-gray-600">
 					Enter your email address and we'll send you a link to reset your password.

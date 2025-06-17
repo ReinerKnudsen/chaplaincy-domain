@@ -1,11 +1,15 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { onMount } from 'svelte';
 	import { authStore } from '$lib/stores/AuthStore';
 
-	let role: string | null = null;
+	let role: string | null = $state(null);
 
-	$: authStore.subscribe((store) => {
-		role = store.role;
+	run(() => {
+		authStore.subscribe((store) => {
+			role = store.role;
+		});
 	});
 
 	onMount(() => {});

@@ -4,7 +4,11 @@
 
 	import { Icon, InformationCircle } from 'svelte-hero-icons';
 
-	export let form: ActionData;
+	interface Props {
+		form: ActionData;
+	}
+
+	let { form }: Props = $props();
 </script>
 
 <div class="my-3 w-full">
@@ -36,7 +40,7 @@
 		<!-- Message -->
 		<div class="flex flex-col space-y-2">
 			<label for="message">Message</label>
-			<textarea id="message" name="message" rows="6" required class="rounded-lg border p-2" />
+			<textarea id="message" name="message" rows="6" required class="rounded-lg border p-2"></textarea>
 		</div>
 
 		<!-- Disclaimer -->

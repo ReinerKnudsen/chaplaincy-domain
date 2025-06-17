@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { writable } from 'svelte/store';
 	import ItemCard from '$lib/components/ItemCard.svelte';
 	import ItemCardFav from '$lib/components/ItemCardFav.svelte';
@@ -13,22 +15,16 @@
 	} from '$lib/stores/ObjectStore.js';
 	import { onMount } from 'svelte';
 
-	let loading = true;
-	let favNews: CollectionItem;
-	let newsItems: CollectionItem[];
+	let loading = $state(true);
+	let favNews: CollectionItem = $state();
+	let newsItems: CollectionItem[] = $state();
 
 	// Sort news items
 	const sortKey = writable<NewsSortableFields>('publishdate'); // default sort key
 	const sortDirection = writable<1 | -1>(-1); // default sort direction (ascending)
 	const sortItems = writable<CollectionItem[]>([]); // Start empty
 
-	$: if ($NewsItemsStore) {
-		sortItems.set($NewsItemsStore.slice());
-	}
 
-	$: if ($sortKey || $sortDirection) {
-		sortNews();
-	}
 
 	const loadData = async () => {
 		try {
@@ -74,6 +70,16 @@
 			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fheaders%2Fnews.jpg?alt=media&token=aa27a23c-2004-4f8b-be58-2930c5bbedff',
 		title: 'News and Notices',
 	};
+	run(() => {
+		if ($NewsItemsStore) {
+			sortItems.set($NewsItemsStore.slice());
+		}
+	});
+	run(() => {
+		if ($sortKey || $sortDirection) {
+			sortNews();
+		}
+	});
 </script>
 
 <PageHeader {headerData} textStyle="white" />

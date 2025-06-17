@@ -1,4 +1,6 @@
 <script>
+	import { run, preventDefault } from 'svelte/legacy';
+
 	import { goto } from '$app/navigation';
 
 	import { authStore } from '$lib/stores/AuthStore';
@@ -10,10 +12,12 @@
 		goto('/');
 	}
 
-	let auth;
+	let auth = $state();
 
-	$: authStore.subscribe((store) => {
-		auth = store;
+	run(() => {
+		authStore.subscribe((store) => {
+			auth = store;
+		});
 	});
 
 	const makeadmin = async () => {
@@ -36,7 +40,7 @@
 		<div>
 			{`Hier kannst Du den User ${auth.user.email} zum Admin machen :) `}
 		</div>
-		<form on:submit|preventDefault={makeadmin}>
+		<form onsubmit={preventDefault(makeadmin)}>
 			<button class="btn btn-custom btn-primary" type="submit">Make admin</button>
 		</form>
 	{:else}

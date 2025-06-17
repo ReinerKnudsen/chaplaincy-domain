@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { run, preventDefault } from 'svelte/legacy';
+
+	import { page } from '$app/state';
 	import { writable, type Writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
@@ -23,11 +25,11 @@
 	} from '$lib/stores/ObjectStore';
 	import { AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 
-	let deleteDialog: HTMLDialogElement;
-	let duplicateDialog: HTMLDialogElement;
+	let deleteDialog: HTMLDialogElement|undefined = $state();
+	let duplicateDialog: HTMLDialogElement|undefined = $state();
 	let deleteID: string = '';
 	let dupeID: string = '';
-	let loading: boolean = true;
+	let loading: boolean = $state(true);
 	let sortItems: Writable<CollectionItem[]> = writable([]);
 
 	const loadData = async () => {
@@ -35,7 +37,7 @@
 	};
 
 	onMount(async () => {
-		$pathName = $page.url.pathname;
+		$pathName = page.url.pathname;
 		await loadData();
 		await fetchLocations();
 		loading = false;
@@ -65,18 +67,18 @@
 	const sortDirection: Writable<number> = writable(initialDirection);
 
 	// Update sessionStorage when sort settings change
-	$: {
+	run(() => {
 		if (typeof window !== 'undefined') {
 			sessionStorage.setItem(
 				STORAGE_KEY,
 				JSON.stringify({ key: $sortKey, direction: $sortDirection }),
 			);
 		}
-	}
+	});
 
-	$: {
+	run(() => {
 		if ($EventsStore) sortItems.set($EventsStore.slice());
-	} // make a copy of the array
+	}); // make a copy of the array
 
 	const sortTable = (key: EventSortableFields) => {
 		if ($sortKey === key) {
@@ -87,7 +89,7 @@
 		}
 	};
 
-	$: {
+	run(() => {
 		const key = $sortKey;
 		const direction = $sortDirection;
 		const sorted = [...$sortItems].sort((a, b) => {
@@ -101,7 +103,7 @@
 			return 0;
 		});
 		sortItems.set(sorted);
-	}
+	});
 
 	const handleSearchInput = (event: CustomEvent) => {
 		//console.log(event.target.value);
@@ -172,7 +174,7 @@
 		<div class="modal-action">
 			<form method="dialog">
 				<button class="btn btn-default mr-2">Cancel</button>
-				<button class="btn btn-error" on:click|preventDefault={() => handleDelete()}>Delete</button>
+				<button class="btn btn-error" onclick={preventDefault(() => handleDelete())}>Delete</button>
 			</form>
 		</div>
 	</div>
@@ -191,7 +193,7 @@
 		<div class="modal-action">
 			<form method="dialog">
 				<button class="btn btn-default mr-2">Cancel</button>
-				<button class="btn btn-primary" on:click|preventDefault={() => handleDuplicate()}
+				<button class="btn btn-primary" onclick={preventDefault(() => handleDuplicate())}
 					>Duplicate</button
 				>
 			</form>
@@ -209,7 +211,7 @@
 			<input class="w-full rounded-lg" placeholder="Search (not yet active)" type="text" />
 		</div>
 		<div class="col-span-3 justify-self-end py-2">
-			<button on:click={handleCreateNew} class="btn btn-primary btn-lg">Create Event</button>
+			<button onclick={handleCreateNew} class="btn btn-primary btn-lg">Create Event</button>
 		</div>
 	</div>
 
@@ -220,13 +222,13 @@
 			<table class="admin-table">
 				<thead class="table-row">
 					<tr class="table-row">
-						<th class="table-header table-cell" on:click={() => sortTable('title')}>Title</th>
-						<th class="table-header table-cell" on:click={() => sortTable('startdate')}
+						<th class="table-header table-cell" onclick={() => sortTable('title')}>Title</th>
+						<th class="table-header table-cell" onclick={() => sortTable('startdate')}
 							>Start Date</th
 						>
-						<th class="table-header table-cell" on:click={() => sortTable('enddate')}>End Date</th>
-						<th class="table-header table-cell" on:click={() => sortTable('location')}>Location</th>
-						<th class="table-header table-cell" on:click={() => sortTable('publishdate')}
+						<th class="table-header table-cell" onclick={() => sortTable('enddate')}>End Date</th>
+						<th class="table-header table-cell" onclick={() => sortTable('location')}>Location</th>
+						<th class="table-header table-cell" onclick={() => sortTable('publishdate')}
 							>Publish Date</th
 						>
 						<th class="table-header table-cell">Actions</th>
@@ -236,7 +238,7 @@
 					{#each $sortItems as item}
 						<tr class="table-row">
 							<td class="table-data table-cell">
-								<button class="btn btn-link px-0" on:click={() => handleOpenItem(item.id)}>
+								<button class="btn btn-link px-0" onclick={() => handleOpenItem(item.id)}>
 									{item.data.title}
 								</button>
 							</td>
@@ -246,13 +248,13 @@
 							<td class="table-data table-cell">{item.data.publishdate}</td>
 							<td class="table-data table-cell">
 								<div class="flex flex-row gap-2">
-									<button class="btn-sm btn-custom-delete" on:click={() => openModal(item.id)}
+									<button class="btn-sm btn-custom-delete" onclick={() => openModal(item.id)}
 										>Delete</button
 									>
 									<button
 										class="btn btn-active btn-sm btn-default"
 										color="alternative"
-										on:click={() => openDuplicateModal(item.id)}>Duplicate</button
+										onclick={() => openDuplicateModal(item.id)}>Duplicate</button
 									>
 								</div>
 							</td>

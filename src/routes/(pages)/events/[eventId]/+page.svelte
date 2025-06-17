@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { run } from 'svelte/legacy';
+
+	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
 	import Icon from '$lib/components/Icon.svelte';
@@ -10,24 +12,24 @@
 
 	import MarkdownViewer from '$lib/components/MarkdownViewer.svelte';
 
-	let loading = true;
-	let location: Location | undefined;
+	let loading = $state(true);
+	let location: Location | undefined = $state();
 
 	onMount(async () => {
-		const eventId = $page.params.eventId;
+		const eventId = page.params.eventId;
 		await loadItem(eventId, CollectionType.Events);
 		await fetchLocations();
 		loading = false;
 	});
 
-	$: description = $EventStore?.description ? marked.parse($EventStore.description) : '';
+	let description = $derived($EventStore?.description ? marked.parse($EventStore.description) : '');
 
-	$: {
+	run(() => {
 		$EventStore?.location
 			? (location = $AllLocations.find((location) => location.id === $EventStore.location))
 			: (location = undefined);
 		console.log(location);
-	}
+	});
 </script>
 
 {#if loading}

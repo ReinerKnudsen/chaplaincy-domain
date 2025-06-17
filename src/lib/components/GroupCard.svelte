@@ -9,7 +9,11 @@
 		eventsLink?: boolean;
 	};
 
-	export let group: Group;
+	interface Props {
+		group: Group;
+	}
+
+	let { group }: Props = $props();
 
 	const { name, text, extraLink, extraLinkText, eventsLink } = group;
 </script>

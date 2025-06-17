@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { createEventDispatcher, onMount } from 'svelte';
 
 	import {
@@ -31,15 +33,17 @@
 		fetchLocations();
 	});
 
-	let updateItem = true;
-	let currentLocationId = 0;
+	let updateItem = $state(true);
+	let currentLocationId = $state(0);
 
 	// Only set CurrentLocation when AllLocations has items
-	$: if ($AllLocations.length > 0) {
-		CurrentLocation.set($AllLocations[currentLocationId]);
-	} else {
-		resetCurrentLocation();
-	}
+	run(() => {
+		if ($AllLocations.length > 0) {
+			CurrentLocation.set($AllLocations[currentLocationId]);
+		} else {
+			resetCurrentLocation();
+		}
+	});
 
 	const handleLocationChange = (location: Location, index: number) => {
 		updateItem = true;
@@ -124,16 +128,16 @@
 							class={$CurrentLocation.id === location.id
 								? 'active list-item flex-1'
 								: 'list-item flex-1'}
-							on:click={() => handleLocationChange(location, index)}>{location.name}</button
+							onclick={() => handleLocationChange(location, index)}>{location.name}</button
 						>
-						<button class="icon-button" on:click={() => handleDelete(location)}>
+						<button class="icon-button" onclick={() => handleDelete(location)}>
 							<Icon width={'1.5rem'} height={'1.5rem'} name="delete" />
 						</button>
 					</div>
 				{/each}
 			</ul>
 			<div class="button-container">
-				<button class="btn btn-primary" on:click={handleCreateNew}>Create new</button>
+				<button class="btn btn-primary" onclick={handleCreateNew}>Create new</button>
 			</div>
 		</div>
 		<div class="location-details">

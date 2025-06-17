@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	import { collection, doc, getDocs, getDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
@@ -10,11 +10,11 @@
 
 	import MarkdownViewer from '$lib/components/MarkdownViewer.svelte';
 
-	let thisItem = {};
-	let loading = true; // Initialize loading state
+	let thisItem = $state({});
+	let loading = $state(true); // Initialize loading state
 
 	onMount(async () => {
-		const newsId = $page.params.newsId;
+		const newsId = page.params.newsId;
 		try {
 			const docRef = doc(database, 'news', newsId);
 			const docSnapshot = await getDoc(docRef);

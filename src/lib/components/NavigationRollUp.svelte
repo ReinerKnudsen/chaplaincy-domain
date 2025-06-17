@@ -1,11 +1,17 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import type { MenuItem } from '$lib/types.d';
 	import { onMount } from 'svelte';
 
-	export let title: string;
-	export let menuItems: MenuItem[];
+	interface Props {
+		title: string;
+		menuItems: MenuItem[];
+	}
 
-	let showDropdown = false;
+	let { title, menuItems }: Props = $props();
+
+	let showDropdown = $state(false);
 
 	const toggleDropdown = () => {
 		showDropdown = !showDropdown;
@@ -41,7 +47,7 @@
 	<button
 		type="button"
 		class="menuitem btn btn-outline text-primary-80 border-0 text-xl font-semibold"
-		on:click|preventDefault={toggleDropdown}>{title}</button
+		onclick={preventDefault(toggleDropdown)}>{title}</button
 	>
 	{#if showDropdown}
 		<div
@@ -55,7 +61,7 @@
 					href={menuItem.url}
 					class="text-primary-100 block px-6 py-3 text-sm transition-colors first:rounded-t-md last:rounded-b-md hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-50"
 					role="menuitem"
-					on:click={toggleDropdown}
+					onclick={toggleDropdown}
 				>
 					{menuItem.title}
 				</a>

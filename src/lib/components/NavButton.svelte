@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	export let label: string;
-	export let url: string;
+	interface Props {
+		label: string;
+		url: string;
+	}
+
+	let { label, url }: Props = $props();
 
 	const handleClick = () => {
 		goto(url);
@@ -9,7 +13,7 @@
 </script>
 
 <div>
-	<button class="h-12 w-full pl-5 text-left font-semibold" on:click={handleClick}>{label}</button>
+	<button class="h-12 w-full pl-5 text-left font-semibold" onclick={handleClick}>{label}</button>
 </div>
 
 <style>

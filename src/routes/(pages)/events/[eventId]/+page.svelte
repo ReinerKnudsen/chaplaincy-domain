@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
@@ -10,8 +12,8 @@
 
 	import MarkdownViewer from '$lib/components/MarkdownViewer.svelte';
 
-	let loading = true;
-	let location: Location | undefined;
+	let loading = $state(true);
+	let location: Location | undefined = $state();
 
 	onMount(async () => {
 		const eventId = $page.params.eventId;
@@ -20,14 +22,14 @@
 		loading = false;
 	});
 
-	$: description = $EventStore?.description ? marked.parse($EventStore.description) : '';
+	let description = $derived($EventStore?.description ? marked.parse($EventStore.description) : '');
 
-	$: {
+	run(() => {
 		$EventStore?.location
 			? (location = $AllLocations.find((location) => location.id === $EventStore.location))
 			: (location = undefined);
 		console.log(location);
-	}
+	});
 </script>
 
 {#if loading}

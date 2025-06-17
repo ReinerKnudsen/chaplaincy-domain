@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { onMount } from 'svelte';
 	import { enhance } from '$app/forms';
 	import ServiceCard from '$lib/components/ServiceCard.svelte';
@@ -27,10 +29,14 @@
 		return service;
 	});
 
-	let user;
-	let loading = true;
+	let user = $state();
+	let loading = $state(true);
 
-	export let form: ActionData;
+	interface Props {
+		form: ActionData;
+	}
+
+	let { form }: Props = $props();
 
 	onMount(async () => {
 		await loadItems(CollectionType.News);
@@ -40,17 +46,19 @@
 		loading = false;
 	});
 
-	$: authStore.subscribe((store) => {
-		user = store.user;
+	run(() => {
+		authStore.subscribe((store) => {
+			user = store.user;
+		});
 	});
 
-	$: whiteCount = [
+	let whiteCount = $derived([
 		true, // Services always white
 		$LatestNewsStore.length > 0, // News section if present
 		$NextEventsStore.length > 0, // Events section if present
-	].filter(Boolean).length;
+	].filter(Boolean).length);
 
-	$: shouldBeWhite = (sectionIndex: number) => (sectionIndex + whiteCount) % 2 === 0;
+	let shouldBeWhite = $derived((sectionIndex: number) => (sectionIndex + whiteCount) % 2 === 0);
 
 	const header = 'text-2xl text-justify w-[80%] text-center px-4 py-4 font-semibold';
 	const headerLg = 'lg:text-4xl lg:px-10 lg:w-full';

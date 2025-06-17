@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
@@ -26,9 +28,9 @@
 		await loadItems(CollectionType.News);
 	};
 
-	let deleteDialog: HTMLDialogElement;
+	let deleteDialog: HTMLDialogElement = $state();
 	let deleteID: string = '';
-	let loading = true;
+	let loading = $state(true);
 
 	onMount(async () => {
 		$pathName = $page.url.pathname;
@@ -61,18 +63,18 @@
 	const sortItems: Writable<typeof $NewsItemsStore> = writable($NewsItemsStore.slice());
 
 	// Update sessionStorage when sort settings change
-	$: {
+	run(() => {
 		if (typeof window !== 'undefined') {
 			sessionStorage.setItem(
 				STORAGE_KEY,
 				JSON.stringify({ key: $sortKey, direction: $sortDirection }),
 			);
 		}
-	}
+	});
 
-	$: {
+	run(() => {
 		if ($NewsItemsStore) sortItems.set($NewsItemsStore.slice());
-	} // make a copy of the array
+	}); // make a copy of the array
 
 	const sortTable = (key: NewsSortableFields) => {
 		if ($sortKey === key) {
@@ -83,7 +85,7 @@
 		}
 	};
 
-	$: {
+	run(() => {
 		const key = $sortKey;
 		const direction = $sortDirection;
 		const sorted = [...$sortItems].sort((a, b) => {
@@ -97,7 +99,7 @@
 			return 0;
 		});
 		sortItems.set(sorted);
-	}
+	});
 
 	const handleSearchInput = (event: Event) => {
 		//console.log(event.target.value);
@@ -143,7 +145,7 @@
 		<div class="modal-action">
 			<form method="dialog">
 				<button class="btn btn-default mr-2">Cancel</button>
-				<button class="btn btn-error" on:click={() => handleDelete()}>Delete</button>
+				<button class="btn btn-error" onclick={() => handleDelete()}>Delete</button>
 			</form>
 		</div>
 	</div>
@@ -160,11 +162,11 @@
 				class="w-full rounded-lg"
 				placeholder="Search (not yet active)"
 				type="text"
-				on:input={handleSearchInput}
+				oninput={handleSearchInput}
 			/>
 		</div>
 		<div class="col-span-3 justify-self-end py-2">
-			<button on:click={handleCreateNew} class="btn btn-primary btn-lg">Create News</button>
+			<button onclick={handleCreateNew} class="btn btn-primary btn-lg">Create News</button>
 		</div>
 	</div>
 
@@ -175,12 +177,12 @@
 			<table class="admin-table">
 				<thead class="table-row">
 					<tr class="table-row">
-						<th class="table-header table-cell" on:click={() => sortTable('title')}>Title</th>
-						<th class="table-header table-cell" on:click={() => sortTable('text')}>News Text</th>
-						<th class="table-header table-cell" on:click={() => sortTable('publishdate')}
+						<th class="table-header table-cell" onclick={() => sortTable('title')}>Title</th>
+						<th class="table-header table-cell" onclick={() => sortTable('text')}>News Text</th>
+						<th class="table-header table-cell" onclick={() => sortTable('publishdate')}
 							>Publish date</th
 						>
-						<th class="table-header table-cell" on:click={() => sortTable('author')}>Author</th>
+						<th class="table-header table-cell" onclick={() => sortTable('author')}>Author</th>
 						<th class="table-header table-cell">Actions</th>
 					</tr>
 				</thead>
@@ -188,7 +190,7 @@
 					{#each $sortItems as item}
 						<tr class="table-row">
 							<td class="table-data table-cell">
-								<button class="btn btn-link px-0" on:click={() => handleOpenItem(item.id)}
+								<button class="btn btn-link px-0" onclick={() => handleOpenItem(item.id)}
 									>{item.data.title}</button
 								>
 							</td>
@@ -197,7 +199,7 @@
 							<td class="table-data table-cell">{item.data.author}</td>
 							<td class="table-data table-cell">
 								<div class="flex flex-row justify-between">
-									<button class="btn-sm btn-custom-delete" on:click={() => openModal(item.id)}
+									<button class="btn-sm btn-custom-delete" onclick={() => openModal(item.id)}
 										>Delete</button
 									>
 								</div>

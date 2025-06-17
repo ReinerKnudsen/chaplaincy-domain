@@ -9,7 +9,11 @@
 		docRef: DocumentReference | null;
 	};
 
-	export let data: Params;
+	interface Props {
+		data: Params;
+	}
+
+	let { data }: Props = $props();
 
 	const updateEvent = async (event: CustomEvent) => {
 		try {

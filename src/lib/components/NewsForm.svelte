@@ -20,13 +20,17 @@
 
 	const author = $authStore.name;
 
-	export let thisItem: News = initialNews;
+	interface Props {
+		thisItem?: News;
+	}
+
+	let { thisItem = initialNews }: Props = $props();
 	const dispatch = createEventDispatcher<{
 		new: News;
 		update: News;
 	}>();
 
-	let newItem: News = { ...thisItem };
+	let newItem: News = $state({ ...thisItem });
 	newItem.author = author;
 	let docRef;
 	let selectedImage: File;
@@ -86,8 +90,8 @@
 	<form
 		id="form-container"
 		enctype="multipart/form-data"
-		on:submit={handleSubmit}
-		on:reset={handleReset}
+		onsubmit={handleSubmit}
+		onreset={handleReset}
 	>
 		<!-- Titel -->
 		<div>

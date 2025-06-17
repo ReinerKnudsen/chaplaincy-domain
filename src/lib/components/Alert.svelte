@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { Icon, CheckCircle, ExclamationCircle, XCircle } from 'svelte-hero-icons';
-	export let role: 'success' | 'warning' | 'error' = 'success';
-	export let message: string;
+	interface Props {
+		role?: 'success' | 'warning' | 'error';
+		message: string;
+	}
+
+	let { role = 'success', message }: Props = $props();
 
 	const roles = [
 		{

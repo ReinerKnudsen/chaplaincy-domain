@@ -7,8 +7,12 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let initialContent = '';
-	let editorElement: HTMLElement;
+	interface Props {
+		initialContent?: string;
+	}
+
+	let { initialContent = '' }: Props = $props();
+	let editorElement: HTMLElement = $state();
 	let editor: Editor;
 
 	// Function to get markdown content

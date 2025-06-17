@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { type CollectionItem } from '$lib/stores/ObjectStore';
 
-	export let item: CollectionItem;
-	export let kind: string;
+	interface Props {
+		item: CollectionItem;
+		kind: string;
+	}
+
+	let { item, kind }: Props = $props();
 
 	const container =
 		'mb-10 grid grid-flow-row gap-5 rounded-2xl border border-slate-200 bg-slate-100 p-4 shadow-xl';

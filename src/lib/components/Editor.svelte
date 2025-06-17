@@ -2,7 +2,11 @@
 	import ToastEditor from './ToastEditor.svelte';
 	import { uploadEditorImage } from '$lib/services/editorImageService';
 
-	export let content = '';
+	interface Props {
+		content?: string;
+	}
+
+	let { content = $bindable('') }: Props = $props();
 
 	async function handleImageUpload(
 		event: CustomEvent<{ blob: Blob; callback: (url: string) => void }>,

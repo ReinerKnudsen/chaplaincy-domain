@@ -12,8 +12,12 @@
 		newsletterStorageRef,
 	} from '$lib/firebase/firebaseConfig';
 
-	export let fileUrl: string = '';
-	export let target: 'pdf' | 'weeklysheet' | 'newsletter' = 'pdf';
+	interface Props {
+		fileUrl?: string;
+		target?: 'pdf' | 'weeklysheet' | 'newsletter';
+	}
+
+	let { fileUrl = $bindable(''), target = 'pdf' }: Props = $props();
 
 	const dispatch = createEventDispatcher();
 	const MAX_PDF_SIZE = 5 * 1024 * 1024; // 5MB max size for PDFs
@@ -21,9 +25,9 @@
 
 	let selectedFile: File;
 	let moduleWidth = 'w-[400px]';
-	let fileError: string;
-	let fileName: string = '';
-	let uploadProgress = false;
+	let fileError: string = $state();
+	let fileName: string = $state('');
+	let uploadProgress = $state(false);
 
 	onMount(async () => {
 		if (fileUrl) {
@@ -142,7 +146,7 @@
 				id="uploadFile"
 				accept={authorizedExtensions}
 				class="hidden"
-				on:change={handleFileChange}
+				onchange={handleFileChange}
 			/>
 		</label>
 		<div class="mt-3 text-center text-sm">(PDF files only, max 5MB)</div>
@@ -173,7 +177,7 @@
 			>
 		</div>
 		<div class="col-span-2 text-center">
-			<button class="btn btn-primary w-1/2" on:click={resetInput}>Change</button>
+			<button class="btn btn-primary w-1/2" onclick={resetInput}>Change</button>
 		</div>
 	</div>
 {/if}

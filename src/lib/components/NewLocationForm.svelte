@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { createEventDispatcher, onMount } from 'svelte';
 	import Label from './Label.svelte';
 
@@ -11,17 +13,23 @@
 
 	type Mode = 'create' | 'update';
 
-	export let showClose = true;
-	export let mode: Mode = 'create';
-
-	let thisLocation: Location = { ...initialLocationState };
-
-	$: if (mode === 'update') {
-		thisLocation = { ...$CurrentLocation };
-	} else if (mode === 'create' && thisLocation.id !== '') {
-		// Only reset if we're switching to create mode and have existing data
-		thisLocation = { ...initialLocationState };
+	interface Props {
+		showClose?: boolean;
+		mode?: Mode;
 	}
+
+	let { showClose = true, mode = 'create' }: Props = $props();
+
+	let thisLocation: Location = $state({ ...initialLocationState });
+
+	run(() => {
+		if (mode === 'update') {
+			thisLocation = { ...$CurrentLocation };
+		} else if (mode === 'create' && thisLocation.id !== '') {
+			// Only reset if we're switching to create mode and have existing data
+			thisLocation = { ...initialLocationState };
+		}
+	});
 
 	const dispatch = createEventDispatcher<{
 		save: void;
@@ -38,11 +46,11 @@
 		resetCurrentLocation();
 	}
 
-	$: openStreetUrl = `https://www.openstreetmap.org/search?query=${thisLocation.street}+${thisLocation.city}`;
+	let openStreetUrl = $derived(`https://www.openstreetmap.org/search?query=${thisLocation.street}+${thisLocation.city}`);
 </script>
 
 <div class="py-2 text-sm">All fields marked with * are required</div>
-<form autocomplete="off" on:submit={handleSubmit}>
+<form autocomplete="off" onsubmit={handleSubmit}>
 	<div>
 		<Label class="mt-4 mb-2 font-semibold" child="name">Name *</Label>
 		<input
@@ -114,7 +122,7 @@
 	</div>
 	<div class="mt-8 flex w-full flex-row justify-center gap-10">
 		{#if showClose}
-			<button class="btn-custom btn-custom-secondary" on:click={() => dispatch('close')}
+			<button class="btn-custom btn-custom-secondary" onclick={() => dispatch('close')}
 				>Cancel</button
 			>
 		{/if}

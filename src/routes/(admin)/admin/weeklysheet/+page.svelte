@@ -1,9 +1,15 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
 	// Get the data from the server
-	export let data: { documents: Array<Record<string, any>> };
+	interface Props {
+		data: { documents: Array<Record<string, any>> };
+	}
+
+	let { data }: Props = $props();
 
 	// Sort table items
 	const sortKey = writable<string>('date'); // default sort key
@@ -21,7 +27,7 @@
 		}
 	};
 
-	$: {
+	run(() => {
 		const key = $sortKey;
 		const direction = $sortDirection;
 		const sorted = [...data.documents].sort((a, b) => {
@@ -36,7 +42,7 @@
 		});
 
 		sortItems.set(sorted);
-	}
+	});
 
 	const handleSearchInput = (event: Event) => {
 		const target = event.target as HTMLInputElement;
@@ -56,18 +62,18 @@
 				class="w-full rounded-lg"
 				placeholder="Search (not yet active)"
 				type="text"
-				on:input={handleSearchInput}
+				oninput={handleSearchInput}
 			/>
 		</div>
 		<div class="justify-self-end">
-			<button on:click={handleClick} class="btn btn-c btn-primary">Upload</button>
+			<button onclick={handleClick} class="btn btn-c btn-primary">Upload</button>
 		</div>
 	</div>
 	<div class="">
 		<table class="admin-table">
 			<thead class="table-row">
 				<tr class="table-row">
-					<th class="table-header table-cell" on:click={() => sortTable('date')}>
+					<th class="table-header table-cell" onclick={() => sortTable('date')}>
 						<div>Date</div>
 					</th>
 					<th class="table-header table-cell">Link</th>

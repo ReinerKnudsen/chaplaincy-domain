@@ -1,4 +1,6 @@
 <script>
+	import { preventDefault } from 'svelte/legacy';
+
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -12,15 +14,16 @@
 	import { userRoles } from '$lib/utils/constants';
 
 	const userID = $page.params.userID;
-	export let data;
-	let currentUser = data.user;
+	/** @type {{data: any}} */
+	let { data } = $props();
+	let currentUser = $state(data.user);
 	const docRef = doc(database, 'users', userID);
 	let numberOfAdmins;
 
-	const errorObject = {
+	const errorObject = $state({
 		emailErr: '',
 		roleErr: '',
-	};
+	});
 
 	onMount(async () => {
 		const doc = await getDoc(docRef);
@@ -63,7 +66,7 @@
 	const handleSetRole = async () => {};
 </script>
 
-<form on:submit|preventDefault={handleSave}>
+<form onsubmit={preventDefault(handleSave)}>
 	<div class="mb-6 grid gap-6 md:grid-cols-2">
 		<div class="mb-6">
 			<Label class="mb-2 block" child="firstname">First Name</Label>
@@ -119,7 +122,7 @@
 	</div>
 
 	<div class="mx-[25%] mb-6 flex flex-row justify-between">
-		<button type="button" class="btn-custom btn-custom-secondary" on:click={handleCancel}
+		<button type="button" class="btn-custom btn-custom-secondary" onclick={handleCancel}
 			>Cancel</button
 		>
 		<button type="submit" class="btn-custom btn btn-primary">Save</button>

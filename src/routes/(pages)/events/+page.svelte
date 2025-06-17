@@ -5,8 +5,8 @@
 	import { onMount } from 'svelte';
 	import Spinner from '$lib/components/Spinner.svelte';
 
-	let loading = true;
-	$: events = $FutureEventsStore;
+	let loading = $state(true);
+	let events = $derived($FutureEventsStore);
 
 	onMount(async () => {
 		await loadItems(CollectionType.FutureEvents);

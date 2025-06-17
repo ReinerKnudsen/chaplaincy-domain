@@ -1,16 +1,23 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { getAuth, type Auth, onAuthStateChanged, type User } from 'firebase/auth';
 	import { screenSize } from '$lib/stores/ScreenSizeStore';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	let auth: Auth = getAuth();
-	let loading = true;
-	let screenWidth: number;
+	let loading = $state(true);
+	let screenWidth: number = $derived($screenSize);
 
-	$: screenWidth = $screenSize;
+	
 	onMount(() => {
 		$pathName = $page.url.pathname;
 
@@ -30,7 +37,9 @@
 		});
 	});
 
-	$: $pathName = $page.url.pathname;
+	run(() => {
+		$pathName = $page.url.pathname;
+	});
 
 	interface MenuItem {
 		name: string;
@@ -90,7 +99,7 @@
 		</nav>
 
 		<div id="main-content" class="mt-10 mb-10">
-			<slot />
+			{@render children?.()}
 		</div>
 	</div>
 {/if}

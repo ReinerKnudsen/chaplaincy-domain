@@ -5,7 +5,11 @@
 
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
 
-	export let imageUrl: string;
+	interface Props {
+		imageUrl: string;
+	}
+
+	let { imageUrl = $bindable() }: Props = $props();
 	const dispatch = createEventDispatcher<{
 		imageChange: File;
 		error: string;
@@ -14,8 +18,8 @@
 
 	let selectedFile: File | null = null;
 	let moduleWidth = 'w-[400px]';
-	let imageError: string = '';
-	let imageNote: string = '';
+	let imageError: string = $state('');
+	let imageNote: string = $state('');
 
 	const handleFileChange = async (event: Event) => {
 		event.preventDefault();
@@ -77,7 +81,7 @@
 				id="uploadFile"
 				accept={authorizedExtensions}
 				class="hidden"
-				on:change={handleFileChange}
+				onchange={handleFileChange}
 			/>
 		</label>
 		<div class="mt-3 text-center text-sm">
@@ -94,7 +98,7 @@
 			<p class="mt-3 text-center text-base text-gray-700">Note: {@html imageNote}</p>
 		{/if}
 		<div class="col-span-2 mt-8 text-center">
-			<button class="btn btn-primary w-1/2" on:click={resetInput}>Change</button>
+			<button class="btn btn-primary w-1/2" onclick={resetInput}>Change</button>
 		</div>
 	</div>
 {/if}

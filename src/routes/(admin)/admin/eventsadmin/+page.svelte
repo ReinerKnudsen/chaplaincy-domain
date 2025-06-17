@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
+	import { preventDefault } from 'svelte/legacy';
 
 	import { page } from '$app/state';
 	import { writable, type Writable } from 'svelte/store';
@@ -20,13 +20,13 @@
 		loadItems,
 		duplicateItem,
 		type CollectionItem,
-		type Event,
-		type EventSortableFields,
+		type DomainEvent,
+		type DomainEventSortableFields,
 	} from '$lib/stores/ObjectStore';
 	import { AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 
-	let deleteDialog: HTMLDialogElement|undefined = $state();
-	let duplicateDialog: HTMLDialogElement|undefined = $state();
+	let deleteDialog: HTMLDialogElement | undefined = $state();
+	let duplicateDialog: HTMLDialogElement | undefined = $state();
 	let deleteID: string = '';
 	let dupeID: string = '';
 	let loading: boolean = $state(true);
@@ -63,11 +63,11 @@
 	};
 
 	const { key: initialKey, direction: initialDirection } = getStoredSortSettings();
-	const sortKey: Writable<EventSortableFields> = writable(initialKey);
+	const sortKey: Writable<DomainEventSortableFields> = writable(initialKey);
 	const sortDirection: Writable<number> = writable(initialDirection);
 
 	// Update sessionStorage when sort settings change
-	run(() => {
+	$effect(() => {
 		if (typeof window !== 'undefined') {
 			sessionStorage.setItem(
 				STORAGE_KEY,
@@ -76,11 +76,11 @@
 		}
 	});
 
-	run(() => {
+	$effect(() => {
 		if ($EventsStore) sortItems.set($EventsStore.slice());
 	}); // make a copy of the array
 
-	const sortTable = (key: EventSortableFields) => {
+	const sortTable = (key: DomainEventSortableFields) => {
 		if ($sortKey === key) {
 			sortDirection.update((val) => -val);
 		} else {
@@ -89,7 +89,7 @@
 		}
 	};
 
-	run(() => {
+	$effect(() => {
 		const key = $sortKey;
 		const direction = $sortDirection;
 		const sorted = [...$sortItems].sort((a, b) => {
@@ -120,7 +120,7 @@
 		if (!selectedEvent) {
 			return;
 		}
-		EventStore.set(selectedEvent.data as Event);
+		EventStore.set(selectedEvent.data as DomainEvent);
 		EditModeStore.set(EditMode.Update);
 		goto(`/admin/eventsadmin/${id}`);
 	};

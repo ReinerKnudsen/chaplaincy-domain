@@ -16,13 +16,15 @@
 	interface Props {
 		showClose?: boolean;
 		mode?: Mode;
+		onSave: () => void;
+		onClose: () => void;
 	}
 
-	let { showClose = true, mode = 'create' }: Props = $props();
+	let { showClose = true, mode = 'create', onSave, onClose }: Props = $props();
 
 	let thisLocation: Location = $state({ ...initialLocationState });
 
-	run(() => {
+	$effect(() => {
 		if (mode === 'update') {
 			thisLocation = { ...$CurrentLocation };
 		} else if (mode === 'create' && thisLocation.id !== '') {
@@ -31,22 +33,19 @@
 		}
 	});
 
-	const dispatch = createEventDispatcher<{
-		save: void;
-		close: void;
-	}>();
-
-	function handleSubmit(e: SubmitEvent) {
+	const handleSubmit = (e: SubmitEvent) => {
 		e.preventDefault();
 		$CurrentLocation = thisLocation;
-		dispatch('save');
-	}
+		onSave();
+	};
 
 	function resetForm() {
 		resetCurrentLocation();
 	}
 
-	let openStreetUrl = $derived(`https://www.openstreetmap.org/search?query=${thisLocation.street}+${thisLocation.city}`);
+	let openStreetUrl = $derived(
+		`https://www.openstreetmap.org/search?query=${thisLocation.street}+${thisLocation.city}`,
+	);
 </script>
 
 <div class="py-2 text-sm">All fields marked with * are required</div>
@@ -122,9 +121,7 @@
 	</div>
 	<div class="mt-8 flex w-full flex-row justify-center gap-10">
 		{#if showClose}
-			<button class="btn-custom btn-custom-secondary" onclick={() => dispatch('close')}
-				>Cancel</button
-			>
+			<button class="btn-custom btn-custom-secondary" onclick={onClose}>Cancel</button>
 		{/if}
 		<button class="btn btn-primary min-w-28" type="submit">Save</button>
 	</div>

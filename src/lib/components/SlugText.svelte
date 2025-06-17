@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { run } from 'svelte/legacy';
 
-	import { createEventDispatcher } from 'svelte';
-
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
 	import { marked } from 'marked';
 
@@ -11,13 +9,12 @@
 	interface Props {
 		text?: string;
 		slugText?: string;
+		onSlugChange: (slugText: string) => void;
 	}
 
-	let { text = '', slugText = $bindable('') }: Props = $props();
+	let { text = '', slugText = $bindable(''), onSlugChange }: Props = $props();
 
 	let editSlug: boolean = $state(false);
-
-	const dispatch = createEventDispatcher<{ slugChange: string }>();
 
 	const handleChangeSlug = async () => {
 		if (!slugText) {
@@ -30,7 +27,7 @@
 
 	run(() => {
 		if (slugText) {
-			dispatch('slugChange', slugText);
+			onSlugChange(slugText);
 		}
 	});
 </script>

@@ -8,10 +8,10 @@ import {
 	addDoc,
 	query,
 	orderBy,
+	Timestamp,
 	where,
 	limit,
 	type DocumentReference,
-	type Timestamp,
 } from 'firebase/firestore';
 import { database } from '$lib/firebase/firebaseConfig';
 
@@ -20,7 +20,7 @@ export interface CollectionItem {
 	data: DocumentData;
 }
 
-export interface Event {
+export interface DomainEvent {
 	title: string;
 	subtitle: string;
 	description: string;
@@ -46,7 +46,7 @@ export interface Event {
 	tags: string[];
 }
 
-export const initialEvent: Event = {
+export const initialDomainEvent: DomainEvent = {
 	title: '',
 	subtitle: '',
 	description: '',
@@ -58,11 +58,11 @@ export const initialEvent: Event = {
 	location: '',
 	condition: '',
 	publishdate: '',
-	publishDateTime: '',
+	publishDateTime: Timestamp.fromDate(new Date()),
 	publishtime: '',
 	unpublishdate: '',
 	unpublishtime: '',
-	unpublishDateTime: '',
+	unpublishDateTime: Timestamp.fromDate(new Date()),
 	comments: '',
 	image: null,
 	imageAlt: '',
@@ -72,7 +72,7 @@ export const initialEvent: Event = {
 	tags: [],
 };
 
-export type EventSortableFields = keyof Event;
+export type DomainEventSortableFields = keyof DomainEvent;
 
 // News
 export interface News {
@@ -153,7 +153,7 @@ export enum DocumentType {
 }
 
 // Single item stores
-export const EventStore: Writable<Event | null> = writable(initialEvent);
+export const EventStore: Writable<DomainEvent | null> = writable(initialDomainEvent);
 export const NewsStore: Writable<News | null> = writable(initialNews);
 export const WeeklySheetStore: Writable<WeeklySheet | null> = writable(null);
 export const NewsletterStore: Writable<Newsletter | null> = writable(null);
@@ -179,7 +179,7 @@ export const NextEventsStore = derived(FutureEventsStore, ($FutureEventsStore) =
 });
 
 export function resetEventStore() {
-	EventStore.set(initialEvent);
+	EventStore.set(initialDomainEvent);
 }
 
 export function resetNewsStore() {
@@ -187,12 +187,15 @@ export function resetNewsStore() {
 }
 
 // Other collection or dcoument related items
-export enum EditMode {
-	New = 'new',
-	Update = 'update',
-}
+export type EditMode = 'new' | 'update' | '';
 
-export const EditModeStore = writable<'new' | 'update' | ''>('new');
+export const EditMode = {
+	New: 'new' as const,
+	Update: 'update' as const,
+	Empty: '' as const,
+};
+
+export const EditModeStore = writable<EditMode>('');
 export function resetEditModeStore() {
 	EditModeStore.set('');
 }
@@ -215,7 +218,7 @@ export const loadItem = async (
 
 			// Set the appropriate store based on type
 			if (type === CollectionType.Events) {
-				EventStore.set(item.data as Event);
+				EventStore.set(item.data as DomainEvent);
 			} else if (type === CollectionType.News) {
 				NewsStore.set(item.data as News);
 			}
@@ -263,7 +266,7 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 			const now = new Date();
 			const futureEvents = items
 				.filter((item) => {
-					const eventData = item.data as Event;
+					const eventData = item.data as DomainEvent;
 					const eventDate = new Date(eventData.startdate);
 					const publishDate = new Date(eventData.publishdate);
 					const unpublishDate = new Date(eventData.unpublishdate);
@@ -275,8 +278,8 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 					return eventDate >= now && publishDate <= now && unpublishDate > now;
 				})
 				.sort((a, b) => {
-					const dateA = new Date((a.data as Event).startdate);
-					const dateB = new Date((b.data as Event).startdate);
+					const dateA = new Date((a.data as DomainEvent).startdate);
+					const dateB = new Date((b.data as DomainEvent).startdate);
 					return dateA.getTime() - dateB.getTime();
 				});
 			FutureEventsStore.set(futureEvents);

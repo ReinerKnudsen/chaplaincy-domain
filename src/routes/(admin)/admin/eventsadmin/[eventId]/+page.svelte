@@ -2,10 +2,10 @@
 	import EventForm from '$lib/components/EventForm.svelte';
 	import { updateDoc } from 'firebase/firestore';
 	import { DocumentReference } from 'firebase/firestore';
-	import { type Event, EditModeStore } from '$lib/stores/ObjectStore';
+	import { type DomainEvent, EditModeStore } from '$lib/stores/ObjectStore';
 
 	type Params = {
-		newEvent: Event;
+		newEvent: DomainEvent;
 		docRef: DocumentReference | null;
 	};
 

@@ -7,6 +7,13 @@
 	const dispatch = createEventDispatcher();
 	let selectedId = $state($selectedLocation?.id || '');
 
+	interface Props {
+		onLocationChange: (value: string) => void;
+		onNewLocation: () => void;
+	}
+
+	let { onLocationChange, onNewLocation }: Props = $props();
+
 	onMount(async () => {
 		await fetchLocations();
 	});
@@ -18,19 +25,19 @@
 		}
 	});
 
-	function handleChange(event: Event) {
+	const handleChange = async (event: Event) => {
 		const value = (event.target as HTMLSelectElement).value;
 		if (value === 'new') {
-			dispatch('change', { value });
+			onNewLocation();
 		} else {
 			const location = $AllLocations.find((loc) => loc.id === value);
 			if (location) {
 				selectedId = location.id;
 				selectedLocation.set(location);
-				dispatch('change', { value } as { value: string });
+				onLocationChange(value);
 			}
 		}
-	}
+	};
 </script>
 
 <select

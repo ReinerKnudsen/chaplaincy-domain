@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { run, preventDefault } from 'svelte/legacy';
 
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { writable, type Writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
@@ -26,7 +26,7 @@
 	import { AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 
 	let deleteDialog: HTMLDialogElement|undefined = $state();
-	let duplicateDialog: HTMLDialogElement = $state();
+	let duplicateDialog: HTMLDialogElement|undefined = $state();
 	let deleteID: string = '';
 	let dupeID: string = '';
 	let loading: boolean = $state(true);
@@ -37,7 +37,7 @@
 	};
 
 	onMount(async () => {
-		$pathName = $page.url.pathname;
+		$pathName = page.url.pathname;
 		await loadData();
 		await fetchLocations();
 		loading = false;

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { run } from 'svelte/legacy';
 
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
 	import { pathName } from '$lib/stores/NavigationStore';
@@ -33,7 +33,7 @@
 	let loading = $state(true);
 
 	onMount(async () => {
-		$pathName = $page.url.pathname;
+		$pathName = page.url.pathname;
 		await loadData();
 		sortItems.set([...$NewsItemsStore]);
 		loading = false;

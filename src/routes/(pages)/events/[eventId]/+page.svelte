@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { run } from 'svelte/legacy';
 
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
 	import Icon from '$lib/components/Icon.svelte';
@@ -16,7 +16,7 @@
 	let location: Location | undefined = $state();
 
 	onMount(async () => {
-		const eventId = $page.params.eventId;
+		const eventId = page.params.eventId;
 		await loadItem(eventId, CollectionType.Events);
 		await fetchLocations();
 		loading = false;

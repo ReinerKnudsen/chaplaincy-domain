@@ -2,7 +2,7 @@
 	import { run } from 'svelte/legacy';
 
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { getAuth, type Auth, onAuthStateChanged, type User } from 'firebase/auth';
@@ -19,7 +19,7 @@
 
 	
 	onMount(() => {
-		$pathName = $page.url.pathname;
+		$pathName = page.url.pathname;
 
 		onAuthStateChanged(auth, (user: User | null) => {
 			if (user) {
@@ -38,7 +38,7 @@
 	});
 
 	run(() => {
-		$pathName = $page.url.pathname;
+		$pathName = page.url.pathname;
 	});
 
 	interface MenuItem {

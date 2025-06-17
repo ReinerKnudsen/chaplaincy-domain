@@ -2,7 +2,7 @@
 	import { preventDefault } from 'svelte/legacy';
 
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 
 	import { getDoc, doc, updateDoc } from 'firebase/firestore';
@@ -13,7 +13,7 @@
 	import Label from '$lib/components/Label.svelte';
 	import { userRoles } from '$lib/utils/constants';
 
-	const userID = $page.params.userID;
+	const userID = page.params.userID;
 	/** @type {{data: any}} */
 	let { data } = $props();
 	let currentUser = $state(data.user);

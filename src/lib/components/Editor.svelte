@@ -8,10 +8,7 @@
 
 	let { content = $bindable('') }: Props = $props();
 
-	async function handleImageUpload(
-		event: CustomEvent<{ blob: Blob; callback: (url: string) => void }>,
-	) {
-		const { blob, callback } = event.detail;
+	const handleImageUpload = async (blob: Blob, callback: (url: string) => void) => {
 		try {
 			const imageUrl = await uploadEditorImage(blob, blob.type);
 			callback(imageUrl);
@@ -21,10 +18,9 @@
 		}
 	}
 
-	function handleChange(event: CustomEvent<{ markdown: string; html: string }>) {
-		const { markdown } = event.detail;
-		content = markdown;
+	function handleChange(editorContent: { markdown: string; html: string }) {
+		content = editorContent.markdown;
 	}
 </script>
 
-<ToastEditor initialContent={content} on:imageUpload={handleImageUpload} on:change={handleChange} />
+<ToastEditor initialContent={content} onImageUpload={handleImageUpload} onChange={handleChange} />

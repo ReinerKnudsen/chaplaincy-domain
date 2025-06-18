@@ -1,14 +1,16 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { onMount } from 'svelte';
 	import { enhance } from '$app/forms';
+
 	import ServiceCard from '$lib/components/ServiceCard.svelte';
 	import ItemCard from '$lib/components/ItemCard.svelte';
 	import { authStore } from '$lib/stores/AuthStore';
 	import mainhero from '$lib/assets/mainhero.webp';
-	import Icon from '$lib/components/Icon.svelte';
+
+	import  Icon  from '@iconify/svelte';
+
 	import servicesData from '$lib/services.json';
+
 	import {
 		CollectionType,
 		DocumentType,
@@ -19,15 +21,17 @@
 		WeeklySheetStore,
 		NewsletterStore,
 	} from '$lib/stores/ObjectStore';
-	import cross from '$lib/assets/icons/cross.svg?raw';
 
-	// Manually convert the services object into an array
-	const servicesArray = servicesData.services.map((service) => {
-		if (service.place_address) {
-			service.place_address = service.place_address.replace(/\n/g, '<br>');
-		}
-		return service;
-	});
+	import type { Service } from '$lib/types';
+
+	import { decodeHtml } from '$lib/utils/HTMLfunctions';
+
+	// Manually convert the services object into an array with proper typing
+	const servicesArray = servicesData.services.map((service): Service => ({
+		...service,
+		place_address: service.place_address?.replace(/\n/g, '<br>') ?? '',
+		mode: service.mode as 'onsite' | 'online'
+	}));
 
 	let user = $state();
 	let loading = $state(true);
@@ -46,7 +50,7 @@
 		loading = false;
 	});
 
-	run(() => {
+	$effect(() => {
 		authStore.subscribe((store) => {
 			user = store.user;
 		});
@@ -113,10 +117,7 @@
 			<h2 class="text-xl font-bold">Our Mission Statement</h2>
 			<div class="flex flex-row items-center gap-10">
 				<div class="hidden md:block">
-					{@html cross.replace(
-						'<svg',
-						'<svg viewBox="0 0 90 90" preserveAspectRatio="xMidYMid meet" class="h-full w-full lg:h-[75%] lg:w-[75%] fill-current text-primary-100"',
-					)}
+					<Icon icon="fa-solid:cross" class="h-12 w-12" />
 				</div>
 				<div class="font-lg italic">
 					A welcoming, safe, diverse and open congregation, inclusive of all. Our worship tradition

@@ -41,3 +41,16 @@ export type MenuItem = {
 	title: string;
 	url: string;
 };
+
+export type Service = {
+	id: string;
+	icon: string;
+	name: string;
+	time: string;
+	kind: string;
+	subtitle: string;
+	place_church: string;
+	place_address: string;
+	url: string;
+	mode: 'onsite' | 'online';
+};

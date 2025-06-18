@@ -5,7 +5,9 @@
 	import { collection, doc, getDocs, getDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
 
-	import Icon from '$lib/components/Icon.svelte';
+
+	import Icon from '@iconify/svelte';
+
 	import * as formats from '$lib/formats';
 
 	import MarkdownViewer from '$lib/components/MarkdownViewer.svelte';
@@ -40,11 +42,11 @@
 			</div>
 			<div class={`news-data ${formats.itemMetaData}`}>
 				<div class={`entry ${formats.itemMetaDataEntry}`}>
-					<Icon name="calendar" />
+					<Icon icon="fa6-regular:calendar" />
 					{thisItem.publishdate}
 				</div>
 				<div class={`entry ${formats.itemMetaDataEntry}`}>
-					<Icon name="author" />
+					<Icon icon="fa6-solid:at" />
 					{thisItem.author}
 				</div>
 				{#if thisItem.tags}
@@ -55,7 +57,7 @@
 				{/if}
 				{#if thisItem.imageCaption}
 					<div class={`entry ${formats.itemMetaDataEntry}`}>
-						<Icon name="camera" />
+						<Icon icon="fa-solid:camera-retro" />
 						{thisItem.imageCaption}
 					</div>
 				{/if}
@@ -67,7 +69,7 @@
 		</div>
 	</div>
 	<div class={`back-link ${formats.backLink}`}>
-		<Icon name="left" />
+		<Icon icon="fa6-regular:circle-left" class="w-6 h-6"/>
 		<a class={formats.aLink} href="/news">Take me back to overview</a>
 	</div>
 {/if}

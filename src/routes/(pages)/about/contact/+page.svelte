@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import type { ActionData } from './$types';
 
-	import { Icon, InformationCircle } from 'svelte-hero-icons';
+	import Icon from '@iconify/svelte';
 
 	interface Props {
 		form: ActionData;
@@ -45,7 +45,7 @@
 
 		<!-- Disclaimer -->
 		<div class="flex flex-row items-center gap-4">
-			<Icon src={InformationCircle} class="h-8 w-8" />
+			<Icon icon='heroicons-outline:information-circle' class="h-10 w-10" />
 			<div>
 				Your data is safe with us. We will not share your information.<br />
 				Your message will be delivered by email and deleted after processing.

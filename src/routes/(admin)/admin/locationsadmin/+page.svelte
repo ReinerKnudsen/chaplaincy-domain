@@ -25,7 +25,8 @@
 	} from '$lib/stores/LocationsStore';
 
 	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
-	import Icon from '$lib/components/Icon.svelte';
+
+	import Icon from '@iconify/svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -131,7 +132,7 @@
 							onclick={() => handleLocationChange(location, index)}>{location.name}</button
 						>
 						<button class="icon-button" onclick={() => handleDelete(location)}>
-							<Icon width={'1.5rem'} height={'1.5rem'} name="delete" />
+							<Icon icon="proicons:delete" class="h-6 w-6" />
 						</button>
 					</div>
 				{/each}

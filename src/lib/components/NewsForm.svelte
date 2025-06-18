@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
@@ -22,16 +21,13 @@
 
 	interface Props {
 		thisItem?: News;
+		onCreateNew?: (event: News) => Promise<void>;
+		onUpdate?: (event: News) => Promise<void>;
 	}
 
-	let { thisItem = initialNews }: Props = $props();
-	const dispatch = createEventDispatcher<{
-		new: News;
-		update: News;
-	}>();
+	let { thisItem = initialNews, onUpdate, onCreateNew }: Props = $props();
 
-	let newItem: News = $state({ ...thisItem });
-	newItem.author = author;
+	let newItem: News = $state({ ...thisItem, author: author });
 	let docRef;
 	let selectedImage: File;
 
@@ -41,8 +37,8 @@
 		newItem = initialNews;
 	};
 
-	const handleSlugChange = (e: CustomEvent) => {
-		newItem.slug = e.detail;
+	const handleSlugChange = (slugText: string) => {
+		newItem.slug = slugText;
 	};
 
 	const handleSubmit = async (e: SubmitEvent) => {
@@ -62,25 +58,25 @@
 		if (selectedImage) {
 			newItem.image = await uploadImage(selectedImage);
 		}
-		dispatch($EditModeStore === EditMode.Update ? EditMode.Update : EditMode.New, newItem);
-		newItem = initialNews;
-		EditModeStore.set('');
+		if ($EditModeStore === EditMode.New && onCreateNew) {
+			await onCreateNew(newItem);
+		} else if ($EditModeStore === EditMode.Update && onUpdate) {
+			await onUpdate(newItem);
+		}
 		goto('/admin/newsadmin');
 	};
 
 	const handleReset = () => {
 		cleanUpForm();
-		EditModeStore.set('');
-		goto('/admin/newsadmin');
 	};
 
-	const handleImageChange = (e: CustomEvent) => {
-		selectedImage = e.detail;
-		hasImage.set(!!e.detail);
+	const handleImageChange = (imageFile: File) => {
+		selectedImage = imageFile;
+		hasImage.set(!!selectedImage);
 	};
 
-	const assignPDF = (e: CustomEvent) => {
-		newItem.pdfFile = e.detail.url;
+	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
+		newItem.pdfFile = pdfDocument.url;
 	};
 </script>
 
@@ -129,7 +125,7 @@
 			<Editor bind:content={newItem.text} />
 		</div>
 		<div>
-			<SlugText text={newItem.text} slugText={newItem.slug} on:slugChange={handleSlugChange} />
+			<SlugText text={newItem.text} slugText={newItem.slug} onSlugChange={handleSlugChange} />
 		</div>
 		<!-- Publish date  -->
 		<div>
@@ -163,9 +159,9 @@
 			<Label child="image">Image</Label>
 			<div class="flex flex-col items-center justify-center">
 				{#if newItem.image}
-					<UploadImage imageUrl={newItem.image} on:imageChange={handleImageChange} />
+					<UploadImage imageUrl={newItem.image} onImageChange={handleImageChange} />
 				{:else}
-					<UploadImage imageUrl="" on:imageChange={handleImageChange} />
+					<UploadImage imageUrl="" onImageChange={handleImageChange} />
 				{/if}
 			</div>
 		</div>
@@ -209,7 +205,7 @@
 		<div>
 			<Label child="pdfFile">PDF Document</Label>
 			<div class="flex flex-col items-center justify-center">
-				<UploadPDF fileUrl={newItem.pdfFile} on:upload={assignPDF} />
+				<UploadPDF fileUrl={newItem.pdfFile} onUpload={assignPDF} />
 				<p class="explanation">
 					Upload a PDF document that will be attached to this news item (max 5MB).
 				</p>
@@ -218,7 +214,7 @@
 
 		<!-- Buttons -->
 		<div class="buttons col-span-2 mt-10 mb-20">
-			<button class="btn" type="reset">Cancel</button>
+			<button class="btn" type="reset" onclick={() => goto('/admin/newsadmin')}>Cancel</button>
 			<button class="btn btn-neutral" type="reset" disabled={docRef}>Empty form</button>
 			<button class="btn btn-primary" type="submit" disabled={newItem.title.length === 0}
 				>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</button

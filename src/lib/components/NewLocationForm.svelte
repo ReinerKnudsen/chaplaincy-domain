@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
-	import { createEventDispatcher, onMount } from 'svelte';
 	import Label from './Label.svelte';
 
 	import {
@@ -39,9 +36,9 @@
 		onSave();
 	};
 
-	function resetForm() {
+	const resetForm = () => {
 		resetCurrentLocation();
-	}
+	};
 
 	let openStreetUrl = $derived(
 		`https://www.openstreetmap.org/search?query=${thisLocation.street}+${thisLocation.city}`,

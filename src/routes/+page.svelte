@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { ActionData } from './$types';
 	import { onMount } from 'svelte';
 	import { enhance } from '$app/forms';
 
@@ -7,7 +8,7 @@
 	import { authStore } from '$lib/stores/AuthStore';
 	import mainhero from '$lib/assets/mainhero.webp';
 
-	import  Icon  from '@iconify/svelte';
+	import Icon from '@iconify/svelte';
 
 	import servicesData from '$lib/services.json';
 
@@ -24,14 +25,14 @@
 
 	import type { Service } from '$lib/types';
 
-	import { decodeHtml } from '$lib/utils/HTMLfunctions';
-
 	// Manually convert the services object into an array with proper typing
-	const servicesArray = servicesData.services.map((service): Service => ({
-		...service,
-		place_address: service.place_address?.replace(/\n/g, '<br>') ?? '',
-		mode: service.mode as 'onsite' | 'online'
-	}));
+	const servicesArray = servicesData.services.map(
+		(service): Service => ({
+			...service,
+			place_address: service.place_address?.replace(/\n/g, '<br>') ?? '',
+			mode: service.mode as 'onsite' | 'online',
+		}),
+	);
 
 	let user = $state();
 	let loading = $state(true);
@@ -56,11 +57,13 @@
 		});
 	});
 
-	let whiteCount = $derived([
-		true, // Services always white
-		$LatestNewsStore.length > 0, // News section if present
-		$NextEventsStore.length > 0, // Events section if present
-	].filter(Boolean).length);
+	let whiteCount = $derived(
+		[
+			true, // Services always white
+			$LatestNewsStore.length > 0, // News section if present
+			$NextEventsStore.length > 0, // Events section if present
+		].filter(Boolean).length,
+	);
 
 	let shouldBeWhite = $derived((sectionIndex: number) => (sectionIndex + whiteCount) % 2 === 0);
 
@@ -284,7 +287,7 @@
 							Weekly Sheet
 							<div class="circle">
 								<span class="icon"
-									><Icon class="text-primary-text" name="sheet" width="24px" height="24px" /></span
+									><Icon class="text-primary-text h-10 w-10" icon="la:file-download" /></span
 								>
 							</div>
 						</div></a
@@ -295,7 +298,7 @@
 						Newsletter
 						<div class="circle">
 							<span class="icon"
-								><Icon class="text-primary-text" name="sheet" width="24px" height="24px" /></span
+								><Icon class="text-primary-text h-10 w-10" icon="la:file-download" /></span
 							>
 						</div>
 					</div>

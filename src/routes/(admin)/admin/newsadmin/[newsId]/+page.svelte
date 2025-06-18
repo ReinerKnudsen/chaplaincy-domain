@@ -2,9 +2,9 @@
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 
-	import { loadItem, CollectionType, NewsStore } from '$lib/stores/ObjectStore';
+	import { loadItem, CollectionType, NewsStore, type News } from '$lib/stores/ObjectStore';
 	import NewsForm from '$lib/components/NewsForm.svelte';
-	import { updateDoc, DocumentReference } from 'firebase/firestore';
+	import { updateDoc, DocumentReference, type DocumentData } from 'firebase/firestore';
 
 	let currentDocRef: DocumentReference | null = null;
 
@@ -15,11 +15,20 @@
 		currentDocRef = await loadItem(page.params.newsId, CollectionType.News);
 	});
 
-	const updateNews = async (event: CustomEvent<Record<string, any>>) => {
-		await updateDoc(currentDocRef!, event.detail);
+	const updateNews = async (updatedNews: News) => {
+		if (!currentDocRef) {
+			throw new Error('Document reference not initialized');
+		}
+		// Convert to plain object for Firestore
+		const newsData = { ...updatedNews } as DocumentData;
+		await updateDoc(currentDocRef, newsData);
 	};
 </script>
 
 <div>
-	<NewsForm thisItem={$NewsStore} on:update={updateNews} />
+	{#if $NewsStore}
+		<NewsForm thisItem={$NewsStore} onUpdate={updateNews} />
+	{:else}
+		<p>Loading news item...</p>
+	{/if}
 </div>

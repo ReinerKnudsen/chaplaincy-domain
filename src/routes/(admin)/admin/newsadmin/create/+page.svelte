@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { addDoc } from 'firebase/firestore';
 
+	import { addDoc } from 'firebase/firestore';
 	import { newsColRef } from '$lib/firebase/firebaseConfig';
+
+	import type { News } from '$lib/stores/ObjectStore';
 
 	import NewsForm from '$lib/components/NewsForm.svelte';
 
-	const saveNewItem = async (e: CustomEvent<Record<string, any>>) => {
-		const newsData = e.detail;
+	const saveNewItem = async (newNewsItem: News) => {
 		try {
-			await addDoc(newsColRef, newsData);
+			await addDoc(newsColRef, newNewsItem);
 			/**
 			 * TODO: Report completion or error
 			 */
@@ -21,5 +22,5 @@
 </script>
 
 <div>
-	<NewsForm on:new={saveNewItem} />
+	<NewsForm onCreateNew={saveNewItem} />
 </div>

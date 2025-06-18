@@ -1,19 +1,17 @@
 <script lang="ts">
-	import { createEventDispatcher, onDestroy } from 'svelte';
+	import { onDestroy } from 'svelte';
 
 	import { FileType, checkIfFileExists } from '$lib/services/fileService';
 
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
 
 	interface Props {
-		imageUrl: string;
+		imageUrl?: string;
+		onImageChange: (file: File) => void;
 	}
 
-	let { imageUrl = $bindable() }: Props = $props();
-	const dispatch = createEventDispatcher<{
-		imageChange: File;
-		error: string;
-	}>();
+	let { imageUrl = $bindable(), onImageChange }: Props = $props();
+
 	const authorizedExtensions = '.jpg, .jpeg, .png, .webp';
 
 	let selectedFile: File | null = null;
@@ -29,7 +27,6 @@
 
 		if (!files || files.length === 0) {
 			imageError = 'No file selected';
-			dispatch('error', imageError);
 			return;
 		}
 
@@ -40,23 +37,22 @@
 			imageError = '';
 			imageNote = 'This image already exists.';
 			imageUrl = existingFile.data().url;
-			dispatch('imageChange', selectedFile);
+			onImageChange(selectedFile);
 		} else {
 			if (selectedFile.size > MAX_IMAGE_SIZE) {
 				imageError = 'The image is too big.';
 				selectedFile = null;
-				dispatch('error', imageError);
 			} else {
 				imageError = '';
 				imageUrl = URL.createObjectURL(selectedFile);
-				dispatch('imageChange', selectedFile);
+				onImageChange(selectedFile);
 			}
 		}
 	};
 
 	const resetInput = () => {
 		selectedFile = null;
-		URL.revokeObjectURL(imageUrl);
+		if(imageUrl) URL.revokeObjectURL(imageUrl);
 		imageUrl = '';
 	};
 

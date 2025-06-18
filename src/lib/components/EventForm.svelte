@@ -110,9 +110,9 @@
 		}
 	};
 
-	const handleImageChange = (e: CustomEvent) => {
-		selectedImage = e.detail;
-		hasImage.set(!!e.detail);
+	const handleImageChange = (imageFile: File) => {
+		selectedImage = imageFile;
+		hasImage.set(!!selectedImage);
 	};
 
 	const handleLocationChange = (locationId: string) => {
@@ -140,8 +140,8 @@
 		}
 	};
 
-	const assignPDF = (e: CustomEvent) => {
-		newEvent.pdfFile = e.detail.url;
+	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
+		newEvent.pdfFile = pdfDocument.url;
 	};
 
 	const handleSubmit = async (e: SubmitEvent) => {
@@ -427,9 +427,9 @@
 					<Label child="image">Image</Label>
 					<div class="flex items-center justify-center">
 						{#if newEvent.image}
-							<UploadImage imageUrl={newEvent.image} on:imageChange={handleImageChange} />
+							<UploadImage imageUrl={newEvent.image} onImageChange={handleImageChange} />
 						{:else}
-							<UploadImage imageUrl="" on:imageChange={handleImageChange} />
+							<UploadImage imageUrl="" onImageChange={handleImageChange} />
 						{/if}
 					</div>
 				</div>
@@ -474,7 +474,7 @@
 				<div>
 					<Label child="pdfFile">PDF Document</Label>
 					<div class="flex flex-col items-center justify-center">
-						<UploadPDF fileUrl={newEvent.pdfFile} on:upload={assignPDF} />
+						<UploadPDF fileUrl={newEvent.pdfFile} onUpload={assignPDF} />
 						<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
 							Upload a PDF document that will be attached to this event (max 5MB).
 						</p>

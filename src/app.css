@@ -1,6 +1,5 @@
 /* Write your global styles here, in PostCSS syntax */
 @import 'tailwindcss';
-@plugin "daisyui";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -123,8 +122,9 @@
 
 	a {
 		cursor: pointer;
-		padding-bottom: 0.25rem;
+		padding-bottom: 4px;
 		color:var(--color-purple-60 );
+    text-decoration: none;
 	}
 
 	.link {
@@ -138,7 +138,7 @@
 		position: absolute;
 		bottom: 0;
 		left: 0;
-		height: 0.5rem;
+		height: 3px;
 		width: 100%;
 		transform-origin: bottom left;
 		transform: scaleX(0);
@@ -209,23 +209,41 @@
 @layer components {
   /* Page section styles */
   .page-title {
-    font-size: 1.5rem; /* text-2xl */
+    font-size: 2rem; /* text-2xl */
     text-align: center;
-    width: 80%;
+    width: 100%;
+    font-weight: 600;
+  }
+
+  .page-subtitle {
+    font-size: 1.7rem;
+    text-align: center;
+    width: 100%;
     padding: 1rem;
     font-weight: 600;
   }
+
   @media (min-width: 1024px) {
     .page-title {
-      font-size: 2.25rem; /* text-4xl */
-      padding: 2.5rem;
+      font-size: 3rem; /* text-4xl */
+      padding: 1rem 0;
+      width: 100%;
+    }
+    .page-subtitle {
+      font-size: 2rem;
       width: 100%;
     }
   }
   @media (min-width: 1280px) {
     .page-title {
       font-size: 3.75rem; /* text-6xl */
-      padding: 2.5rem 1.5rem;
+      padding: 2rem;
+    }
+    .page-subtitle {
+      font-size: 2.75rem;
+      text-align: center;
+      padding: 1.5rem 0;
+      width: 100%;
     }
   }
 

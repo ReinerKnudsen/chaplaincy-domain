@@ -36,7 +36,6 @@
 			{:else if extraLink}
 				<div class=" bg-slate-200 py-4 pl-4">
 					<p>
-						{extraLinkText}
 						<a class="link" href={extraLink} target="_blank">{extraLinkText}</a>.
 					</p>
 				</div>

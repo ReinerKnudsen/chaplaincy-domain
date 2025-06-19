@@ -69,7 +69,7 @@
 <section class="bg-white-smoke">
 	<main class="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
 		<div class="page-title">Anglican Chaplaincy of Bonn and Cologne</div>
-		<div class="section-content">St. Boniface, Bonn and All Saints, Cologne</div>
+		<div class="page-subtitle">St. Boniface, Bonn and All Saints, Cologne</div>
 		<div class="image-container">
 			<img src={mainhero} alt="main hero" />
 		</div>

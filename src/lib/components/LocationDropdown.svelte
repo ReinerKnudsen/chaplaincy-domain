@@ -1,39 +1,49 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import { selectedLocation, AllLocations } from '$lib/stores/LocationsStore';
-	import { ChevronSortOutline } from 'flowbite-svelte-icons';
+	import { run } from 'svelte/legacy';
+
+	import { createEventDispatcher, onMount } from 'svelte';
+	import { selectedLocation, AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 
 	const dispatch = createEventDispatcher();
-	let selectedId = $selectedLocation?.id || '';
+	let selectedId = $state($selectedLocation?.id || '');
 
-	// Make selectedId reactive to selectedLocation changes
-	$: {
-		console.log('selectedLocation changed:', $selectedLocation);
-		if ($selectedLocation && $selectedLocation.id) {
-			selectedId = $selectedLocation.id;
-			console.log('Setting selectedId to:', selectedId);
-		}
+	interface Props {
+		onLocationChange: (value: string) => void;
+		onNewLocation: () => void;
 	}
 
-	function handleChange(event: Event) {
+	let { onLocationChange, onNewLocation }: Props = $props();
+
+	onMount(async () => {
+		await fetchLocations();
+	});
+
+	// Make selectedId reactive to selectedLocation changes
+	run(() => {
+		if ($selectedLocation && $selectedLocation.id) {
+			selectedId = $selectedLocation.id;
+		}
+	});
+
+	const handleChange = async (event: Event) => {
 		const value = (event.target as HTMLSelectElement).value;
 		if (value === 'new') {
-			dispatch('change', { value });
+			onNewLocation();
 		} else {
 			const location = $AllLocations.find((loc) => loc.id === value);
 			if (location) {
 				selectedId = location.id;
 				selectedLocation.set(location);
-				dispatch('change', { value } as { value: string });
+				onLocationChange(value);
 			}
 		}
-	}
+	};
 </script>
 
 <select
 	class="mb-2 min-h-12 w-full rounded-md border-slate-300 bg-slate-50"
 	value={selectedId}
-	on:change={handleChange}
+	onchange={handleChange}
 >
 	<option value="" disabled>Select a location</option>
 	{#each $AllLocations as location}

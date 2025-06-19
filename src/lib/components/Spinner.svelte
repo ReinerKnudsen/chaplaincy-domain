@@ -1,6 +1,10 @@
 <script lang="ts">
-	export let size = 'w-6 h-6'; // default size, can be overridden
-	export let color = 'text-purple-600'; // default color, can be overridden
+	interface Props {
+		size?: string;
+		color?: string;
+	}
+
+	let { size = 'w-6 h-6', color = 'text-purple-600' }: Props = $props();
 </script>
 
 <div class="flex items-center justify-center">

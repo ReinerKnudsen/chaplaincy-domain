@@ -1,7 +1,115 @@
 /* Write your global styles here, in PostCSS syntax */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@plugin "daisyui";
+
+@custom-variant dark (&:is(.dark *));
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/font/Inter-VariableFont_opsz,wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/font/Inter-Italic-VariableFont_opsz,wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
+  --font-*: initial;
+  --font-body:
+    Inter, ui-sans-serif, system-ui, -apple-system, system-ui, Segoe UI, Roboto,
+    Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji,
+    Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, system-ui, Segoe UI, Roboto,
+    Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji,
+    Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono,
+    Courier New, monospace;
+
+  --color-primary-20: rgba(16, 11, 116, 0.2);
+  --color-primary-40: rgba(16, 11, 116, 0.4);
+  --color-primary-60: rgba(16, 11, 116, 0.6);
+  --color-primary-80: rgba(16, 11, 116, 0.8);
+  --color-primary-100: rgba(16, 11, 116, 1);
+  --color-primary-text: rgba(0, 0, 0, 1);
+
+  --color-secondary-20: rgba(204, 204, 204, 0.2);
+  --color-secondary-40: rgba(204, 204, 204, 0.4);
+  --color-secondary-60: rgba(204, 204, 204, 0.6);
+  --color-secondary-80: rgba(204, 204, 204, 0.8);
+  --color-secondary-100: rgba(204, 204, 204, 1);
+  --color-secondary-text: rgba(255, 255, 255, 1);
+
+  --color-seablue-20: rgba(41, 182, 204, 0.2);
+  --color-seablue-40: rgba(41, 182, 204, 0.4);
+  --color-seablue-60: rgba(41, 182, 204, 0.6);
+  --color-seablue-80: rgba(41, 182, 204, 0.8);
+  --color-seablue-100: rgba(41, 182, 204, 1);
+
+  --color-purple-20: rgba(100, 18, 129, 0.2);
+  --color-purple-40: rgba(100, 18, 129, 0.4);
+  --color-purple-60: rgba(100, 18, 129, 0.6);
+  --color-purple-80: rgba(100, 18, 129, 0.8);
+  --color-purple-100: rgba(100, 18, 129, 1);
+
+  --color-rose-20: rgba(173, 52, 149, 0.2);
+  --color-rose-40: rgba(173, 52, 149, 0.4);
+  --color-rose-60: rgba(173, 52, 149, 0.6);
+  --color-rose-80: rgba(173, 52, 149, 0.8);
+  --color-rose-100: rgba(173, 52, 149, 1);
+
+  --color-accent-red: rgba(208, 63, 48, 1);
+  --color-accent-gold: rgba(245, 179, 31, 1);
+
+  --color-white-primary: rgba(255, 255, 255, 1);
+  --color-white-smoke: rgba(245, 245, 245, 1);
+
+  --color-link-primary: rgba(100, 18, 129, 1);
+
+  --color-green-20: rgba(7, 153, 158, 0.2);
+  --color-green-40: rgba(7, 153, 158, 0.4);
+  --color-green-60: rgba(7, 153, 158, 0.6);
+  --color-green-80: rgba(7, 153, 158, 0.8);
+  --color-green-100: rgba(7, 153, 158, 1);
+
+  --color-black-20: rgba(0, 0, 0, 0.2);
+  --color-black-40: rgba(0, 0, 0, 0.4);
+  --color-black-60: rgba(0, 0, 0, 0.6);
+  --color-black-80: rgba(0, 0, 0, 0.8);
+  --color-black-100: rgba(0, 0, 0, 1);
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 @layer base {
 	:root {
@@ -9,19 +117,59 @@
 	}
 	body {
 		font-family: 'Inter', sans-serif;
-		max-width: 1400px;
-		background: whitesmoke;
 		min-height: 100vh;
-		margin: auto;
-		@apply text-primary-100;
+		color: var(--color-primary-100);
 	}
 
 	a {
-		@apply cursor-pointer pb-1 text-purple-100;
+		cursor: pointer;
+		padding-bottom: 0.25rem;
+		color:var(--color-purple-60 );
 	}
 
 	.link {
-		@apply border-b-2 border-b-purple-100
+		position: relative;
+		text-decoration: none;
+		transition-property: color;
+		transition-duration: 200ms;
+	}
+
+	.link::after {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		height: 0.5rem;
+		width: 100%;
+		transform-origin: bottom left;
+		transform: scaleX(0);
+		background-color: var(--color-purple-700);
+		transition-property: transform;
+		transition-duration: 200ms;
+		content: '';
+	}
+
+	.link:hover::after {
+		transform: scaleX(1);
+	}
+
+	.calltoaction {
+		display: flex;
+		height: 3rem; 
+		width: 15rem; 
+		align-items: center;
+		justify-content: center;
+		border-radius: 0.75rem; 
+		border: none;
+		background-color: var(--color-purple-600);
+		font-weight: 600;
+		color: var(--color-white-primary);
+		transition-property: color, background-color;
+		transition-duration: 200ms;
+	}
+
+	.calltoaction:hover {
+		background-color: var(--color-purple-300);
+		color: var(--color-black-100); 
 	}
 
 	h1 {
@@ -31,7 +179,7 @@
 		margin-top: 0.5em;
 		margin-bottom: 0.6em;
 		line-height: 1.6;
-		@apply text-primary-100;
+		color: var(--color-primary-100);
 	}
 
 	h2 {
@@ -41,7 +189,7 @@
 		margin-top: 0.5em;
 		margin-bottom: 0.6em;
 		line-height: 1.6;
-		@apply text-primary-100;
+    color: var(--color-primary-100)
 	}
 
 	h3 {
@@ -53,6 +201,179 @@
 	}
 
 	h4 {
-		@apply text-lg font-semibold;
+		font-size: 1.125rem; /* text-lg */
+		font-weight: 600;
 	}
+}
+
+@layer components {
+  /* Page section styles */
+  .page-title {
+    font-size: 1.5rem; /* text-2xl */
+    text-align: center;
+    width: 80%;
+    padding: 1rem;
+    font-weight: 600;
+  }
+  @media (min-width: 1024px) {
+    .page-title {
+      font-size: 2.25rem; /* text-4xl */
+      padding: 2.5rem;
+      width: 100%;
+    }
+  }
+  @media (min-width: 1280px) {
+    .page-title {
+      font-size: 3.75rem; /* text-6xl */
+      padding: 2.5rem 1.5rem;
+    }
+  }
+
+  /* Section content styles */
+  .section-content {
+    font-size: 1rem; /* text-md */
+    padding: 0.75rem 1.25rem;
+    width: 100%;
+  }
+  @media (min-width: 1024px) {
+    .section-content {
+      font-size: 1.5rem; /* text-2xl */
+      padding: 0.5rem 2.5rem;
+    }
+  }
+  @media (min-width: 1280px) {
+    .section-content {
+      font-size: 2.25rem; /* text-4xl */
+      padding: 1.25rem 2.5rem;
+    }
+  }
+
+  /* Section header */
+  .section-header {
+    font-size: 1.5rem; /* text-2xl */
+    width: 100%;
+    padding: 0 2.5rem;
+    font-weight: 600;
+  }
+  @media (min-width: 768px) {
+    .section-header {
+      font-size: 1.875rem; /* text-3xl */
+    }
+  }
+  @media (min-width: 1280px) {
+    .section-header {
+      font-size: 2.25rem; /* text-4xl */
+    }
+  }
+  
+  /* Services Section on home page */
+  .services {
+    padding: 0 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.25rem;
+    width: 100%;
+  }
+  @media (min-width: 768px) {
+    .services {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2rem;
+      padding: 0 2.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .services {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 2rem;
+      padding: 0 2.5rem;
+    }
+  }
+
+  .itemContainer {
+    padding: 0 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.25rem;
+    width: 100%;
+  }
+
+  @media (min-width: 1024px) {
+    .itemContainer {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+      padding: 0 2.5rem;
+    }
+  } 
+
+  @media (min-width: 1280px) {
+    .itemContainer {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+      padding: 0 2.5rem;
+    }
+  } 
+
+  .download-container {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    justify-content: center;
+    padding: 0 1.25rem;
+  }
+
+  @media (min-width: 1024px) {
+    .download-container {
+      padding: 0 2.5rem;
+    }
+  }
+
+  .content-container {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1400px;
+  }
+
+  .btn-custom-delete {
+    background-color: var(--color-red-700);
+    border: var(--color-red-950);
+    color: var(--color-white-primary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btn-custom {
+    min-height: 40px;
+    border-radius: 4px;
+    min-width: 120px;
+    padding: 4px 8px;
+    cursor: pointer;
+  }
+
+  .btn-custom-primary {
+    color: var(--color-white-primary);
+    background-color: var(--color-purple-100);
+  }
+
+  .btn-custom-secondary {
+    color: var(--color-primary-text);
+    background-color: var(--color-secondary-40);
+  }
+
+  .btn-label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .label {
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .label-text {
+    color: var(--primary-100)
+  }
 }

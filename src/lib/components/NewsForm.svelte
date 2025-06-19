@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
@@ -7,44 +6,44 @@
 	import type { News } from '$lib/stores/ObjectStore';
 	import { initialNews } from '$lib/stores/ObjectStore';
 
-	import { Input, Textarea, Button } from 'flowbite-svelte';
+	// DaisyUI components are used via classes
 
 	import { authStore } from '$lib/stores/AuthStore';
 	import { EditModeStore, EditMode } from '$lib/stores/ObjectStore';
 
 	import SlugText from './SlugText.svelte';
-	import MarkdownHelp from './MarkdownHelp.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
 	import UploadImage from './UploadImage.svelte';
 	import Label from './Label.svelte';
+	import Editor from './Editor.svelte';
 
 	const author = $authStore.name;
 
-	export let thisItem: News = initialNews;
-	const dispatch = createEventDispatcher<{
-		new: News;
-		update: News;
-	}>();
+	interface Props {
+		thisNews?: News;
+		onCreateNew?: (event: News) => Promise<void>;
+		onUpdate?: (event: News) => Promise<void>;
+	}
 
-	let newItem: News = { ...thisItem };
-	newItem.author = author;
+	let { thisNews = initialNews, onUpdate, onCreateNew }: Props = $props();
+
+	let newNews: News = $state({ ...thisNews, author: author });
 	let docRef;
 	let selectedImage: File;
 
 	const hasImage = writable(false);
 
 	const cleanUpForm = () => {
-		newItem = initialNews;
+		newNews = initialNews;
 	};
 
-	const handleSlugChange = (e: CustomEvent) => {
-		newItem.slug = e.detail;
+	const handleSlugChange = (slugText: string) => {
+		newNews.slug = slugText;
 	};
 
 	const handleSubmit = async (e: SubmitEvent) => {
-		console.log('Called handleSubmit');
 		e.preventDefault();
-		if (!newItem.publishdate) {
+		if (!newNews.publishdate) {
 			const now = new Date();
 			const dateStr = now.toISOString().split('T')[0];
 			const timeStr = now.toLocaleTimeString('en-US', {
@@ -52,32 +51,32 @@
 				minute: '2-digit',
 				hour12: false,
 			});
-			newItem.publishdate = dateStr;
-			newItem.publishtime = timeStr;
+			newNews.publishdate = dateStr;
+			newNews.publishtime = timeStr;
 		}
-		!newItem.publishtime && (newItem.publishtime = '09:00');
+		!newNews.publishtime && (newNews.publishtime = '09:00');
 		if (selectedImage) {
-			newItem.image = await uploadImage(selectedImage);
+			newNews.image = await uploadImage(selectedImage);
 		}
-		dispatch($EditModeStore === EditMode.Update ? EditMode.Update : EditMode.New, newItem);
-		newItem = initialNews;
-		EditModeStore.set('');
+		if ($EditModeStore === EditMode.New && onCreateNew) {
+			await onCreateNew(newNews);
+		} else if ($EditModeStore === EditMode.Update && onUpdate) {
+			await onUpdate(newNews);
+		}
 		goto('/admin/newsadmin');
 	};
 
 	const handleReset = () => {
 		cleanUpForm();
-		EditModeStore.set('');
-		goto('/admin/newsadmin');
 	};
 
-	const handleImageChange = (e: CustomEvent) => {
-		selectedImage = e.detail;
-		hasImage.set(!!e.detail);
+	const handleImageChange = (imageFile: File) => {
+		selectedImage = imageFile;
+		hasImage.set(!!selectedImage);
 	};
 
-	const assignPDF = (e: CustomEvent) => {
-		newItem.pdfFile = e.detail.url;
+	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
+		newNews.pdfFile = pdfDocument.url;
 	};
 </script>
 
@@ -87,19 +86,32 @@
 	<form
 		id="form-container"
 		enctype="multipart/form-data"
-		on:submit={handleSubmit}
-		on:reset={handleReset}
+		onsubmit={handleSubmit}
+		onreset={handleReset}
 	>
 		<!-- Titel -->
 		<div>
 			<Label child="title">News Headline *</Label>
-			<Input type="text" id="title" placeholder="News Title" bind:value={newItem.title} required />
+			<input
+				type="text"
+				id="title"
+				class="input input-bordered w-full"
+				placeholder="News Title"
+				bind:value={newNews.title}
+				required
+			/>
 		</div>
 
 		<!-- Author -->
 		<div>
 			<Label child="author" disabled={true}>Author</Label>
-			<Input type="text" id="author" bind:value={newItem.author} disabled />
+			<input
+				type="text"
+				id="author"
+				class="input input-bordered w-full"
+				bind:value={newNews.author}
+				disabled
+			/>
 		</div>
 
 		<!-- News text -->
@@ -107,37 +119,35 @@
 			<div class="flex flex-row justify-between">
 				<Label child="news-text">News text *</Label>
 				<p class="explanation self-end text-right">
-					<strong>{newItem.text.length}</strong> characters.
+					<strong>{newNews.text.length}</strong> characters.
 				</p>
 			</div>
-			<Textarea
-				id="news-text"
-				placeholder="News text"
-				rows="8"
-				name="news-text"
-				bind:value={newItem.text}
-				wrap="hard"
-			/>
+			<Editor bind:content={newNews.text} />
 		</div>
-
-		<MarkdownHelp text={newItem.text} />
-		<SlugText text={newItem.text} slugText={newItem.slug} on:slugChange={handleSlugChange} />
-
+		<div>
+			<SlugText text={newNews.text} slugText={newNews.slug} onSlugChange={handleSlugChange} />
+		</div>
 		<!-- Publish date  -->
 		<div>
 			<Label child="publishdate">Publish Date *</Label>
-			<Input type="date" id="publishdate" bind:value={newItem.publishdate} />
+			<input
+				type="date"
+				id="publishdate"
+				class="input input-bordered w-full"
+				bind:value={newNews.publishdate}
+			/>
 			<p class="explanation">If you don't select a publish date, it will be set to today.</p>
 		</div>
 
 		<!-- Publish time  -->
 		<div>
-			<Label child="publishtime" disabled={!newItem.publishdate}>Publish Time</Label>
-			<Input
+			<Label child="publishtime" disabled={!newNews.publishdate}>Publish Time</Label>
+			<input
 				type="time"
 				id="publishtime"
-				disabled={!newItem.publishdate}
-				bind:value={newItem.publishtime}
+				class="input input-bordered w-full"
+				disabled={!newNews.publishdate}
+				bind:value={newNews.publishtime}
 			/>
 			<p class="explanation">
 				If you don't select a publish time, it will be set to 09:00 of the selected day.
@@ -148,10 +158,10 @@
 		<div>
 			<Label child="image">Image</Label>
 			<div class="flex flex-col items-center justify-center">
-				{#if newItem.image}
-					<UploadImage imageUrl={newItem.image} on:imageChange={handleImageChange} />
+				{#if newNews.image}
+					<UploadImage imageUrl={newNews.image} onImageChange={handleImageChange} />
 				{:else}
-					<UploadImage imageUrl="" on:imageChange={handleImageChange} />
+					<UploadImage imageUrl="" onImageChange={handleImageChange} />
 				{/if}
 			</div>
 		</div>
@@ -159,10 +169,11 @@
 			<div class="imageAlt">
 				<div>
 					<Label child="imageAlt" disabled={!$hasImage}>Image Alt text *</Label>
-					<Input
+					<input
 						type="text"
 						id="imageAlt"
-						bind:value={newItem.imageAlt}
+						class="input input-bordered w-full"
+						bind:value={newNews.imageAlt}
 						required={$hasImage}
 						disabled={!$hasImage}
 						placeholder={$hasImage ? 'Image Alt text' : 'Please select an image first'}
@@ -175,10 +186,11 @@
 			<div class="imageCaption mt-10">
 				<div>
 					<Label child="imageCaption" disabled={!$hasImage}>Image caption</Label>
-					<Input
+					<input
 						type="text"
 						id="imageCaption"
-						bind:value={newItem.imageCaption}
+						class="input input-bordered w-full"
+						bind:value={newNews.imageCaption}
 						placeholder={$hasImage ? 'Image by ...' : 'Please select an image first'}
 						disabled={!$hasImage}
 					/>
@@ -193,7 +205,7 @@
 		<div>
 			<Label child="pdfFile">PDF Document</Label>
 			<div class="flex flex-col items-center justify-center">
-				<UploadPDF fileUrl={newItem.pdfFile} on:upload={assignPDF} />
+				<UploadPDF fileUrl={newNews.pdfFile} onUpload={assignPDF} />
 				<p class="explanation">
 					Upload a PDF document that will be attached to this news item (max 5MB).
 				</p>
@@ -201,16 +213,11 @@
 		</div>
 
 		<!-- Buttons -->
-		<div class="buttons col-span-2 mb-20 mt-10">
-			<Button class="font-semibold" type="reset" color="light">Cancel</Button>
-			<Button class="bg-black-40 text-white-primary" type="reset" color="light" disabled={docRef}
-				>Empty form</Button
-			>
-			<Button
-				class="bg-primary-100  font-semibold text-white-primary"
-				type="submit"
-				disabled={newItem.title.length === 0}
-				>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</Button
+		<div class="buttons col-span-2 mt-10 mb-20">
+			<button class="btn" type="reset" onclick={() => goto('/admin/newsadmin')}>Cancel</button>
+			<button class="btn btn-neutral" type="reset" disabled={docRef}>Empty form</button>
+			<button class="btn btn-primary" type="submit" disabled={newNews.title.length === 0}
+				>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</button
 			>
 		</div>
 	</form>

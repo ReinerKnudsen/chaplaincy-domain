@@ -7,6 +7,7 @@
 <img
 	src="https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fsafeguarding_crop.jpg?alt=media&token=a831da11-e619-4d32-822d-86de24e6d0e1"
 	class="mx-auto my-4 w-[80%] rounded-xl shadow-2xl"
+	alt="two people caring for each other"
 />
 <div class="fliesstext mx-auto mb-20 text-lg">
 	<p>
@@ -65,8 +66,7 @@
 		For further information about safeguarding, please see the Diocese in Europe's safeguarding
 		information: <a
 			href="https://www.europe.anglican.org/resources/safeguarding-diocese-europe"
-			class="border-b-2 border-b-purple-100 pb-1 hover:border-b-slate-300 hover:font-semibold hover:text-slate-300"
-			>https://www.europe.anglican.org/resources/safeguarding-diocese-europe</a
+			class="link">https://www.europe.anglican.org/resources/safeguarding-diocese-europe</a
 		>
 	</p>
 </div>

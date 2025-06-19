@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { pathName } from '$lib/stores/NavigationStore';
 
@@ -8,7 +8,7 @@
 	import { storage, imageColRef, database } from '$lib/firebase/firebaseConfig';
 
 	onMount(() => {
-		$pathName = $page.url.pathname;
+		$pathName = page.url.pathname;
 	});
 
 	const updateFilenames = async () => {
@@ -29,11 +29,7 @@
 					path: `${folderPath}/${fileName}`,
 					createdAt: new Date(), // Optional: Store the timestamp of this operation
 				});
-
-				console.log(`File: ${fileName} has been added to Firestore.`);
 			}
-
-			console.log('All file names have been pushed to Firestore.');
 		} catch (error) {
 			console.error('Error listing files or pushing data to Firestore:', error);
 		}
@@ -41,7 +37,7 @@
 </script>
 
 <div>
-	<button type="button" class="border-black border" on:click={updateFilenames}
+	<button type="button" class="border-black border" onclick={updateFilenames}
 		>Update filenames</button
 	>
 </div>

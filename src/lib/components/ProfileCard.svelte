@@ -9,11 +9,15 @@
 		photoUrl: string;
 	};
 
-	export let imagePosition: 'left' | 'right';
-	export let profile: ProfileData;
-	export let index: number;
+	interface Props {
+		imagePosition: 'left' | 'right';
+		profile: ProfileData;
+	}
 
-	let screenWidth: number;
+	let { imagePosition, profile }: Props = $props();
+	//export let index: number;
+
+	let screenWidth: number = $state(window.innerWidth);
 	let photo = { url: profile.photoUrl, name: profile.name };
 
 	const updateScreenWidth = () => {

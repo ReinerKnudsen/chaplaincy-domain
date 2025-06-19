@@ -1,34 +1,37 @@
 <script lang="ts">
-	import type { MenuItem } from '$lib/types';
+	import { preventDefault } from 'svelte/legacy';
+
+	import type { MenuItem } from '$lib/types.d';
 	import { onMount } from 'svelte';
 
-	export let title: string;
-	export let menuItems: MenuItem[];
+	interface Props {
+		title: string;
+		menuItems: MenuItem[];
+	}
 
-	let showDropdown = false;
+	let { title, menuItems }: Props = $props();
+
+	let showDropdown = $state(false);
 
 	const toggleDropdown = () => {
 		showDropdown = !showDropdown;
 	};
 
 	const handleClickOutside = (event: MouseEvent) => {
-		if (event.target) {
-			/** if the target of the click was the menu item, don't close the dropdown */
-			if (showDropdown && (event.target as HTMLElement).classList.contains('menuitem')) {
-				return;
-			}
+		if (!event.target) return;
 
-			/** if the target of the click was the dropdown, don't close the dropdown */
-			const dropdownElement = document.querySelector('.dropdown');
-			if (!dropdownElement) {
-				return;
-			}
+		const target = event.target as HTMLElement;
+		const isMenuButton = target.closest('button.menuitem');
+		const isDropdown = target.closest('.dropdown');
 
-			/** if the event target is NOT child of the dropdown, close the dropdown */
-			if (!dropdownElement.contains(event.target as Node)) {
-				showDropdown = false;
-			}
-		}
+		// Don't close if clicking the menu button (let toggleDropdown handle it)
+		if (isMenuButton) return;
+
+		// Don't close if clicking inside the dropdown
+		if (isDropdown) return;
+
+		// Close the dropdown for clicks outside
+		showDropdown = false;
 	};
 
 	onMount(() => {
@@ -41,26 +44,28 @@
 </script>
 
 <div>
-	<li class="group relative">
-		<!-- svelte-ignore a11y-invalid-attribute -->
-		<button class="menuitem text-md xl:text-xl" on:click|preventDefault={toggleDropdown}
-			>{title}</button
+	<button
+		type="button"
+		class="menuitem btn btn-outline text-primary-80 border-0 text-xl font-semibold"
+		onclick={preventDefault(toggleDropdown)}>{title}</button
+	>
+	{#if showDropdown}
+		<div
+			class="nav-menu bg-white-primary absolute right-8 z-50 mt-2 w-48 rounded-md border border-gray-200 py-4 shadow-lg"
+			role="menu"
+			aria-orientation="vertical"
+			aria-labelledby="options-menu"
 		>
-		{#if showDropdown}
-			<div
-				class="dropdown ring-black absolute left-0 mt-2 w-48 rounded-md bg-white-primary shadow-lg ring-1 ring-opacity-5"
-			>
-				{#each menuItems as menuItem}
-					<div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-						<a
-							href={menuItem.url}
-							class="block px-4 py-2 text-sm text-primary-100 hover:bg-gray-100 hover:text-gray-900"
-							role="menuitem"
-							on:click={toggleDropdown}>{menuItem.title}</a
-						>
-					</div>
-				{/each}
-			</div>
-		{/if}
-	</li>
+			{#each menuItems as menuItem}
+				<a
+					href={menuItem.url}
+					class="text-primary-100 block px-6 py-3 text-sm transition-colors first:rounded-t-md last:rounded-b-md hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-50"
+					role="menuitem"
+					onclick={toggleDropdown}
+				>
+					{menuItem.title}
+				</a>
+			{/each}
+		</div>
+	{/if}
 </div>

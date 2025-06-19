@@ -1,29 +1,29 @@
 <script>
-	import { page } from '$app/stores';
+	import { preventDefault } from 'svelte/legacy';
+
+	import { onMount } from 'svelte';
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 
 	import { getDoc, doc, updateDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
 
-	import { Label, Input, Select, Button } from 'flowbite-svelte';
 	import { updateUserProfile, countAdmins } from '$lib/services/authService';
-	import { onMount } from 'svelte';
 
-	const userID = $page.params.userID;
-	export let data;
-	let currentUser = data.user;
+	import Label from '$lib/components/Label.svelte';
+	import { userRoles } from '$lib/utils/constants';
+
+	const userID = page.params.userID;
+	/** @type {{data: any}} */
+	let { data } = $props();
+	let currentUser = $state(data.user);
 	const docRef = doc(database, 'users', userID);
 	let numberOfAdmins;
 
-	const errorObject = {
+	const errorObject = $state({
 		emailErr: '',
 		roleErr: '',
-	};
-
-	const userRoles = [
-		{ value: 'editor', name: 'Editor' },
-		{ value: 'admin', name: 'Admin' },
-	];
+	});
 
 	onMount(async () => {
 		const doc = await getDoc(docRef);
@@ -53,7 +53,7 @@
 					});
 				}
 			} catch (error) {
-				console.log("Couldn't update user profile: ", error);
+				console.error("Couldn't update user profile: ", error);
 			}
 			goto('/admin/useradmin');
 		}
@@ -66,33 +66,53 @@
 	const handleSetRole = async () => {};
 </script>
 
-<form on:submit|preventDefault={handleSave}>
+<form onsubmit={preventDefault(handleSave)}>
 	<div class="mb-6 grid gap-6 md:grid-cols-2">
 		<div class="mb-6">
-			<Label for="firstname" class="mb-2 block">First Name</Label>
-			<Input id="firstname" size="lg" placeholder="First name" bind:value={currentUser.firstname} />
+			<Label class="mb-2 block" child="firstname">First Name</Label>
+			<input
+				id="firstname"
+				class="input input-bordered input-lg w-full"
+				placeholder="First name"
+				bind:value={currentUser.firstname}
+			/>
 		</div>
 		<div class="mb-6">
-			<Label for="lastname" class="mb-2 block">Last Name</Label>
-			<Input id="lastname" size="lg" placeholder="Last name" bind:value={currentUser.lastname} />
+			<Label child="lastname" class="mb-2 block">Last Name</Label>
+			<input
+				id="lastname"
+				class="input input-bordered input-lg w-full"
+				placeholder="Last name"
+				bind:value={currentUser.lastname}
+			/>
 		</div>
 		<div class="mb-6">
-			<Label for="displayname" class="mb-2 block">Display Name *</Label>
-			<Input
+			<Label child="displayname" class="mb-2 block">Display Name *</Label>
+			<input
 				id="displayname"
-				size="lg"
+				class="input input-bordered input-lg w-full"
 				placeholder="Display name"
 				bind:value={currentUser.displayName}
 				required
 			/>
 		</div>
 		<div class="mb-6">
-			<Label for="email" class="mb-2 block">Email</Label>
-			<Input id="email" size="lg" placeholder="Email" bind:value={currentUser.email} disabled />
+			<Label child="email" class="mb-2 block">Email</Label>
+			<input
+				id="email"
+				class="input input-bordered input-lg w-full"
+				placeholder="Email"
+				bind:value={currentUser.email}
+				disabled
+			/>
 		</div>
 		<div class="mb-6">
-			<Label for="role" class="mb-2 block">User role</Label>
-			<Select class="mt-2" items={userRoles} bind:value={currentUser.role} />
+			<Label child="role" class="mb-2 block">User role</Label>
+			<select class="select select-bordered select-lg w-full" d bind:value={currentUser.role}>
+				{#each userRoles as role}
+					<option value={role.value}>{role.name}</option>
+				{/each}
+			</select>
 		</div>
 		{#if errorObject.roleErr}
 			<div class="mb-6 flex w-full items-center justify-center font-semibold text-red-800">
@@ -102,15 +122,10 @@
 	</div>
 
 	<div class="mx-[25%] mb-6 flex flex-row justify-between">
-		<Button
-			type="button"
-			class="w-40 justify-self-center bg-primary-100 align-middle text-white-primary"
-			on:click={handleCancel}>Cancel</Button
+		<button type="button" class="btn-custom btn-custom-secondary" onclick={handleCancel}
+			>Cancel</button
 		>
-		<Button
-			type="submit"
-			class="w-40 justify-self-center bg-primary-100 align-middle text-white-primary">Save</Button
-		>
+		<button type="submit" class="btn-custom btn btn-primary">Save</button>
 	</div>
 </form>
 

@@ -1,18 +1,19 @@
 <script>
-	import { Button, Label, Input } from 'flowbite-svelte';
 	import { signInExistingUser } from '$lib/services/authService';
 	import { authStore } from '$lib/stores/AuthStore';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
-	let thisPassword = '';
-	let thisEmail = '';
-	let error = '';
+	let thisPassword = $state('');
+	let thisEmail = $state('');
+	let error = $state('');
 
 	onMount(() => {
 		document.getElementById('email').focus();
 	});
-	$: error = authStore.error;
+	$effect(() => {
+		error = authStore.error;
+	});
 
 	async function handleSubmit(event) {
 		event.preventDefault();
@@ -27,40 +28,47 @@
 
 <div class="flex flex-row justify-center">
 	<div
-		class="w-[80%] space-y-4 rounded-xl bg-white-primary p-6 shadow-xl sm:p-8 md:space-y-6 lg:w-5/12"
+		class="bg-white-primary w-[80%] space-y-4 rounded-xl p-6 shadow-xl sm:p-8 md:space-y-6 lg:w-5/12"
 	>
-		<form class="flex flex-col space-y-6" action="/" on:submit={handleSubmit}>
-			<h3 class="dark:text-white p-0 text-xl font-medium text-gray-900">Login</h3>
-			<Label class="space-y-2">
-				<span>Your email</span>
-				<Input
+		<form class="flex flex-col space-y-6" action="/" onsubmit={handleSubmit}>
+			<h3 class="p-0 text-xl font-medium text-gray-900 dark:text-white">Login</h3>
+			<div class="form-control w-full">
+				<label for="email" class="label">
+					<span class="label-text">Your email</span>
+				</label>
+				<input
 					type="email"
-					name="email"
 					id="email"
 					placeholder="name@company.com"
+					class="input input-bordered w-full"
 					autocomplete="username"
 					bind:value={thisEmail}
 					required
 				/>
-			</Label>
-			<Label class="space-y-2">
-				<span>Your password</span>
-				<Input
+			</div>
+
+			<div class="form-control w-full">
+				<label for="password" class="label">
+					<span class="label-text">Your password</span>
+				</label>
+				<input
 					type="password"
-					name="password"
 					placeholder="•••••"
+					class="input input-bordered w-full"
 					autocomplete="current-password"
-					required
 					bind:value={thisPassword}
+					required
 				/>
-			</Label>
-			<div class="error text-base font-semibold text-red-700" hidden={!error}>
-				{error}
 			</div>
+			{#if error}
+				<div class="text-error font-semibold">{error}</div>
+			{/if}
+
 			<div class="flex items-start">
-				<a href="/passwordreset" class="border-b-2 border-b-purple-100 pb-1 hover:border-b-purple-300">Forgot password?</a>
+				<a href="/passwordreset" class="link">Forgot password?</a>
 			</div>
-			<Button type="submit" class="w-full bg-primary-80 text-white-primary">Sign in</Button>
+
+			<button type="submit" class="btn btn-primary w-full">Sign in</button>
 		</form>
 	</div>
 </div>

@@ -1,15 +1,9 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { Button } from 'flowbite-svelte';
-	import {
-		getFirestore,
-		getDoc,
-		addDoc,
-		deleteDoc,
-		doc,
-		collection,
-		updateDoc,
-	} from 'firebase/firestore';
+	import { onMount } from 'svelte';
+
+	import { addDoc, deleteDoc, doc, collection, updateDoc } from 'firebase/firestore';
+	import { database } from '$lib/firebase/firebaseConfig';
+
 	import {
 		CurrentLocation,
 		initialLocationState,
@@ -20,27 +14,27 @@
 		type Location,
 	} from '$lib/stores/LocationsStore';
 
-	import { database } from '$lib/firebase/firebaseConfig';
+	import { EditMode } from '$lib/stores/ObjectStore';
 
 	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
-	import Icon from '$lib/components/Icon.svelte';
 
-	const dispatch = createEventDispatcher();
+	import Icon from '@iconify/svelte';
 
 	onMount(() => {
 		fetchLocations();
 	});
 
-	let updateItem = true;
-	let currentLocationId = 0;
+	let updateItem = $state(true);
+	let currentLocationId = $state(0);
 
 	// Only set CurrentLocation when AllLocations has items
-	$: if ($AllLocations.length > 0) {
-		CurrentLocation.set($AllLocations[currentLocationId]);
-	} else {
-		resetCurrentLocation();
-	}
-	$: console.log($CurrentLocation.name);
+	$effect(() => {
+		if ($AllLocations.length > 0) {
+			CurrentLocation.set($AllLocations[currentLocationId]);
+		} else {
+			resetCurrentLocation();
+		}
+	});
 
 	const handleLocationChange = (location: Location, index: number) => {
 		updateItem = true;
@@ -49,7 +43,6 @@
 	};
 
 	const handleCreateNew = () => {
-		// Create a fresh copy of initialLocationState
 		CurrentLocation.set({ ...initialLocationState });
 		updateItem = false;
 	};
@@ -104,8 +97,6 @@
 					...locations,
 					{ id: docRef.id, name, description, street, city, zip, openMapUrl },
 				]);
-
-				dispatch('locationAdded', { id: docRef.id, name });
 			} catch (e) {
 				console.error('Error adding document: ', e);
 			}
@@ -125,25 +116,22 @@
 							class={$CurrentLocation.id === location.id
 								? 'active list-item flex-1'
 								: 'list-item flex-1'}
-							on:click={() => handleLocationChange(location, index)}>{location.name}</button
+							onclick={() => handleLocationChange(location, index)}>{location.name}</button
 						>
-						<button class="icon-button" on:click={() => handleDelete(location)}>
-							<Icon width={'1.5rem'} height={'1.5rem'} name="delete" />
+						<button class="icon-button" onclick={() => handleDelete(location)}>
+							<Icon icon="proicons:delete" class="h-6 w-6" />
 						</button>
 					</div>
 				{/each}
 			</ul>
 			<div class="button-container">
-				<Button
-					class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
-					on:click={handleCreateNew}>Create new</Button
-				>
+				<button class="btn btn-primary" onclick={handleCreateNew}>Create new</button>
 			</div>
 		</div>
 		<div class="location-details">
 			<h2>Location Details</h2>
 			<NewLocationForm
-				on:save={handleSave}
+				onSave={handleSave}
 				showClose={false}
 				mode={updateItem ? 'update' : 'create'}
 			/>

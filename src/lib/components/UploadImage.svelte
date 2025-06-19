@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { createEventDispatcher, onDestroy } from 'svelte';
-
-	import { Button } from 'flowbite-svelte';
-
-	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
+	import { onDestroy } from 'svelte';
 
 	import { FileType, checkIfFileExists } from '$lib/services/fileService';
 
-	export let imageUrl: string;
-	const dispatch = createEventDispatcher<{
-		imageChange: File;
-		error: string;
-	}>();
+	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
+
+	interface Props {
+		imageUrl?: string;
+		onImageChange: (file: File) => void;
+	}
+
+	let { imageUrl = $bindable(), onImageChange }: Props = $props();
+
 	const authorizedExtensions = '.jpg, .jpeg, .png, .webp';
 
 	let selectedFile: File | null = null;
 	let moduleWidth = 'w-[400px]';
-	let imageError: string = '';
-	let imageNote: string = '';
+	let imageError: string = $state('');
+	let imageNote: string = $state('');
 
 	const handleFileChange = async (event: Event) => {
 		event.preventDefault();
@@ -27,7 +27,6 @@
 
 		if (!files || files.length === 0) {
 			imageError = 'No file selected';
-			dispatch('error', imageError);
 			return;
 		}
 
@@ -38,23 +37,22 @@
 			imageError = '';
 			imageNote = 'This image already exists.';
 			imageUrl = existingFile.data().url;
-			dispatch('imageChange', selectedFile);
+			onImageChange(selectedFile);
 		} else {
 			if (selectedFile.size > MAX_IMAGE_SIZE) {
 				imageError = 'The image is too big.';
 				selectedFile = null;
-				dispatch('error', imageError);
 			} else {
 				imageError = '';
 				imageUrl = URL.createObjectURL(selectedFile);
-				dispatch('imageChange', selectedFile);
+				onImageChange(selectedFile);
 			}
 		}
 	};
 
 	const resetInput = () => {
 		selectedFile = null;
-		URL.revokeObjectURL(imageUrl);
+		if(imageUrl) URL.revokeObjectURL(imageUrl);
 		imageUrl = '';
 	};
 
@@ -67,7 +65,7 @@
 	<form class={moduleWidth}>
 		<label
 			class={moduleWidth +
-				'border-1 group flex h-[300px] flex-col rounded-lg bg-slate-100 p-10 text-center '}
+				'group flex h-[300px] flex-col rounded-lg border bg-slate-100 p-10 text-center '}
 		>
 			<div class="flex h-full w-full flex-col items-center justify-center text-center">
 				<p class="pointer-none font-semibold text-gray-600">
@@ -79,7 +77,7 @@
 				id="uploadFile"
 				accept={authorizedExtensions}
 				class="hidden"
-				on:change={handleFileChange}
+				onchange={handleFileChange}
 			/>
 		</label>
 		<div class="mt-3 text-center text-sm">
@@ -95,8 +93,8 @@
 		{#if imageNote}
 			<p class="mt-3 text-center text-base text-gray-700">Note: {@html imageNote}</p>
 		{/if}
-		<div class="col-span-2 text-center">
-			<Button class="mt-5 w-6/12" on:click={resetInput}>Change</Button>
+		<div class="col-span-2 mt-8 text-center">
+			<button class="btn btn-primary w-1/2" onclick={resetInput}>Change</button>
 		</div>
 	</div>
 {/if}

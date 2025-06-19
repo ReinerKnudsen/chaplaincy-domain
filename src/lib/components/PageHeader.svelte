@@ -1,6 +1,10 @@
 <script lang="ts">
-	export let headerData;
-	export let textStyle: 'white' | 'dark' = 'white';
+	interface Props {
+		headerData: any;
+		textStyle?: 'white' | 'dark';
+	}
+
+	let { headerData, textStyle = 'white' }: Props = $props();
 </script>
 
 <div class="page-header mb-10">
@@ -17,9 +21,7 @@
 		</h1>
 	</div>
 	<div class="pt-2 text-right text-sm">
-		Image by: <a class=" font-semibold text-blue-400" href={headerData.photoUrl} target="_blank"
-			>{headerData.photoName}</a
-		>
+		Image by: <a class="link" href={headerData.photoUrl} target="_blank">{headerData.photoName}</a>
 	</div>
 </div>
 

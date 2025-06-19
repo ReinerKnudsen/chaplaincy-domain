@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { Button } from 'flowbite-svelte';
 	import { listAllUsers, type AdminUserData } from '$lib/services/authService';
 
-	let userList: AdminUserData[] = [];
-	let loading = true;
+	let userList: AdminUserData[] = $state([]);
+	let loading = $state(true);
 
 	onMount(async () => {
 		try {
@@ -28,7 +27,7 @@
 	<div class="relative overflow-x-auto">
 		<h1>User Management</h1>
 		<table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-			<thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+			<thead class="bg-gray-50 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
 				<tr>
 					<th scope="col" class="px-6 py-3">Display Name</th>
 					<th scope="col" class="px-6 py-3">Email</th>
@@ -38,7 +37,7 @@
 			</thead>
 			<tbody>
 				{#each userList as user}
-					<tr class="bg-white border-b dark:border-gray-700 dark:bg-gray-800">
+					<tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
 						<td class="px-6 py-4">{user.displayName}</td>
 						<td class="px-6 py-4">{user.email}</td>
 						<td class="px-6 py-4">
@@ -61,14 +60,10 @@
 			</tbody>
 		</table>
 	</div>
-	<div class="mt-10">
-		<Button
-			type="button"
-			class="w-3/12 bg-primary-80 text-white-primary"
-			on:click={handleCreateUser}
-		>
+	<div class="mt-10 text-right">
+		<button type="button" class="btn btn-primary min-w-28" onclick={handleCreateUser}>
 			Create user
-		</Button>
+		</button>
 	</div>
 {/if}
 

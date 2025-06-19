@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { addDoc, collection } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
 
@@ -8,12 +7,19 @@
 		AllLocations,
 		selectedLocation,
 		fetchLocations,
+		type Location,
 	} from '$lib/stores/LocationsStore';
 
 	import NewLocationForm from './NewLocationForm.svelte';
 
 	const db = database;
-	const dispatch = createEventDispatcher();
+
+	interface Props {
+		onLocationAdded: (location: Location) => void;
+		onClose: () => void;
+	}
+
+	let { onLocationAdded, onClose }: Props = $props();
 
 	const handleSave = async () => {
 		const { name, description, street, city, zip, openMapUrl } = $CurrentLocation;
@@ -30,10 +36,11 @@
 			const newLocation = $AllLocations.find((loc) => loc.id === docRef.id);
 			if (newLocation) {
 				selectedLocation.set(newLocation);
+				onLocationAdded(newLocation);
+				onClose();
 			}
-			dispatch('locationAdded', { id: docRef.id, name });
-		} catch (e) {
-			console.error('Error adding document: ', e);
+		} catch (error) {
+			console.error('Error adding document: ', error);
 		}
 	};
 </script>
@@ -41,12 +48,7 @@
 <div class="overlay">
 	<div class="modal">
 		<h2>Add New Location</h2>
-		<NewLocationForm
-			on:save={handleSave}
-			on:close={() => dispatch('close')}
-			showClose={true}
-			mode="create"
-		/>
+		<NewLocationForm onSave={handleSave} {onClose} showClose={true} mode="create" />
 	</div>
 </div>
 

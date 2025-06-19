@@ -4,13 +4,18 @@
 	import '@fontsource/inter';
 
 	import { getAuth, onAuthStateChanged, type User } from 'firebase/auth';
-	
+
 	import { authStore, unloadUser, type AuthState } from '$lib/stores/AuthStore';
 	import { stopListening } from '$lib/stores/ScreenSizeStore';
 	import { getUserRole } from '$lib/services/authService';
-	
+
 	import Navigation from '$lib/components/Navigation.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	let unsubscribe: () => void;
 
@@ -57,9 +62,11 @@
 </script>
 
 <Navigation />
-
-<div class="main-layout md:my-10 xl:my-10">
-	<slot />
+<div id="main-container" class="mt-10 flex min-h-screen flex-col">
+	<div id="main-content" class="">
+		{@render children?.()}
+	</div>
+	<div class="bg-white-smoke">
+		<Footer />
+	</div>
 </div>
-
-<Footer />

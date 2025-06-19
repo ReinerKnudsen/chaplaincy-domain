@@ -62,7 +62,6 @@ export async function countAdmins(): Promise<number> {
 	const countAdminUsers = httpsCallable<unknown, { count: number }>(functions, 'getCountOfAdmins');
 	try {
 		const numberOfAdmins = await countAdminUsers();
-		console.log('countAdminUsers: ', numberOfAdmins.data);
 		return numberOfAdmins.data.count;
 	} catch (error: unknown) {
 		console.error('Error counting admins:', error);

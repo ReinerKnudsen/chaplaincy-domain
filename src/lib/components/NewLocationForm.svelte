@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { Button, Input, Label } from 'flowbite-svelte';
+	import Label from './Label.svelte';
+
 	import {
 		CurrentLocation,
 		resetCurrentLocation,
@@ -10,45 +10,59 @@
 
 	type Mode = 'create' | 'update';
 
-	export let showClose = true;
-	export let mode: Mode = 'create';
-
-	let thisLocation: Location = { ...initialLocationState };
-
-	$: if (mode === 'update') {
-		thisLocation = { ...$CurrentLocation };
-	} else if (mode === 'create' && thisLocation.id !== '') {
-		// Only reset if we're switching to create mode and have existing data
-		thisLocation = { ...initialLocationState };
+	interface Props {
+		showClose?: boolean;
+		mode?: Mode;
+		onSave: () => void;
+		onClose?: () => void;
 	}
 
-	const dispatch = createEventDispatcher<{
-		save: void;
-		close: void;
-	}>();
+	let { showClose = true, mode = 'create', onSave, onClose }: Props = $props();
 
-	function handleSubmit(e: SubmitEvent) {
+	let thisLocation: Location = $state({ ...initialLocationState });
+
+	$effect(() => {
+		if (mode === 'update') {
+			thisLocation = { ...$CurrentLocation };
+		} else if (mode === 'create' && thisLocation.id !== '') {
+			// Only reset if we're switching to create mode and have existing data
+			thisLocation = { ...initialLocationState };
+		}
+	});
+
+	const handleSubmit = (e: SubmitEvent) => {
 		e.preventDefault();
 		$CurrentLocation = thisLocation;
-		dispatch('save');
-	}
+		onSave();
+	};
 
-	function resetForm() {
+	const handleCancel = () => {
 		resetCurrentLocation();
-	}
+		onClose && onClose();
+	};
 
-	$: openStreetUrl = `https://www.openstreetmap.org/search?query=${thisLocation.street}+${thisLocation.city}`;
+	let openStreetUrl = $derived(
+		`https://www.openstreetmap.org/search?query=${thisLocation.street}+${thisLocation.city}`,
+	);
 </script>
 
 <div class="py-2 text-sm">All fields marked with * are required</div>
-<form autocomplete="off" on:submit={handleSubmit}>
+<form autocomplete="off" onsubmit={handleSubmit}>
 	<div>
-		<Label class="mb-2 mt-4 font-semibold" for="name">Name *</Label>
-		<Input id="name" type="text" placeholder="Name" bind:value={thisLocation.name} required />
+		<Label class="mt-4 mb-2 font-semibold" child="name">Name *</Label>
+		<input
+			id="name"
+			class="input input-bordered w-full"
+			type="text"
+			placeholder="Name"
+			bind:value={thisLocation.name}
+			required
+		/>
 	</div>
 	<div>
-		<Label class="mb-2 mt-4 font-semibold" for="description">Description</Label>
-		<Input
+		<Label class="mt-4 mb-2 font-semibold" child="description">Description</Label>
+		<input
+			class="input input-bordered w-full"
 			id="description"
 			type="text"
 			placeholder="Description"
@@ -56,41 +70,55 @@
 		/>
 	</div>
 	<div>
-		<Label class="mb-2 mt-4 font-semibold" for="street">Street *</Label>
-		<Input id="street" type="text" placeholder="Street" bind:value={thisLocation.street} required />
+		<Label class="mt-4 mb-2 font-semibold" child="street">Street</Label>
+		<input
+			id="street"
+			type="text"
+			class="input input-bordered w-full"
+			placeholder="Street"
+			bind:value={thisLocation.street}
+		/>
 	</div>
 	<div>
-		<Label class="mb-2 mt-4 font-semibold" for="city">City *</Label>
-		<Input id="city" type="text" placeholder="City" bind:value={thisLocation.city} required />
+		<Label class="mt-4 mb-2 font-semibold" child="city">City</Label>
+		<input
+			id="city"
+			type="text"
+			class="input input-bordered w-full"
+			placeholder="City"
+			bind:value={thisLocation.city}
+		/>
 	</div>
 	<div>
-		<Label class="mb-2 mt-4 font-semibold" for="zip">Zip *</Label>
-		<Input id="zip" type="text" placeholder="Zip" bind:value={thisLocation.zip} required />
+		<Label class="mt-4 mb-2 font-semibold" child="zip">Zip</Label>
+		<input
+			id="zip"
+			type="text"
+			class="input input-bordered w-full"
+			placeholder="Zip"
+			bind:value={thisLocation.zip}
+		/>
 	</div>
 	<div>
-		<Label class="mb-2 mt-4 font-semibold" for="url"
-			><a href={openStreetUrl} target="_blank" rel="noopener noreferrer">
-				Open Street Map URL</a
-			>:</Label
-		>
-		<Input
+		<Label class="mt-4 mb-2 font-semibold" child="url">URL</Label>
+		<input
 			id="url"
 			type="url"
-			placeholder="OpenStreetMap URL"
+			class="input input-bordered w-full"
+			placeholder="OpenStreetMap Url or service Url"
 			bind:value={thisLocation.openMapUrl}
 		/>
+		<div class="text-md mt-2 flex flex-row justify-end">
+			<a href={openStreetUrl} class="link no-underline" target="_blank" rel="noopener noreferrer"
+				>Check OpenStreetMap URL</a
+			>
+		</div>
 	</div>
 	<div class="mt-8 flex w-full flex-row justify-center gap-10">
 		{#if showClose}
-			<Button
-				class="min-w-32 bg-secondary-100 text-primary-text disabled:bg-primary-40 disabled:text-slate-600"
-				on:click={() => dispatch('close')}>Cancel</Button
-			>
+			<button class="btn-custom btn-custom-secondary" onclick={handleCancel}>Cancel</button>
 		{/if}
-		<Button
-			class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
-			type="submit">Save</Button
-		>
+		<button class="btn btn-primary min-w-28" type="submit">Save</button>
 	</div>
 </form>
 

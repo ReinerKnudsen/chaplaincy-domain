@@ -11,9 +11,6 @@
 	const saveNewItem = async (newNewsItem: News) => {
 		try {
 			await addDoc(newsColRef, newNewsItem);
-			/**
-			 * TODO: Report completion or error
-			 */
 			goto('/admin/newsadmin');
 		} catch (error) {
 			console.error('Error writing document:', error);

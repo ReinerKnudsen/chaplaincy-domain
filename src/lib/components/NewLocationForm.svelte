@@ -14,7 +14,7 @@
 		showClose?: boolean;
 		mode?: Mode;
 		onSave: () => void;
-		onClose: () => void;
+		onClose?: () => void;
 	}
 
 	let { showClose = true, mode = 'create', onSave, onClose }: Props = $props();
@@ -36,8 +36,9 @@
 		onSave();
 	};
 
-	const resetForm = () => {
+	const handleCancel = () => {
 		resetCurrentLocation();
+		onClose && onClose();
 	};
 
 	let openStreetUrl = $derived(
@@ -69,45 +70,42 @@
 		/>
 	</div>
 	<div>
-		<Label class="mt-4 mb-2 font-semibold" child="street">Street *</Label>
+		<Label class="mt-4 mb-2 font-semibold" child="street">Street</Label>
 		<input
 			id="street"
 			type="text"
 			class="input input-bordered w-full"
 			placeholder="Street"
 			bind:value={thisLocation.street}
-			required
 		/>
 	</div>
 	<div>
-		<Label class="mt-4 mb-2 font-semibold" child="city">City *</Label>
+		<Label class="mt-4 mb-2 font-semibold" child="city">City</Label>
 		<input
 			id="city"
 			type="text"
 			class="input input-bordered w-full"
 			placeholder="City"
 			bind:value={thisLocation.city}
-			required
 		/>
 	</div>
 	<div>
-		<Label class="mt-4 mb-2 font-semibold" child="zip">Zip *</Label>
+		<Label class="mt-4 mb-2 font-semibold" child="zip">Zip</Label>
 		<input
 			id="zip"
 			type="text"
 			class="input input-bordered w-full"
 			placeholder="Zip"
 			bind:value={thisLocation.zip}
-			required
 		/>
 	</div>
 	<div>
-		<Label class="mt-4 mb-2 font-semibold" child="url">Open Street Map URL</Label>
+		<Label class="mt-4 mb-2 font-semibold" child="url">URL</Label>
 		<input
 			id="url"
 			type="url"
 			class="input input-bordered w-full"
-			placeholder="OpenStreetMap URL"
+			placeholder="OpenStreetMap Url or service Url"
 			bind:value={thisLocation.openMapUrl}
 		/>
 		<div class="text-md mt-2 flex flex-row justify-end">
@@ -118,7 +116,7 @@
 	</div>
 	<div class="mt-8 flex w-full flex-row justify-center gap-10">
 		{#if showClose}
-			<button class="btn-custom btn-custom-secondary" onclick={onClose}>Cancel</button>
+			<button class="btn-custom btn-custom-secondary" onclick={handleCancel}>Cancel</button>
 		{/if}
 		<button class="btn btn-primary min-w-28" type="submit">Save</button>
 	</div>

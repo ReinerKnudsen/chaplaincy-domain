@@ -1,17 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
+	import { onMount } from 'svelte';
 
-	import { createEventDispatcher, onMount } from 'svelte';
-
-	import {
-		getFirestore,
-		getDoc,
-		addDoc,
-		deleteDoc,
-		doc,
-		collection,
-		updateDoc,
-	} from 'firebase/firestore';
+	import { addDoc, deleteDoc, doc, collection, updateDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
 
 	import {
@@ -24,11 +14,11 @@
 		type Location,
 	} from '$lib/stores/LocationsStore';
 
+	import { EditMode } from '$lib/stores/ObjectStore';
+
 	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
 
 	import Icon from '@iconify/svelte';
-
-	const dispatch = createEventDispatcher();
 
 	onMount(() => {
 		fetchLocations();
@@ -38,7 +28,7 @@
 	let currentLocationId = $state(0);
 
 	// Only set CurrentLocation when AllLocations has items
-	run(() => {
+	$effect(() => {
 		if ($AllLocations.length > 0) {
 			CurrentLocation.set($AllLocations[currentLocationId]);
 		} else {
@@ -53,7 +43,6 @@
 	};
 
 	const handleCreateNew = () => {
-		// Create a fresh copy of initialLocationState
 		CurrentLocation.set({ ...initialLocationState });
 		updateItem = false;
 	};
@@ -108,8 +97,6 @@
 					...locations,
 					{ id: docRef.id, name, description, street, city, zip, openMapUrl },
 				]);
-
-				dispatch('locationAdded', { id: docRef.id, name });
 			} catch (e) {
 				console.error('Error adding document: ', e);
 			}
@@ -144,7 +131,7 @@
 		<div class="location-details">
 			<h2>Location Details</h2>
 			<NewLocationForm
-				on:save={handleSave}
+				onSave={handleSave}
 				showClose={false}
 				mode={updateItem ? 'update' : 'create'}
 			/>

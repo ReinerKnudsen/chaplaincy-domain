@@ -18,5 +18,5 @@
 </script>
 
 <div>
-	<EventForm onSubmit={saveNewEvent} />
+	<EventForm onCreateNew={saveNewEvent} />
 </div>

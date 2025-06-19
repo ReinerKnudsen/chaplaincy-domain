@@ -1,8 +1,9 @@
 <script lang="ts">
-	import EventForm from '$lib/components/EventForm.svelte';
 	import { updateDoc } from 'firebase/firestore';
-	import { DocumentReference } from 'firebase/firestore';
+	import { DocumentReference, type DocumentData } from 'firebase/firestore';
 	import { type DomainEvent, EditModeStore } from '$lib/stores/ObjectStore';
+
+	import EventForm from '$lib/components/EventForm.svelte';
 
 	type Params = {
 		newEvent: DomainEvent;
@@ -13,14 +14,21 @@
 		data: Params;
 	}
 
-	let { data }: Props = $props();
+	let currentDocRef: DocumentReference | null = null;
 
-	const updateEvent = async (event: CustomEvent) => {
+	let { data }: Props = $props();
+	currentDocRef = data.docRef;
+
+	const updateEvent = async (updatedEvent: DomainEvent) => {
 		try {
 			if (!data.docRef) {
 				throw new Error('No document reference provided');
 			}
-			await updateDoc(data.docRef, event.detail);
+			if (!currentDocRef) {
+				throw new Error('No document reference provided');
+			}
+			const eventData = { ...updatedEvent } as DocumentData;
+			await updateDoc(data.docRef, eventData);
 			EditModeStore.set('');
 		} catch (error) {
 			console.error('Error updating the event: ', error);
@@ -29,5 +37,5 @@
 </script>
 
 <div>
-	<EventForm thisEvent={data.newEvent} on:update={updateEvent} />
+	<EventForm thisEvent={data.newEvent} onUpdate={updateEvent} />
 </div>

@@ -20,30 +20,30 @@
 	const author = $authStore.name;
 
 	interface Props {
-		thisItem?: News;
+		thisNews?: News;
 		onCreateNew?: (event: News) => Promise<void>;
 		onUpdate?: (event: News) => Promise<void>;
 	}
 
-	let { thisItem = initialNews, onUpdate, onCreateNew }: Props = $props();
+	let { thisNews = initialNews, onUpdate, onCreateNew }: Props = $props();
 
-	let newItem: News = $state({ ...thisItem, author: author });
+	let newNews: News = $state({ ...thisNews, author: author });
 	let docRef;
 	let selectedImage: File;
 
 	const hasImage = writable(false);
 
 	const cleanUpForm = () => {
-		newItem = initialNews;
+		newNews = initialNews;
 	};
 
 	const handleSlugChange = (slugText: string) => {
-		newItem.slug = slugText;
+		newNews.slug = slugText;
 	};
 
 	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
-		if (!newItem.publishdate) {
+		if (!newNews.publishdate) {
 			const now = new Date();
 			const dateStr = now.toISOString().split('T')[0];
 			const timeStr = now.toLocaleTimeString('en-US', {
@@ -51,17 +51,17 @@
 				minute: '2-digit',
 				hour12: false,
 			});
-			newItem.publishdate = dateStr;
-			newItem.publishtime = timeStr;
+			newNews.publishdate = dateStr;
+			newNews.publishtime = timeStr;
 		}
-		!newItem.publishtime && (newItem.publishtime = '09:00');
+		!newNews.publishtime && (newNews.publishtime = '09:00');
 		if (selectedImage) {
-			newItem.image = await uploadImage(selectedImage);
+			newNews.image = await uploadImage(selectedImage);
 		}
 		if ($EditModeStore === EditMode.New && onCreateNew) {
-			await onCreateNew(newItem);
+			await onCreateNew(newNews);
 		} else if ($EditModeStore === EditMode.Update && onUpdate) {
-			await onUpdate(newItem);
+			await onUpdate(newNews);
 		}
 		goto('/admin/newsadmin');
 	};
@@ -76,7 +76,7 @@
 	};
 
 	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
-		newItem.pdfFile = pdfDocument.url;
+		newNews.pdfFile = pdfDocument.url;
 	};
 </script>
 
@@ -97,7 +97,7 @@
 				id="title"
 				class="input input-bordered w-full"
 				placeholder="News Title"
-				bind:value={newItem.title}
+				bind:value={newNews.title}
 				required
 			/>
 		</div>
@@ -109,7 +109,7 @@
 				type="text"
 				id="author"
 				class="input input-bordered w-full"
-				bind:value={newItem.author}
+				bind:value={newNews.author}
 				disabled
 			/>
 		</div>
@@ -119,13 +119,13 @@
 			<div class="flex flex-row justify-between">
 				<Label child="news-text">News text *</Label>
 				<p class="explanation self-end text-right">
-					<strong>{newItem.text.length}</strong> characters.
+					<strong>{newNews.text.length}</strong> characters.
 				</p>
 			</div>
-			<Editor bind:content={newItem.text} />
+			<Editor bind:content={newNews.text} />
 		</div>
 		<div>
-			<SlugText text={newItem.text} slugText={newItem.slug} onSlugChange={handleSlugChange} />
+			<SlugText text={newNews.text} slugText={newNews.slug} onSlugChange={handleSlugChange} />
 		</div>
 		<!-- Publish date  -->
 		<div>
@@ -134,20 +134,20 @@
 				type="date"
 				id="publishdate"
 				class="input input-bordered w-full"
-				bind:value={newItem.publishdate}
+				bind:value={newNews.publishdate}
 			/>
 			<p class="explanation">If you don't select a publish date, it will be set to today.</p>
 		</div>
 
 		<!-- Publish time  -->
 		<div>
-			<Label child="publishtime" disabled={!newItem.publishdate}>Publish Time</Label>
+			<Label child="publishtime" disabled={!newNews.publishdate}>Publish Time</Label>
 			<input
 				type="time"
 				id="publishtime"
 				class="input input-bordered w-full"
-				disabled={!newItem.publishdate}
-				bind:value={newItem.publishtime}
+				disabled={!newNews.publishdate}
+				bind:value={newNews.publishtime}
 			/>
 			<p class="explanation">
 				If you don't select a publish time, it will be set to 09:00 of the selected day.
@@ -158,8 +158,8 @@
 		<div>
 			<Label child="image">Image</Label>
 			<div class="flex flex-col items-center justify-center">
-				{#if newItem.image}
-					<UploadImage imageUrl={newItem.image} onImageChange={handleImageChange} />
+				{#if newNews.image}
+					<UploadImage imageUrl={newNews.image} onImageChange={handleImageChange} />
 				{:else}
 					<UploadImage imageUrl="" onImageChange={handleImageChange} />
 				{/if}
@@ -173,7 +173,7 @@
 						type="text"
 						id="imageAlt"
 						class="input input-bordered w-full"
-						bind:value={newItem.imageAlt}
+						bind:value={newNews.imageAlt}
 						required={$hasImage}
 						disabled={!$hasImage}
 						placeholder={$hasImage ? 'Image Alt text' : 'Please select an image first'}
@@ -190,7 +190,7 @@
 						type="text"
 						id="imageCaption"
 						class="input input-bordered w-full"
-						bind:value={newItem.imageCaption}
+						bind:value={newNews.imageCaption}
 						placeholder={$hasImage ? 'Image by ...' : 'Please select an image first'}
 						disabled={!$hasImage}
 					/>
@@ -205,7 +205,7 @@
 		<div>
 			<Label child="pdfFile">PDF Document</Label>
 			<div class="flex flex-col items-center justify-center">
-				<UploadPDF fileUrl={newItem.pdfFile} onUpload={assignPDF} />
+				<UploadPDF fileUrl={newNews.pdfFile} onUpload={assignPDF} />
 				<p class="explanation">
 					Upload a PDF document that will be attached to this news item (max 5MB).
 				</p>
@@ -216,7 +216,7 @@
 		<div class="buttons col-span-2 mt-10 mb-20">
 			<button class="btn" type="reset" onclick={() => goto('/admin/newsadmin')}>Cancel</button>
 			<button class="btn btn-neutral" type="reset" disabled={docRef}>Empty form</button>
-			<button class="btn btn-primary" type="submit" disabled={newItem.title.length === 0}
+			<button class="btn btn-primary" type="submit" disabled={newNews.title.length === 0}
 				>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</button
 			>
 		</div>

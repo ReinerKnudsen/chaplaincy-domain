@@ -118,7 +118,7 @@
 
 	const handleDelete = async () => {
 		if (!deleteDialog || !deleteID) return;
-		
+
 		await deleteDoc(doc(newsColRef, deleteID));
 		await loadData();
 		NewsItemsStore.set($NewsItemsStore.filter((item) => item.id !== deleteID));

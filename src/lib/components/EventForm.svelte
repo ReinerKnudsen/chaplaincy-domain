@@ -49,10 +49,11 @@
 
 	interface Props {
 		thisEvent?: DomainEvent;
-		onSubmit?: (event: DomainEvent) => Promise<void>; // New callback prop
+		onCreateNew?: (event: DomainEvent) => Promise<void>;
+		onUpdate?: (event: DomainEvent) => Promise<void>;
 	}
 
-	let { thisEvent = defaultEvent, onSubmit = async () => {} }: Props = $props();
+	let { thisEvent = defaultEvent, onCreateNew, onUpdate }: Props = $props();
 
 	let newEvent: DomainEvent = $state(defaultEvent);
 	let hasImage = writable(false);
@@ -171,7 +172,11 @@
 		if (selectedImage) {
 			newEvent.image = await uploadImage(selectedImage);
 		}
-		await onSubmit(newEvent);
+		if ($EditModeStore === EditMode.New && onCreateNew) {
+			await onCreateNew(newEvent);
+		} else if ($EditModeStore === EditMode.Update && onUpdate) {
+			await onUpdate(newEvent);
+		}
 
 		goto('/admin/eventsadmin');
 	};

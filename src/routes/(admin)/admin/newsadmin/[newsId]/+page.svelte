@@ -1,34 +1,31 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { onMount } from 'svelte';
-
-	import { loadItem, CollectionType, NewsStore, type News } from '$lib/stores/ObjectStore';
+	import { updateDoc, type DocumentReference, type DocumentData } from 'firebase/firestore';
+	import { type News, EditModeStore } from '$lib/stores/ObjectStore';
 	import NewsForm from '$lib/components/NewsForm.svelte';
-	import { updateDoc, DocumentReference, type DocumentData } from 'firebase/firestore';
 
-	let currentDocRef: DocumentReference | null = null;
+	interface Props {
+		data: {
+			newsItem: News;
+			docRef: DocumentReference;
+		};
+	}
 
-	/**
-	 * TODO: Report completion or error
-	 */
-	onMount(async () => {
-		currentDocRef = await loadItem(page.params.newsId, CollectionType.News);
-	});
+	let { data }: Props = $props();
 
 	const updateNews = async (updatedNews: News) => {
-		if (!currentDocRef) {
-			throw new Error('Document reference not initialized');
+		try {
+			if (!data.docRef) {
+				throw new Error('No document reference provided');
+			}
+			const newsData = { ...updatedNews } as DocumentData;
+			await updateDoc(data.docRef, newsData);
+			EditModeStore.set('');
+		} catch (error) {
+			console.error('Error updating the news: ', error);
 		}
-		// Convert to plain object for Firestore
-		const newsData = { ...updatedNews } as DocumentData;
-		await updateDoc(currentDocRef, newsData);
 	};
 </script>
 
 <div>
-	{#if $NewsStore}
-		<NewsForm thisItem={$NewsStore} onUpdate={updateNews} />
-	{:else}
-		<p>Loading news item...</p>
-	{/if}
+	<NewsForm thisNews={data.newsItem} onUpdate={updateNews} />
 </div>

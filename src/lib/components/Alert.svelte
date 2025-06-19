@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Icon, CheckCircle, ExclamationCircle, XCircle } from 'svelte-hero-icons';
+	import Icon from '@iconify/svelte';
+
 	interface Props {
 		role?: 'success' | 'warning' | 'error';
 		message: string;
@@ -10,17 +11,17 @@
 	const roles = [
 		{
 			kind: 'success',
-			icon: CheckCircle,
+			icon: 'heroicons-outline:check-circle',
 			color: 'text-white-primary',
 		},
 		{
 			kind: 'warning',
-			icon: ExclamationCircle,
+			icon: 'heroicons-outline:exclamation-circle',
 			color: 'text-primary-text',
 		},
 		{
 			kind: 'error',
-			icon: XCircle,
+			icon: 'heroicons-outline:x-circle',
 			color: 'text-primary-text',
 		},
 	];
@@ -31,7 +32,7 @@
 {#if roleData}
 	<div role={roleData.kind} class={`alert alert-${roleData.kind} ${roleData.color} mb-6`}>
 		<div class="flex flex-row items-center justify-start gap-4">
-			<Icon src={roleData.icon} class="h-6 w-6" />
+			<Icon icon={roleData.icon} class="h-6 w-6" />
 			<div>{message}</div>
 		</div>
 	</div>

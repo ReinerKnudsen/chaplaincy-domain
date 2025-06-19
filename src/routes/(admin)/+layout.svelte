@@ -6,7 +6,6 @@
 	import { goto } from '$app/navigation';
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { getAuth, type Auth, onAuthStateChanged, type User } from 'firebase/auth';
-	import { screenSize } from '$lib/stores/ScreenSizeStore';
 	interface Props {
 		children?: import('svelte').Snippet;
 	}
@@ -15,12 +14,9 @@
 
 	let auth: Auth = getAuth();
 	let loading = $state(true);
-	let screenWidth: number = $derived($screenSize);
 
-	
 	onMount(() => {
-		$pathName = page.url.pathname;
-
+		pathName.set(page.url.pathname);
 		onAuthStateChanged(auth, (user: User | null) => {
 			if (user) {
 				user.getIdTokenResult().then((idTokenResult) => {
@@ -35,10 +31,6 @@
 				goto('/');
 			}
 		});
-	});
-
-	run(() => {
-		$pathName = page.url.pathname;
 	});
 
 	interface MenuItem {

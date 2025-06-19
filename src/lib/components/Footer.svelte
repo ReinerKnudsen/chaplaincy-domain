@@ -5,7 +5,8 @@
 	import { signOut } from 'firebase/auth';
 
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
-	import Icon from '$lib/components/Icon.svelte';
+
+	import Icon from '@iconify/svelte';
 
 	const handleLogin = () => {
 		goto('/login');
@@ -85,24 +86,24 @@
 					class="text-gray-500 hover:text-gray-900"
 					target="_blank"
 				>
-					<Icon name="facebook" class="h-5 w-5" />
+					<Icon icon="fa-brands:facebook" class="h-6 w-6" />
 				</a>
 				<a
 					href="https://www.achurchnearyou.com/church/8388/"
 					class="text-gray-500 hover:text-gray-900"
 					target="_blank"
 				>
-					<Icon name="churchnearyou" class="h-5 w-5" />
+					<Icon icon="streamline-plump:user-pin" class="h-6 w-6" />
 				</a>
 				<a
 					href="https://www.achurchnearyou.com/church/8389/"
 					class="text-gray-500 hover:text-gray-900"
 					target="_blank"
 				>
-					<Icon name="churchnearyou" class="h-5 w-5" />
+					<Icon icon="streamline-plump:user-pin" class="h-6 w-6" />
 				</a>
 				<a href="/about/contact" class="text-gray-500 hover:text-gray-900">
-					<Icon name="email" class="h-5 w-5" />
+					<Icon icon="streamline:send-email" class="h-6 w-6" />
 				</a>
 			</div>
 		</div>

@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
-	import Icon from '$lib/components/Icon.svelte';
+	import Icon from '@iconify/svelte';
+
 	import * as formats from '$lib/formats';
 
 	import { loadItem, CollectionType, EventStore } from '$lib/stores/ObjectStore';
@@ -24,34 +23,33 @@
 
 	let description = $derived($EventStore?.description ? marked.parse($EventStore.description) : '');
 
-	run(() => {
+	$effect(() => {
 		$EventStore?.location
 			? (location = $AllLocations.find((location) => location.id === $EventStore.location))
 			: (location = undefined);
-		console.log(location);
 	});
 </script>
 
 {#if loading}
 	<p>Loading...</p>
 {:else if $EventStore}
-	<div class="rounded-2xl bg-white-primary">
+	<div class="bg-white-primary rounded-2xl">
 		<div class={`container ${formats.container}`}>
 			<div class={`headline ${formats.headline}`}>
 				{$EventStore.title}
 			</div>
 			<div class={`event-data ${formats.itemMetaData}`}>
 				<div class={`entry ${formats.itemMetaDataEntry}`}>
-					<Icon name="calendar" />
+					<Icon icon="fa6-regular:calendar" />
 					{$EventStore.startdate}
 				</div>
 				<div class={`entry ${formats.itemMetaDataEntry}`}>
-					<Icon name="clock" />
+					<Icon icon="fa6-regular:clock" />
 					{$EventStore.starttime}
 				</div>
 				{#if $EventStore.location}
 					<div class={`entry ${formats.itemMetaDataEntry}`}>
-						<Icon name="location" />
+						<Icon icon="gis:location-poi" />
 						<a class="link" target="_blank" href={location?.openMapUrl}
 							>{`${location?.name}, ${location?.city}`}</a
 						>
@@ -69,8 +67,8 @@
 		</div>
 	</div>
 	<div class={`back-link ${formats.backLink}`}>
-		<Icon name="left" />
-		<a class="link" href="/events">Take me back to overview</a>
+		<Icon icon="fa6-regular:circle-left" class="h-6 w-6" />
+		<a class={formats.aLink} href="/events">Take me back to overview</a>
 	</div>
 {:else}
 	<p>Event not found</p>

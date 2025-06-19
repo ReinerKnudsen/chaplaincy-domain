@@ -17,10 +17,8 @@
 	let menuOpen = $state(false);
 	let aboutMenuOpen = $state(true);
 
-	run(() => {
-		authStore.subscribe((store) => {
-			user = store;
-		});
+	$effect(() => {
+		user = $authStore.user;
 	});
 
 	const handleLogout = async () => {

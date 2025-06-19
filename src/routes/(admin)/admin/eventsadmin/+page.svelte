@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
+	import { preventDefault } from 'svelte/legacy';
 
 	import { page } from '$app/state';
 	import { writable, type Writable } from 'svelte/store';
@@ -20,13 +20,13 @@
 		loadItems,
 		duplicateItem,
 		type CollectionItem,
-		type Event,
-		type EventSortableFields,
+		type DomainEvent,
+		type DomainEventSortableFields,
 	} from '$lib/stores/ObjectStore';
 	import { AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 
-	let deleteDialog: HTMLDialogElement|undefined = $state();
-	let duplicateDialog: HTMLDialogElement|undefined = $state();
+	let deleteDialog: HTMLDialogElement | null = $state(null);
+	let duplicateDialog: HTMLDialogElement | null = $state(null);
 	let deleteID: string = '';
 	let dupeID: string = '';
 	let loading: boolean = $state(true);
@@ -63,24 +63,11 @@
 	};
 
 	const { key: initialKey, direction: initialDirection } = getStoredSortSettings();
-	const sortKey: Writable<EventSortableFields> = writable(initialKey);
+	const sortKey: Writable<DomainEventSortableFields> = writable(initialKey);
 	const sortDirection: Writable<number> = writable(initialDirection);
 
 	// Update sessionStorage when sort settings change
-	run(() => {
-		if (typeof window !== 'undefined') {
-			sessionStorage.setItem(
-				STORAGE_KEY,
-				JSON.stringify({ key: $sortKey, direction: $sortDirection }),
-			);
-		}
-	});
-
-	run(() => {
-		if ($EventsStore) sortItems.set($EventsStore.slice());
-	}); // make a copy of the array
-
-	const sortTable = (key: EventSortableFields) => {
+	const sortTable = (key: DomainEventSortableFields) => {
 		if ($sortKey === key) {
 			sortDirection.update((val) => -val);
 		} else {
@@ -89,20 +76,30 @@
 		}
 	};
 
-	run(() => {
-		const key = $sortKey;
-		const direction = $sortDirection;
-		const sorted = [...$sortItems].sort((a, b) => {
-			const aVal = a.data[key];
-			const bVal = b.data[key];
-			if (aVal < bVal) {
-				return -direction;
-			} else if (aVal > bVal) {
-				return direction;
-			}
-			return 0;
-		});
-		sortItems.set(sorted);
+	// Update sorting and sessionStorage when sort settings or items change
+	$effect(() => {
+		// Update sessionStorage
+		if (typeof window !== 'undefined') {
+			sessionStorage.setItem(
+				STORAGE_KEY,
+				JSON.stringify({ key: $sortKey, direction: $sortDirection }),
+			);
+		}
+
+		// Sort items if available
+		if ($EventsStore?.length) {
+			const sorted = [...$EventsStore].sort((a, b) => {
+				const aVal = a.data[$sortKey];
+				const bVal = b.data[$sortKey];
+				if (aVal < bVal) {
+					return -$sortDirection;
+				} else if (aVal > bVal) {
+					return $sortDirection;
+				}
+				return 0;
+			});
+			sortItems.set(sorted);
+		}
 	});
 
 	const handleSearchInput = (event: CustomEvent) => {
@@ -120,12 +117,14 @@
 		if (!selectedEvent) {
 			return;
 		}
-		EventStore.set(selectedEvent.data as Event);
+		EventStore.set(selectedEvent.data as DomainEvent);
 		EditModeStore.set(EditMode.Update);
 		goto(`/admin/eventsadmin/${id}`);
 	};
 
 	const handleDuplicate = async () => {
+		if (!duplicateDialog || !dupeID) return;
+
 		const newEvent = await duplicateItem(dupeID, CollectionType.Events);
 		if (!newEvent) {
 			return;
@@ -134,23 +133,30 @@
 		await loadData();
 		loading = false;
 		EditModeStore.set(EditMode.Update);
+		duplicateDialog.close();
+		dupeID = '';
 		goto(`/admin/eventsadmin/${newEvent}`);
 	};
 
 	const handleDelete = async () => {
+		if (!deleteDialog || !deleteID) return;
+
 		await deleteDoc(doc(eventsColRef, deleteID));
 		await loadData();
-		deleteDialog?.close();
+		deleteDialog.close();
+		deleteID = '';
 	};
 
-	const openModal = (id: string) => {
+	const openDeleteModal = (id: string) => {
+		if (!deleteDialog) return;
 		deleteID = id;
-		deleteDialog?.showModal();
+		deleteDialog.showModal();
 	};
 
 	const openDuplicateModal = (id: string) => {
+		if (!duplicateDialog) return;
 		dupeID = id;
-		duplicateDialog?.showModal();
+		duplicateDialog.showModal();
 	};
 
 	const printLocation = (id: string) => {
@@ -248,7 +254,7 @@
 							<td class="table-data table-cell">{item.data.publishdate}</td>
 							<td class="table-data table-cell">
 								<div class="flex flex-row gap-2">
-									<button class="btn-sm btn-custom-delete" onclick={() => openModal(item.id)}
+									<button class="btn-sm btn-custom-delete" onclick={() => openDeleteModal(item.id)}
 										>Delete</button
 									>
 									<button

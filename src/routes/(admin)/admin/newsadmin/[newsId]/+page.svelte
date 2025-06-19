@@ -1,25 +1,31 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { onMount } from 'svelte';
-
-	import { loadItem, CollectionType, NewsStore } from '$lib/stores/ObjectStore';
+	import { updateDoc, type DocumentReference, type DocumentData } from 'firebase/firestore';
+	import { type News, EditModeStore } from '$lib/stores/ObjectStore';
 	import NewsForm from '$lib/components/NewsForm.svelte';
-	import { updateDoc, DocumentReference } from 'firebase/firestore';
 
-	let currentDocRef: DocumentReference | null = null;
+	interface Props {
+		data: {
+			newsItem: News;
+			docRef: DocumentReference;
+		};
+	}
 
-	/**
-	 * TODO: Report completion or error
-	 */
-	onMount(async () => {
-		currentDocRef = await loadItem(page.params.newsId, CollectionType.News);
-	});
+	let { data }: Props = $props();
 
-	const updateNews = async (event: CustomEvent<Record<string, any>>) => {
-		await updateDoc(currentDocRef!, event.detail);
+	const updateNews = async (updatedNews: News) => {
+		try {
+			if (!data.docRef) {
+				throw new Error('No document reference provided');
+			}
+			const newsData = { ...updatedNews } as DocumentData;
+			await updateDoc(data.docRef, newsData);
+			EditModeStore.set('');
+		} catch (error) {
+			console.error('Error updating the news: ', error);
+		}
 	};
 </script>
 
 <div>
-	<NewsForm thisItem={$NewsStore} on:update={updateNews} />
+	<NewsForm thisNews={data.newsItem} onUpdate={updateNews} />
 </div>

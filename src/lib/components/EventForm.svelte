@@ -1,13 +1,18 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
 	import { Timestamp } from 'firebase/firestore';
 
 	import { uploadImage } from '$lib/services/fileService';
-	import { EditMode, EditModeStore, type Event } from '$lib/stores/ObjectStore';
-	import { selectedLocation, AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
+	import { EditMode, EditModeStore, type DomainEvent } from '$lib/stores/ObjectStore';
+	import {
+		selectedLocation,
+		AllLocations,
+		fetchLocations,
+		type Location,
+	} from '$lib/stores/LocationsStore';
 	import { authStore } from '$lib/stores/AuthStore';
 
 	import UploadImage from '$lib/components/UploadImage.svelte';
@@ -18,9 +23,7 @@
 	import Editor from './Editor.svelte';
 	import SlugText from './SlugText.svelte';
 
-	const dispatch = createEventDispatcher();
-
-	const defaultEvent: Event = {
+	const defaultEvent: DomainEvent = {
 		author: $authStore.name,
 		title: '',
 		subtitle: '',
@@ -45,12 +48,14 @@
 	};
 
 	interface Props {
-		thisEvent?: Event;
+		thisEvent?: DomainEvent;
+		onCreateNew?: (event: DomainEvent) => Promise<void>;
+		onUpdate?: (event: DomainEvent) => Promise<void>;
 	}
 
-	let { thisEvent = defaultEvent }: Props = $props();
+	let { thisEvent = defaultEvent, onCreateNew, onUpdate }: Props = $props();
 
-	let newEvent: Event = $state(defaultEvent);
+	let newEvent: DomainEvent = $state(defaultEvent);
 	let hasImage = writable(false);
 	let selectedImage: File;
 	let showModal = $state(false);
@@ -77,16 +82,17 @@
 		loading = false;
 	});
 
-	const handleConditionChange = (e: Event & { target: HTMLInputElement }) => {
-		if (e.target.checked) {
+	const handleConditionChange = (e: Event) => {
+		const target = e.target as HTMLInputElement;
+		if (target.checked) {
 			newEvent.condition = 'Entry is free, donations are welcome.';
 		} else {
 			newEvent.condition = '';
 		}
 	};
 
-	const handleSlugChange = (e: CustomEvent) => {
-		newEvent.slug = e.detail;
+	const handleSlugChange = (slugText: string) => {
+		newEvent.slug = slugText;
 	};
 
 	const handleSetPublishDate = (e: MouseEvent) => {
@@ -105,27 +111,27 @@
 		}
 	};
 
-	const handleImageChange = (e: CustomEvent) => {
-		selectedImage = e.detail;
-		hasImage.set(!!e.detail);
+	const handleImageChange = (imageFile: File) => {
+		selectedImage = imageFile;
+		hasImage.set(!!selectedImage);
 	};
 
-	const handleLocationChange = (event: CustomEvent<{ value: string }>) => {
-		if (event.detail.value === 'new') {
-			showModal = true;
-		} else {
-			newEvent.location = event.detail.value;
-		}
+	const handleLocationChange = (locationId: string) => {
+		newEvent.location = locationId;
 	};
 
-	const handleLocationAddedModal = async (event: CustomEvent) => {
+	const createNewLocation = () => {
+		showModal = true;
+	};
+
+	const handleLocationAddedModal = async (newLocation: Location) => {
 		// First close the modal to prevent any component refresh issues
 		showModal = false;
 		// Then fetch updated locations
 		await fetchLocations();
 
 		// Find the newly created location by ID
-		const newLocId = event.detail.id;
+		const newLocId = newLocation.id;
 		const foundLocation = $AllLocations.find((loc) => loc.id === newLocId);
 
 		if (foundLocation) {
@@ -135,8 +141,8 @@
 		}
 	};
 
-	const assignPDF = (e: CustomEvent) => {
-		newEvent.pdfFile = e.detail.url;
+	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
+		newEvent.pdfFile = pdfDocument.url;
 	};
 
 	const handleSubmit = async (e: SubmitEvent) => {
@@ -166,7 +172,11 @@
 		if (selectedImage) {
 			newEvent.image = await uploadImage(selectedImage);
 		}
-		dispatch($EditModeStore, newEvent);
+		if ($EditModeStore === EditMode.New && onCreateNew) {
+			await onCreateNew(newEvent);
+		} else if ($EditModeStore === EditMode.Update && onUpdate) {
+			await onUpdate(newEvent);
+		}
 
 		goto('/admin/eventsadmin');
 	};
@@ -230,20 +240,23 @@
 			<SlugText
 				text={newEvent.description}
 				slugText={newEvent.slug}
-				on:slugChange={handleSlugChange}
+				onSlugChange={handleSlugChange}
 			/>
 
 			<!-- Location -->
 			<div class="form-area">
 				<div>
 					<Label child="Location">Location *</Label>
-					<LocationDropdown on:change={handleLocationChange} />
+					<LocationDropdown
+						onLocationChange={handleLocationChange}
+						onNewLocation={createNewLocation}
+					/>
 
 					<!-- Modal for new location -->
 					{#if showModal}
 						<NewLocationModal
-							on:locationAdded={handleLocationAddedModal}
-							on:close={() => (showModal = false)}
+							onLocationAdded={handleLocationAddedModal}
+							onClose={() => (showModal = false)}
 						/>
 					{/if}
 				</div>
@@ -419,9 +432,9 @@
 					<Label child="image">Image</Label>
 					<div class="flex items-center justify-center">
 						{#if newEvent.image}
-							<UploadImage imageUrl={newEvent.image} on:imageChange={handleImageChange} />
+							<UploadImage imageUrl={newEvent.image} onImageChange={handleImageChange} />
 						{:else}
-							<UploadImage imageUrl="" on:imageChange={handleImageChange} />
+							<UploadImage imageUrl="" onImageChange={handleImageChange} />
 						{/if}
 					</div>
 				</div>
@@ -466,7 +479,7 @@
 				<div>
 					<Label child="pdfFile">PDF Document</Label>
 					<div class="flex flex-col items-center justify-center">
-						<UploadPDF fileUrl={newEvent.pdfFile} on:upload={assignPDF} />
+						<UploadPDF fileUrl={newEvent.pdfFile} onUpload={assignPDF} />
 						<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
 							Upload a PDF document that will be attached to this event (max 5MB).
 						</p>

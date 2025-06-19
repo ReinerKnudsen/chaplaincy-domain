@@ -2,13 +2,6 @@
 	import ProfileCard from '$lib/components/ProfileCard.svelte';
 	import { profiles } from '$lib/data/data.json';
 
-	type ProfileData = {
-		name: string;
-		role: string;
-		description: string;
-		photoUrl: string;
-	};
-
 	const imageAlternate: boolean = true;
 
 	const positionImage = (index: number) => {
@@ -28,6 +21,6 @@
 </div>
 <div class="mx-auto w-full sm:w-3/4">
 	{#each profiles as profile, index}
-		<ProfileCard {profile} {index} imagePosition={positionImage(index)} />
+		<ProfileCard {profile} imagePosition={positionImage(index)} />
 	{/each}
 </div>

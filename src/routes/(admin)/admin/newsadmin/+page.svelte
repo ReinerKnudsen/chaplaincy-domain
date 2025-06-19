@@ -28,14 +28,15 @@
 		await loadItems(CollectionType.News);
 	};
 
-	let deleteDialog: HTMLDialogElement = $state();
+	let deleteDialog: HTMLDialogElement | null = $state(null);
 	let deleteID: string = '';
 	let loading = $state(true);
 
 	onMount(async () => {
 		$pathName = page.url.pathname;
 		await loadData();
-		sortItems.set([...$NewsItemsStore]);
+		// Initial sort settings are already loaded from session storage
+		// The $effect block will handle the initial sort
 		loading = false;
 	});
 
@@ -44,7 +45,6 @@
 
 	const getStoredSortSettings = () => {
 		if (typeof window === 'undefined') return { key: 'title', direction: 1 };
-
 		const stored = sessionStorage.getItem(STORAGE_KEY);
 		if (stored) {
 			try {
@@ -62,20 +62,6 @@
 	const sortDirection: Writable<1 | -1> = writable(initialDirection as 1 | -1);
 	const sortItems: Writable<typeof $NewsItemsStore> = writable($NewsItemsStore.slice());
 
-	// Update sessionStorage when sort settings change
-	run(() => {
-		if (typeof window !== 'undefined') {
-			sessionStorage.setItem(
-				STORAGE_KEY,
-				JSON.stringify({ key: $sortKey, direction: $sortDirection }),
-			);
-		}
-	});
-
-	run(() => {
-		if ($NewsItemsStore) sortItems.set($NewsItemsStore.slice());
-	}); // make a copy of the array
-
 	const sortTable = (key: NewsSortableFields) => {
 		if ($sortKey === key) {
 			sortDirection.update((val) => (val === 1 ? -1 : 1));
@@ -85,20 +71,29 @@
 		}
 	};
 
-	run(() => {
-		const key = $sortKey;
-		const direction = $sortDirection;
-		const sorted = [...$sortItems].sort((a, b) => {
-			const aVal = a.data[key];
-			const bVal = b.data[key];
-			if (aVal < bVal) {
-				return -direction;
-			} else if (aVal > bVal) {
-				return direction;
-			}
-			return 0;
-		});
-		sortItems.set(sorted);
+	// Update sorting and sessionStorage when sort settings or items change
+	$effect(() => {
+		if (typeof window !== 'undefined') {
+			sessionStorage.setItem(
+				STORAGE_KEY,
+				JSON.stringify({ key: $sortKey, direction: $sortDirection }),
+			);
+		}
+
+		// Sort items if available
+		if ($NewsItemsStore?.length) {
+			const sorted = [...$NewsItemsStore].sort((a, b) => {
+				const aVal = a.data[$sortKey];
+				const bVal = b.data[$sortKey];
+				if (aVal < bVal) {
+					return -$sortDirection;
+				} else if (aVal > bVal) {
+					return $sortDirection;
+				}
+				return 0;
+			});
+			sortItems.set(sorted);
+		}
 	});
 
 	const handleSearchInput = (event: Event) => {
@@ -122,15 +117,19 @@
 	};
 
 	const handleDelete = async () => {
+		if (!deleteDialog || !deleteID) return;
+
 		await deleteDoc(doc(newsColRef, deleteID));
 		await loadData();
 		NewsItemsStore.set($NewsItemsStore.filter((item) => item.id !== deleteID));
-		deleteDialog?.close();
+		deleteDialog.close();
+		deleteID = '';
 	};
 
 	const openModal = (id: string) => {
+		if (!deleteDialog) return;
 		deleteID = id;
-		deleteDialog?.showModal();
+		deleteDialog.showModal();
 	};
 </script>
 

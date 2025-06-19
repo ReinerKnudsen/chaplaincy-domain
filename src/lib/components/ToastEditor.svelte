@@ -1,18 +1,19 @@
 <script lang="ts">
-	import { onMount, createEventDispatcher } from 'svelte';
+	import { onMount } from 'svelte';
 
 	import Editor from '@toast-ui/editor';
 	import '@toast-ui/editor/dist/toastui-editor.css';
 	import '$lib/styles/markdown.css';
 
-	const dispatch = createEventDispatcher();
 
-	interface Props {
-		initialContent?: string;
-	}
+interface Props {
+    initialContent?: string;
+    onImageUpload: (blob: Blob, callback: (imageUrl: string) => void) => void;
+    onChange: (content: { markdown: string; html: string }) => void;
+}
 
-	let { initialContent = '' }: Props = $props();
-	let editorElement: HTMLElement = $state();
+	let { initialContent = '', onImageUpload, onChange }: Props = $props();
+	let editorElement: HTMLDivElement;
 	let editor: Editor;
 
 	// Function to get markdown content
@@ -36,22 +37,19 @@
 			initialValue: initialContent,
 			hooks: {
 				addImageBlobHook: (blob, callback) => {
-					dispatch('imageUpload', {
-						blob,
-						callback: (imageUrl: string) => callback(imageUrl),
-					});
-					return false;
+    			onImageUpload(blob, callback);
+    			return false;
+					}
 				},
-			},
-		});
-
-		editor.on('change', () => {
-			dispatch('change', {
-				markdown: editor.getMarkdown(),
-				html: editor.getHTML(),
 			});
-		});
-
+		editor.on('change', () => {
+    onChange({
+        markdown: editor.getMarkdown(),
+        html: editor.getHTML()
+    		}
+			);
+			}
+		);
 		return () => {
 			if (editor) {
 				editor.destroy();

@@ -3,11 +3,11 @@
 	import { authStore } from '$lib/stores/AuthStore';
 
 	let role: string | null = $state(null);
+	let user = $state();
 
 	$effect(() => {
-		authStore.subscribe((store) => {
-			role = store.role;
-		});
+		user = $authStore.user;
+		role = $authStore.role;
 	});
 
 	onMount(() => {});

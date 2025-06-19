@@ -20,9 +20,7 @@
 	});
 
 	$effect(() => {
-		authStore.subscribe((store: AuthState) => {
-			auth = store;
-		});
+		auth = $authStore;
 	});
 
 	const makeadmin = async (e: Event) => {

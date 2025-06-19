@@ -2,7 +2,7 @@
 </script>
 
 <div class="my-3 w-full">
-	<h1>Where we are</h1>
+	<div class="page-title">Where we are</div>
 	<div class="flex flex-col gap-10">
 		<div>
 			<h2>St Boniface in Bonn</h2>

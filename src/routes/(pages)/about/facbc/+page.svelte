@@ -2,7 +2,9 @@
 </script>
 
 <div class="my-3 w-full">
-	<h1>The Friends of the Anglican Chaplaincy in Bonn and Cologne (FACBC e.V.)</h1>
+	<div class="page-title">
+		The Friends of the Anglican Chaplaincy in Bonn and Cologne (FACBC e.V.)
+	</div>
 
 	<div class="fliesstext mx-auto mb-20 text-lg">
 		<p>

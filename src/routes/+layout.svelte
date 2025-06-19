@@ -62,7 +62,7 @@
 </script>
 
 <Navigation />
-<div id="main-container" class="mt-10 flex min-h-screen flex-col">
+<div id="main-container" class=" mt-10 flex min-h-screen flex-col overflow-clip">
 	<div id="main-content" class="">
 		{@render children?.()}
 	</div>

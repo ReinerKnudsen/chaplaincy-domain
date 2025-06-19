@@ -23,9 +23,9 @@
 	};
 </script>
 
-<footer class="bg-white-primary w-screen">
+<footer class="w-screen">
 	<div
-		class="bg-white-smoke mx-auto max-w-[1400px] rounded-t-3xl border border-slate-300 px-4 pb-4 sm:px-6 lg:px-8"
+		class="bg-white-primary px-4´ mx-auto w-[calc(99%-2rem)] rounded-t-3xl border border-slate-300 pb-4 sm:px-6 lg:px-8"
 	>
 		<div class="grid grid-cols-1 gap-6 pt-8 sm:grid-cols-4">
 			<!-- Resources -->

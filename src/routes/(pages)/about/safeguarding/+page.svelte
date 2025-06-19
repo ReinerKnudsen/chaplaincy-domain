@@ -2,7 +2,7 @@
 </script>
 
 <div class="my-3 w-full">
-	<h1>Safeguarding</h1>
+	<div class="page-title">Safeguarding</div>
 </div>
 <img
 	src="https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fsafeguarding_crop.jpg?alt=media&token=a831da11-e619-4d32-822d-86de24e6d0e1"

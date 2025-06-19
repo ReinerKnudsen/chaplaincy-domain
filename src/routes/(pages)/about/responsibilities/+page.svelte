@@ -17,7 +17,7 @@
 </script>
 
 <div class="my-3 w-full">
-	<h1>Who is who?</h1>
+	<div class="page-title">Who is who?</div>
 </div>
 <div class="mx-auto w-full sm:w-3/4">
 	{#each profiles as profile, index}

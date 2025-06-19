@@ -22,7 +22,6 @@
 	// Sort news items
 	const sortKey = writable<NewsSortableFields>('publishdate'); // default sort key
 	const sortDirection = writable<1 | -1>(-1); // default sort direction (ascending)
-	const sortItems = writable<CollectionItem[]>([]); // Start empty
 
 	const loadData = async () => {
 		try {

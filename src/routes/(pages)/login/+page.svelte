@@ -1,6 +1,4 @@
 <script>
-	import { run } from 'svelte/legacy';
-
 	import { signInExistingUser } from '$lib/services/authService';
 	import { authStore } from '$lib/stores/AuthStore';
 	import { goto } from '$app/navigation';
@@ -13,7 +11,7 @@
 	onMount(() => {
 		document.getElementById('email').focus();
 	});
-	run(() => {
+	$effect(() => {
 		error = authStore.error;
 	});
 

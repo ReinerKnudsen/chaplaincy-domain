@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { run } from 'svelte/legacy';
 
 	import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';
@@ -6,8 +6,11 @@
 	import '$lib/styles/markdown.css';
 	import { onMount } from 'svelte';
 
-	/** @type {{content?: string}} */
-	let { content = '' } = $props();
+	interface Props {
+		content?: string;
+	}
+
+	let { content = '' }: Props = $props();
 	let viewerElement = $state();
 	let viewer = $state();
 

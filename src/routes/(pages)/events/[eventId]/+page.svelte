@@ -1,10 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
-
 	import Icon from '@iconify/svelte';
 
 	import * as formats from '$lib/formats';
@@ -30,14 +27,13 @@
 		$EventStore?.location
 			? (location = $AllLocations.find((location) => location.id === $EventStore.location))
 			: (location = undefined);
-
 	});
 </script>
 
 {#if loading}
 	<p>Loading...</p>
 {:else if $EventStore}
-	<div class="rounded-2xl bg-white-primary">
+	<div class="bg-white-primary rounded-2xl">
 		<div class={`container ${formats.container}`}>
 			<div class={`headline ${formats.headline}`}>
 				{$EventStore.title}
@@ -71,12 +67,12 @@
 		</div>
 	</div>
 	<div class={`back-link ${formats.backLink}`}>
-		<Icon icon="fa6-regular:circle-left" class="w-6 h-6"/>
+		<Icon icon="fa6-regular:circle-left" class="h-6 w-6" />
 		<a class={formats.aLink} href="/events">Take me back to overview</a>
 	</div>
-	{:else}
+{:else}
 	<p>Event not found</p>
-	{/if}
-	
+{/if}
+
 <style>
 </style>

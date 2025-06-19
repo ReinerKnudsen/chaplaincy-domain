@@ -2,7 +2,7 @@
 	interface Props {
 		child: string;
 		disabled?: boolean;
-		class: string;
+		class?: string;
 		children?: () => any;
 	}
 

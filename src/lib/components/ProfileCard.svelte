@@ -17,7 +17,7 @@
 	let { imagePosition, profile }: Props = $props();
 	//export let index: number;
 
-	let screenWidth: number = $state();
+	let screenWidth: number = $state(window.innerWidth);
 	let photo = { url: profile.photoUrl, name: profile.name };
 
 	const updateScreenWidth = () => {

@@ -2,9 +2,8 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 
-	import { collection, doc, getDocs, getDoc } from 'firebase/firestore';
+	import { doc, getDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
-
 
 	import Icon from '@iconify/svelte';
 
@@ -12,7 +11,7 @@
 
 	import MarkdownViewer from '$lib/components/MarkdownViewer.svelte';
 
-	let thisItem = $state({});
+	let thisNews = $state({});
 	let loading = $state(true); // Initialize loading state
 
 	onMount(async () => {
@@ -21,7 +20,7 @@
 			const docRef = doc(database, 'news', newsId);
 			const docSnapshot = await getDoc(docRef);
 			if (docSnapshot.exists()) {
-				thisItem = docSnapshot.data();
+				thisNews = docSnapshot.data();
 			} else {
 				console.error('Could not load news document!');
 			}
@@ -35,41 +34,41 @@
 {#if loading}
 	Loading...
 {:else}
-	<div class="rounded-2xl bg-white-primary">
+	<div class="bg-white-primary rounded-2xl">
 		<div class={`container ${formats.container}`}>
 			<div class={`headline ${formats.headline}`}>
-				{thisItem.title}
+				{thisNews.title}
 			</div>
 			<div class={`news-data ${formats.itemMetaData}`}>
 				<div class={`entry ${formats.itemMetaDataEntry}`}>
 					<Icon icon="fa6-regular:calendar" />
-					{thisItem.publishdate}
+					{thisNews.publishdate}
 				</div>
 				<div class={`entry ${formats.itemMetaDataEntry}`}>
 					<Icon icon="fa6-solid:at" />
-					{thisItem.author}
+					{thisNews.author}
 				</div>
-				{#if thisItem.tags}
+				{#if thisNews.tags}
 					<div class={`entry ${formats.itemMetaDataEntry}`}>
 						<Icon name="tags" />
-						{thisItem.tags}
+						{thisNews.tags}
 					</div>
 				{/if}
-				{#if thisItem.imageCaption}
+				{#if thisNews.imageCaption}
 					<div class={`entry ${formats.itemMetaDataEntry}`}>
 						<Icon icon="fa-solid:camera-retro" />
-						{thisItem.imageCaption}
+						{thisNews.imageCaption}
 					</div>
 				{/if}
 			</div>
 			<div class={`news-image ${formats.itemImageContainer}`}>
-				<img class={formats.itemImage} src={thisItem.image} alt={thisItem.title} />
+				<img class={formats.itemImage} src={thisNews.image} alt={thisNews.title} />
 			</div>
-			<MarkdownViewer content={thisItem.text} />
+			<MarkdownViewer content={thisNews.text} />
 		</div>
 	</div>
 	<div class={`back-link ${formats.backLink}`}>
-		<Icon icon="fa6-regular:circle-left" class="w-6 h-6"/>
+		<Icon icon="fa6-regular:circle-left" class="h-6 w-6" />
 		<a class={formats.aLink} href="/news">Take me back to overview</a>
 	</div>
 {/if}

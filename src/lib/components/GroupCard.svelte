@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { decodeHtml } from '$lib/utils/HTMLfunctions';
-
 	type Group = {
 		name: string;
 		text: string;
@@ -23,7 +21,7 @@
 		<h2 class="group-title pt-6 pb-4 text-2xl font-semibold">{name}</h2>
 	</div>
 	<div class="group-text flex flex-col space-y-8 pb-4">
-		{decodeHtml(text)}
+		{@html text}
 
 		{#if extraLink || eventsLink}
 			{#if extraLink && eventsLink}

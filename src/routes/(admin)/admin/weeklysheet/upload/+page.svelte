@@ -57,9 +57,9 @@
 		</div>
 
 		<div>
-			<Label class="mt-8 mb-2 text-xl font-semibold">PDF Document</Label>
+			<Label child="" class="mt-8 mb-2 text-xl font-semibold">PDF Document</Label>
 			<div class="flex flex-col items-center justify-center">
-				<UploadPDF target="weeklysheet" on:upload={saveDocRef} />
+				<UploadPDF target="weeklysheet" onUpload={saveDocRef} />
 			</div>
 		</div>
 		<!-- Buttons -->

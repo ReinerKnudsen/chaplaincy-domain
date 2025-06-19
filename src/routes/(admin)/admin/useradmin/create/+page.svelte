@@ -30,7 +30,7 @@
 		newUser = initUser;
 	};
 
-	const createUser = async (e) => {
+	const createUser = async (e: Event) => {
 		e.preventDefault();
 		const user = await createNewUser(newUser);
 		goto('/admin/useradmin');

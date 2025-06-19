@@ -27,7 +27,7 @@
 		}
 	};
 
-	run(() => {
+	$effect(() => {
 		const key = $sortKey;
 		const direction = $sortDirection;
 		const sorted = [...data.documents].sort((a, b) => {
@@ -46,7 +46,6 @@
 
 	const handleSearchInput = (event: Event) => {
 		const target = event.target as HTMLInputElement;
-		//console.log(target.value);
 	};
 
 	const handleClick = () => {

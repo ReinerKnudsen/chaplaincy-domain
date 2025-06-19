@@ -2,7 +2,7 @@
 </script>
 
 <div class="my-3 w-full">
-	<h1>About us</h1>
+	<div class="page-title">About us</div>
 </div>
 <div class="fliesstext mx-auto mb-20 flex flex-col items-center md:grid md:grid-cols-3">
 	<div class="col-span-1 text-left text-lg md:col-span-2">

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import type { MenuItem } from '$lib/types.d';
 	import { onMount } from 'svelte';
 
@@ -15,13 +13,14 @@
 
 	const toggleDropdown = () => {
 		showDropdown = !showDropdown;
+		console.log(showDropdown);
 	};
 
 	const handleClickOutside = (event: MouseEvent) => {
 		if (!event.target) return;
 
 		const target = event.target as HTMLElement;
-		const isMenuButton = target.closest('button.menuitem');
+		const isMenuButton = target.closest('#showMenue');
 		const isDropdown = target.closest('.dropdown');
 
 		// Don't close if clicking the menu button (let toggleDropdown handle it)
@@ -46,12 +45,13 @@
 <div>
 	<button
 		type="button"
-		class="menuitem btn btn-outline text-primary-80 border-0 text-xl font-semibold"
-		onclick={preventDefault(toggleDropdown)}>{title}</button
+		id="showMenue"
+		class="btn btn-outline border-0 text-xl font-semibold"
+		onclick={toggleDropdown}><span class="text-primary-80 pb-1">{title}</span></button
 	>
 	{#if showDropdown}
 		<div
-			class="nav-menu bg-white-primary absolute right-8 z-50 mt-2 w-48 rounded-md border border-gray-200 py-4 shadow-lg"
+			class="dropdown nav-menu bg-white-primary absolute right-8 z-50 mt-10 w-48 rounded-md border border-gray-200 py-4 shadow-lg"
 			role="menu"
 			aria-orientation="vertical"
 			aria-labelledby="options-menu"

@@ -124,7 +124,7 @@
 					{/each}
 				</div>
 				<div class="more-link">
-					<a href="/news" class="link"><button class="calltoaction">See all news</button></a>
+					<a href="/news"><button class="calltoaction">See all news</button></a>
 				</div>
 			</div>
 		</section>

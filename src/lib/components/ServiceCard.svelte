@@ -22,7 +22,7 @@
 
 <div class={container}>
 	<div class={`icon ${cardIcon}`}>
-		<Icon icon={icon} class="h-12 w-12" />
+		<Icon {icon} class="h-12 w-12" />
 	</div>
 	<div class={content}>
 		<h3 class={h3}>{service.name}</h3>
@@ -32,9 +32,7 @@
 	</div>
 	<div class="location text-center">
 		<h4 class="mt-2">{service.place_church}</h4>
-		<a class="underline underline-offset-4" href={service.url} target="_blank"
-			>{decodeHtml( service.place_address)}</a
-		>
+		<a class="link" href={service.url} target="_blank">{decodeHtml(service.place_address)}</a>
 	</div>
 </div>
 

@@ -10,11 +10,11 @@
 
 	let { item, kind }: Props = $props();
 
-	const itemCardContainer = 'sm:grid-col-1 my-5 grid rounded-2xl border border-slate-200 p-6 shadow-xl bg-white lg:grid-col-3';
+	const itemCardContainer = '';
 
 </script>
 
-<div class={itemCardContainer}>
+<div class="flex flex-col my-5 rounded-2xl border border-slate-200 p-6 shadow-xl bg-white ">
 	<div id="itemHeadline" class="">
 		<a class="headLineLink" href="/{kind}/{item.id}">
 		<span class="headLineElement">{item.data.title}</span>
@@ -22,8 +22,13 @@
 		</a>
 	</div>
 	<div id="cardContent" class="justify-between py-4 md:flex md:gap-5">
-		<div id="image" class="mb-5 flex h-auto w-full align-middle sm:w-[40%]">
-			<img class="w-full rounded-2xl" src={item.data.image} alt={item.data.imageAlt} />
+		<div class="mb-5 w-full md:max-w-[40%] aspect-[3/2] overflow-hidden rounded-2xl">
+			<img 
+				class="w-full h-full object-cover" 
+				src={item.data.image} 
+				alt={item.data.imageAlt} 
+				loading="lazy"
+			/>
 		</div>
 		<div id="cardText" class="text-md w-full md:w-[60%]">
 			<div class="mb-8">

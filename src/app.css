@@ -153,6 +153,27 @@
 		transform: scaleX(1);
 	}
 
+  .headLineLink {
+    padding-bottom: 0;
+    font-size: var(--text-xl);
+    line-height: var(--text-xl--line-height);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary-100);
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  .headLineElement {
+      color: var(--color-primary-100);
+      transition: color 0.2s ease-in-out;
+  }
+  
+  .headLineElement:hover {
+      color: var(--color-primary-40);
+  }
+
 	h1 {
 		color: black;
 		font-weight: 700;

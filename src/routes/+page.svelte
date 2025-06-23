@@ -54,16 +54,6 @@
 	$effect(() => {
 		user = $authStore.user;
 	});
-
-	let whiteCount = $derived(
-		[
-			true, // Services always white
-			$LatestNewsStore.length > 0, // News section if present
-			$NextEventsStore.length > 0, // Events section if present
-		].filter(Boolean).length,
-	);
-
-	let shouldBeWhite = $derived((sectionIndex: number) => (sectionIndex + whiteCount) % 2 === 0);
 </script>
 
 <section >
@@ -114,7 +104,7 @@
 <!-- Section: News and Notices -->
 {#if !loading}
 	<!-- News section -->
-	<section >
+	<section>
 		<div class="content-container">
 			<h2 class="section-header">What's up?</h2>
 			{#if $LatestNewsStore.length > 0}
@@ -157,16 +147,6 @@
 		</section>
 
 {/if}
-<hr class="mx-auto w-[80%]" />
-
-<!-- About us 
-<div class="section-header">Who we are</div>
-<div class="single-post">
-	<div class="more-link">
-		<a class="border-b-2 border-b-purple-100 pb-1" href="/about">Learn more</a>
-	</div>
-</div>
-<hr class="mx-auto w-[80%]" /> -->
 
 <!-- Safeguarding -->
 <section >
@@ -196,7 +176,7 @@
 		</div>
 	</div>
 </section>
-<hr class="mx-auto w-[80%]" />
+
 
 <!-- signup section-->
 <section class="bg-white-smoke">
@@ -263,7 +243,7 @@
 </section>
 
 <!-- Download section-->
-<section id="downloads" class={shouldBeWhite(1) ? 'bg-white-primary' : 'bg-white-smoke'}>
+<section id="downloads">
 	<div class="content-container">
 		<h2 class="section-header">Downloads</h2>
 		<div class="pl-10">

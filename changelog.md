@@ -12,8 +12,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
-- major update to event and news page to use UTC dates instead of local dates
-- implemented a fall back for older items without UTC dates
+-
 
 ### Changed
 
@@ -23,6 +22,12 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [2.0.0] - 2025-06-24
+
+### Added
+
+- major update to event and news page to use UTC dates instead of local dates
+- implemented a fall back for older items without UTC dates
 ## [1.2.0] - 2025-06-24
 
 ### Fixed

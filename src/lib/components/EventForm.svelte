@@ -1,13 +1,18 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
 	import { Timestamp } from 'firebase/firestore';
 
 	import { uploadImage } from '$lib/services/fileService';
-	import { EditMode, EditModeStore, type Event } from '$lib/stores/ObjectStore';
-	import { selectedLocation, AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
+	import { EditMode, EditModeStore, type DomainEvent, initialDomainEvent } from '$lib/stores/ObjectStore';
+	import {
+		selectedLocation,
+		AllLocations,
+		fetchLocations,
+		type Location,
+	} from '$lib/stores/LocationsStore';
 	import { authStore } from '$lib/stores/AuthStore';
 
 	import UploadImage from '$lib/components/UploadImage.svelte';
@@ -18,40 +23,20 @@
 	import Editor from './Editor.svelte';
 	import SlugText from './SlugText.svelte';
 
-	const dispatch = createEventDispatcher();
+	interface Props {
+		thisEvent?: DomainEvent;
+		onCreateNew?: (event: DomainEvent) => Promise<void>;
+		onUpdate?: (event: DomainEvent) => Promise<void>;
+	}
 
-	const defaultEvent: Event = {
-		author: $authStore.name,
-		title: '',
-		subtitle: '',
-		description: '',
-		slug: '',
-		startdate: '',
-		starttime: '',
-		enddate: '',
-		endtime: '',
-		location: '',
-		condition: '',
-		publishdate: '',
-		publishtime: '',
-		publishDateTime: Timestamp.fromDate(new Date()),
-		unpublishdate: '',
-		unpublishtime: '',
-		unpublishDateTime: Timestamp.fromDate(new Date()),
-		comments: '',
-		image: '',
-		imageAlt: '',
-		tags: [],
-	};
+	let { thisEvent = initialDomainEvent, onCreateNew, onUpdate }: Props = $props();
 
-	export let thisEvent: Event = defaultEvent;
-
-	let newEvent: Event = defaultEvent;
-	let hasImage = writable(false);
+	let newEvent: DomainEvent = $state(initialDomainEvent);
+	let hasImage = writable(!!thisEvent.image);
+	let hasPDF = writable(!!thisEvent.pdfFile);
 	let selectedImage: File;
-	let showModal = false;
-	let loading = true;
-	let isOnline = false;
+	let showModal = $state(false);
+	let loading = $state(true);
 
 	onMount(async () => {
 		if ($EditModeStore === EditMode.Update) {
@@ -69,21 +54,22 @@
 				},
 			);
 		} else {
-			newEvent = { ...defaultEvent };
+			newEvent = { ...initialDomainEvent };
 		}
 		loading = false;
 	});
 
-	const handleConditionChange = (e: Event & { target: HTMLInputElement }) => {
-		if (e.target.checked) {
+	const handleConditionChange = (e: Event) => {
+		const target = e.target as HTMLInputElement;
+		if (target.checked) {
 			newEvent.condition = 'Entry is free, donations are welcome.';
 		} else {
 			newEvent.condition = '';
 		}
 	};
 
-	const handleSlugChange = (e: CustomEvent) => {
-		newEvent.slug = e.detail;
+	const handleSlugChange = (slugText: string) => {
+		newEvent.slug = slugText;
 	};
 
 	const handleSetPublishDate = (e: MouseEvent) => {
@@ -102,29 +88,27 @@
 		}
 	};
 
-	const handleImageChange = (e: CustomEvent) => {
-		selectedImage = e.detail;
-		hasImage.set(!!e.detail);
+	const handleImageChange = (imageFile: File) => {
+		selectedImage = imageFile;
+		hasImage.set(!!selectedImage);
 	};
 
-	const handleLocationChange = (event: CustomEvent<{ value: string }>) => {
-		if (event.detail.value === 'new') {
-			showModal = true;
-		} else {
-			newEvent.location = event.detail.value;
-		}
-		isOnline =
-			$AllLocations.find((loc) => loc.id === event.detail.value)?.city.toLowerCase() === 'online';
+	const handleLocationChange = (locationId: string) => {
+		newEvent.location = locationId;
 	};
 
-	const handleLocationAddedModal = async (event: CustomEvent) => {
+	const createNewLocation = () => {
+		showModal = true;
+	};
+
+	const handleLocationAddedModal = async (newLocation: Location) => {
 		// First close the modal to prevent any component refresh issues
 		showModal = false;
 		// Then fetch updated locations
 		await fetchLocations();
 
 		// Find the newly created location by ID
-		const newLocId = event.detail.id;
+		const newLocId = newLocation.id;
 		const foundLocation = $AllLocations.find((loc) => loc.id === newLocId);
 
 		if (foundLocation) {
@@ -134,8 +118,9 @@
 		}
 	};
 
-	const assignPDF = (e: CustomEvent) => {
-		newEvent.pdfFile = e.detail.url;
+	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
+		newEvent.pdfFile = pdfDocument.url;
+		hasPDF.set(!!pdfDocument);
 	};
 
 	const handleSubmit = async (e: SubmitEvent) => {
@@ -165,13 +150,17 @@
 		if (selectedImage) {
 			newEvent.image = await uploadImage(selectedImage);
 		}
-		dispatch($EditModeStore, newEvent);
+		if ($EditModeStore === EditMode.New && onCreateNew) {
+			await onCreateNew(newEvent);
+		} else if ($EditModeStore === EditMode.Update && onUpdate) {
+			await onUpdate(newEvent);
+		}
 
 		goto('/admin/eventsadmin');
 	};
 
 	const handleReset = () => {
-		newEvent = { ...defaultEvent };
+		newEvent = { ...initialDomainEvent };
 		EditModeStore.set('');
 	};
 </script>
@@ -186,8 +175,8 @@
 	<form
 		id="form-container"
 		enctype="multipart/form-data"
-		on:submit={handleSubmit}
-		on:reset={handleReset}
+		onsubmit={handleSubmit}
+		onreset={handleReset}
 	>
 		<!-- First block -->
 		<div class="form bg-white-primary my-8 p-10">
@@ -229,20 +218,23 @@
 			<SlugText
 				text={newEvent.description}
 				slugText={newEvent.slug}
-				on:slugChange={handleSlugChange}
+				onSlugChange={handleSlugChange}
 			/>
 
 			<!-- Location -->
 			<div class="form-area">
 				<div>
 					<Label child="Location">Location *</Label>
-					<LocationDropdown on:change={handleLocationChange} />
+					<LocationDropdown
+						onLocationChange={handleLocationChange}
+						onNewLocation={createNewLocation}
+					/>
 
 					<!-- Modal for new location -->
 					{#if showModal}
 						<NewLocationModal
-							on:locationAdded={handleLocationAddedModal}
-							on:close={() => (showModal = false)}
+							onLocationAdded={handleLocationAddedModal}
+							onClose={() => (showModal = false)}
 						/>
 					{/if}
 				</div>
@@ -264,7 +256,7 @@
 							class="checkbox mr-4"
 							aria-describedby="helper-checkbox-text"
 							id="condition"
-							on:change={handleConditionChange}
+							onchange={handleConditionChange}
 						/>
 						Entry is free, donations are welcome
 					</label>
@@ -314,7 +306,7 @@
 					<div class="tooltip" data-tip="Sets the end date to the start date">
 						<button
 							class="btn btn-primary min-w-28"
-							on:click={handleSetEndDate}
+							onclick={handleSetEndDate}
 							disabled={!newEvent.startdate}
 							>Auto set
 						</button>
@@ -351,7 +343,7 @@
 						<div class="tooltip" data-tip="Sets the publish date to 14 days before the start date">
 							<button
 								class="btn btn-primary min-w-28"
-								on:click={handleSetPublishDate}
+								onclick={handleSetPublishDate}
 								disabled={!newEvent.startdate}
 								>Auto set
 							</button>
@@ -411,16 +403,16 @@
 				</div>
 			</div>
 
-			<!-- Fifth block -->
+			<!-- Fourth block -->
 			<div class="form bg-white-primary my-8 p-10">
 				<!-- Image -->
 				<div>
 					<Label child="image">Image</Label>
 					<div class="flex items-center justify-center">
 						{#if newEvent.image}
-							<UploadImage imageUrl={newEvent.image} on:imageChange={handleImageChange} />
+							<UploadImage imageUrl={newEvent.image} onImageChange={handleImageChange} />
 						{:else}
-							<UploadImage imageUrl="" on:imageChange={handleImageChange} />
+							<UploadImage imageUrl="" onImageChange={handleImageChange} />
 						{/if}
 					</div>
 				</div>
@@ -465,15 +457,32 @@
 				<div>
 					<Label child="pdfFile">PDF Document</Label>
 					<div class="flex flex-col items-center justify-center">
-						<UploadPDF fileUrl={newEvent.pdfFile} on:upload={assignPDF} />
-						<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
+						<UploadPDF fileUrl={newEvent.pdfFile} onUpload={assignPDF} />
+						{#if !$hasPDF}
+						<p class="explanation opacity-30">
 							Upload a PDF document that will be attached to this event (max 5MB).
 						</p>
+						{/if}
 					</div>
+					<div>
+							<Label child="pdfText" disabled={!$hasPDF}>PDF Description</Label>
+							<input
+								type="text"
+								id="pdfText"
+								class="input input-bordered w-full"
+								bind:value={newEvent.pdfText}
+								required={$hasPDF}
+								disabled={!$hasPDF}
+								placeholder={$hasPDF ? 'PDF Description' : 'Please select a PDF file first'}
+							/>
+							<p class="explanation {!$hasPDF ? 'opacity-30' : 'opacity-100'}">
+								This text is the visible text for the PDF download link on the event page..
+							</p>
+						</div>
 				</div>
 			</div>
 
-			<!-- Fourth block -->
+			<!-- Fifth block -->
 			<div class="form bg-white-primary my-8 p-10">
 				<!-- Comments -->
 				<div class="col-span-2">
@@ -485,7 +494,7 @@
 						rows="4"
 						name="comments"
 						bind:value={newEvent.comments}
-					/>
+					></textarea>
 				</div>
 			</div>
 
@@ -493,7 +502,7 @@
 			<div class="form bg-white-primary p-10">
 				<!-- Buttons -->
 				<div class="buttons col-span-2">
-					<button class="btn" type="reset" color="light" on:click={() => goto('/admin/eventsadmin')}
+					<button class="btn" type="reset" color="light" onclick={() => goto('/admin/eventsadmin')}
 						>Cancel</button
 					>
 					<button class="btn btn-neutral" type="reset" color="light">Empty form</button>

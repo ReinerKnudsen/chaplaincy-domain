@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
 
-	import { authStore } from '$lib/stores/AuthStore';
+	import { authStore, type AuthState } from '$lib/stores/AuthStore';
 	import { changeUserRole } from '$lib/services/authService';
 
 	const isEnabled = import.meta.env.VITE_ENABLE_MAKEADMIN === 'true';
@@ -10,22 +10,27 @@
 		goto('/');
 	}
 
-	let auth;
-
-	$: authStore.subscribe((store) => {
-		auth = store;
+	let auth = $state<AuthState>({
+		user: null,
+		loading: false,
+		error: null,
+		isLoggedIn: false,
+		role: '',
+		name: '',
 	});
 
-	const makeadmin = async () => {
-		if (!auth.user) {
+	$effect(() => {
+		auth = $authStore;
+	});
+
+	const makeadmin = async (e: Event) => {
+		e.preventDefault();
+		if (!auth.user || !auth.user.email) {
 			return;
-		} else {
-			let result = await changeUserRole(auth.user.email, 'admin');
-			if (result) {
-				console.info('Benutzer ist nun Admin');
-				goto('/');
-			}
 		}
+		await changeUserRole(auth.user.email, 'admin');
+		console.info('Benutzer ist nun Admin');
+		goto('/');
 	};
 </script>
 
@@ -36,7 +41,7 @@
 		<div>
 			{`Hier kannst Du den User ${auth.user.email} zum Admin machen :) `}
 		</div>
-		<form on:submit|preventDefault={makeadmin}>
+		<form onsubmit={makeadmin}>
 			<button class="btn btn-custom btn-primary" type="submit">Make admin</button>
 		</form>
 	{:else}

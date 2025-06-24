@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { goto } from '$app/navigation';
 
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
@@ -11,12 +13,12 @@
 	import NavigationItem from '$lib/components/NavigationItem.svelte';
 	import NavigationRollUp from '$lib/components/NavigationRollUp.svelte';
 
-	let user;
-	let menuOpen = false;
-	let aboutMenuOpen = true;
+	let user = $state();
+	let menuOpen = $state(false);
+	let aboutMenuOpen = $state(true);
 
-	$: authStore.subscribe((store) => {
-		user = store;
+	$effect(() => {
+		user = $authStore.user;
 	});
 
 	const handleLogout = async () => {
@@ -65,7 +67,7 @@
 				id="mobile-menu"
 				class="m-0.5 ms-3 rounded-lg p-1.5 whitespace-normal hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:outline-hidden lg:hidden dark:hover:bg-gray-600"
 				aria-label="Open main menu"
-				on:click={toggleMobileMenu}
+				onclick={toggleMobileMenu}
 				><span class="sr-only">Open main menu</span>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"

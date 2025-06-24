@@ -9,7 +9,8 @@
 			"subtitle": "Holy Communion",
 			"place_church": "St. Paulus Church",
 			"place_address": "Siegburger Str. 75, \nBonn-Beuel",
-			"url": "https://www.openstreetmap.org/?mlat=50.74153&mlon=7.13235#map=19/50.74153/7.13235"
+			"url": "https://www.openstreetmap.org/?mlat=50.74153&mlon=7.13235#map=19/50.74153/7.13235",
+			"mode": "onsite"
 		},
 		{
 			"id": "2",
@@ -20,7 +21,8 @@
 			"subtitle": "Holy Communion",
 			"place_church": "All Saints Church",
 			"place_address": "Bonner Str./Lindenallee, \nCologne",
-			"url": "https://www.openstreetmap.org/?mlat=50.89432&mlon=6.96776#map=19/50.89432/6.96776"
+			"url": "https://www.openstreetmap.org/?mlat=50.89432&mlon=6.96776#map=19/50.89432/6.96776",
+			"mode": "onsite"
 		},
 		{
 			"id": "3",
@@ -31,7 +33,8 @@
 			"subtitle": "",
 			"place_church": "Zoom",
 			"place_address": "Meeting Id: 542 044 8085",
-			"url": "https://us02web.zoom.us/j/5420448085?pwd=MFVnM1QzTzRsODZEaHVEUU9qZHpVdz09"
+			"url": "https://us02web.zoom.us/j/5420448085?pwd=MFVnM1QzTzRsODZEaHVEUU9qZHpVdz09",
+			"mode": "online"
 		},
 		{
 			"id": "4",
@@ -42,8 +45,8 @@
 			"subtitle": "Bible Study",
 			"place_church": "All Saints Church",
 			"place_address": "Bonner Str./Lindenallee, \nCologne",
-			"url": "https://www.openstreetmap.org/?mlat=50.89432&mlon=6.96776#map=19/50.89432/6.96776"
+			"url": "https://www.openstreetmap.org/?mlat=50.89432&mlon=6.96776#map=19/50.89432/6.96776",
+			"mode": "onsite"
 		}
-		
 	]
 }

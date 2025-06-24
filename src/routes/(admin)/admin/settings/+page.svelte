@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { pathName } from '$lib/stores/NavigationStore';
 
@@ -8,7 +8,7 @@
 	import { storage, imageColRef, database } from '$lib/firebase/firebaseConfig';
 
 	onMount(() => {
-		$pathName = $page.url.pathname;
+		$pathName = page.url.pathname;
 	});
 
 	const updateFilenames = async () => {
@@ -37,7 +37,7 @@
 </script>
 
 <div>
-	<button type="button" class="border-black border" on:click={updateFilenames}
+	<button type="button" class="border-black border" onclick={updateFilenames}
 		>Update filenames</button
 	>
 </div>

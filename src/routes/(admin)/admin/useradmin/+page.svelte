@@ -3,8 +3,8 @@
 	import { onMount } from 'svelte';
 	import { listAllUsers, type AdminUserData } from '$lib/services/authService';
 
-	let userList: AdminUserData[] = [];
-	let loading = true;
+	let userList: AdminUserData[] = $state([]);
+	let loading = $state(true);
 
 	onMount(async () => {
 		try {
@@ -61,7 +61,7 @@
 		</table>
 	</div>
 	<div class="mt-10 text-right">
-		<button type="button" class="btn btn-primary min-w-28" on:click={handleCreateUser}>
+		<button type="button" class="btn btn-primary min-w-28" onclick={handleCreateUser}>
 			Create user
 		</button>
 	</div>

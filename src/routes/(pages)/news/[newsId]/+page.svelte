@@ -1,25 +1,24 @@
 <script>
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
-	import { collection, doc, getDocs, getDoc } from 'firebase/firestore';
+	import { doc, getDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
 
-	import Icon from '$lib/components/Icon.svelte';
-	import * as formats from '$lib/formats';
+	import Icon from '@iconify/svelte';
 
 	import MarkdownViewer from '$lib/components/MarkdownViewer.svelte';
 
-	let thisItem = {};
-	let loading = true; // Initialize loading state
+	let thisNews = $state({});
+	let loading = $state(true); // Initialize loading state
 
 	onMount(async () => {
-		const newsId = $page.params.newsId;
+		const newsId = page.params.newsId;
 		try {
 			const docRef = doc(database, 'news', newsId);
 			const docSnapshot = await getDoc(docRef);
 			if (docSnapshot.exists()) {
-				thisItem = docSnapshot.data();
+				thisNews = docSnapshot.data();
 			} else {
 				console.error('Could not load news document!');
 			}
@@ -32,44 +31,58 @@
 
 {#if loading}
 	Loading...
-{:else}
-	<div class="rounded-2xl bg-white-primary">
-		<div class={`container ${formats.container}`}>
-			<div class={`headline ${formats.headline}`}>
-				{thisItem.title}
+{:else if thisNews}
+	<div class="article-container">
+		<div id="article-content">
+			<div class="article-title">
+				{thisNews.title}
 			</div>
-			<div class={`news-data ${formats.itemMetaData}`}>
-				<div class={`entry ${formats.itemMetaDataEntry}`}>
-					<Icon name="calendar" />
-					{thisItem.publishdate}
+			<div class="article-metadata">
+				<div class="article-metadata-item">
+					<Icon icon="fa6-regular:calendar" />
+					{thisNews.publishdate}
 				</div>
-				<div class={`entry ${formats.itemMetaDataEntry}`}>
-					<Icon name="author" />
-					{thisItem.author}
+				<div class="article-metadata-item">
+					<Icon icon="fa6-solid:at" />
+					{thisNews.author}
 				</div>
-				{#if thisItem.tags}
-					<div class={`entry ${formats.itemMetaDataEntry}`}>
+				{#if thisNews.tags}
+					<div class="article-metadata-item">
 						<Icon name="tags" />
-						{thisItem.tags}
+						{thisNews.tags}
 					</div>
 				{/if}
-				{#if thisItem.imageCaption}
-					<div class={`entry ${formats.itemMetaDataEntry}`}>
-						<Icon name="camera" />
-						{thisItem.imageCaption}
+				{#if thisNews.imageCaption}
+					<div class="article-metadata-item">
+						<Icon icon="fa-solid:camera-retro" />
+						{thisNews.imageCaption}
 					</div>
 				{/if}
 			</div>
-			<div class={`news-image ${formats.itemImageContainer}`}>
-				<img class={formats.itemImage} src={thisItem.image} alt={thisItem.title} />
+			<div id="news-iamge" class="article-image-container">
+				<img class="article-image" src={thisNews.image} alt={thisNews.title} />
 			</div>
-			<MarkdownViewer content={thisItem.text} />
+			<MarkdownViewer content={thisNews.text} />
+		</div>
+		<div id="pdfFile">
+			{#if thisNews.pdfFile}
+			<div id="pdf-download" class="flex flex-row justify-start gap-4 bg-white-smoke p-6">
+				<Icon icon="fa6-regular:file-pdf" class="h-6 w-6" />
+				<a class="link flex flex-row gap-4 font-semibold text-lg" href={thisNews.pdfFile} target="_blank">
+					<div>Download {thisNews.pdfText ? thisNews.pdfText : 'PDF'}</div>
+					<Icon icon="famicons:open-outline" class="h-6 w-6" />
+				</a>
+			</div>
+			{/if}
 		</div>
 	</div>
-	<div class={`back-link ${formats.backLink}`}>
-		<Icon name="left" />
-		<a class={formats.aLink} href="/news">Take me back to overview</a>
+
+	<div class="back-link">
+		<Icon icon="fa6-regular:circle-left" class="h-6 w-6" />
+		<a class="link" href="/news">Take me back to overview</a>
 	</div>
+{:else}
+	<p>News article not found</p>
 {/if}
 
 <style>

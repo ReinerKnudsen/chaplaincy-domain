@@ -1,10 +1,16 @@
 <script lang="ts">
-	export let child;
-	export let disabled = false;
+	interface Props {
+		child: string;
+		disabled?: boolean;
+		class?: string;
+		children?: () => any;
+	}
+
+	let { child, disabled, class: klass, children }: Props = $props();
 </script>
 
-<div class={$$props.class || 'mt-6 mb-2'}>
+<div class={klass || 'mt-6 mb-2'}>
 	<label for={child} class="text-xl font-semibold {disabled ? 'opacity-30' : 'opacity-100'}">
-		<slot />
+		{@render children?.()}
 	</label>
 </div>

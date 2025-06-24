@@ -2,20 +2,25 @@
 	import type { MenuItem } from '$lib/types.d';
 	import { onMount } from 'svelte';
 
-	export let title: string;
-	export let menuItems: MenuItem[];
+	interface Props {
+		title: string;
+		menuItems: MenuItem[];
+	}
 
-	let showDropdown = false;
+	let { title, menuItems }: Props = $props();
+
+	let showDropdown = $state(false);
 
 	const toggleDropdown = () => {
 		showDropdown = !showDropdown;
+		console.log(showDropdown);
 	};
 
 	const handleClickOutside = (event: MouseEvent) => {
 		if (!event.target) return;
 
 		const target = event.target as HTMLElement;
-		const isMenuButton = target.closest('button.menuitem');
+		const isMenuButton = target.closest('#showMenue');
 		const isDropdown = target.closest('.dropdown');
 
 		// Don't close if clicking the menu button (let toggleDropdown handle it)
@@ -40,12 +45,13 @@
 <div>
 	<button
 		type="button"
-		class="menuitem btn btn-outline text-primary-80 border-0 text-xl font-semibold"
-		on:click|preventDefault={toggleDropdown}>{title}</button
+		id="showMenue"
+		class="btn btn-outline border-0 text-xl font-semibold"
+		onclick={toggleDropdown}><span class="text-primary-80 pb-1">{title}</span></button
 	>
 	{#if showDropdown}
 		<div
-			class="nav-menu bg-white-primary absolute right-8 z-50 mt-2 w-48 rounded-md border border-gray-200 py-4 shadow-lg"
+			class="dropdown nav-menu bg-white-primary absolute right-8 z-50 mt-10 w-48 rounded-md border border-gray-200 py-4 shadow-lg"
 			role="menu"
 			aria-orientation="vertical"
 			aria-labelledby="options-menu"
@@ -55,7 +61,7 @@
 					href={menuItem.url}
 					class="text-primary-100 block px-6 py-3 text-sm transition-colors first:rounded-t-md last:rounded-b-md hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-50"
 					role="menuitem"
-					on:click={toggleDropdown}
+					onclick={toggleDropdown}
 				>
 					{menuItem.title}
 				</a>

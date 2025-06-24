@@ -2,11 +2,12 @@
 </script>
 
 <div class="my-3 w-full">
-	<h1>Safeguarding</h1>
+	<div class="page-title">Safeguarding</div>
 </div>
 <img
 	src="https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fsafeguarding_crop.jpg?alt=media&token=a831da11-e619-4d32-822d-86de24e6d0e1"
 	class="mx-auto my-4 w-[80%] rounded-xl shadow-2xl"
+	alt="two people caring for each other"
 />
 <div class="fliesstext mx-auto mb-20 text-lg">
 	<p>

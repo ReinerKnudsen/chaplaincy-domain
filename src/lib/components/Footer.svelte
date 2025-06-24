@@ -5,7 +5,8 @@
 	import { signOut } from 'firebase/auth';
 
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
-	import Icon from '$lib/components/Icon.svelte';
+
+	import Icon from '@iconify/svelte';
 
 	const handleLogin = () => {
 		goto('/login');
@@ -22,9 +23,9 @@
 	};
 </script>
 
-<footer class="bg-white-primary w-screen">
+<footer class="w-screen">
 	<div
-		class="bg-white-smoke mx-auto max-w-[1400px] rounded-t-3xl border border-slate-300 px-4 pb-4 sm:px-6 lg:px-8"
+		class="bg-white-primary px-4´ mx-auto w-[calc(99%-2rem)] rounded-t-3xl border border-slate-300 pb-4 sm:px-6 lg:px-8"
 	>
 		<div class="grid grid-cols-1 gap-6 pt-8 sm:grid-cols-4">
 			<!-- Resources -->
@@ -63,11 +64,11 @@
 				<h2 class="mb-4 text-lg font-extrabold tracking-wide text-gray-800 uppercase">User</h2>
 				<nav class="flex flex-col space-y-2">
 					{#if !$authStore.isLoggedIn}
-						<button class="text-left text-gray-600 hover:text-gray-900" on:click={handleLogin}
+						<button class="text-left text-gray-600 hover:text-gray-900" onclick={handleLogin}
 							>Login</button
 						>
 					{:else}
-						<button class="text-left text-gray-600 hover:text-gray-900" on:click={handleLogout}
+						<button class="text-left text-gray-600 hover:text-gray-900" onclick={handleLogout}
 							>Sign out</button
 						>
 					{/if}
@@ -85,24 +86,24 @@
 					class="text-gray-500 hover:text-gray-900"
 					target="_blank"
 				>
-					<Icon name="facebook" class="h-5 w-5" />
+					<Icon icon="fa-brands:facebook" class="h-6 w-6" />
 				</a>
 				<a
 					href="https://www.achurchnearyou.com/church/8388/"
 					class="text-gray-500 hover:text-gray-900"
 					target="_blank"
 				>
-					<Icon name="churchnearyou" class="h-5 w-5" />
+					<Icon icon="streamline-plump:user-pin" class="h-6 w-6" />
 				</a>
 				<a
 					href="https://www.achurchnearyou.com/church/8389/"
 					class="text-gray-500 hover:text-gray-900"
 					target="_blank"
 				>
-					<Icon name="churchnearyou" class="h-5 w-5" />
+					<Icon icon="streamline-plump:user-pin" class="h-6 w-6" />
 				</a>
 				<a href="/about/contact" class="text-gray-500 hover:text-gray-900">
-					<Icon name="email" class="h-5 w-5" />
+					<Icon icon="streamline:send-email" class="h-6 w-6" />
 				</a>
 			</div>
 		</div>

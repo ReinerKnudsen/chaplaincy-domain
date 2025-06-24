@@ -2,46 +2,76 @@
 	import { enhance } from '$app/forms';
 	import type { ActionData } from './$types';
 
-	import { Icon, InformationCircle } from 'svelte-hero-icons';
+	import Icon from '@iconify/svelte';
 
-	export let form: ActionData;
+	interface Props {
+		form: ActionData;
+	}
+
+	let { form }: Props = $props();
 </script>
 
 <div class="my-3 w-full">
-	<h1>Contact us</h1>
-	<h3>We would like to hear from you!</h3>
-	<p>Please leave us a message. We will reply to you as soon as possible.</p>
+	<div class="page-title">Contact us</div>
+	<div class="mx-auto mt-10 max-w-[60%] px-10">
+		<h3>We would like to hear from you!</h3>
+		<p>Please leave us a message. We will reply to you as soon as possible.</p>
+	</div>
 </div>
 
-<div class="mx-auto mt-10 mb-20 max-w-2xl">
+<div class="mx-auto mb-20 max-w-[60%] rounded-xl p-10">
+	<div class="pb-10">All fields marked with * are required.</div>
 	<form method="POST" class="flex flex-col space-y-6" use:enhance>
 		<!-- Name -->
 		<div class="flex flex-col space-y-2">
 			<label for="name">Name</label>
-			<input type="text" id="name" name="name" class="rounded-lg border p-2" />
+			<input
+				type="text"
+				id="name"
+				name="name"
+				class=" bg-white-primary rounded-lg border p-2 px-4"
+			/>
 		</div>
 
 		<!-- Email -->
 		<div class="flex flex-col space-y-2">
-			<label for="email">Email</label>
-			<input type="email" id="email" name="email" required class="rounded-lg border p-2" />
+			<label for="email">Email *</label>
+			<input
+				type="email"
+				id="email"
+				name="email"
+				required
+				class=" bg-white-primary rounded-lg border p-2 px-4"
+			/>
 		</div>
 
 		<!-- Subject -->
 		<div class="flex flex-col space-y-2">
-			<label for="subject">Subject</label>
-			<input type="text" id="subject" name="subject" required class="rounded-lg border p-2" />
+			<label for="subject">Subject *</label>
+			<input
+				type="text"
+				id="subject"
+				name="subject"
+				required
+				class=" bg-white-primary rounded-lg border p-2 px-4"
+			/>
 		</div>
 
 		<!-- Message -->
 		<div class="flex flex-col space-y-2">
-			<label for="message">Message</label>
-			<textarea id="message" name="message" rows="6" required class="rounded-lg border p-2" />
+			<label for="message">Message *</label>
+			<textarea
+				id="message"
+				name="message"
+				rows="6"
+				required
+				class=" bg-white-primary rounded-lg border p-2 px-4"
+			></textarea>
 		</div>
 
 		<!-- Disclaimer -->
 		<div class="flex flex-row items-center gap-4">
-			<Icon src={InformationCircle} class="h-8 w-8" />
+			<Icon icon="heroicons-outline:information-circle" class="h-10 w-10" />
 			<div>
 				Your data is safe with us. We will not share your information.<br />
 				Your message will be delivered by email and deleted after processing.
@@ -58,7 +88,8 @@
 				{form.message}
 			</div>
 		{/if}
-
-		<button type="submit" class="calltoaction self-start">Send Message</button>
+		<div class="flex justify-center pt-10">
+			<button type="submit" class="calltoaction self-start">Send Message</button>
+		</div>
 	</form>
 </div>

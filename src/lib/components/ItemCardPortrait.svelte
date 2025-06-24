@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { type CollectionItem } from '$lib/stores/ObjectStore';
 
-	export let newsItem: CollectionItem;
+	interface Props {
+		newsItem: CollectionItem;
+	}
+
+	let { newsItem }: Props = $props();
 </script>
 
 <div class="container my-5 rounded-2xl border border-slate-200 p-4 shadow-xl">

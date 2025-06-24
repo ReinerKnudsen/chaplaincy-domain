@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { decodeHtml } from '$lib/utils/HTMLfunctions';
-
 	type Group = {
 		name: string;
 		text: string;
@@ -9,7 +7,11 @@
 		eventsLink?: boolean;
 	};
 
-	export let group: Group;
+	interface Props {
+		group: Group;
+	}
+
+	let { group }: Props = $props();
 
 	const { name, text, extraLink, extraLinkText, eventsLink } = group;
 </script>
@@ -19,7 +21,7 @@
 		<h2 class="group-title pt-6 pb-4 text-2xl font-semibold">{name}</h2>
 	</div>
 	<div class="group-text flex flex-col space-y-8 pb-4">
-		{decodeHtml(text)}
+		{@html text}
 
 		{#if extraLink || eventsLink}
 			{#if extraLink && eventsLink}
@@ -34,7 +36,6 @@
 			{:else if extraLink}
 				<div class=" bg-slate-200 py-4 pl-4">
 					<p>
-						{extraLinkText}
 						<a class="link" href={extraLink} target="_blank">{extraLinkText}</a>.
 					</p>
 				</div>

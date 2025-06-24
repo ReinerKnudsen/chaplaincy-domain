@@ -1,12 +1,18 @@
-<script>
+<script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';
 	import '@toast-ui/editor/dist/toastui-editor.css';
 	import '$lib/styles/markdown.css';
 	import { onMount } from 'svelte';
 
-	export let content = '';
-	let viewerElement;
-	let viewer;
+	interface Props {
+		content?: string;
+	}
+
+	let { content = '' }: Props = $props();
+	let viewerElement = $state();
+	let viewer = $state();
 
 	onMount(() => {
 		viewer = new Viewer({
@@ -22,9 +28,11 @@
 		};
 	});
 
-	$: if (viewer && content) {
-		viewer.setMarkdown(content);
-	}
+	run(() => {
+		if (viewer && content) {
+			viewer.setMarkdown(content);
+		}
+	});
 </script>
 
 <div bind:this={viewerElement}></div>

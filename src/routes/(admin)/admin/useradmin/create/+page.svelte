@@ -2,8 +2,8 @@
 	import { goto } from '$app/navigation';
 
 	import { userRoles } from '$lib/utils/constants';
-
 	import { createNewUser } from '$lib/services/authService';
+
 	import Label from '$lib/components/Label.svelte';
 
 	type User = {
@@ -24,22 +24,27 @@
 		role: '',
 	};
 
-	let newUser = initUser;
+	let newUser = $state(initUser);
 
 	const resetForm = () => {
 		newUser = initUser;
 	};
 
-	const create = async (e) => {
+	const createUser = async (e: Event) => {
 		e.preventDefault();
 		const user = await createNewUser(newUser);
+		goto('/admin/useradmin');
+	};
+
+	const handleCancel = () => {
+		resetForm();
 		goto('/admin/useradmin');
 	};
 </script>
 
 <div class="flex flex-row justify-center">
 	<div class="bg-white-primary w-5/12 space-y-4 rounded-xl p-6 shadow-xl sm:p-8 md:space-y-6">
-		<form class="flex flex-col space-y-6" on:submit={create}>
+		<form class="flex flex-col space-y-6" onsubmit={createUser}>
 			<h3 class="p-0 text-xl font-medium text-gray-900 dark:text-white">Create an new account</h3>
 			<Label child="firstname">First name *</Label>
 			<input
@@ -89,8 +94,12 @@
 					{/each}
 				</select>
 			</div>
-
-			<button type="submit" class="btn-custom btn btn-primary">Create user</button>
+			<div id="buttons" class="flex flex-row justify-between gap-10">
+				<button type="button" class="btn-custom btn btn-secondary" onclick={handleCancel}
+					>Cancel</button
+				>
+				<button type="submit" class="btn-custom btn btn-primary">Create user</button>
+			</div>
 		</form>
 	</div>
 </div>

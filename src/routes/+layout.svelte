@@ -11,6 +11,11 @@
 
 	import Navigation from '$lib/components/Navigation.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	let unsubscribe: () => void;
 
@@ -57,9 +62,9 @@
 </script>
 
 <Navigation />
-<div id="main-container" class="mt-10 flex min-h-screen flex-col">
+<div id="main-container" class=" mt-10 flex min-h-screen flex-col overflow-clip">
 	<div id="main-content" class="">
-		<slot />
+		{@render children?.()}
 	</div>
 	<div class="bg-white-smoke">
 		<Footer />

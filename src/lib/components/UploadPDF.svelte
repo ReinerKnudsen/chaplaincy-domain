@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { ref, uploadBytes, getDownloadURL, getMetadata } from 'firebase/storage';
 	import { getDoc, addDoc, doc } from 'firebase/firestore';
 
@@ -12,18 +12,23 @@
 		newsletterStorageRef,
 	} from '$lib/firebase/firebaseConfig';
 
-	export let fileUrl: string = '';
-	export let target: 'pdf' | 'weeklysheet' | 'newsletter' = 'pdf';
+	interface Props {
+		fileUrl?: string;
+		target?: 'pdf' | 'weeklysheet' | 'newsletter';
+		onUpload: ({ url, docRef }: { url: string; docRef: any }) => void;
+	}
 
-	const dispatch = createEventDispatcher();
+	let { fileUrl = $bindable(''), target = 'pdf', onUpload }: Props = $props();
+
+
 	const MAX_PDF_SIZE = 5 * 1024 * 1024; // 5MB max size for PDFs
 	const authorizedExtensions = '.pdf';
 
 	let selectedFile: File;
 	let moduleWidth = 'w-[400px]';
-	let fileError: string;
-	let fileName: string = '';
-	let uploadProgress = false;
+	let fileError: string = $state('');
+	let fileName: string = $state('');
+	let uploadProgress = $state(false);
 
 	onMount(async () => {
 		if (fileUrl) {
@@ -58,10 +63,10 @@
 		}
 	};
 
-	const handleFileChange = async (event) => {
+	const handleFileChange = async (event: Event & {target: HTMLInputElement}) => {
 		event.preventDefault();
 		fileError = '';
-		if (event.target) {
+		if (event.target.files) {
 			selectedFile = event.target.files[0];
 			let fileExists = await checkIfFileExists(selectedFile.name);
 			if (fileExists) {
@@ -102,7 +107,7 @@
 
 						fileUrl = downloadURL;
 						fileName = selectedFile.name;
-						dispatch('upload', { url: downloadURL, docRef: docRef });
+						onUpload({ url: downloadURL, docRef: docRef });
 					} catch (error) {
 						console.error('Error uploading file:', error);
 						fileError = 'Error uploading file. Please try again.';
@@ -142,7 +147,7 @@
 				id="uploadFile"
 				accept={authorizedExtensions}
 				class="hidden"
-				on:change={handleFileChange}
+				onchange={handleFileChange}
 			/>
 		</label>
 		<div class="mt-3 text-center text-sm">(PDF files only, max 5MB)</div>
@@ -173,7 +178,7 @@
 			>
 		</div>
 		<div class="col-span-2 text-center">
-			<button class="btn btn-primary w-1/2" on:click={resetInput}>Change</button>
+			<button class="btn btn-primary w-1/2" onclick={resetInput}>Change</button>
 		</div>
 	</div>
 {/if}

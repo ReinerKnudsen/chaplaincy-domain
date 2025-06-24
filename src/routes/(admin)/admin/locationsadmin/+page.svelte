@@ -1,15 +1,7 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
-	import {
-		getFirestore,
-		getDoc,
-		addDoc,
-		deleteDoc,
-		doc,
-		collection,
-		updateDoc,
-	} from 'firebase/firestore';
+	import { addDoc, deleteDoc, doc, collection, updateDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
 
 	import {
@@ -22,33 +14,35 @@
 		type Location,
 	} from '$lib/stores/LocationsStore';
 
-	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
-	import Icon from '$lib/components/Icon.svelte';
+	import { EditMode } from '$lib/stores/ObjectStore';
 
-	const dispatch = createEventDispatcher();
+	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
+
+	import Icon from '@iconify/svelte';
 
 	onMount(() => {
 		fetchLocations();
 	});
 
-	let updateItem = false;
-	let currentLocationId = 0;
+	let updateItem = $state(true);
+	let currentLocationId = $state(0);
 
 	// Only set CurrentLocation when AllLocations has items
-	$: if ($AllLocations.length > 0) {
-		CurrentLocation.set($AllLocations[currentLocationId]);
-	} else {
-		resetCurrentLocation();
-	}
+	$effect(() => {
+		if ($AllLocations.length > 0) {
+			CurrentLocation.set($AllLocations[currentLocationId]);
+		} else {
+			resetCurrentLocation();
+		}
+	});
 
 	const handleLocationChange = (location: Location, index: number) => {
 		updateItem = true;
-		CurrentLocation.set({ ...location });
+		CurrentLocation.set(location);
 		currentLocationId = index;
 	};
 
 	const handleCreateNew = () => {
-		// Create a fresh copy of initialLocationState
 		CurrentLocation.set({ ...initialLocationState });
 		updateItem = false;
 	};
@@ -81,8 +75,8 @@
 
 				updateAndSortLocations((locations) =>
 					locations.map((loc) =>
-						loc.id === id ? { id, name, description, street, city, zip, openMapUrl } : loc,
-					),
+						loc.id === id ? { id, name, description, street, city, zip, openMapUrl } : loc
+					)
 				);
 			} catch (e) {
 				console.error('Error updating document: ', e);
@@ -103,8 +97,6 @@
 					...locations,
 					{ id: docRef.id, name, description, street, city, zip, openMapUrl },
 				]);
-
-				dispatch('locationAdded', { id: docRef.id, name });
 			} catch (e) {
 				console.error('Error adding document: ', e);
 			}
@@ -124,22 +116,22 @@
 							class={$CurrentLocation.id === location.id
 								? 'active list-item flex-1'
 								: 'list-item flex-1'}
-							on:click={() => handleLocationChange(location, index)}>{location.name}</button
+							onclick={() => handleLocationChange(location, index)}>{location.name}</button
 						>
-						<button class="icon-button" on:click={() => handleDelete(location)}>
-							<Icon width={'1.5rem'} height={'1.5rem'} name="delete" />
+						<button class="icon-button" onclick={() => handleDelete(location)}>
+							<Icon icon="proicons:delete" class="h-6 w-6" />
 						</button>
 					</div>
 				{/each}
 			</ul>
 			<div class="button-container">
-				<button class="btn btn-primary" on:click={handleCreateNew}>Create new</button>
+				<button class="btn btn-primary" onclick={handleCreateNew}>Create new</button>
 			</div>
 		</div>
 		<div class="location-details">
 			<h2>Location Details</h2>
 			<NewLocationForm
-				on:save={handleSave}
+				onSave={handleSave}
 				showClose={false}
 				mode={updateItem ? 'update' : 'create'}
 			/>
@@ -195,7 +187,7 @@
 
 	.location-details {
 		flex: 0.5;
-		background-color: white;
+		background-color: whitesmoke;
 		border-radius: 20px;
 		padding: 20px 30px;
 	}

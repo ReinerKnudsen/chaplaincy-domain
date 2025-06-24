@@ -31,9 +31,9 @@
 
 {#if loading}
 	Loading...
-{:else}
-	<div class="bg-white-primary rounded-2xl">
-		<div class="article-container">
+{:else if thisNews}
+	<div class="article-container">
+		<div id="article-content">
 			<div class="article-title">
 				{thisNews.title}
 			</div>
@@ -64,11 +64,25 @@
 			</div>
 			<MarkdownViewer content={thisNews.text} />
 		</div>
+		<div id="pdfFile">
+			{#if thisNews.pdfFile}
+			<div id="pdf-download" class="flex flex-row justify-start gap-4 bg-white-smoke p-6">
+				<Icon icon="fa6-regular:file-pdf" class="h-6 w-6" />
+				<a class="link flex flex-row gap-4 font-semibold text-lg" href={thisNews.pdfFile} target="_blank">
+					<div>Download {thisNews.pdfText ? thisNews.pdfText : 'PDF'}</div>
+					<Icon icon="famicons:open-outline" class="h-6 w-6" />
+				</a>
+			</div>
+			{/if}
+		</div>
 	</div>
+
 	<div class="back-link">
 		<Icon icon="fa6-regular:circle-left" class="h-6 w-6" />
 		<a class="link" href="/news">Take me back to overview</a>
 	</div>
+{:else}
+	<p>News article not found</p>
 {/if}
 
 <style>

@@ -43,6 +43,7 @@ export interface DomainEvent {
 	imageCaption?: string;
 	author: string;
 	pdfFile?: string;
+	pdfText?: string;
 	tags: string[];
 }
 
@@ -69,6 +70,7 @@ export const initialDomainEvent: DomainEvent = {
 	imageCaption: '',
 	author: '',
 	pdfFile: '',
+	pdfText: '',
 	tags: [],
 };
 
@@ -88,6 +90,7 @@ export interface News {
 	imageCaption?: string;
 	author: string;
 	pdfFile?: string;
+	pdfText?: string;
 	tags: string[];
 }
 
@@ -107,6 +110,7 @@ export const initialNews: News = {
 	author: '',
 	imageCaption: '',
 	pdfFile: '',
+	pdfText: '',
 };
 
 // WeeklySheet

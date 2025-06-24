@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Label from './Label.svelte';
+	import Checkbox from './Checkbox.svelte';
 
 	import {
 		CurrentLocation,
@@ -30,6 +31,15 @@
 		}
 	});
 
+	const handleOnlineChange = (checked: boolean) => {
+		thisLocation.online = checked;
+		if (checked) {
+			thisLocation.street = '';
+			thisLocation.city = '';
+			thisLocation.zip = '';
+		}
+	};
+
 	const handleSubmit = (e: SubmitEvent) => {
 		e.preventDefault();
 		$CurrentLocation = thisLocation;
@@ -40,10 +50,6 @@
 		resetCurrentLocation();
 		onClose && onClose();
 	};
-
-	let openStreetUrl = $derived(
-		`https://www.openstreetmap.org/search?query=${thisLocation.street}+${thisLocation.city}`
-	);
 </script>
 
 <div id="newlocationform">
@@ -71,35 +77,47 @@
 			/>
 		</div>
 		<div>
-			<Label class="mt-4 mb-2 font-semibold" child="street">Street</Label>
-			<input
-				id="street"
-				type="text"
-				class="input input-bordered w-full"
-				placeholder="Street"
-				bind:value={thisLocation.street}
+			<Label class="mt-4 mb-2 font-semibold" child="isonline">Location type</Label>
+			<div class="text-sm">Defines this location as a physical location or an online service</div>
+			<Checkbox
+				label="Online"
+				id="isonline"
+				bind:checked={thisLocation.online}
+				onChange={handleOnlineChange}
 			/>
 		</div>
-		<div>
-			<Label class="mt-4 mb-2 font-semibold" child="city">City</Label>
-			<input
-				id="city"
-				type="text"
-				class="input input-bordered w-full"
-				placeholder="City"
-				bind:value={thisLocation.city}
-			/>
-		</div>
-		<div>
-			<Label class="mt-4 mb-2 font-semibold" child="zip">Zip</Label>
-			<input
-				id="zip"
-				type="text"
-				class="input input-bordered w-full"
-				placeholder="Zip"
-				bind:value={thisLocation.zip}
-			/>
-		</div>
+		{#if !thisLocation.online}
+			<div>
+				<Label class="mt-4 mb-2 font-semibold" child="street">Street</Label>
+				<input
+					id="street"
+					type="text"
+					class="input input-bordered w-full"
+					placeholder="Street"
+					bind:value={thisLocation.street}
+				/>
+			</div>
+			<div>
+				<Label class="mt-4 mb-2 font-semibold" child="city">City</Label>
+				<input
+					id="city"
+					type="text"
+					class="input input-bordered w-full"
+					placeholder="City"
+					bind:value={thisLocation.city}
+				/>
+			</div>
+			<div>
+				<Label class="mt-4 mb-2 font-semibold" child="zip">Zip</Label>
+				<input
+					id="zip"
+					type="text"
+					class="input input-bordered w-full"
+					placeholder="Zip"
+					bind:value={thisLocation.zip}
+				/>
+			</div>
+		{/if}
 		<div>
 			<Label class="mt-4 mb-2 font-semibold" child="url">URL</Label>
 			<input
@@ -107,13 +125,19 @@
 				type="url"
 				class="input input-bordered w-full"
 				placeholder="OpenStreetMap Url or service Url"
-				bind:value={thisLocation.openMapUrl}
+				bind:value={thisLocation.locationUrl}
 			/>
-			<div class="text-md mt-2 flex flex-row justify-end">
-				<a href={openStreetUrl} class="link no-underline" target="_blank" rel="noopener noreferrer"
-					>Check OpenStreetMap URL</a
-				>
-			</div>
+			{#if thisLocation.locationUrl}
+				<div class="text-md mt-2 flex flex-row justify-end">
+					<a
+						href={thisLocation.locationUrl}
+						class="link no-underline"
+						target="_blank"
+						rel="noopener noreferrer"
+						>Check OpenStreetMap URL
+					</a>
+				</div>
+			{/if}
 		</div>
 		<div class="mt-8 flex w-full flex-row justify-center gap-10">
 			{#if showClose}

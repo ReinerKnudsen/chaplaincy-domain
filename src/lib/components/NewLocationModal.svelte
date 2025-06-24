@@ -22,7 +22,7 @@
 	let { onLocationAdded, onClose }: Props = $props();
 
 	const handleSave = async () => {
-		const { name, description, street, city, zip, openMapUrl } = $CurrentLocation;
+		const { name, description, street, city, zip, locationUrl } = $CurrentLocation;
 		try {
 			const docRef = await addDoc(collection(db, 'location'), {
 				name,
@@ -30,7 +30,7 @@
 				street,
 				city,
 				zip,
-				openMapUrl,
+				locationUrl,
 			});
 			await fetchLocations();
 			const newLocation = $AllLocations.find((loc) => loc.id === docRef.id);

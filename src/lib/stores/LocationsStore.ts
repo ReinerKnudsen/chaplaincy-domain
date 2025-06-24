@@ -9,7 +9,7 @@ export interface Location {
 	street: string;
 	city: string;
 	zip: string;
-	openMapUrl: string;
+	locationUrl: string;
 	online?: boolean;
 }
 
@@ -22,7 +22,7 @@ export const initialLocationState: Location = {
 	street: '',
 	city: '',
 	zip: '',
-	openMapUrl: '',
+	locationUrl: '',
 	online: false,
 };
 

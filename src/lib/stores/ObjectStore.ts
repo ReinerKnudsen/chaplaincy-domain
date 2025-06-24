@@ -30,6 +30,7 @@ export interface DomainEvent {
 	enddate: string | null;
 	endtime: string | null;
 	location: string;
+	joinOnline: boolean;
 	condition?: string;
 	publishdate: string;
 	publishtime: string;
@@ -57,6 +58,7 @@ export const initialDomainEvent: DomainEvent = {
 	enddate: null,
 	endtime: null,
 	location: '',
+	joinOnline: false,
 	condition: '',
 	publishdate: '',
 	publishDateTime: Timestamp.fromDate(new Date()),
@@ -208,7 +210,7 @@ export function resetEditModeStore() {
 // Load a single item by id and type
 export const loadItem = async (
 	id: string,
-	type: CollectionType,
+	type: CollectionType
 ): Promise<DocumentReference | null> => {
 	try {
 		const docRef = doc(database, type, id);
@@ -271,15 +273,8 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 			const futureEvents = items
 				.filter((item) => {
 					const eventData = item.data as DomainEvent;
-					const eventDate = new Date(eventData.startdate);
-					const publishDate = new Date(eventData.publishdate);
 					const unpublishDate = new Date(eventData.unpublishdate);
-
-					// Event must be:
-					// 1. In the future or today
-					// 2. Publish date has passed
-					// 3. Unpublish date hasn't passed yet
-					return eventDate >= now && publishDate <= now && unpublishDate > now;
+					return unpublishDate > now;
 				})
 				.sort((a, b) => {
 					const dateA = new Date((a.data as DomainEvent).startdate);
@@ -315,7 +310,7 @@ export const loadDocument = async (type: DocumentType): Promise<void> => {
 			collection(database, 'documents'),
 			where('type', '==', type),
 			orderBy('date', 'desc'),
-			limit(1),
+			limit(1)
 		);
 		const querySnapshot = await getDocs(q);
 		if (!querySnapshot.empty) {
@@ -362,7 +357,7 @@ export const loadDocuments = async (type: DocumentType) => {
 		const q = query(
 			collection(database, 'documents'),
 			where('type', '==', type),
-			orderBy('date', 'desc'),
+			orderBy('date', 'desc')
 		);
 		const querySnapshot = await getDocs(q);
 		if (!querySnapshot.empty) {
@@ -418,7 +413,7 @@ const removeDateFields = (data: DocumentData): DocumentData => {
 
 export const duplicateItem = async (
 	itemId: string,
-	type: CollectionType,
+	type: CollectionType
 ): Promise<string | undefined> => {
 	try {
 		const itemRef = doc(database, type, itemId);

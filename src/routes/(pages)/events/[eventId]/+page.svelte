@@ -6,18 +6,48 @@
 
 	import { loadItem, CollectionType, EventStore } from '$lib/stores/ObjectStore';
 	import { fetchLocations, type Location, AllLocations } from '$lib/stores/LocationsStore';
+	import { MINUTES_BEFORE_EVENT_START } from '$lib/utils/constants';
 
 	import MarkdownViewer from '$lib/components/MarkdownViewer.svelte';
 
 	let loading = $state(true);
 	let location: Location | undefined = $state();
+	let onlineReady = $state(false);
 
 	onMount(async () => {
 		const eventId = page.params.eventId;
 		await loadItem(eventId, CollectionType.Events);
 		await fetchLocations();
 		loading = false;
+		calculateOnlineReady();
+		const timer = setInterval(() => {
+			calculateOnlineReady();
+		}, 5000); // Check every 5 seconds
+		return () => {
+			clearInterval(timer);
+		};
 	});
+
+	const calculateOnlineReady = () => {
+		if (
+			!$EventStore?.startdate ||
+			!$EventStore?.starttime ||
+			!$EventStore?.enddate ||
+			!$EventStore?.endtime ||
+			!$EventStore?.joinOnline
+		) {
+			return;
+		}
+
+		const now = new Date();
+		const eventStartDateTime = new Date(`${$EventStore.startdate}T${$EventStore.starttime}`);
+		const eventEndDateTime = new Date(`${$EventStore.enddate}T${$EventStore.endtime}`);
+		const diffFromStart = eventStartDateTime.getTime() - now.getTime();
+		const twentyMinutesInMillis = MINUTES_BEFORE_EVENT_START * 60 * 1000;
+		const isWithinStartWindow = diffFromStart <= twentyMinutesInMillis;
+		const isBeforeEndTime = now.getTime() < eventEndDateTime.getTime();
+		onlineReady = isWithinStartWindow && isBeforeEndTime;
+	};
 
 	let description = $derived($EventStore?.description ? marked.parse($EventStore.description) : '');
 
@@ -31,12 +61,12 @@
 {#if loading}
 	<p>Loading...</p>
 {:else if $EventStore}
-	<div id="article-container"class="article-container">
+	<div id="article-container" class="article-container">
 		<div id="article-content">
 			<div id="article-title" class="article-title">
 				{$EventStore.title}
 			</div>
-			<div id="event-data" class= "article-metadata">
+			<div id="event-data" class="article-metadata">
 				<div id="article-date" class="article-metadata-item">
 					<Icon icon="fa6-regular:calendar" />
 					{$EventStore.startdate}
@@ -48,9 +78,24 @@
 				{#if $EventStore.location}
 					<div id="article-location" class="article-metadata-item">
 						<Icon icon="gis:location-poi" />
-						<a class="link" target="_blank" href={location?.openMapUrl}
-							>{`${location?.name}, ${location?.city}`}</a
-						>
+						{#if location?.online}
+							<span>{location?.name}</span>
+						{:else}
+							<a class="link" target="_blank" href={location?.locationUrl}
+								>{[location?.name, location?.city].filter(Boolean).join(', ')}</a
+							>
+						{/if}
+					</div>
+				{/if}
+				{#if $EventStore.joinOnline && onlineReady}
+					<div id="article-joinonline" class="article-metadata-item">
+						<Icon icon="fluent:video-person-32-regular" />
+						<a class="link" href={location?.locationUrl}>Join online now</a>
+					</div>
+				{:else if $EventStore.joinOnline}
+					<div id="article-joinonline" class="article-metadata-item">
+						<Icon icon="fa6-regular:clock" />
+						<div>A link to join will be here 20 minutes before the event starts</div>
 					</div>
 				{/if}
 			</div>
@@ -65,13 +110,17 @@
 		</div>
 		<div id="pdfFile">
 			{#if $EventStore.pdfFile}
-			<div id="pdf-download" class="flex flex-row justify-start gap-4 bg-white-smoke p-6">
-				<Icon icon="fa6-regular:file-pdf" class="h-6 w-6" />
-				<a class="link flex flex-row gap-4 font-semibold text-lg" href={$EventStore.pdfFile} target="_blank">
-					<div>Download {$EventStore.pdfText ? $EventStore.pdfText : 'PDF'}</div>
-					<Icon icon="famicons:open-outline" class="h-6 w-6" />
-				</a>
-			</div>
+				<div id="pdf-download" class="bg-white-smoke flex flex-row justify-start gap-4 p-6">
+					<Icon icon="fa6-regular:file-pdf" class="h-6 w-6" />
+					<a
+						class="link flex flex-row gap-4 text-lg font-semibold"
+						href={$EventStore.pdfFile}
+						target="_blank"
+					>
+						<div>Download {$EventStore.pdfText ? $EventStore.pdfText : 'PDF'}</div>
+						<Icon icon="famicons:open-outline" class="h-6 w-6" />
+					</a>
+				</div>
 			{/if}
 		</div>
 	</div>

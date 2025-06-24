@@ -6,14 +6,19 @@
 	import { Timestamp } from 'firebase/firestore';
 
 	import { uploadImage } from '$lib/services/fileService';
-	import { EditMode, EditModeStore, type DomainEvent, initialDomainEvent } from '$lib/stores/ObjectStore';
+	import {
+		EditMode,
+		EditModeStore,
+		type DomainEvent,
+		initialDomainEvent,
+	} from '$lib/stores/ObjectStore';
 	import {
 		selectedLocation,
 		AllLocations,
 		fetchLocations,
+		initialLocationState,
 		type Location,
 	} from '$lib/stores/LocationsStore';
-	import { authStore } from '$lib/stores/AuthStore';
 
 	import UploadImage from '$lib/components/UploadImage.svelte';
 	import LocationDropdown from './LocationDropdown.svelte';
@@ -22,6 +27,7 @@
 	import Label from './Label.svelte';
 	import Editor from './Editor.svelte';
 	import SlugText from './SlugText.svelte';
+	import Checkbox from './Checkbox.svelte';
 
 	interface Props {
 		thisEvent?: DomainEvent;
@@ -42,17 +48,7 @@
 		if ($EditModeStore === EditMode.Update) {
 			newEvent = thisEvent;
 			const location = $AllLocations.find((loc) => loc.id === thisEvent.location);
-			selectedLocation.set(
-				location || {
-					id: '',
-					name: '',
-					description: '',
-					street: '',
-					city: '',
-					zip: '',
-					openMapUrl: '',
-				},
-			);
+			selectedLocation.set(location || initialLocationState);
 		} else {
 			newEvent = { ...initialDomainEvent };
 		}
@@ -95,6 +91,13 @@
 
 	const handleLocationChange = (locationId: string) => {
 		newEvent.location = locationId;
+		if (locationId) {
+			selectedLocation.set(
+				$AllLocations.find((loc) => loc.id === locationId) || initialLocationState
+			);
+		} else {
+			selectedLocation.set(initialLocationState);
+		}
 	};
 
 	const createNewLocation = () => {
@@ -162,6 +165,10 @@
 	const handleReset = () => {
 		newEvent = { ...initialDomainEvent };
 		EditModeStore.set('');
+	};
+
+	const handleChangeJoinOnline = (checked: boolean) => {
+		newEvent.joinOnline = checked;
 	};
 </script>
 
@@ -236,6 +243,21 @@
 							onLocationAdded={handleLocationAddedModal}
 							onClose={() => (showModal = false)}
 						/>
+					{/if}
+					{#if $selectedLocation.online}
+						<div>
+							<Label class="mt-4 mb-2 font-semibold" child="joinonline">Join online</Label>
+
+							<Checkbox
+								label="Join online"
+								id="joinonline"
+								bind:checked={newEvent.joinOnline}
+								onChange={handleChangeJoinOnline}
+							/>
+						</div>
+						<p class="explanation">
+							Adds a join button to the event 20 minutes before the event starts
+						</p>
 					{/if}
 				</div>
 			</div>
@@ -459,26 +481,26 @@
 					<div class="flex flex-col items-center justify-center">
 						<UploadPDF fileUrl={newEvent.pdfFile} onUpload={assignPDF} />
 						{#if !$hasPDF}
-						<p class="explanation opacity-30">
-							Upload a PDF document that will be attached to this event (max 5MB).
-						</p>
+							<p class="explanation opacity-30">
+								Upload a PDF document that will be attached to this event (max 5MB).
+							</p>
 						{/if}
 					</div>
 					<div>
-							<Label child="pdfText" disabled={!$hasPDF}>PDF Description</Label>
-							<input
-								type="text"
-								id="pdfText"
-								class="input input-bordered w-full"
-								bind:value={newEvent.pdfText}
-								required={$hasPDF}
-								disabled={!$hasPDF}
-								placeholder={$hasPDF ? 'PDF Description' : 'Please select a PDF file first'}
-							/>
-							<p class="explanation {!$hasPDF ? 'opacity-30' : 'opacity-100'}">
-								This text is the visible text for the PDF download link on the event page..
-							</p>
-						</div>
+						<Label child="pdfText" disabled={!$hasPDF}>PDF Description</Label>
+						<input
+							type="text"
+							id="pdfText"
+							class="input input-bordered w-full"
+							bind:value={newEvent.pdfText}
+							required={$hasPDF}
+							disabled={!$hasPDF}
+							placeholder={$hasPDF ? 'PDF Description' : 'Please select a PDF file first'}
+						/>
+						<p class="explanation {!$hasPDF ? 'opacity-30' : 'opacity-100'}">
+							This text is the visible text for the PDF download link on the event page..
+						</p>
+					</div>
 				</div>
 			</div>
 

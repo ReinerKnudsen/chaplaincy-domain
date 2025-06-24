@@ -101,10 +101,10 @@
 			</div>
 			{#if $EventStore.image}
 				<div id="article-image" class="article-image-container">
-					<img class="article-image" src={$EventStore.image} alt={$EventStore.title} />
+					<img class="article-image" src={$EventStore.image} alt={$EventStore.imageAlt} />
 				</div>
 			{/if}
-			{#if description}
+			{#if description && typeof description === 'string'}
 				<MarkdownViewer content={description} />
 			{/if}
 		</div>

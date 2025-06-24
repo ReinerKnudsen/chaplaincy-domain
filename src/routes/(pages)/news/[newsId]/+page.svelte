@@ -60,19 +60,23 @@
 				{/if}
 			</div>
 			<div id="news-iamge" class="article-image-container">
-				<img class="article-image" src={thisNews.image} alt={thisNews.title} />
+				<img class="article-image" src={thisNews.image} alt={thisNews.imageAlt} />
 			</div>
 			<MarkdownViewer content={thisNews.text} />
 		</div>
 		<div id="pdfFile">
 			{#if thisNews.pdfFile}
-			<div id="pdf-download" class="flex flex-row justify-start gap-4 bg-white-smoke p-6">
-				<Icon icon="fa6-regular:file-pdf" class="h-6 w-6" />
-				<a class="link flex flex-row gap-4 font-semibold text-lg" href={thisNews.pdfFile} target="_blank">
-					<div>Download {thisNews.pdfText ? thisNews.pdfText : 'PDF'}</div>
-					<Icon icon="famicons:open-outline" class="h-6 w-6" />
-				</a>
-			</div>
+				<div id="pdf-download" class="bg-white-smoke flex flex-row justify-start gap-4 p-6">
+					<Icon icon="fa6-regular:file-pdf" class="h-6 w-6" />
+					<a
+						class="link flex flex-row gap-4 text-lg font-semibold"
+						href={thisNews.pdfFile}
+						target="_blank"
+					>
+						<div>Download {thisNews.pdfText ? thisNews.pdfText : 'PDF'}</div>
+						<Icon icon="famicons:open-outline" class="h-6 w-6" />
+					</a>
+				</div>
 			{/if}
 		</div>
 	</div>

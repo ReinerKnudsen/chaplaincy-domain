@@ -20,8 +20,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
-- the alt property of images on the events and news detail page are now set to the imageAlt property of the event or news item
+-
 
+## [1.2.0] - 2025-06-24
+
+### Fixed
+
+- the alt property of images on the events and news detail page are now set to the imageAlt property of the event or news item
 ## [1.1.0] - 2025-06-24
 
 ### Added

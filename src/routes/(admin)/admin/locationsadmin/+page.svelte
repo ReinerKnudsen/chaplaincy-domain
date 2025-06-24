@@ -75,8 +75,8 @@
 
 				updateAndSortLocations((locations) =>
 					locations.map((loc) =>
-						loc.id === id ? { id, name, description, street, city, zip, openMapUrl } : loc,
-					),
+						loc.id === id ? { id, name, description, street, city, zip, openMapUrl } : loc
+					)
 				);
 			} catch (e) {
 				console.error('Error updating document: ', e);
@@ -187,7 +187,7 @@
 
 	.location-details {
 		flex: 0.5;
-		background-color: white;
+		background-color: whitesmoke;
 		border-radius: 20px;
 		padding: 20px 30px;
 	}

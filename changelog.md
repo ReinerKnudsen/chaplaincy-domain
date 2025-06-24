@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
--
+- location form didn't come up when called from event admin form
 
 ## [1.0.0] - 2025-06-24
 

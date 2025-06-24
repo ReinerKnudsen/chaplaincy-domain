@@ -16,6 +16,16 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
+-
+
+### Fixed
+
+-
+
+## [1.0.0] - 2025-06-24
+
+### Changed
+
 - removed dependency on formats.ts
 - added multiple styles to the app.css file
 - adjusted news and article overview pages to use the new styles
@@ -27,7 +37,6 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - location form didn't come up when called from event admin form
-
 ## [1.0.0] - 2025-06-24
 
 ### Added

@@ -46,7 +46,7 @@
 </script>
 
 <div class="overlay">
-	<div class="modal">
+	<div class="bg-white-smoke w-1/4 rounded-xl p-10">
 		<h2>Add New Location</h2>
 		<NewLocationForm onSave={handleSave} {onClose} showClose={true} mode="create" />
 	</div>

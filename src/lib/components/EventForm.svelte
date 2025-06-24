@@ -6,7 +6,7 @@
 	import { Timestamp } from 'firebase/firestore';
 
 	import { uploadImage } from '$lib/services/fileService';
-	import { EditMode, EditModeStore, type DomainEvent } from '$lib/stores/ObjectStore';
+	import { EditMode, EditModeStore, type DomainEvent, initialDomainEvent } from '$lib/stores/ObjectStore';
 	import {
 		selectedLocation,
 		AllLocations,
@@ -23,40 +23,17 @@
 	import Editor from './Editor.svelte';
 	import SlugText from './SlugText.svelte';
 
-	const defaultEvent: DomainEvent = {
-		author: $authStore.name,
-		title: '',
-		subtitle: '',
-		description: '',
-		slug: '',
-		startdate: '',
-		starttime: '',
-		enddate: '',
-		endtime: '',
-		location: '',
-		condition: '',
-		publishdate: '',
-		publishtime: '',
-		publishDateTime: Timestamp.fromDate(new Date()),
-		unpublishdate: '',
-		unpublishtime: '',
-		unpublishDateTime: Timestamp.fromDate(new Date()),
-		comments: '',
-		image: '',
-		imageAlt: '',
-		tags: [],
-	};
-
 	interface Props {
 		thisEvent?: DomainEvent;
 		onCreateNew?: (event: DomainEvent) => Promise<void>;
 		onUpdate?: (event: DomainEvent) => Promise<void>;
 	}
 
-	let { thisEvent = defaultEvent, onCreateNew, onUpdate }: Props = $props();
+	let { thisEvent = initialDomainEvent, onCreateNew, onUpdate }: Props = $props();
 
-	let newEvent: DomainEvent = $state(defaultEvent);
-	let hasImage = writable(false);
+	let newEvent: DomainEvent = $state(initialDomainEvent);
+	let hasImage = writable(!!thisEvent.image);
+	let hasPDF = writable(!!thisEvent.pdfFile);
 	let selectedImage: File;
 	let showModal = $state(false);
 	let loading = $state(true);
@@ -77,7 +54,7 @@
 				},
 			);
 		} else {
-			newEvent = { ...defaultEvent };
+			newEvent = { ...initialDomainEvent };
 		}
 		loading = false;
 	});
@@ -143,6 +120,7 @@
 
 	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
 		newEvent.pdfFile = pdfDocument.url;
+		hasPDF.set(!!pdfDocument);
 	};
 
 	const handleSubmit = async (e: SubmitEvent) => {
@@ -182,7 +160,7 @@
 	};
 
 	const handleReset = () => {
-		newEvent = { ...defaultEvent };
+		newEvent = { ...initialDomainEvent };
 		EditModeStore.set('');
 	};
 </script>
@@ -425,7 +403,7 @@
 				</div>
 			</div>
 
-			<!-- Fifth block -->
+			<!-- Fourth block -->
 			<div class="form bg-white-primary my-8 p-10">
 				<!-- Image -->
 				<div>
@@ -480,14 +458,31 @@
 					<Label child="pdfFile">PDF Document</Label>
 					<div class="flex flex-col items-center justify-center">
 						<UploadPDF fileUrl={newEvent.pdfFile} onUpload={assignPDF} />
-						<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
+						{#if !$hasPDF}
+						<p class="explanation opacity-30">
 							Upload a PDF document that will be attached to this event (max 5MB).
 						</p>
+						{/if}
 					</div>
+					<div>
+							<Label child="pdfText" disabled={!$hasPDF}>PDF Description</Label>
+							<input
+								type="text"
+								id="pdfText"
+								class="input input-bordered w-full"
+								bind:value={newEvent.pdfText}
+								required={$hasPDF}
+								disabled={!$hasPDF}
+								placeholder={$hasPDF ? 'PDF Description' : 'Please select a PDF file first'}
+							/>
+							<p class="explanation {!$hasPDF ? 'opacity-30' : 'opacity-100'}">
+								This text is the visible text for the PDF download link on the event page..
+							</p>
+						</div>
 				</div>
 			</div>
 
-			<!-- Fourth block -->
+			<!-- Fifth block -->
 			<div class="form bg-white-primary my-8 p-10">
 				<!-- Comments -->
 				<div class="col-span-2">

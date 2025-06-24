@@ -30,11 +30,13 @@
 	let newNews: News = $state({ ...thisNews, author: author });
 	let docRef;
 	let selectedImage: File;
-
-	const hasImage = writable(false);
+	let hasPDF = writable(!!thisNews.pdfFile);
+	let hasImage = writable(!!thisNews.image);
 
 	const cleanUpForm = () => {
-		newNews = initialNews;
+		newNews = {...initialNews};
+		hasImage.set(false);
+		hasPDF.set(false);
 	};
 
 	const handleSlugChange = (slugText: string) => {
@@ -77,6 +79,7 @@
 
 	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
 		newNews.pdfFile = pdfDocument.url;
+		hasPDF.set(!!pdfDocument);
 	};
 </script>
 
@@ -206,8 +209,25 @@
 			<Label child="pdfFile">PDF Document</Label>
 			<div class="flex flex-col items-center justify-center">
 				<UploadPDF fileUrl={newNews.pdfFile} onUpload={assignPDF} />
-				<p class="explanation">
+				{#if !$hasPDF}
+				<p class="explanation opacity-30">
 					Upload a PDF document that will be attached to this news item (max 5MB).
+				</p>
+				{/if}
+			</div>
+			<div>
+				<Label child="pdfText" disabled={!$hasPDF}>PDF Description</Label>
+				<input
+					type="text"
+					id="pdfText"
+					class="input input-bordered w-full"
+					bind:value={newNews.pdfText}
+					required={$hasPDF}
+					disabled={!$hasPDF}
+					placeholder={$hasPDF ? 'PDF Description' : 'Please select a PDF file first'}
+				/>
+				<p class="explanation {!$hasPDF ? 'opacity-30' : 'opacity-100'}">
+					This text is the visible text for the PDF download link on the news page..
 				</p>
 			</div>
 		</div>

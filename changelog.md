@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - removed dependency on formats.ts
 - added multiple styles to the app.css file
 - adjusted news and article overview pages to use the new styles
+- editors can capture a description text for pdf files to new events
+- adjusted event page to display pdf file download link
+- editors can capture a description text for pdf file to news items
+- adjusted news page to display pdf file download link
 
 ### Fixed
 

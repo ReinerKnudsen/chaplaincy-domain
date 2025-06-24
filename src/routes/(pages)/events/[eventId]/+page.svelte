@@ -65,7 +65,13 @@
 		</div>
 		<div id="pdfFile">
 			{#if $EventStore.pdfFile}
-				Download PDF
+			<div id="pdf-download" class="flex flex-row justify-start gap-4 bg-white-smoke p-6">
+				<Icon icon="fa6-regular:file-pdf" class="h-6 w-6" />
+				<a class="link flex flex-row gap-4 font-semibold text-lg" href={$EventStore.pdfFile} target="_blank">
+					<div>Download {$EventStore.pdfText ? $EventStore.pdfText : 'PDF'}</div>
+					<Icon icon="famicons:open-outline" class="h-6 w-6" />
+				</a>
+			</div>
 			{/if}
 		</div>
 	</div>

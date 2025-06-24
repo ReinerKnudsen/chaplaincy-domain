@@ -150,6 +150,16 @@
 			const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
 			newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
 		}
+
+		if (newEvent.startdate && newEvent.starttime) {
+			newEvent.startDateTimeUtc = new Date(
+				`${newEvent.startdate}T${newEvent.starttime}`
+			).toISOString();
+		}
+		if (newEvent.enddate && newEvent.endtime) {
+			newEvent.endDateTimeUtc = new Date(`${newEvent.enddate}T${newEvent.endtime}`).toISOString();
+		}
+
 		if (selectedImage) {
 			newEvent.image = await uploadImage(selectedImage);
 		}

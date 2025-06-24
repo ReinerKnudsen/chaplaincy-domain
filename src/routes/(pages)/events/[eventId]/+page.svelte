@@ -29,24 +29,46 @@
 	});
 
 	const calculateOnlineReady = () => {
-		if (
-			!$EventStore?.startdate ||
-			!$EventStore?.starttime ||
-			!$EventStore?.enddate ||
-			!$EventStore?.endtime ||
-			!$EventStore?.joinOnline
-		) {
+		// Prioritize the new, reliable UTC fields if they exist
+		const startUtc = $EventStore?.startDateTimeUtc;
+		const endUtc = $EventStore?.endDateTimeUtc;
+
+		if (!$EventStore?.joinOnline) {
+			onlineReady = false;
 			return;
 		}
 
-		const now = new Date();
-		const eventStartDateTime = new Date(`${$EventStore.startdate}T${$EventStore.starttime}`);
-		const eventEndDateTime = new Date(`${$EventStore.enddate}T${$EventStore.endtime}`);
-		const diffFromStart = eventStartDateTime.getTime() - now.getTime();
-		const twentyMinutesInMillis = MINUTES_BEFORE_EVENT_START * 60 * 1000;
-		const isWithinStartWindow = diffFromStart <= twentyMinutesInMillis;
-		const isBeforeEndTime = now.getTime() < eventEndDateTime.getTime();
-		onlineReady = isWithinStartWindow && isBeforeEndTime;
+		if (startUtc && endUtc) {
+			// --- New, reliable logic using UTC ISO strings ---
+			const now = new Date();
+			const eventStartDateTime = new Date(startUtc);
+			const eventEndDateTime = new Date(endUtc);
+
+			const diffFromStart = eventStartDateTime.getTime() - now.getTime();
+			const twentyMinutesInMillis = MINUTES_BEFORE_EVENT_START * 60 * 1000;
+			const isWithinStartWindow = diffFromStart <= twentyMinutesInMillis;
+			const isBeforeEndTime = now.getTime() < eventEndDateTime.getTime();
+			onlineReady = isWithinStartWindow && isBeforeEndTime;
+		} else if (
+			$EventStore?.startdate &&
+			$EventStore?.starttime &&
+			$EventStore?.enddate &&
+			$EventStore?.endtime
+		) {
+			// --- Fallback logic for old data without UTC fields, assuming CEST (UTC+2) ---
+			const now = new Date();
+			const eventStartDateTime = new Date(
+				`${$EventStore.startdate}T${$EventStore.starttime}+02:00`
+			);
+			const eventEndDateTime = new Date(`${$EventStore.enddate}T${$EventStore.endtime}+02:00`);
+			const diffFromStart = eventStartDateTime.getTime() - now.getTime();
+			const twentyMinutesInMillis = MINUTES_BEFORE_EVENT_START * 60 * 1000;
+			const isWithinStartWindow = diffFromStart <= twentyMinutesInMillis;
+			const isBeforeEndTime = now.getTime() < eventEndDateTime.getTime();
+			onlineReady = isWithinStartWindow && isBeforeEndTime;
+		} else {
+			onlineReady = false;
+		}
 	};
 
 	let description = $derived($EventStore?.description ? marked.parse($EventStore.description) : '');

@@ -21,6 +21,7 @@ export interface CollectionItem {
 }
 
 export interface DomainEvent {
+	id: string;
 	title: string;
 	subtitle: string;
 	description: string;
@@ -29,6 +30,8 @@ export interface DomainEvent {
 	starttime: string | null;
 	enddate: string | null;
 	endtime: string | null;
+	startDateTimeUtc?: string | undefined;
+	endDateTimeUtc?: string | undefined;
 	location: string;
 	joinOnline: boolean;
 	condition?: string;
@@ -49,14 +52,17 @@ export interface DomainEvent {
 }
 
 export const initialDomainEvent: DomainEvent = {
+	id: '',
 	title: '',
 	subtitle: '',
 	description: '',
 	slug: '',
 	startdate: '',
 	starttime: null,
+	startDateTimeUtc: undefined, // Add this for our new field
 	enddate: null,
 	endtime: null,
+	endDateTimeUtc: undefined, // Add this for our new field
 	location: '',
 	joinOnline: false,
 	condition: '',

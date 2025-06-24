@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
-const { Octokit } = require('@octokit/rest');
+import fs from 'fs';
+import path from 'path';
+import { Octokit } from '@octokit/rest';
 
 /**
  * Parses changelog to extract unreleased entries for PR description
@@ -102,8 +102,8 @@ async function updatePRDescription() {
   }
 }
 
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   updatePRDescription();
 }
 
-module.exports = { getUnreleasedForPR, updatePRDescription };
+export { getUnreleasedForPR, updatePRDescription };

@@ -3,6 +3,7 @@
 	import { authStore } from '$lib/stores/AuthStore';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import Alert from '$lib/components/Alert.svelte';
 
 	let thisPassword = $state('');
 	let thisEmail = $state('');
@@ -61,7 +62,7 @@
 				/>
 			</div>
 			{#if error}
-				<div class="text-error font-semibold">{error}</div>
+				<Alert role="error" message={error} />
 			{/if}
 
 			<div class="flex items-start">

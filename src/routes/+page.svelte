@@ -54,19 +54,9 @@
 	$effect(() => {
 		user = $authStore.user;
 	});
-
-	let whiteCount = $derived(
-		[
-			true, // Services always white
-			$LatestNewsStore.length > 0, // News section if present
-			$NextEventsStore.length > 0, // Events section if present
-		].filter(Boolean).length,
-	);
-
-	let shouldBeWhite = $derived((sectionIndex: number) => (sectionIndex + whiteCount) % 2 === 0);
 </script>
 
-<section class="bg-white-smoke">
+<section >
 	<main class="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
 		<div class="page-title">Anglican Chaplaincy of Bonn and Cologne</div>
 		<div class="page-subtitle">St. Boniface, Bonn and All Saints, Cologne</div>
@@ -114,11 +104,11 @@
 <!-- Section: News and Notices -->
 {#if !loading}
 	<!-- News section -->
-	{#if $LatestNewsStore.length > 0}
-		<section class="bg-white-primary">
-			<div class="content-container">
-				<h2 class="section-header">What's up?</h2>
-				<div class="itemContainer">
+	<section>
+		<div class="content-container">
+			<h2 class="section-header">What's up?</h2>
+			{#if $LatestNewsStore.length > 0}
+			<div class="itemContainer">
 					{#each $LatestNewsStore as item}
 						<ItemCard {item} kind="news" />
 					{/each}
@@ -126,15 +116,20 @@
 				<div class="more-link">
 					<a href="/news"><button class="calltoaction">See all news</button></a>
 				</div>
+				{:else}
+				<div class="itemContainer">
+					<p>Currently there are no news articles available.</p>
+				</div>
+			{/if}
 			</div>
 		</section>
-	{/if}
+	
 
 	<!-- Events section -->
-	{#if $NextEventsStore.length > 0}
-		<section class={$LatestNewsStore.length > 0 ? 'bg-white-smoke' : 'bg-white-primary'}>
-			<div class="content-container">
-				<h2 class="section-header">Upcoming Events</h2>
+	<section class="bg-white-smoke">
+		<div class="content-container">
+			<h2 class="section-header">Upcoming Events</h2>
+			{#if $NextEventsStore.length > 0}
 				<div class="itemContainer">
 					{#each $NextEventsStore as item}
 						<ItemCard {item} kind="events" />
@@ -143,23 +138,18 @@
 				<div class="more-link">
 					<a href="/events"><button class="calltoaction">See all events</button></a>
 				</div>
+				{:else}
+				<div class="itemContainer">
+					<p>Currently there are no events scheduled.</p>
+				</div>
+				{/if}
 			</div>
 		</section>
-	{/if}
-{/if}
-<hr class="mx-auto w-[80%]" />
 
-<!-- About us 
-<div class="section-header">Who we are</div>
-<div class="single-post">
-	<div class="more-link">
-		<a class="border-b-2 border-b-purple-100 pb-1" href="/about">Learn more</a>
-	</div>
-</div>
-<hr class="mx-auto w-[80%]" /> -->
+{/if}
 
 <!-- Safeguarding -->
-<section class={shouldBeWhite(3) ? 'bg-white-primary' : 'bg-white-smoke'}>
+<section >
 	<div class="content-container">
 		<h2 class="section-header">Safeguarding</h2>
 		<div class="pl-10 text-lg">
@@ -186,10 +176,10 @@
 		</div>
 	</div>
 </section>
-<hr class="mx-auto w-[80%]" />
+
 
 <!-- signup section-->
-<section class={shouldBeWhite(2) ? 'bg-white-primary' : 'bg-white-smoke'}>
+<section class="bg-white-smoke">
 	<div class="content-container">
 		<div class="section-header">Sign up for our news</div>
 		<div class="mt-4 mb-10 pl-10 text-lg">
@@ -253,7 +243,7 @@
 </section>
 
 <!-- Download section-->
-<section id="downloads" class={shouldBeWhite(1) ? 'bg-white-primary' : 'bg-white-smoke'}>
+<section id="downloads">
 	<div class="content-container">
 		<h2 class="section-header">Downloads</h2>
 		<div class="pl-10">
@@ -298,33 +288,6 @@
 	section {
 		width: 100vw;
 		padding: 2.5rem 0;
-	}
-
-	.download-item {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 200px;
-		height: 100px;
-		background-color: #a07b9f;
-		color: white;
-		text-align: center;
-		position: relative;
-		cursor: pointer;
-		border-radius: 5px;
-		font-weight: 600;
-	}
-
-	.circle {
-		width: 60px;
-		height: 60px;
-		background-color: whitesmoke;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: absolute;
-		top: -30px;
 	}
 
 	.image-container {

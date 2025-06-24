@@ -22,7 +22,7 @@
 	let { onLocationAdded, onClose }: Props = $props();
 
 	const handleSave = async () => {
-		const { name, description, street, city, zip, openMapUrl } = $CurrentLocation;
+		const { name, description, street, city, zip, locationUrl } = $CurrentLocation;
 		try {
 			const docRef = await addDoc(collection(db, 'location'), {
 				name,
@@ -30,7 +30,7 @@
 				street,
 				city,
 				zip,
-				openMapUrl,
+				locationUrl,
 			});
 			await fetchLocations();
 			const newLocation = $AllLocations.find((loc) => loc.id === docRef.id);
@@ -46,7 +46,7 @@
 </script>
 
 <div class="overlay">
-	<div class="modal">
+	<div class="bg-white-smoke w-1/4 rounded-xl p-10">
 		<h2>Add New Location</h2>
 		<NewLocationForm onSave={handleSave} {onClose} showClose={true} mode="create" />
 	</div>

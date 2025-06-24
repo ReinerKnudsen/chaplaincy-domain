@@ -14,8 +14,6 @@
 		type Location,
 	} from '$lib/stores/LocationsStore';
 
-	import { EditMode } from '$lib/stores/ObjectStore';
-
 	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
 
 	import Icon from '@iconify/svelte';
@@ -58,25 +56,18 @@
 	};
 
 	const handleSave = async () => {
-		const { id, name, description, street, city, zip, openMapUrl } = $CurrentLocation;
+		// Use destructuring to separate the id from the rest of the data
+		const { id, ...dataToSave } = $CurrentLocation;
 
 		if (updateItem) {
 			// Updating existing location
 			try {
 				const docRef = doc(database, 'location', id);
-				await updateDoc(docRef, {
-					name,
-					description,
-					street,
-					city,
-					zip,
-					openMapUrl,
-				});
+				await updateDoc(docRef, dataToSave);
 
+				// Update the local store with the new data
 				updateAndSortLocations((locations) =>
-					locations.map((loc) =>
-						loc.id === id ? { id, name, description, street, city, zip, openMapUrl } : loc
-					)
+					locations.map((loc) => (loc.id === id ? { id, ...dataToSave } : loc))
 				);
 			} catch (e) {
 				console.error('Error updating document: ', e);
@@ -84,19 +75,10 @@
 		} else {
 			// Creating new location
 			try {
-				const docRef = await addDoc(collection(database, 'location'), {
-					name,
-					description,
-					street,
-					city,
-					zip,
-					openMapUrl,
-				});
+				const docRef = await addDoc(collection(database, 'location'), dataToSave);
 
-				updateAndSortLocations((locations) => [
-					...locations,
-					{ id: docRef.id, name, description, street, city, zip, openMapUrl },
-				]);
+				// Add the new location to the local store with the new ID from Firestore
+				updateAndSortLocations((locations) => [...locations, { id: docRef.id, ...dataToSave }]);
 			} catch (e) {
 				console.error('Error adding document: ', e);
 			}

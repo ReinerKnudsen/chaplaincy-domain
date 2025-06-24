@@ -12,11 +12,20 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- added property "online" to location form
+- added option "joinOnline" to event form
+- added onlineReady property to event page to check whether an event is to be about online or is online
+- added optional joinOnline property to event form to add a join button to the event 20 minutes before the event starts
+- information that a link will be available before the event starts
+
 
 ### Changed
 
--
+- replaced openMapUrl with locationUrl
+- FutureEvents are all events with PublishEndDate > today
+- Online events only show the name of the online service but no link
+- Event metadata on the event detail page is now fully responsive
+  
 
 ### Fixed
 

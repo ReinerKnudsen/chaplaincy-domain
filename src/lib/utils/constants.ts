@@ -17,3 +17,5 @@ export const userRoles = [
 	{ value: 'editor', name: 'Editor' },
 	{ value: 'admin', name: 'Admin' },
 ];
+
+export const MINUTES_BEFORE_EVENT_START = 20;

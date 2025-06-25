@@ -91,6 +91,9 @@
   --color-black-60: rgba(0, 0, 0, 0.6);
   --color-black-80: rgba(0, 0, 0, 0.8);
   --color-black-100: rgba(0, 0, 0, 1);
+
+  --color-warning-100: var(--color-orange-500)
+
 }
 
 /*

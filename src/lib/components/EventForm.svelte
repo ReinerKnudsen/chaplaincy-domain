@@ -169,7 +169,7 @@
 			await onUpdate(newEvent);
 		}
 
-		goto('/admin/eventsadmin');
+		//goto('/admin/eventsadmin');
 	};
 
 	const handleReset = () => {

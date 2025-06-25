@@ -9,6 +9,8 @@
 	import { doc, deleteDoc } from 'firebase/firestore';
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
 
+	import { notificationStore } from '$lib/stores/notifications';
+
 	import { pathName } from '$lib/stores/NavigationStore';
 	import {
 		CollectionType,
@@ -24,6 +26,7 @@
 		type DomainEventSortableFields,
 	} from '$lib/stores/ObjectStore';
 	import { AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
 	let deleteDialog: HTMLDialogElement | null = $state(null);
 	let duplicateDialog: HTMLDialogElement | null = $state(null);
@@ -271,6 +274,8 @@
 		</div>
 	{/if}
 </div>
+
+<ToastContainer />
 
 <style>
 	.admin-table {

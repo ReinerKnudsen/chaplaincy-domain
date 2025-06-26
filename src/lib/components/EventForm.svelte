@@ -3,15 +3,13 @@
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
-	import { Timestamp } from 'firebase/firestore';
-
-	import { uploadImage } from '$lib/services/fileService';
 	import {
 		EditMode,
 		EditModeStore,
 		type DomainEvent,
 		initialDomainEvent,
 	} from '$lib/stores/ObjectStore';
+
 	import {
 		selectedLocation,
 		AllLocations,
@@ -19,6 +17,8 @@
 		initialLocationState,
 		type Location,
 	} from '$lib/stores/LocationsStore';
+
+	import { selectedImage } from '$lib/stores/ImageSelectionStore';
 
 	import UploadImage from '$lib/components/UploadImage.svelte';
 	import LocationDropdown from './LocationDropdown.svelte';
@@ -40,7 +40,6 @@
 	let newEvent: DomainEvent = $state(initialDomainEvent);
 	let hasImage = writable(!!thisEvent.image);
 	let hasPDF = writable(!!thisEvent.pdfFile);
-	let selectedImage: File;
 	let showModal = $state(false);
 	let loading = $state(true);
 
@@ -55,6 +54,19 @@
 		loading = false;
 	});
 
+	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
+		newEvent.pdfFile = pdfDocument.url;
+		hasPDF.set(!!pdfDocument);
+	};
+
+	const createNewLocation = () => {
+		showModal = true;
+	};
+
+	const handleChangeJoinOnline = (checked: boolean) => {
+		newEvent.joinOnline = checked;
+	};
+
 	const handleConditionChange = (e: Event) => {
 		const target = e.target as HTMLInputElement;
 		if (target.checked) {
@@ -64,29 +76,8 @@
 		}
 	};
 
-	const handleSlugChange = (slugText: string) => {
-		newEvent.slug = slugText;
-	};
-
-	const handleSetPublishDate = (e: MouseEvent) => {
-		e.preventDefault();
-		if (newEvent.startdate) {
-			const pubdate = new Date(newEvent.startdate);
-			pubdate.setDate(pubdate.getDate() - 14);
-			newEvent.publishdate = pubdate.toISOString().split('T')[0];
-		}
-	};
-	const handleSetEndDate = (e: MouseEvent) => {
-		e.preventDefault();
-		if (newEvent.startdate) {
-			const enddate = new Date(newEvent.startdate);
-			newEvent.enddate = enddate.toISOString().split('T')[0];
-		}
-	};
-
-	const handleImageChange = (imageFile: File) => {
-		selectedImage = imageFile;
-		hasImage.set(!!selectedImage);
+	const handleImageChange = () => {
+		hasImage.set(!!$selectedImage);
 	};
 
 	const handleLocationChange = (locationId: string) => {
@@ -98,10 +89,6 @@
 		} else {
 			selectedLocation.set(initialLocationState);
 		}
-	};
-
-	const createNewLocation = () => {
-		showModal = true;
 	};
 
 	const handleLocationAddedModal = async (newLocation: Location) => {
@@ -121,64 +108,40 @@
 		}
 	};
 
-	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
-		newEvent.pdfFile = pdfDocument.url;
-		hasPDF.set(!!pdfDocument);
-	};
-
-	const handleSubmit = async (e: SubmitEvent) => {
-		e.preventDefault();
-		if (!newEvent.publishdate) {
-			newEvent.publishdate = new Date().toISOString().split('T')[0];
-			const currentTime = new Date();
-			newEvent.publishtime = currentTime.toLocaleTimeString('en-US', {
-				hour: '2-digit',
-				minute: '2-digit',
-				hour12: false,
-			});
-		}
-		!newEvent.publishtime && (newEvent.publishtime = '09:00');
-		!newEvent.unpublishdate && (newEvent.unpublishdate = newEvent.startdate);
-		!newEvent.unpublishtime && (newEvent.unpublishtime = newEvent.starttime!);
-		// Ensure we have valid date strings before creating Date objects
-		if (newEvent.publishdate && newEvent.publishtime) {
-			const publishDateTime = new Date(newEvent.publishdate + 'T' + newEvent.publishtime);
-			newEvent.publishDateTime = Timestamp.fromDate(publishDateTime);
-		}
-
-		if (newEvent.unpublishdate && newEvent.unpublishtime) {
-			const unpublishDateTime = new Date(newEvent.unpublishdate + 'T' + newEvent.unpublishtime);
-			newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
-		}
-
-		if (newEvent.startdate && newEvent.starttime) {
-			newEvent.startDateTimeUtc = new Date(
-				`${newEvent.startdate}T${newEvent.starttime}`
-			).toISOString();
-		}
-		if (newEvent.enddate && newEvent.endtime) {
-			newEvent.endDateTimeUtc = new Date(`${newEvent.enddate}T${newEvent.endtime}`).toISOString();
-		}
-
-		if (selectedImage) {
-			newEvent.image = await uploadImage(selectedImage);
-		}
-		if ($EditModeStore === EditMode.New && onCreateNew) {
-			await onCreateNew(newEvent);
-		} else if ($EditModeStore === EditMode.Update && onUpdate) {
-			await onUpdate(newEvent);
-		}
-
-		//goto('/admin/eventsadmin');
-	};
-
 	const handleReset = () => {
 		newEvent = { ...initialDomainEvent };
 		EditModeStore.set('');
 	};
 
-	const handleChangeJoinOnline = (checked: boolean) => {
-		newEvent.joinOnline = checked;
+	const handleSetEndDate = (e: MouseEvent) => {
+		e.preventDefault();
+		if (newEvent.startdate) {
+			const enddate = new Date(newEvent.startdate);
+			newEvent.enddate = enddate.toISOString().split('T')[0];
+		}
+	};
+
+	const handleSetPublishDate = (e: MouseEvent) => {
+		e.preventDefault();
+		if (newEvent.startdate) {
+			const pubdate = new Date(newEvent.startdate);
+			pubdate.setDate(pubdate.getDate() - 14);
+			newEvent.publishdate = pubdate.toISOString().split('T')[0];
+		}
+	};
+
+	const handleSlugChange = (slugText: string) => {
+		newEvent.slug = slugText;
+	};
+
+	const handleSubmit = async (e: SubmitEvent) => {
+		e.preventDefault();
+
+		if ($EditModeStore === EditMode.New && onCreateNew) {
+			await onCreateNew(newEvent);
+		} else if ($EditModeStore === EditMode.Update && onUpdate) {
+			await onUpdate(newEvent);
+		}
 	};
 </script>
 
@@ -306,7 +269,6 @@
 					type="date"
 					id="startdate"
 					bind:value={newEvent.startdate}
-					required
 				/>
 			</div>
 			<p class="explanation">Please enter all dates as dd mm yyyy.</p>
@@ -319,14 +281,13 @@
 					id="starttime"
 					class="input input-bordered w-full"
 					bind:value={newEvent.starttime}
-					required
 					disabled={!newEvent.startdate}
 				/>
 			</div>
 
 			<!-- End date -->
 			<div class="flex-1">
-				<Label child="enddate" disabled={!newEvent.startdate}>End Date</Label>
+				<Label child="enddate" disabled={!newEvent.startdate}>End Date *</Label>
 				<div class="flex w-full flex-row items-center gap-4">
 					<input
 						type="date"
@@ -348,7 +309,7 @@
 
 			<!-- End time -->
 			<div>
-				<Label child="endtime" disabled={!newEvent.enddate}>End Time</Label>
+				<Label child="endtime" disabled={!newEvent.enddate}>End Time *</Label>
 				<input
 					type="time"
 					id="endtime"
@@ -468,9 +429,7 @@
 					</div>
 					<div class="imageCaption mt-10">
 						<div>
-							<Label child="imageCaption" disabled={!$hasImage} text="Image caption"
-								>Image caption</Label
-							>
+							<Label child="imageCaption" disabled={!$hasImage}>Image caption</Label>
 							<input
 								type="text"
 								id="imageCaption"

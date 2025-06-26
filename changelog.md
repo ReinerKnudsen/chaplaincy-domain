@@ -13,12 +13,18 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Added
 
 - add notifications to provide transaction feedback to the user
-- added notificationStore, ToastContainer and ToastItem components
-- added toast notification handling for event update page
+- add notificationStore, ToastContainer and ToastItem components
+- add toast notification handling for event update page
+- add toast notifications for issues with date values in form
+- add ImageSelectionStore to handle image selection and image upload
+- add unit tests for date handling and event data handling
 
 ### Changed
 
--
+- the app now knows if an image already exists when an event/news is created/updated and avoids an uplado attempt
+- date calculation for events is now in a central service
+- dates are therefore also validated for updated events
+- minor adjustment to location dropdown
 
 ### Fixed
 

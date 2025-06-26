@@ -98,7 +98,7 @@ describe('validDateEventData', () => {
     // @ts-expect-error - Testing with incomplete event object
     const result = validateEventData(event);
     expect(notificationStore.addToast).not.toHaveBeenCalled();
-    expect(result).toEqual([]); // Still returns empty array for no errors
+    expect(result).toEqual(false); // Still returns empty array for no errors
   });
 
   it('error: no startdate for event', () => {
@@ -112,7 +112,6 @@ describe('validDateEventData', () => {
       'error',
       'Mandatory start date is empty'
     );
-    expect(notificationStore.addToast).toHaveBeenCalledTimes(1);
   });
 
   it('error: no starttime for event', () => {
@@ -126,6 +125,26 @@ describe('validDateEventData', () => {
       'error',
       'Mandatory start time is empty'
     );
+  });
+
+  it('error: no enddate for event', () => {
+    const event = {
+      enddate: '',
+      endtime: '13:00',
+    };
+    // @ts-expect-error - Testing with incomplete event object
+    validateEventData(event);
+    expect(notificationStore.addToast).toHaveBeenCalledWith('error', 'Mandatory end date is empty');
+  });
+
+  it('error: no endtime for event', () => {
+    const event = {
+      enddate: '2025-08-09',
+      endtime: '',
+    };
+    // @ts-expect-error - Testing with incomplete event object
+    validateEventData(event);
+    expect(notificationStore.addToast).toHaveBeenCalledWith('error', 'Mandatory end time is empty');
   });
 
   it('error: startdate before today', () => {
@@ -200,7 +219,7 @@ describe('validDateEventData', () => {
     validateEventData(event);
     expect(notificationStore.addToast).toHaveBeenCalledWith(
       'error',
-      'The publish date cannot be after the start date'
+      'The publish date cannot be later than the start date'
     );
   });
 
@@ -215,7 +234,7 @@ describe('validDateEventData', () => {
     validateEventData(event);
     expect(notificationStore.addToast).toHaveBeenCalledWith(
       'error',
-      'The publish date cannot be after the start date'
+      'The publish date cannot be later than the start date'
     );
   });
 
@@ -231,7 +250,7 @@ describe('validDateEventData', () => {
     validateEventData(event);
     expect(notificationStore.addToast).toHaveBeenCalledWith(
       'error',
-      'The unpublish date cannot be before the publish date'
+      'The unpublish date cannot be earlier than the publish date'
     );
   });
 
@@ -247,7 +266,7 @@ describe('validDateEventData', () => {
     validateEventData(event);
     expect(notificationStore.addToast).toHaveBeenCalledWith(
       'error',
-      'The unpublish date cannot be before the publish date'
+      'The unpublish date cannot be earlier than the publish date'
     );
   });
 

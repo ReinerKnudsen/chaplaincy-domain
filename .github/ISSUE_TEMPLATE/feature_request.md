@@ -7,10 +7,10 @@ assignees: ''
 
 ---
 
-**Describe the new feature.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+## Describe the new feature.
 
-**Which modules does it concern.**
+
+## Which modules does it concern.
 - [ ] Homepage
 - [ ] Events Overview
 - [ ] Event Detail
@@ -18,11 +18,10 @@ A clear and concise description of what the problem is. Ex. I'm always frustrate
 - [ ] News Detail
 - [ ] Locations
 - [ ] Static Page: 
-- **Admin**
+### Admin
 - [ ] Event Admin
 - [ ] News Admin
 - [ ] Location Admin
 - [ ] User Admin
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+## Additional context

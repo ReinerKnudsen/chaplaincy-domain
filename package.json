@@ -6,6 +6,7 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
+		"test": "vitest",
 		"lint": "eslint .",
 		"format": "prettier --write .",
 		"serve-json": "json-server --watch db.json --port 4000"
@@ -59,6 +60,7 @@
 		"svelte-fa": "^4.0.2",
 		"svelte-quill": "^1.2.0",
 		"tailwind-merge": "^2.2.0",
-		"uuid": "^11.1.0"
+		"uuid": "^11.1.0",
+		"vitest": "^3.2.4"
 	}
 }

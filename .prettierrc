@@ -14,7 +14,7 @@
 			}
 		},
 		{
-			"files": ["*.css"],
+			"files": ["*.css", "*.ts", "*.tsx"],
 			"options": {
 				"tabWidth": 2,
 				"singleQuote": true,
@@ -23,12 +23,6 @@
 				"arrowParens": "always",
 				"endOfLine": "lf",
 				"useTabs": false
-			}
-		},
-		{
-			"files": ["*.ts", "*.tsx"],
-			"options": {
-				"parser": "typescript"
 			}
 		}
 	]

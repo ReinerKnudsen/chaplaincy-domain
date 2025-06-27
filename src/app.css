@@ -96,14 +96,6 @@
 
 }
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
   *,
   ::after,
@@ -126,7 +118,6 @@
 
 	a, a:where(:not(.btn)){
 		cursor: pointer;
-		/* padding-bottom removed to allow for proper vertical alignment */
 		color: var(--color-purple-80);
 		text-decoration: none !important;
 	}
@@ -227,7 +218,7 @@
   }
 
 
-  /** News and Articles */
+  /* # News and Articles */
 
   .article-container {  
     margin-left: auto;
@@ -298,105 +289,8 @@
     color: var(--color-primary-40);
   }
 
-
-
-
-  /* Page section styles */
+  /* # Buttons */ 
   
-  .page-title {
-    font-size: 2rem; /* text-2xl */
-    text-align: center;
-    width: 100%;
-    font-weight: 600;
-  }
-
-  .page-subtitle {
-    font-size: 1.7rem;
-    text-align: center;
-    width: 100%;
-    padding: 1rem;
-    font-weight: 600;
-  }
-
-  /* Section content */
-
-  .section-content {
-    font-size: 1rem; /* text-md */
-    padding: 0.75rem 1.25rem;
-    width: 100%;
-  }
-  
-  /* Section header */
-
-  .section-header {
-    font-size: 1.5rem; /* text-2xl */
-    width: 100%;
-    padding: 0 2.5rem;
-    font-weight: 600;
-  }
-
-  /* Services Section */
-
-  .services {
-    padding: 0 1.25rem;
-    display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 1.25rem;
-    width: 100%;
-  }
-
-  .itemContainer {
-    padding: 0 1.25rem;
-    display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 1.25rem;
-    width: 100%;
-  }
-
-  .download-container {
-    display: flex;
-    flex-direction: row;
-    gap: 40px;
-    justify-content: center;
-    padding: 0 1.25rem;
-  }
-
-  /** Download item indicator */
-
-  .download-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 200px;
-    height: 100px;
-    background-color: var(--color-purple-600);
-    color: white;
-    text-align: center;
-    position: relative;
-    cursor: pointer;
-    border-radius: 5px;
-    font-weight: 600;
-  }
-
-  .download-item:hover {
-    background-color: var(--color-purple-300);
-    color: var(--color-black-100);
-  }
-
-  .circle {
-    width: 60px;
-    height: 60px;
-    background-color: white;
-    border: 2px solid var(--color-purple-600);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: -30px;
-  }
-
-  /** Buttons */
   .btn-custom {
     min-height: 40px;
     border: 1px solid var(--color-primary-text);
@@ -449,6 +343,100 @@
     background-color: var(--color-purple-300);
     color: var(--color-black-100);
   }
+  
+  /* # Download item indicator */
+
+  .circle {
+    width: 60px;
+    height: 60px;
+    background-color: white;
+    border: 2px solid var(--color-purple-600);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -30px;
+  }
+
+  .download-container {
+   display: flex;
+   flex-direction: row;
+   gap: 40px;
+   justify-content: center;
+   padding: 0 1.25rem;
+ }
+ 
+
+ .download-item {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 200px;
+   height: 100px;
+   background-color: var(--color-purple-600);
+   color: white;
+   text-align: center;
+   position: relative;
+   cursor: pointer;
+   border-radius: 5px;
+   font-weight: 600;
+ }
+
+ .download-item:hover {
+   background-color: var(--color-purple-300);
+   color: var(--color-black-100);
+ }
+
+/* # Page */
+  
+  .page-title {
+    font-size: 2rem; /* text-2xl */
+    text-align: center;
+    width: 100%;
+    font-weight: 600;
+  }
+
+  .page-subtitle {
+    font-size: 1.7rem;
+    text-align: center;
+    width: 100%;
+    padding: 1rem;
+    font-weight: 600;
+  }
+
+ /* # Section */
+
+  .section-content {
+    font-size: 1rem; /* text-md */
+    padding: 0.75rem 1.25rem;
+    width: 100%;
+  }
+  
+  .section-header {
+    font-size: 1.5rem; /* text-2xl */
+    width: 100%;
+    padding: 0 2.5rem;
+    font-weight: 600;
+  }
+
+/* # Services Section */
+
+  .services {
+    padding: 0 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.25rem;
+    width: 100%;
+  }
+
+  .itemContainer {
+    padding: 0 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.25rem;
+    width: 100%;
+  }
 
   .label {
     margin-bottom: 8px;
@@ -459,7 +447,44 @@
     color: var(--primary-100)
   }
 
-  /** Media Queries */
+/* # Admin Lists */
+  	.admin-table {
+  	  border-collapse: collapse;
+  	  min-width: 100%;
+  	}
+
+    .table-row {
+      display: contents !important;
+    }
+
+    .table-header {
+      background-color: white;
+      cursor: pointer;
+      padding: 0.75rem 0.5rem;
+      text-align: left;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: rgb(17 24 39);
+      text-transform: uppercase;
+    }
+
+    .table-cell {
+      font-size: 0.875rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: rgb(71 85 105);
+    }
+
+    .table-data {
+      padding: 1.25rem 0.5rem;
+      border-bottom: 1px solid rgb(203 213 225);
+      align-content: center;
+    }
+
+
+
+  /* # Media Queries */
 
   /** md */
   @media (min-width: 768px) {

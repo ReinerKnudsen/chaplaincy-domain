@@ -25,6 +25,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - date calculation for events is now in a central service
 - dates are therefore also validated for updated events
 - minor adjustment to location dropdown
+- all table styles in app.css
 
 ### Fixed
 

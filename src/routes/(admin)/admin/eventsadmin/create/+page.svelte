@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
-	import { uploadImage } from '$lib/services/fileService';
-	import { addDoc, Timestamp } from 'firebase/firestore';
+	import { addDoc } from 'firebase/firestore';
 
 	//import { notificationStore } from '$lib/stores/notifications';
 	import { EditMode, EditModeStore, type DomainEvent } from '$lib/stores/ObjectStore';

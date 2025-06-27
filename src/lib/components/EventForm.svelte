@@ -103,7 +103,7 @@
 		const foundLocation = $AllLocations.find((loc) => loc.id === newLocId);
 
 		if (foundLocation) {
-			selectedLocation.set(foundLocation);
+			selectedLocation.set({ ...foundLocation });
 			newEvent.location = newLocId;
 			newEvent = { ...newEvent };
 		}

@@ -231,10 +231,22 @@ async function main() {
 		// Generate release notes
 		const releaseNotes = generateReleaseNotes(unreleasedEntries);
 
-		// Set GitHub Actions outputs
-		console.log('::set-output name=version_updated::true');
-		console.log(`::set-output name=new_version::${newVersion}`);
-		console.log(`::set-output name=release_notes::${releaseNotes}`);
+		// Write release notes to file for GitHub Actions
+		const releaseNotesPath = path.join(process.cwd(), 'release-notes.md');
+		fs.writeFileSync(releaseNotesPath, releaseNotes, 'utf8');
+
+		// Set GitHub Actions outputs using modern approach
+		const githubOutput = process.env.GITHUB_OUTPUT;
+		if (githubOutput) {
+			fs.appendFileSync(githubOutput, 'version_updated=true\n');
+			fs.appendFileSync(githubOutput, `new_version=${newVersion}\n`);
+			fs.appendFileSync(githubOutput, 'release_notes_file=release-notes.md\n');
+		} else {
+			// Fallback for local testing
+			console.log('::set-output name=version_updated::true');
+			console.log(`::set-output name=new_version::${newVersion}`);
+			console.log('::set-output name=release_notes_file::release-notes.md');
+		}
 	} catch (error) {
 		console.error('Error updating changelog:', error);
 		process.exit(1);

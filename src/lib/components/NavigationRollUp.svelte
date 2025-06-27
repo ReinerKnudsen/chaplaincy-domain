@@ -47,7 +47,7 @@
 		type="button"
 		id="showMenue"
 		class="btn btn-outline border-0 text-xl font-semibold"
-		onclick={toggleDropdown}><span class="text-primary-80 pb-1">{title}</span></button
+		onclick={toggleDropdown}><span class="text-primary-80">{title}</span></button
 	>
 	{#if showDropdown}
 		<div

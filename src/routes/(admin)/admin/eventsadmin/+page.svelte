@@ -9,6 +9,8 @@
 	import { doc, deleteDoc } from 'firebase/firestore';
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
 
+	import { notificationStore } from '$lib/stores/notifications';
+
 	import { pathName } from '$lib/stores/NavigationStore';
 	import {
 		CollectionType,
@@ -24,6 +26,7 @@
 		type DomainEventSortableFields,
 	} from '$lib/stores/ObjectStore';
 	import { AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
 	let deleteDialog: HTMLDialogElement | null = $state(null);
 	let duplicateDialog: HTMLDialogElement | null = $state(null);
@@ -42,6 +45,10 @@
 		await fetchLocations();
 		loading = false;
 	});
+
+	/**
+	 * 
+	 */
 
 	// Sort table items
 	const STORAGE_KEY = 'events_sort';
@@ -180,7 +187,7 @@
 		<div class="modal-action">
 			<form method="dialog">
 				<button class="btn btn-default mr-2">Cancel</button>
-				<button class="btn btn-error" onclick={preventDefault(() => handleDelete())}>Delete</button>
+				<button class="btn btn-error" onclick={(() => handleDelete())}>Delete</button>
 			</form>
 		</div>
 	</div>
@@ -199,7 +206,7 @@
 		<div class="modal-action">
 			<form method="dialog">
 				<button class="btn btn-default mr-2">Cancel</button>
-				<button class="btn btn-primary" onclick={preventDefault(() => handleDuplicate())}
+				<button class="btn btn-primary" onclick={(() => handleDuplicate())}
 					>Duplicate</button
 				>
 			</form>
@@ -225,7 +232,7 @@
 		<div class="w-full">Loading...</div>
 	{:else}
 		<div class="w-full">
-			<table class="admin-table">
+			<table class="admin-table events-table">
 				<thead class="table-row">
 					<tr class="table-row">
 						<th class="table-header table-cell" onclick={() => sortTable('title')}>Title</th>
@@ -272,42 +279,17 @@
 	{/if}
 </div>
 
+<ToastContainer />
+
 <style>
-	.admin-table {
-		display: grid;
-		border-collapse: collapse;
-		min-width: 100%;
-		grid-template-columns:
-			minmax(150px, 2.5fr) minmax(130px, 1fr) minmax(130px, 1fr) minmax(150px, 2fr)
-			minmax(150px, 1fr) minmax(100px, 1fr);
-	}
-
-	.table-row {
-		display: contents;
-	}
-
-	.table-header {
-		background-color: white;
-		cursor: pointer;
-		padding: 0.75rem 0.5rem;
-		text-align: left;
-		font-size: 0.875rem;
-		font-weight: 600;
-		color: rgb(17 24 39);
-		text-transform: uppercase;
-	}
-
-	.table-cell {
-		font-size: 0.875rem;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		color: rgb(71 85 105);
-	}
-
-	.table-data {
-		padding: 1.25rem 0.5rem;
-		border-bottom: 1px solid rgb(203 213 225);
-		align-content: center;
-	}
+ .events-table {
+	display: grid;
+	grid-template-columns:
+  	    minmax(150px, 2.5fr) 
+				minmax(130px, 1fr) 
+				minmax(130px, 1fr) 
+				minmax(150px, 2fr) 
+				minmax(150px, 1fr) 
+				minmax(100px, 1fr) ;
+ }
 </style>

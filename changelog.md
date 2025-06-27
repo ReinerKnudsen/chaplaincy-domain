@@ -12,11 +12,20 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- add notifications to provide transaction feedback to the user
+- add notificationStore, ToastContainer and ToastItem components
+- add toast notification handling for event update page
+- add toast notifications for issues with date values in form
+- add ImageSelectionStore to handle image selection and image upload
+- add unit tests for date handling and event data handling
 
 ### Changed
 
--
+- the app now knows if an image already exists when an event/news is created/updated and avoids an uplado attempt
+- date calculation for events is now in a central service
+- dates are therefore also validated for updated events
+- minor adjustment to location dropdown
+- all table styles in app.css
 
 ### Fixed
 
@@ -28,11 +37,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 - major update to event and news page to use UTC dates instead of local dates
 - implemented a fall back for older items without UTC dates
+
 ## [1.2.0] - 2025-06-24
 
 ### Fixed
 
 - the alt property of images on the events and news detail page are now set to the imageAlt property of the event or news item
+
 ## [1.1.0] - 2025-06-24
 
 ### Added
@@ -49,6 +60,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - FutureEvents are all events with PublishEndDate > today
 - Online events only show the name of the online service but no link
 - Event metadata on the event detail page is now fully responsive
+
 ## [1.0.0] - 2025-06-24
 
 ### Changed
@@ -64,6 +76,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - location form didn't come up when called from event admin form
+
 ## [1.0.0] - 2025-06-24
 
 ### Added

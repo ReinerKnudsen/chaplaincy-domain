@@ -1,16 +1,17 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
-	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
-	import { pathName } from '$lib/stores/NavigationStore';
 
+	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
+
 	import { doc, deleteDoc, type DocumentData } from 'firebase/firestore';
 	import { newsColRef } from '$lib/firebase/firebaseConfig';
 
+	import { pathName } from '$lib/stores/NavigationStore';
 	import { decodeHtml } from '$lib/utils/HTMLfunctions';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
+
 
 	import {
 		resetNewsStore,
@@ -211,42 +212,15 @@
 	{/if}
 </div>
 
+<ToastContainer />
+
 <style>
 	.admin-table {
 		display: grid;
-		border-collapse: collapse;
-		min-width: 100%;
 		grid-template-columns:
 			minmax(150px, 2.5fr) minmax(130px, 2.5fr) minmax(130px, 1fr) minmax(150px, 1fr)
 			minmax(150px, 1fr);
 	}
 
-	.table-row {
-		display: contents;
-	}
-
-	.table-header {
-		background-color: white;
-		cursor: pointer;
-		padding: 0.75rem 0.5rem;
-		text-align: left;
-		font-size: 0.875rem;
-		font-weight: 600;
-		color: rgb(17 24 39);
-		text-transform: uppercase;
-	}
-
-	.table-cell {
-		font-size: 0.875rem;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		color: rgb(71 85 105);
-	}
-
-	.table-data {
-		padding: 1.25rem 0.5rem;
-		border-bottom: 1px solid rgb(203 213 225);
-		align-content: center;
-	}
+	
 </style>

@@ -2,20 +2,17 @@
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
-	import { uploadImage } from '$lib/services/fileService';
-	import type { News } from '$lib/stores/ObjectStore';
-	import { initialNews } from '$lib/stores/ObjectStore';
-
-	// DaisyUI components are used via classes
-
 	import { authStore } from '$lib/stores/AuthStore';
-	import { EditModeStore, EditMode } from '$lib/stores/ObjectStore';
+	import { EditModeStore, EditMode, initialNews, type News  } from '$lib/stores/ObjectStore';
+	
+	import {selectedImage } from '$lib/stores/ImageSelectionStore';
 
-	import SlugText from './SlugText.svelte';
-	import UploadPDF from '$lib/components/UploadPDF.svelte';
-	import UploadImage from './UploadImage.svelte';
-	import Label from './Label.svelte';
 	import Editor from './Editor.svelte';
+	import Label from './Label.svelte';
+	import SlugText from './SlugText.svelte';
+	import ToastContainer from './ToastContainer.svelte';
+	import UploadImage from './UploadImage.svelte';
+	import UploadPDF from './UploadPDF.svelte';
 
 	const author = $authStore.name;
 
@@ -29,7 +26,6 @@
 
 	let newNews: News = $state({ ...thisNews, author: author });
 	let docRef;
-	let selectedImage: File;
 	let hasPDF = writable(!!thisNews.pdfFile);
 	let hasImage = writable(!!thisNews.image);
 
@@ -45,21 +41,6 @@
 
 	const handleSubmit = async (e: SubmitEvent) => {
 		e.preventDefault();
-		if (!newNews.publishdate) {
-			const now = new Date();
-			const dateStr = now.toISOString().split('T')[0];
-			const timeStr = now.toLocaleTimeString('en-US', {
-				hour: '2-digit',
-				minute: '2-digit',
-				hour12: false,
-			});
-			newNews.publishdate = dateStr;
-			newNews.publishtime = timeStr;
-		}
-		!newNews.publishtime && (newNews.publishtime = '09:00');
-		if (selectedImage) {
-			newNews.image = await uploadImage(selectedImage);
-		}
 		if ($EditModeStore === EditMode.New && onCreateNew) {
 			await onCreateNew(newNews);
 		} else if ($EditModeStore === EditMode.Update && onUpdate) {
@@ -72,9 +53,8 @@
 		cleanUpForm();
 	};
 
-	const handleImageChange = (imageFile: File) => {
-		selectedImage = imageFile;
-		hasImage.set(!!selectedImage);
+	const handleImageChange = () => {
+		hasImage.set(!!$selectedImage);
 	};
 
 	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
@@ -242,6 +222,8 @@
 		</div>
 	</form>
 </div>
+
+<ToastContainer />
 
 <div>&NonBreakingSpace;</div>
 

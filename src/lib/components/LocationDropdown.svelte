@@ -41,7 +41,7 @@
 </script>
 
 <select
-	class="mb-2 min-h-12 w-full rounded-md border-slate-300 bg-slate-50"
+	class="mb-2 min-h-12 w-full rounded-md border-1 border-slate-300 px-6"
 	value={selectedId}
 	onchange={handleChange}
 >

@@ -2,12 +2,14 @@
 	import { onDestroy } from 'svelte';
 
 	import { FileType, checkIfFileExists } from '$lib/services/fileService';
+	import { selectedImage, imageExists, existingImageUrl } from '$lib/stores/ImageSelectionStore';
 
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
+	import type { QueryDocumentSnapshot } from 'firebase/firestore';
 
 	interface Props {
 		imageUrl?: string;
-		onImageChange: (file: File) => void;
+		onImageChange: () => void;
 	}
 
 	let { imageUrl = $bindable(), onImageChange }: Props = $props();
@@ -30,29 +32,39 @@
 			return;
 		}
 
-		selectedFile = files[0];
-		const existingFile = await checkIfFileExists(selectedFile.name, FileType.Image);
+		selectedImage.set(files[0]);
 
-		if (existingFile) {
+		// If there is no image than leave here
+		if (!$selectedImage) return;
+
+		// Verify if image exists already
+		let existingFile: QueryDocumentSnapshot | null = null;
+		if ($selectedImage) {
+			existingFile = await checkIfFileExists($selectedImage.name, FileType.Image);
+		}
+		// If the file already exists
+		if (!!existingFile) {
 			imageError = '';
 			imageNote = 'This image already exists.';
+			imageExists.set(true);
+			existingImageUrl.set(existingFile.data().url);
 			imageUrl = existingFile.data().url;
-			onImageChange(selectedFile);
 		} else {
-			if (selectedFile.size > MAX_IMAGE_SIZE) {
+			if ($selectedImage.size > MAX_IMAGE_SIZE) {
 				imageError = 'The image is too big.';
 				selectedFile = null;
+				return;
 			} else {
 				imageError = '';
-				imageUrl = URL.createObjectURL(selectedFile);
-				onImageChange(selectedFile);
+				imageUrl = URL.createObjectURL($selectedImage);
 			}
 		}
+		onImageChange();
 	};
 
 	const resetInput = () => {
 		selectedFile = null;
-		if(imageUrl) URL.revokeObjectURL(imageUrl);
+		if (imageUrl) URL.revokeObjectURL(imageUrl);
 		imageUrl = '';
 	};
 

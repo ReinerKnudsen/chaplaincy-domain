@@ -199,7 +199,7 @@
 				<Editor bind:content={newEvent.description} />
 			</div>
 			<SlugText
-				text={newEvent.description}
+				text={!newEvent.slug ? newEvent.description : ''}
 				slugText={newEvent.slug}
 				onSlugChange={handleSlugChange}
 			/>

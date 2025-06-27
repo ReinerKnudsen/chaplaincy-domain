@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
 	import { marked } from 'marked';
 
+	import { cleanText } from '$lib/utils/HTMLfunctions';
 	import Label from './Label.svelte';
 
 	interface Props {
@@ -19,13 +18,13 @@
 	const handleChangeSlug = async () => {
 		if (!slugText) {
 			const parsedText = await marked.parse(text);
-			slugText = parsedText.replace(/<[^>]*>/g, '').slice(0, MAX_SLUG_TEXT);
+			slugText = cleanText(parsedText).slice(0, MAX_SLUG_TEXT);
 		} else {
 			editSlug = true;
 		}
 	};
 
-	run(() => {
+	$effect(() => {
 		if (slugText) {
 			onSlugChange(slugText);
 		}

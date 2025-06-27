@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { addDoc, collection } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
+	import { notificationStore } from '$lib/stores/notifications';
 
 	import {
 		CurrentLocation,
@@ -11,6 +12,7 @@
 	} from '$lib/stores/LocationsStore';
 
 	import NewLocationForm from './NewLocationForm.svelte';
+	import { TOAST_DURATION } from '$lib/utils/constants';
 
 	const db = database;
 
@@ -37,9 +39,11 @@
 			if (newLocation) {
 				selectedLocation.set(newLocation);
 				onLocationAdded(newLocation);
+				notificationStore.addToast('success', 'Location added successfully', TOAST_DURATION);
 				onClose();
 			}
 		} catch (error) {
+			notificationStore.addToast('error', "Couldn't add the new location. Please try again.", 0);
 			console.error('Error adding document: ', error);
 		}
 	};

@@ -19,3 +19,5 @@ export const userRoles = [
 ];
 
 export const MINUTES_BEFORE_EVENT_START = 20;
+
+export const TOAST_DURATION = 3000;

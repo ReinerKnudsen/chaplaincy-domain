@@ -18,6 +18,7 @@
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 	import EventForm from '$lib/components/EventForm.svelte';
 	import { notificationStore } from '$lib/stores/notifications';
+	import { resetSelectedLocation } from '$lib/stores/LocationsStore';
 
 	const saveNewEvent = async (newEvent: DomainEvent) => {
 		if (validateEventData(newEvent)) {
@@ -41,10 +42,16 @@
 			console.error('Error creating event: ', error);
 		}
 	};
+
+	const handleCancel = () => {
+		EditModeStore.set(EditMode.Empty);
+		resetSelectedLocation();
+		goto('/admin/eventsadmin');
+	};
 </script>
 
 <div>
-	<EventForm onCreateNew={saveNewEvent} />
+	<EventForm onCreateNew={saveNewEvent} onCancel={handleCancel} />
 </div>
 
 <ToastContainer />

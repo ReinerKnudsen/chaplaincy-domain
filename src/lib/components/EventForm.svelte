@@ -33,9 +33,10 @@
 		thisEvent?: DomainEvent;
 		onCreateNew?: (event: DomainEvent) => Promise<void>;
 		onUpdate?: (event: DomainEvent) => Promise<void>;
+		onCancel: () => void;
 	}
 
-	let { thisEvent = initialDomainEvent, onCreateNew, onUpdate }: Props = $props();
+	let { thisEvent = initialDomainEvent, onCreateNew, onUpdate, onCancel }: Props = $props();
 
 	let newEvent: DomainEvent = $state(initialDomainEvent);
 	let hasImage = writable(!!thisEvent.image);
@@ -143,6 +144,8 @@
 			await onUpdate(newEvent);
 		}
 	};
+
+	function handleCancel() {}
 </script>
 
 {#if loading}
@@ -488,19 +491,18 @@
 					></textarea>
 				</div>
 			</div>
-
-			<!-- Buttons block -->
-			<div class="form bg-white-primary p-10">
-				<!-- Buttons -->
-				<div class="buttons col-span-2">
-					<button class="btn" type="reset" color="light" onclick={() => goto('/admin/eventsadmin')}
-						>Cancel</button
-					>
-					<button class="btn btn-neutral" type="reset" color="light">Empty form</button>
-					<button class="btn btn-primary" type="submit" disabled={newEvent.title.length === 0}
-						>{$EditModeStore === 'update' ? 'Update' : 'Save'} event</button
-					>
-				</div>
+		</div>
+		<!-- Buttons block -->
+		<div
+			class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-2/3 gap-4 bg-slate-100 p-10 shadow-2xl"
+		>
+			<!-- Buttons -->
+			<div class="buttons col-span-2 w-2/3">
+				<button class="btn" type="reset" color="light" onclick={onCancel}>Cancel</button>
+				<button class="btn btn-neutral" type="reset" color="light">Empty form</button>
+				<button class="btn btn-primary" type="submit" disabled={newEvent.title.length === 0}
+					>{$EditModeStore === 'update' ? 'Update' : 'Save'} event</button
+				>
 			</div>
 		</div>
 	</form>

@@ -12,6 +12,21 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
+- added path highlighting in menu on admin pages
+- added floating buttons for both events and news form
+
+### Changed
+
+-
+
+### Fixed
+
+- location will now be properly reset when canceling an event form with a location selected in it
+
+## [2.0.5] 2025-06-27
+
+### Added
+
 - add notifications to provide transaction feedback to the user
 - add notificationStore, ToastContainer and ToastItem components
 - add toast notification handling for event update page

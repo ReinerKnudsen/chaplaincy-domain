@@ -1,15 +1,19 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	import { updateDoc } from 'firebase/firestore';
 	import { DocumentReference, type DocumentData } from 'firebase/firestore';
-	import { type DomainEvent, EditMode, EditModeStore } from '$lib/stores/ObjectStore';
+	
+	import { selectedImage, imageExists, existingImageUrl } from '$lib/stores/ImageSelectionStore';
+	import { selectedLocation, resetSelectedLocation } from '$lib/stores/LocationsStore';
 	import { notificationStore } from '$lib/stores/notifications';
-
-	import EventForm from '$lib/components/EventForm.svelte';
-	import ToastContainer from '$lib/components/ToastContainer.svelte';
-	import { goto } from '$app/navigation';
+	import { type DomainEvent, EditMode, EditModeStore } from '$lib/stores/ObjectStore';
+	
 	import { validateEventData } from '$lib/services/validateForm';
 	import { eventFormService } from '$lib/services/EventFormService';
-	import { selectedImage, imageExists, existingImageUrl } from '$lib/stores/ImageSelectionStore';
+	
+	import EventForm from '$lib/components/EventForm.svelte';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
 	type Params = {
 		newEvent: DomainEvent;
@@ -24,6 +28,14 @@
 
 	let { data }: Props = $props();
 	currentDocRef = data.docRef;
+
+$inspect($selectedLocation)
+
+	const handleCancel = () => {
+		resetSelectedLocation();
+		EditModeStore.set(EditMode.Empty);
+		goto('/admin/eventsadmin');
+	}
 
 	const updateEvent = async (updatedEvent: DomainEvent) => {
 		try {
@@ -47,6 +59,7 @@
 			const eventData = { ...thisEvent } as DocumentData;
 			await updateDoc(data.docRef, eventData);
 			EditModeStore.set(EditMode.Empty);
+			resetSelectedLocation();
 			notificationStore.addToast('success', 'Event updated successfully!');
 			goto('/admin/eventsadmin');
 		} catch (error) {
@@ -57,7 +70,7 @@
 </script>
 
 <div>
-	<EventForm thisEvent={data.newEvent} onUpdate={updateEvent} />
+	<EventForm thisEvent={data.newEvent} onCancel={handleCancel} onUpdate={updateEvent} />
 </div>
 
 <ToastContainer />

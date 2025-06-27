@@ -1,10 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { selectedLocation, AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 
-	const dispatch = createEventDispatcher();
 	let selectedId = $state($selectedLocation?.id || '');
 
 	interface Props {
@@ -19,7 +16,7 @@
 	});
 
 	// Make selectedId reactive to selectedLocation changes
-	run(() => {
+	$effect(() => {
 		if ($selectedLocation && $selectedLocation.id) {
 			selectedId = $selectedLocation.id;
 		}

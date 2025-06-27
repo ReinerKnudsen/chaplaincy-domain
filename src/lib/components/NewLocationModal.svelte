@@ -24,7 +24,7 @@
 	let { onLocationAdded, onClose }: Props = $props();
 
 	const handleSave = async () => {
-		const { name, description, street, city, zip, locationUrl } = $CurrentLocation;
+		const { name, description, street, city, zip, locationUrl, online } = $CurrentLocation;
 		try {
 			const docRef = await addDoc(collection(db, 'location'), {
 				name,
@@ -33,6 +33,7 @@
 				city,
 				zip,
 				locationUrl,
+				online,
 			});
 			await fetchLocations();
 			const newLocation = $AllLocations.find((loc) => loc.id === docRef.id);

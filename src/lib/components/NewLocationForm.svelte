@@ -134,7 +134,7 @@
 						class="link no-underline"
 						target="_blank"
 						rel="noopener noreferrer"
-						>Check OpenStreetMap URL
+						>Check URL
 					</a>
 				</div>
 			{/if}

@@ -25,6 +25,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - location will now be properly reset when canceling an event form with a location selected in it
+- the flag "online" was not correctly saved when a new location was created in the event form
 - slugText is now trimmed and cleaned before being entered into the slugtext field
 
 ## [2.0.5] 2025-06-27

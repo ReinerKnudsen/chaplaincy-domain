@@ -3,15 +3,15 @@
 
 	import { updateDoc } from 'firebase/firestore';
 	import { DocumentReference, type DocumentData } from 'firebase/firestore';
-	
+
 	import { selectedImage, imageExists, existingImageUrl } from '$lib/stores/ImageSelectionStore';
 	import { selectedLocation, resetSelectedLocation } from '$lib/stores/LocationsStore';
 	import { notificationStore } from '$lib/stores/notifications';
 	import { type DomainEvent, EditMode, EditModeStore } from '$lib/stores/ObjectStore';
-	
+
 	import { validateEventData } from '$lib/services/validateForm';
 	import { eventFormService } from '$lib/services/EventFormService';
-	
+
 	import EventForm from '$lib/components/EventForm.svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
@@ -29,13 +29,11 @@
 	let { data }: Props = $props();
 	currentDocRef = data.docRef;
 
-$inspect($selectedLocation)
-
 	const handleCancel = () => {
 		resetSelectedLocation();
 		EditModeStore.set(EditMode.Empty);
 		goto('/admin/eventsadmin');
-	}
+	};
 
 	const updateEvent = async (updatedEvent: DomainEvent) => {
 		try {

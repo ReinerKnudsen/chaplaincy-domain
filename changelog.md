@@ -17,6 +17,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - add function to clean text for slugtext
 - add notifications for new location and update location in both form and modal
 - add confirmation modal for delete location
+- verification if an item open in the editor (event or news) has changes
 
 ### Changed
 

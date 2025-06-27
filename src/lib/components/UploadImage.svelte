@@ -29,6 +29,7 @@
 
 		if (!files || files.length === 0) {
 			imageError = 'No file selected';
+			$selectedImage = null;
 			return;
 		}
 

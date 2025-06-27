@@ -3,12 +3,7 @@
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
-	import {
-		EditMode,
-		EditModeStore,
-		type DomainEvent,
-		initialDomainEvent,
-	} from '$lib/stores/ObjectStore';
+	import { EditMode, EditModeStore, type DomainEvent, initialDomainEvent } from '$lib/stores/ObjectStore';
 
 	import {
 		selectedLocation,
@@ -28,6 +23,7 @@
 	import Editor from './Editor.svelte';
 	import SlugText from './SlugText.svelte';
 	import Checkbox from './Checkbox.svelte';
+	import Icon from '@iconify/svelte';
 
 	interface Props {
 		thisEvent?: DomainEvent;
@@ -43,21 +39,38 @@
 	let hasPDF = writable(!!thisEvent.pdfFile);
 	let showModal = $state(false);
 	let loading = $state(true);
+	let originalHash = $state('');
+	let hasUnsavedChanges = $state(false);
 
 	onMount(async () => {
 		if ($EditModeStore === EditMode.Update) {
-			newEvent = thisEvent;
+			newEvent = structuredClone(thisEvent);
+			originalHash = createHashableString(newEvent);
 			const location = $AllLocations.find((loc) => loc.id === thisEvent.location);
 			selectedLocation.set(location || initialLocationState);
 		} else {
 			newEvent = { ...initialDomainEvent };
+			originalHash = createHashableString(initialDomainEvent);
 		}
 		loading = false;
 	});
 
+	const checkForChanges = () => {
+		//console.log('🔍 checkForChanges called from:', new Error().stack?.split('\n')[2]);
+		const currentHash = createHashableString(newEvent);
+		if (currentHash !== originalHash) {
+			hasUnsavedChanges = true;
+		} else {
+			hasUnsavedChanges = false;
+		}
+	};
+
+	const createHashableString = (obj: any) => JSON.stringify(obj, Object.keys(obj).sort());
+
 	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
 		newEvent.pdfFile = pdfDocument.url;
 		hasPDF.set(!!pdfDocument);
+		checkForChanges();
 	};
 
 	const createNewLocation = () => {
@@ -66,6 +79,7 @@
 
 	const handleChangeJoinOnline = (checked: boolean) => {
 		newEvent.joinOnline = checked;
+		checkForChanges();
 	};
 
 	const handleConditionChange = (e: Event) => {
@@ -75,21 +89,22 @@
 		} else {
 			newEvent.condition = '';
 		}
+		checkForChanges();
 	};
 
 	const handleImageChange = () => {
 		hasImage.set(!!$selectedImage);
+		checkForChanges();
 	};
 
 	const handleLocationChange = (locationId: string) => {
 		newEvent.location = locationId;
 		if (locationId) {
-			selectedLocation.set(
-				$AllLocations.find((loc) => loc.id === locationId) || initialLocationState
-			);
+			selectedLocation.set($AllLocations.find((loc) => loc.id === locationId) || initialLocationState);
 		} else {
 			selectedLocation.set(initialLocationState);
 		}
+		checkForChanges();
 	};
 
 	const handleLocationAddedModal = async (newLocation: Location) => {
@@ -107,11 +122,13 @@
 			newEvent.location = newLocId;
 			newEvent = { ...newEvent };
 		}
+		checkForChanges();
 	};
 
 	const handleReset = () => {
 		newEvent = { ...initialDomainEvent };
 		EditModeStore.set('');
+		checkForChanges();
 	};
 
 	const handleSetEndDate = (e: MouseEvent) => {
@@ -120,6 +137,7 @@
 			const enddate = new Date(newEvent.startdate);
 			newEvent.enddate = enddate.toISOString().split('T')[0];
 		}
+		checkForChanges();
 	};
 
 	const handleSetPublishDate = (e: MouseEvent) => {
@@ -129,10 +147,12 @@
 			pubdate.setDate(pubdate.getDate() - 14);
 			newEvent.publishdate = pubdate.toISOString().split('T')[0];
 		}
+		checkForChanges();
 	};
 
 	const handleSlugChange = (slugText: string) => {
 		newEvent.slug = slugText;
+		checkForChanges();
 	};
 
 	const handleSubmit = async (e: SubmitEvent) => {
@@ -152,15 +172,17 @@
 	<div>Loading...</div>
 {:else}
 	<div class="form bg-white-primary">
-		<h1 class="mx-10">{$EditModeStore === 'update' ? 'Edit event' : 'Create new event'}</h1>
+		<div id="headline" class="flex flex-row items-center justify-between">
+			<h1 class="mx-10 p-0">
+				{$EditModeStore === 'update' ? 'Edit event' : 'Create new event'}
+			</h1>
+			{#if hasUnsavedChanges}
+				<Icon icon="fa6-regular:pen-to-square" class="mx-10 h-6 w-6" />
+			{/if}
+		</div>
 	</div>
 
-	<form
-		id="form-container"
-		enctype="multipart/form-data"
-		onsubmit={handleSubmit}
-		onreset={handleReset}
-	>
+	<form id="form-container" enctype="multipart/form-data" onsubmit={handleSubmit} onreset={handleReset}>
 		<!-- First block -->
 		<div class="form bg-white-primary my-8 p-10">
 			<!-- Titel -->
@@ -172,6 +194,7 @@
 					class="input input-bordered w-full"
 					placeholder="Event Title"
 					bind:value={newEvent.title}
+					onblur={checkForChanges}
 					required
 				/>
 			</div>
@@ -184,6 +207,7 @@
 					type="text"
 					id="subtitle"
 					placeholder="Sub Title"
+					onblur={checkForChanges}
 					bind:value={newEvent.subtitle}
 				/>
 			</div>
@@ -196,29 +220,20 @@
 						<strong>{newEvent.description.length}</strong> characters.
 					</p>
 				</div>
-				<Editor bind:content={newEvent.description} />
+				<Editor bind:content={newEvent.description} onBlur={checkForChanges} />
 			</div>
-			<SlugText
-				text={!newEvent.slug ? newEvent.description : ''}
-				slugText={newEvent.slug}
-				onSlugChange={handleSlugChange}
-			/>
+
+			<SlugText text={!newEvent.slug ? newEvent.description : ''} slugText={newEvent.slug} onBlur={handleSlugChange} />
 
 			<!-- Location -->
 			<div class="form-area">
 				<div>
 					<Label child="Location">Location *</Label>
-					<LocationDropdown
-						onLocationChange={handleLocationChange}
-						onNewLocation={createNewLocation}
-					/>
+					<LocationDropdown onLocationChange={handleLocationChange} onNewLocation={createNewLocation} />
 
 					<!-- Modal for new location -->
 					{#if showModal}
-						<NewLocationModal
-							onLocationAdded={handleLocationAddedModal}
-							onClose={() => (showModal = false)}
-						/>
+						<NewLocationModal onLocationAdded={handleLocationAddedModal} onClose={() => (showModal = false)} />
 					{/if}
 					{#if $selectedLocation.online}
 						<div>
@@ -231,9 +246,7 @@
 								onChange={handleChangeJoinOnline}
 							/>
 						</div>
-						<p class="explanation">
-							Adds a join button to the event 20 minutes before the event starts
-						</p>
+						<p class="explanation">Adds a join button to the event 20 minutes before the event starts</p>
 					{/if}
 				</div>
 			</div>
@@ -246,6 +259,7 @@
 					type="text"
 					id="conditions"
 					bind:value={newEvent.condition}
+					onblur={checkForChanges}
 				/>
 				<div class="mt-1 p-1">
 					<label class="flex flex-row items-center">
@@ -254,7 +268,7 @@
 							class="checkbox mr-4"
 							aria-describedby="helper-checkbox-text"
 							id="condition"
-							onchange={handleConditionChange}
+							onblur={handleConditionChange}
 						/>
 						Entry is free, donations are welcome
 					</label>
@@ -272,9 +286,10 @@
 					type="date"
 					id="startdate"
 					bind:value={newEvent.startdate}
+					onblur={checkForChanges}
 				/>
 			</div>
-			<p class="explanation">Please enter all dates as dd mm yyyy.</p>
+			<p class="explanation">Please enter all dates as dd.mm.yyyy or use the calendar picker.</p>
 
 			<!-- Start time -->
 			<div>
@@ -284,6 +299,7 @@
 					id="starttime"
 					class="input input-bordered w-full"
 					bind:value={newEvent.starttime}
+					onblur={checkForChanges}
 					disabled={!newEvent.startdate}
 				/>
 			</div>
@@ -297,13 +313,11 @@
 						id="enddate"
 						class="input input-bordered w-full"
 						bind:value={newEvent.enddate}
+						onblur={checkForChanges}
 						disabled={!newEvent.startdate}
 					/>
 					<div class="tooltip" data-tip="Sets the end date to the start date">
-						<button
-							class="btn btn-primary min-w-28"
-							onclick={handleSetEndDate}
-							disabled={!newEvent.startdate}
+						<button class="btn btn-primary min-w-28" onclick={handleSetEndDate} disabled={!newEvent.startdate}
 							>Auto set
 						</button>
 					</div>
@@ -319,6 +333,7 @@
 					class="input input-bordered w-full"
 					bind:value={newEvent.endtime}
 					disabled={!newEvent.enddate}
+					onblur={checkForChanges}
 				/>
 			</div>
 		</div>
@@ -335,19 +350,15 @@
 							type="date"
 							id="publishdate"
 							bind:value={newEvent.publishdate}
+							onblur={checkForChanges}
 						/>
 						<div class="tooltip" data-tip="Sets the publish date to 14 days before the start date">
-							<button
-								class="btn btn-primary min-w-28"
-								onclick={handleSetPublishDate}
-								disabled={!newEvent.startdate}
+							<button class="btn btn-primary min-w-28" onclick={handleSetPublishDate} disabled={!newEvent.startdate}
 								>Auto set
 							</button>
 						</div>
 					</div>
-					<p class="explanation">
-						If you don't select a publish date, the event will be published immediately.
-					</p>
+					<p class="explanation">If you don't select a publish date, the event will be published immediately.</p>
 				</div>
 
 				<!-- Publish time  -->
@@ -360,6 +371,7 @@
 							class="input input-bordered w-full"
 							bind:value={newEvent.publishtime}
 							disabled={!newEvent.publishdate}
+							onblur={checkForChanges}
 						/>
 					</div>
 					<p class="explanation {newEvent.publishdate ? 'opacity-100' : 'opacity-30'}">
@@ -377,11 +389,11 @@
 						title="Select a date when the event shall be unpublished (optional)"
 						bind:value={newEvent.unpublishdate}
 						disabled={!newEvent.publishdate}
+						onblur={checkForChanges}
 					/>
 
 					<p class="explanation {newEvent.publishdate ? 'opacity-100' : 'opacity-30'}">
-						If you don't set a date and time here the event will automatically be unpublished at the
-						given start time.
+						If you don't set a date and time here the event will automatically be unpublished at the given start time.
 					</p>
 				</div>
 
@@ -395,6 +407,7 @@
 						title="Select a time when the event shall be unpublished. (optional) "
 						bind:value={newEvent.unpublishtime}
 						disabled={!newEvent.unpublishdate}
+						onblur={checkForChanges}
 					/>
 				</div>
 			</div>
@@ -421,6 +434,7 @@
 								id="imageAlt"
 								class="input input-bordered w-full"
 								bind:value={newEvent.imageAlt}
+								onblur={checkForChanges}
 								required={$hasImage}
 								disabled={!$hasImage}
 								placeholder={$hasImage ? 'Image Alt text' : 'Please select an image first'}
@@ -438,6 +452,7 @@
 								id="imageCaption"
 								class="input input-bordered w-full"
 								bind:value={newEvent.imageCaption}
+								onblur={checkForChanges}
 								disabled={!$hasImage}
 								placeholder={$hasImage ? 'Image by ...' : 'Please select an image first'}
 							/>
@@ -453,9 +468,7 @@
 					<div class="flex flex-col items-center justify-center">
 						<UploadPDF fileUrl={newEvent.pdfFile} onUpload={assignPDF} />
 						{#if !$hasPDF}
-							<p class="explanation opacity-30">
-								Upload a PDF document that will be attached to this event (max 5MB).
-							</p>
+							<p class="explanation opacity-30">Upload a PDF document that will be attached to this event (max 5MB).</p>
 						{/if}
 					</div>
 					<div>
@@ -488,18 +501,19 @@
 						rows="4"
 						name="comments"
 						bind:value={newEvent.comments}
+						onblur={checkForChanges}
 					></textarea>
 				</div>
 			</div>
 		</div>
+
 		<!-- Buttons block -->
-		<div
-			class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-2/3 gap-4 bg-slate-100 p-10 shadow-2xl"
-		>
+		<div class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-2/3 gap-4 bg-slate-100 p-10 shadow-2xl">
 			<!-- Buttons -->
 			<div class="buttons col-span-2 w-2/3">
 				<button class="btn" type="reset" color="light" onclick={onCancel}>Cancel</button>
-				<button class="btn btn-neutral" type="reset" color="light">Empty form</button>
+				<button class="btn btn-soft" type="reset" color="light">Empty form</button>
+				<button class="btn btn-soft" type="button" color="light">Save draft</button>
 				<button class="btn btn-primary" type="submit" disabled={newEvent.title.length === 0}
 					>{$EditModeStore === 'update' ? 'Update' : 'Save'} event</button
 				>
@@ -522,9 +536,8 @@
 		font-size: 0.8rem;
 	}
 	.buttons {
-		display: grid;
-		grid-template-columns: 1fr 1fr 1fr;
-		gap: 80px;
+		display: flex;
+		gap: 20px;
 		padding: 0 50px;
 		justify-content: space-between;
 		width: 100%;

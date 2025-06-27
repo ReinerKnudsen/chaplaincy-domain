@@ -8,13 +8,14 @@
 	interface Props {
 		text?: string;
 		slugText?: string;
-		onSlugChange: (slugText: string) => void;
+		onBlur: (slugText: string) => void;
 	}
 
-	let { text = '', slugText = $bindable(''), onSlugChange }: Props = $props();
+	let { text = '', slugText = $bindable(''), onBlur }: Props = $props();
 
 	let editSlug: boolean = $state(false);
 
+	/** # assign part of the current description to the slug */
 	const handleChangeSlug = async () => {
 		if (!slugText) {
 			const parsedText = await marked.parse(text);
@@ -23,12 +24,6 @@
 			editSlug = true;
 		}
 	};
-
-	$effect(() => {
-		if (slugText) {
-			onSlugChange(slugText);
-		}
-	});
 </script>
 
 <div id="component-container" class="my-8 rounded-xl border p-4">
@@ -47,12 +42,12 @@
 		maxlength={MAX_SLUG_TEXT}
 		required
 		disabled={!editSlug}
-		onblur={() => (editSlug = false)}
+		onblur={() => onBlur(slugText)}
 	></textarea>
 	<div id="component-footer" class="mt-2 flex items-center justify-between">
 		<div id="component-explanation" class="mx-1 my-2 text-sm">
-			The slug text is a short version of your text to be shown in cards view. <br />The system will
-			suggest a slug text for you which you can change.
+			The slug text is a short version of your text to be shown in cards view. <br />The system will suggest a slug text
+			for you which you can change.
 		</div>
 		<button type="button" class="btn btn-primary" disabled={editSlug} onclick={handleChangeSlug}
 			>{slugText.length === 0 ? 'Create' : 'Change'} slug text</button

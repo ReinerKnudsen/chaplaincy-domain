@@ -10,9 +10,10 @@
 		initialContent?: string;
 		onImageUpload: (blob: Blob, callback: (imageUrl: string) => void) => void;
 		onChange: (content: { markdown: string; html: string }) => void;
+		onBlur?: () => void;
 	}
 
-	let { initialContent = '', onImageUpload, onChange }: Props = $props();
+	let { initialContent = '', onImageUpload, onChange, onBlur }: Props = $props();
 	let editorElement: HTMLDivElement;
 	let editor: any = null;
 
@@ -50,6 +51,11 @@
 					markdown: editor.getMarkdown(),
 					html: editor.getHTML(),
 				});
+			});
+			editor.on('blur', () => {
+				if (onBlur) {
+					onBlur();
+				}
 			});
 		}
 		return () => {

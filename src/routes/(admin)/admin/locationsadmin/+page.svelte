@@ -2,9 +2,11 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 
-	import { addDoc, deleteDoc, doc, collection, updateDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
+	import { addDoc, deleteDoc, doc, collection, updateDoc } from 'firebase/firestore';
 
+	import { notificationStore } from '$lib/stores/notifications';
+	import { TOAST_DURATION } from '$lib/utils/constants';
 	import {
 		CurrentLocation,
 		initialLocationState,
@@ -19,6 +21,7 @@
 	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
 
 	import Icon from '@iconify/svelte';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
 	onMount(() => {
 		pathName.set(page.url.pathname);
@@ -72,17 +75,19 @@
 				updateAndSortLocations((locations) =>
 					locations.map((loc) => (loc.id === id ? { id, ...dataToSave } : loc))
 				);
+				notificationStore.addToast('success', 'Location updated successfully', TOAST_DURATION);
 			} catch (e) {
+				notificationStore.addToast('error', "Couldn't update the location. Please try again.", 0);
 				console.error('Error updating document: ', e);
 			}
 		} else {
 			// Creating new location
 			try {
 				const docRef = await addDoc(collection(database, 'location'), dataToSave);
-
-				// Add the new location to the local store with the new ID from Firestore
 				updateAndSortLocations((locations) => [...locations, { id: docRef.id, ...dataToSave }]);
+				notificationStore.addToast('success', 'Location added successfully', TOAST_DURATION);
 			} catch (e) {
+				notificationStore.addToast('error', "Couldn't add the new location. Please try again.", 0);
 				console.error('Error adding document: ', e);
 			}
 		}
@@ -123,6 +128,8 @@
 		</div>
 	</div>
 </div>
+
+<ToastContainer />
 
 <style>
 	.locations-container {

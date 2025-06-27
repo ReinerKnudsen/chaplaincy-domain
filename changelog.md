@@ -15,6 +15,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - add path highlighting in menu on admin pages
 - add floating buttons for both events and news form
 - add function to clean text for slugtext
+- add notifications for new location and update location in both form and modal
 
 ### Changed
 

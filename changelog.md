@@ -16,6 +16,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - add floating buttons for both events and news form
 - add function to clean text for slugtext
 - add notifications for new location and update location in both form and modal
+- add confirmation modal for delete location
 
 ### Changed
 

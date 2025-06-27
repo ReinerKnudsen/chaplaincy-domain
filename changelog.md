@@ -12,6 +12,20 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
+-
+
+### Changed
+
+-
+
+### Fixed
+
+-
+
+## [2.1.0] - 2025-06-27
+
+### Added
+
 - add notifications to provide transaction feedback to the user
 - add notificationStore, ToastContainer and ToastItem components
 - add toast notification handling for event update page
@@ -26,11 +40,6 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - dates are therefore also validated for updated events
 - minor adjustment to location dropdown
 - all table styles in app.css
-
-### Fixed
-
--
-
 ## [2.0.0] - 2025-06-24
 
 ### Added

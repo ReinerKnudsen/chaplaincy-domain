@@ -3,9 +3,9 @@
 	import { goto } from '$app/navigation';
 
 	import { authStore } from '$lib/stores/AuthStore';
-	import { EditModeStore, EditMode, initialNews, type News  } from '$lib/stores/ObjectStore';
-	
-	import {selectedImage } from '$lib/stores/ImageSelectionStore';
+	import { EditModeStore, EditMode, initialNews, type News } from '$lib/stores/ObjectStore';
+
+	import { selectedImage } from '$lib/stores/ImageSelectionStore';
 
 	import Editor from './Editor.svelte';
 	import Label from './Label.svelte';
@@ -30,7 +30,7 @@
 	let hasImage = writable(!!thisNews.image);
 
 	const cleanUpForm = () => {
-		newNews = {...initialNews};
+		newNews = { ...initialNews };
 		hasImage.set(false);
 		hasPDF.set(false);
 	};
@@ -190,9 +190,9 @@
 			<div class="flex flex-col items-center justify-center">
 				<UploadPDF fileUrl={newNews.pdfFile} onUpload={assignPDF} />
 				{#if !$hasPDF}
-				<p class="explanation opacity-30">
-					Upload a PDF document that will be attached to this news item (max 5MB).
-				</p>
+					<p class="explanation opacity-30">
+						Upload a PDF document that will be attached to this news item (max 5MB).
+					</p>
 				{/if}
 			</div>
 			<div>
@@ -213,12 +213,16 @@
 		</div>
 
 		<!-- Buttons -->
-		<div class="buttons col-span-2 mt-10 mb-20">
-			<button class="btn" type="reset" onclick={() => goto('/admin/newsadmin')}>Cancel</button>
-			<button class="btn btn-neutral" type="reset" disabled={docRef}>Empty form</button>
-			<button class="btn btn-primary" type="submit" disabled={newNews.title.length === 0}
-				>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</button
-			>
+		<div
+			class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-2/3 gap-4 bg-slate-100 p-10 shadow-2xl"
+		>
+			<div class="buttons col-span-2 w-2/3">
+				<button class="btn" type="reset" onclick={() => goto('/admin/newsadmin')}>Cancel</button>
+				<button class="btn btn-neutral" type="reset" disabled={docRef}>Empty form</button>
+				<button class="btn btn-primary" type="submit" disabled={newNews.title.length === 0}
+					>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</button
+				>
+			</div>
 		</div>
 	</form>
 </div>

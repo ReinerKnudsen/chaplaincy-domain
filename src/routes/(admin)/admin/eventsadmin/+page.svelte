@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { page } from '$app/state';
 	import { writable, type Writable } from 'svelte/store';
 	import { onMount } from 'svelte';
@@ -47,7 +45,7 @@
 	});
 
 	/**
-	 * 
+	 *
 	 */
 
 	// Sort table items
@@ -89,7 +87,7 @@
 		if (typeof window !== 'undefined') {
 			sessionStorage.setItem(
 				STORAGE_KEY,
-				JSON.stringify({ key: $sortKey, direction: $sortDirection }),
+				JSON.stringify({ key: $sortKey, direction: $sortDirection })
 			);
 		}
 
@@ -187,7 +185,7 @@
 		<div class="modal-action">
 			<form method="dialog">
 				<button class="btn btn-default mr-2">Cancel</button>
-				<button class="btn btn-error" onclick={(() => handleDelete())}>Delete</button>
+				<button class="btn btn-error" onclick={() => handleDelete()}>Delete</button>
 			</form>
 		</div>
 	</div>
@@ -206,9 +204,7 @@
 		<div class="modal-action">
 			<form method="dialog">
 				<button class="btn btn-default mr-2">Cancel</button>
-				<button class="btn btn-primary" onclick={(() => handleDuplicate())}
-					>Duplicate</button
-				>
+				<button class="btn btn-primary" onclick={() => handleDuplicate()}>Duplicate</button>
 			</form>
 		</div>
 	</div>
@@ -282,14 +278,14 @@
 <ToastContainer />
 
 <style>
- .events-table {
-	display: grid;
-	grid-template-columns:
-  	    minmax(150px, 2.5fr) 
-				minmax(130px, 1fr) 
-				minmax(130px, 1fr) 
-				minmax(150px, 2fr) 
-				minmax(150px, 1fr) 
-				minmax(100px, 1fr) ;
- }
+	.events-table {
+		display: grid;
+		grid-template-columns:
+			minmax(150px, 2.5fr)
+			minmax(130px, 1fr)
+			minmax(130px, 1fr)
+			minmax(150px, 2fr)
+			minmax(150px, 1fr)
+			minmax(100px, 1fr);
+	}
 </style>

@@ -78,13 +78,12 @@
 			>
 				{#each adminMenu as item, i}
 					<div class="px-8 {i !== adminMenu.length - 1 ? 'border-r border-gray-300' : ''}">
-						{#if item.url === $pathName}
-							<div class="cursor-not-allowed font-light text-gray-500">{item.name}</div>
-						{:else}
-							<a href={item.url} class="hover:text-primary-600 font-semibold transition-colors"
-								>{item.name}</a
-							>
-						{/if}
+						<a
+							href={item.url}
+							class="hover:text-primary-600 {item.url === $pathName
+								? 'text-primary-600 font-bold'
+								: 'text-secondary-80 font-medium'} transition-colors">{item.name}</a
+						>
 					</div>
 				{/each}
 			</div>

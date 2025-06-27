@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { page } from '$app/state';
 
 	import { addDoc, deleteDoc, doc, collection, updateDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
@@ -14,11 +15,13 @@
 		type Location,
 	} from '$lib/stores/LocationsStore';
 
+	import { pathName } from '$lib/stores/NavigationStore';
 	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
 
 	import Icon from '@iconify/svelte';
 
 	onMount(() => {
+		pathName.set(page.url.pathname);
 		fetchLocations();
 	});
 

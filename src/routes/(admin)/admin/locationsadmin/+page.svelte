@@ -23,13 +23,15 @@
 	import Icon from '@iconify/svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
+	let currentLocationId = $state(0);
+	let deleteDialog: HTMLDialogElement | null = $state(null);
+	let deleteLocation: Location | null = $state(null);
+	let updateItem = $state(true);
+
 	onMount(() => {
 		pathName.set(page.url.pathname);
 		fetchLocations();
 	});
-
-	let updateItem = $state(true);
-	let currentLocationId = $state(0);
 
 	// Only set CurrentLocation when AllLocations has items
 	$effect(() => {
@@ -51,13 +53,33 @@
 		updateItem = false;
 	};
 
-	const handleDelete = async (location: Location) => {
-		try {
-			const docRef = doc(database, 'location', location.id);
-			await deleteDoc(docRef);
-			updateAndSortLocations((locations) => locations.filter((loc) => loc.id !== location.id));
-		} catch (e) {
-			console.error('Error deleting document: ', e);
+	const openDeleteModal = (location: Location) => {
+		if (!deleteDialog || !location) return;
+		deleteLocation = location;
+		deleteDialog.showModal();
+	};
+
+	const handleDelete = async () => {
+		if (deleteLocation) {
+			try {
+				const docRef = doc(database, 'location', deleteLocation.id);
+				await deleteDoc(docRef);
+				updateAndSortLocations((locations) =>
+					locations.filter((loc) => loc.id !== deleteLocation!.id)
+				);
+				deleteDialog!.close();
+				deleteLocation = null;
+				notificationStore.addToast('success', 'Location deleted successfully', TOAST_DURATION);
+			} catch (e) {
+				notificationStore.addToast(
+					'error',
+					'Error deleting location. Try again later.',
+					TOAST_DURATION
+				);
+				console.error('Error deleting document: ', e);
+			}
+		} else {
+			return;
 		}
 	};
 
@@ -94,6 +116,27 @@
 	};
 </script>
 
+<dialog bind:this={deleteDialog} class="modal">
+	<div class="modal-box">
+		<h3 class="text-lg font-bold">Confirm location delete</h3>
+		<hr class="py-2" />
+		<p class="py-4">
+			Deleting a location document can not be undone.<br /><strong
+				>Do you really want to delete this item?</strong
+			>
+		</p>
+		<div class="modal-action">
+			<form method="dialog">
+				<button class="btn btn-default mr-2">Cancel</button>
+				<button class="btn btn-error" onclick={() => handleDelete()}>Delete</button>
+			</form>
+		</div>
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button>Cancel</button>
+	</form>
+</dialog>
+
 <div class="w-full gap-2">
 	<h1>Locations</h1>
 	<div class="locations-container">
@@ -108,7 +151,7 @@
 								: 'list-item flex-1'}
 							onclick={() => handleLocationChange(location, index)}>{location.name}</button
 						>
-						<button class="icon-button" onclick={() => handleDelete(location)}>
+						<button class="icon-button" onclick={() => openDeleteModal(location)}>
 							<Icon icon="proicons:delete" class="h-6 w-6" />
 						</button>
 					</div>
@@ -118,6 +161,7 @@
 				<button class="btn btn-primary" onclick={handleCreateNew}>Create new</button>
 			</div>
 		</div>
+
 		<div class="location-details">
 			<h2>Location Details</h2>
 			<NewLocationForm

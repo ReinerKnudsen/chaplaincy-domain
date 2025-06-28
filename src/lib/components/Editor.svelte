@@ -3,7 +3,7 @@
 	import { uploadEditorImage } from '$lib/services/editorImageService';
 
 	interface Props {
-		content?: string;
+		content?: string | null;
 		onBlur?: () => void;
 	}
 
@@ -24,9 +24,4 @@
 	}
 </script>
 
-<ToastEditor
-	initialContent={content}
-	onImageUpload={handleImageUpload}
-	onChange={handleChange}
-	{onBlur}
-/>
+<ToastEditor initialContent={content} onImageUpload={handleImageUpload} onChange={handleChange} {onBlur} />

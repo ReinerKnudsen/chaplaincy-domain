@@ -8,9 +8,7 @@
 		onBlur: (slugText: string) => void;
 	}
 
-	let { slugText = $bindable(''), required = false, onBlur }: Props = $props();
-
-	let editSlug: boolean = $state(false);
+	let { slugText = '', required = false, onBlur }: Props = $props();
 </script>
 
 <div id="component-container" class="my-8 rounded-xl border p-4">
@@ -21,14 +19,13 @@
 		</p>
 	</div>
 	<textarea
-		class="disabled:bg-white-primary w-full disabled:border-0 disabled:text-slate-400"
+		class="disabled:bg-white-primary w-full p-4 disabled:border-0 disabled:text-slate-400"
 		id="slug"
 		rows="3"
 		name="slug"
 		bind:value={slugText}
 		maxlength={MAX_SLUG_TEXT}
 		required
-		disabled={!editSlug}
 		onblur={() => onBlur(slugText || '')}
 	></textarea>
 	<div id="component-footer" class="mt-2 flex items-center justify-between">

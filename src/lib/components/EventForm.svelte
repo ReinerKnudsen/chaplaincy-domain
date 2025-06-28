@@ -1,10 +1,16 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { goto } from '$app/navigation';
+	import { marked } from 'marked';
 
-	import { EditMode, EditModeStore, type DomainEvent, initialDomainEvent, ItemState } from '$lib/stores/ObjectStore';
-
+	import {
+		EditMode,
+		EditModeStore,
+		type DomainEvent,
+		initialDomainEvent,
+		ItemState,
+		createHashableString,
+	} from '$lib/stores/ObjectStore';
 	import {
 		selectedLocation,
 		AllLocations,
@@ -12,12 +18,8 @@
 		initialLocationState,
 		type Location,
 	} from '$lib/stores/LocationsStore';
-
 	import { selectedImage } from '$lib/stores/ImageSelectionStore';
-
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
-	import { marked } from 'marked';
-
 	import { cleanText } from '$lib/utils/HTMLfunctions';
 
 	import UploadImage from '$lib/components/UploadImage.svelte';
@@ -39,10 +41,11 @@
 		onCancel: () => void;
 	}
 
-	let { thisEvent = initialDomainEvent, onSaveDraft, onCreateNew, onUpdate, onCancel }: Props = $props();
+	let { thisEvent: propEvent = initialDomainEvent, onSaveDraft, onCreateNew, onUpdate, onCancel }: Props = $props();
 
-	let hasImage = writable(!!thisEvent.image);
-	let hasPDF = writable(!!thisEvent.pdfFile);
+	let thisEvent = $state(propEvent);
+	let hasImage = $derived(!!thisEvent.image);
+	let hasPDF = $derived(!!thisEvent.pdfFile);
 	let showModal = $state(false);
 	let loading = $state(true);
 	let originalHash = $state('');
@@ -72,23 +75,21 @@
 	};
 
 	const isValidEvent = $derived(
-		thisEvent.title?.trim() &&
-			thisEvent.description?.trim() &&
-			thisEvent.slug?.trim() &&
-			thisEvent.startdate &&
-			thisEvent.starttime &&
-			thisEvent.enddate &&
-			thisEvent.endtime &&
-			thisEvent.location
+		!!thisEvent.title &&
+			!!thisEvent.description &&
+			!!thisEvent.slug &&
+			!!thisEvent.startdate &&
+			!!thisEvent.starttime &&
+			!!thisEvent.enddate &&
+			!!thisEvent.endtime &&
+			!!thisEvent.location
 	);
 
-	//$inspect(thisEvent);
-
-	const createHashableString = (obj: any) => JSON.stringify(obj, Object.keys(obj).sort());
-
+	/**
+	 * # form functions
+	 */
 	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
-		thisEvent.pdfFile = pdfDocument.url;
-		hasPDF.set(!!pdfDocument);
+		thisEvent = { ...thisEvent, pdfFile: pdfDocument.url };
 		checkForChanges();
 	};
 
@@ -97,28 +98,27 @@
 	};
 
 	const handleChangeJoinOnline = (checked: boolean) => {
-		thisEvent.joinOnline = checked;
+		thisEvent = { ...thisEvent, joinOnline: checked };
 		checkForChanges();
 	};
 
 	const handleConditionChange = (e: Event) => {
 		const target = e.target as HTMLInputElement;
 		if (target.checked) {
-			thisEvent.condition = 'Entry is free, donations are welcome.';
+			thisEvent = { ...thisEvent, condition: 'Entry is free, donations are welcome.' };
 		} else {
-			thisEvent.condition = '';
+			thisEvent = { ...thisEvent, condition: '' };
 		}
 		checkForChanges();
 	};
 
 	const handleImageChange = () => {
-		thisEvent.image = $selectedImage?.name;
-		hasImage.set(!!$selectedImage);
+		thisEvent = { ...thisEvent, image: $selectedImage?.name };
 		checkForChanges();
 	};
 
 	const handleLocationChange = (locationId: string) => {
-		thisEvent.location = locationId;
+		thisEvent = { ...thisEvent, location: locationId };
 		if (locationId) {
 			selectedLocation.set($AllLocations.find((loc) => loc.id === locationId) || initialLocationState);
 		} else {
@@ -139,7 +139,7 @@
 
 		if (foundLocation) {
 			selectedLocation.set({ ...foundLocation });
-			thisEvent.location = newLocId;
+			thisEvent = { ...thisEvent, location: newLocId };
 			thisEvent = { ...thisEvent };
 		}
 		checkForChanges();
@@ -151,11 +151,17 @@
 		checkForChanges();
 	};
 
+	const handleSaveDraft = async () => {
+		if (onSaveDraft) {
+			await onSaveDraft(thisEvent);
+		}
+	};
+
 	const handleSetEndDate = (e: MouseEvent) => {
 		e.preventDefault();
 		if (thisEvent.startdate) {
 			const enddate = new Date(thisEvent.startdate);
-			thisEvent.enddate = enddate.toISOString().split('T')[0];
+			thisEvent = { ...thisEvent, enddate: enddate.toISOString().split('T')[0] };
 		}
 		checkForChanges();
 	};
@@ -164,14 +170,14 @@
 		e.preventDefault();
 		if (thisEvent.startdate) {
 			const pubdate = new Date(thisEvent.startdate);
-			pubdate.setDate(pubdate.getDate() - 14);
-			thisEvent.publishdate = pubdate.toISOString().split('T')[0];
+			pubdate.setDate(pubdate.getDate() - 7);
+			thisEvent = { ...thisEvent, publishdate: pubdate.toISOString().split('T')[0] };
 		}
 		checkForChanges();
 	};
 
 	const handleSlugChange = (slugText: string) => {
-		thisEvent.slug = slugText;
+		thisEvent = { ...thisEvent, slug: slugText.trim() };
 		checkForChanges();
 	};
 
@@ -187,19 +193,13 @@
 
 	async function handleCancel() {}
 
-	const handleSaveDraft = async () => {
-		if (onSaveDraft) {
-			await onSaveDraft(thisEvent);
-		}
-	};
-
 	const prepareSlugText = async () => {
 		if (!thisEvent.description) {
-			thisEvent.slug = '';
+			thisEvent = { ...thisEvent, slug: '' };
 			return;
 		}
 		const parsedText = await marked.parse(thisEvent.description);
-		thisEvent.slug = cleanText(parsedText).slice(0, MAX_SLUG_TEXT);
+		thisEvent = { ...thisEvent, slug: cleanText(parsedText).slice(0, MAX_SLUG_TEXT) };
 		checkForChanges();
 	};
 </script>
@@ -219,7 +219,6 @@
 				{/if}
 			</div>
 		</div>
-		{#if thisEvent.state}{/if}
 	</div>
 
 	<form id="form-container" enctype="multipart/form-data" onsubmit={handleSubmit} onreset={handleReset}>
@@ -234,7 +233,10 @@
 					class="input input-bordered w-full"
 					placeholder="Event Title"
 					bind:value={thisEvent.title}
-					onblur={checkForChanges}
+					onblur={() => {
+						thisEvent = { ...thisEvent, title: thisEvent.title?.trim() || null };
+						checkForChanges();
+					}}
 					required
 				/>
 			</div>
@@ -247,7 +249,10 @@
 					type="text"
 					id="subtitle"
 					placeholder="Sub Title"
-					onblur={checkForChanges}
+					onblur={() => {
+						thisEvent = { ...thisEvent, subtitle: thisEvent.subtitle?.trim() || null };
+						checkForChanges();
+					}}
 					bind:value={thisEvent.subtitle}
 				/>
 			</div>
@@ -260,10 +265,20 @@
 						<strong>{thisEvent.description ? thisEvent.description.length : 0}</strong> characters.
 					</p>
 				</div>
-				<Editor bind:content={thisEvent.description} onBlur={prepareSlugText} />
+				<Editor
+					bind:content={thisEvent.description}
+					onBlur={() => {
+						thisEvent = { ...thisEvent, description: thisEvent.description?.trim() || null };
+						prepareSlugText();
+					}}
+				/>
 			</div>
 
-			<SlugText slugText={thisEvent.slug} required={true} onBlur={handleSlugChange} />
+			<!-- SlugText -->
+
+			<div>
+				<SlugText slugText={thisEvent.slug} required={true} onBlur={handleSlugChange} />
+			</div>
 
 			<!-- Location -->
 			<div class="form-area">
@@ -316,7 +331,6 @@
 			</div>
 		</div>
 
-		<!-- Second block -->
 		<div class="form bg-white-primary my-8 p-10">
 			<!-- Start date -->
 			<div>
@@ -378,7 +392,6 @@
 			</div>
 		</div>
 
-		<!-- Third block -->
 		<div class="form bg-white-primary my-8 p-10">
 			<!-- Publish date  -->
 			<div>
@@ -464,38 +477,42 @@
 						{/if}
 					</div>
 				</div>
+
+				<!-- Image Alt Text-->
 				<div class="imageMeta">
 					<div class="imageAlt">
 						<div>
-							<Label child="imageAlt" disabled={!$hasImage}>Image Alt text *</Label>
+							<Label child="imageAlt" disabled={!hasImage}>Image Alt text *</Label>
 							<input
 								type="text"
 								id="imageAlt"
 								class="input input-bordered w-full"
 								bind:value={thisEvent.imageAlt}
 								onblur={checkForChanges}
-								required={$hasImage}
-								disabled={!$hasImage}
-								placeholder={$hasImage ? 'Image Alt text' : 'Please select an image first'}
+								required={hasImage}
+								disabled={!hasImage}
+								placeholder={hasImage ? 'Image Alt text' : 'Please select an image first'}
 							/>
-							<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
+							<p class="explanation {!hasImage ? 'opacity-30' : 'opacity-100'}">
 								This text helps interpreting the image for visually impaired users.
 							</p>
 						</div>
 					</div>
+
+					<!-- Image Caption -->
 					<div class="imageCaption mt-10">
 						<div>
-							<Label child="imageCaption" disabled={!$hasImage}>Image caption</Label>
+							<Label child="imageCaption" disabled={!hasImage}>Image caption</Label>
 							<input
 								type="text"
 								id="imageCaption"
 								class="input input-bordered w-full"
 								bind:value={thisEvent.imageCaption}
 								onblur={checkForChanges}
-								disabled={!$hasImage}
-								placeholder={$hasImage ? 'Image by ...' : 'Please select an image first'}
+								disabled={!hasImage}
+								placeholder={hasImage ? 'Image by ...' : 'Please select an image first'}
 							/>
-							<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
+							<p class="explanation {!hasImage ? 'opacity-30' : 'opacity-100'}">
 								This text will be displayed below the image.
 							</p>
 						</div>
@@ -506,50 +523,33 @@
 					<Label child="pdfFile">PDF Document</Label>
 					<div class="flex flex-col items-center justify-center">
 						<UploadPDF fileUrl={thisEvent.pdfFile} onUpload={assignPDF} />
-						{#if !$hasPDF}
+						{#if !hasPDF}
 							<p class="explanation opacity-30">Upload a PDF document that will be attached to this event (max 5MB).</p>
 						{/if}
 					</div>
 					<div>
-						<Label child="pdfText" disabled={!$hasPDF}>PDF Description</Label>
+						<Label child="pdfText" disabled={!hasPDF}>PDF Description</Label>
 						<input
 							type="text"
 							id="pdfText"
 							class="input input-bordered w-full"
 							bind:value={thisEvent.pdfText}
-							required={$hasPDF}
-							disabled={!$hasPDF}
-							placeholder={$hasPDF ? 'PDF Description' : 'Please select a PDF file first'}
+							required={hasPDF}
+							disabled={!hasPDF}
+							placeholder={hasPDF ? 'PDF Description' : 'Please select a PDF file first'}
 						/>
-						<p class="explanation {!$hasPDF ? 'opacity-30' : 'opacity-100'}">
+						<p class="explanation {!hasPDF ? 'opacity-30' : 'opacity-100'}">
 							This text is the visible text for the PDF download link on the event page..
 						</p>
 					</div>
 				</div>
 			</div>
-
-			<!-- Fifth block -->
-			<div class="form bg-white-primary my-8 p-10">
-				<!-- Comments -->
-				<div class="col-span-2">
-					<Label child="comments">Comments</Label>
-					<textarea
-						id="comments"
-						class="textarea textarea-bordered w-full"
-						placeholder="If there is anything people should need to know about this event? Put it here. (Parking instructions, public transport connections...)"
-						rows="4"
-						name="comments"
-						bind:value={thisEvent.comments}
-						onblur={checkForChanges}
-					></textarea>
-				</div>
-			</div>
 		</div>
 
 		<!-- Buttons block -->
-		<div class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-2/3 gap-4 bg-slate-100 p-10 shadow-2xl">
+		<div class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-3/4 gap-4 bg-slate-100 p-10 shadow-2xl">
 			<!-- Buttons -->
-			<div class="buttons col-span-2 w-2/3">
+			<div class="buttons col-span-2">
 				<button class="btn" type="reset" color="light" onclick={onCancel}>Cancel</button>
 				<button class="btn btn-soft" type="reset" color="light">Empty form</button>
 				{#if thisEvent.state === ItemState.DRAFT}
@@ -583,8 +583,9 @@
 		font-size: 0.8rem;
 	}
 	.buttons {
-		display: flex;
-		gap: 20px;
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+		gap: 50px;
 		padding: 0 50px;
 		justify-content: space-between;
 		width: 100%;

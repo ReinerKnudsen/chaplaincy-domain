@@ -6,6 +6,7 @@
 	//import { notificationStore } from '$lib/stores/notifications';
 	import { EditMode, EditModeStore, type DomainEvent } from '$lib/stores/ObjectStore';
 	import { selectedImage, imageExists, existingImageUrl, resetImageselection } from '$lib/stores/ImageSelectionStore';
+	import { Messages } from '$lib/utils/messages';
 
 	import { validateEventData, buildTimeStamp } from '$lib/services/validateForm';
 	import { eventFormService } from '$lib/services/EventFormService';
@@ -29,11 +30,11 @@
 		try {
 			await addDoc(eventsColRef, thisEvent);
 			EditModeStore.set(EditMode.Empty);
-			notificationStore.addToast('success', 'Event created successfully!');
+			notificationStore.addToast('success', Messages.SAVESUCCESS);
 			resetImageselection();
 			goto('/admin/eventsadmin');
 		} catch (error) {
-			notificationStore.addToast('error', 'Failed to create event. Please try again.');
+			notificationStore.addToast('error', Messages.SAVERROR);
 			console.error('Error creating event: ', error);
 		}
 	};
@@ -43,11 +44,11 @@
 		try {
 			await addDoc(eventsColRef, thisEvent);
 			EditModeStore.set(EditMode.Empty);
-			notificationStore.addToast('success', 'Draft saved successfully!');
+			notificationStore.addToast('success', Messages.DRAFTSUCCESS);
 			resetImageselection();
 			goto('/admin/eventsadmin');
 		} catch (error) {
-			notificationStore.addToast('error', 'Failed to safe draft. Please try again.');
+			notificationStore.addToast('error', Messages.DRAFTERROR);
 			console.error('Error creating event: ', error);
 		}
 	};

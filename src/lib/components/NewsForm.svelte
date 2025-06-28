@@ -1,15 +1,27 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { goto } from '$app/navigation';
+	import { marked } from 'marked';
 
 	import { authStore } from '$lib/stores/AuthStore';
-	import { EditModeStore, EditMode, initialNews, type News } from '$lib/stores/ObjectStore';
-
+	import {
+		EditModeStore,
+		EditMode,
+		initialNews,
+		type News,
+		createHashableString,
+		ItemState,
+	} from '$lib/stores/ObjectStore';
 	import { selectedImage } from '$lib/stores/ImageSelectionStore';
 
+	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
+	import { cleanText } from '$lib/utils/HTMLfunctions';
+
 	import Editor from './Editor.svelte';
+	import Icon from '@iconify/svelte';
 	import Label from './Label.svelte';
 	import SlugText from './SlugText.svelte';
+	import StateLabel from './StateLabel.svelte';
 	import ToastContainer from './ToastContainer.svelte';
 	import UploadImage from './UploadImage.svelte';
 	import UploadPDF from './UploadPDF.svelte';
@@ -18,214 +30,287 @@
 
 	interface Props {
 		thisNews?: News;
+		onSaveDraft?: (event: News) => Promise<void>;
 		onCreateNew?: (event: News) => Promise<void>;
 		onUpdate?: (event: News) => Promise<void>;
+		onCancel?: () => void;
 	}
 
-	let { thisNews = initialNews, onUpdate, onCreateNew }: Props = $props();
+	let { thisNews: propNews = initialNews, onSaveDraft, onCancel, onUpdate, onCreateNew }: Props = $props();
 
-	let newNews: News = $state({ ...thisNews, author: author });
+	let thisNews = $state(propNews);
 	let docRef;
-	let hasPDF = writable(!!thisNews.pdfFile);
-	let hasImage = writable(!!thisNews.image);
+	let hasPDF = $derived(!!thisNews.pdfFile);
+	let hasImage = $derived(!!thisNews.image);
+	let originalHash = $state('');
+	let currentHash = $state('');
+	let hasUnsavedChanges = $state(false);
+	let loading = $state(true);
 
-	const cleanUpForm = () => {
-		newNews = { ...initialNews };
-		hasImage.set(false);
-		hasPDF.set(false);
-	};
-
-	const handleSlugChange = (slugText: string) => {
-		newNews.slug = slugText;
-	};
-
-	const handleSubmit = async (e: SubmitEvent) => {
-		e.preventDefault();
-		if ($EditModeStore === EditMode.New && onCreateNew) {
-			await onCreateNew(newNews);
-		} else if ($EditModeStore === EditMode.Update && onUpdate) {
-			await onUpdate(newNews);
+	onMount(() => {
+		if ($EditModeStore === EditMode.Update) {
+			const cloneNews = JSON.parse(JSON.stringify(thisNews));
+			originalHash = createHashableString(cloneNews);
+		} else {
+			thisNews = { ...initialNews };
+			originalHash = createHashableString(initialNews);
 		}
-		goto('/admin/newsadmin');
+		thisNews = { ...thisNews, author: author };
+		loading = false;
+	});
+
+	const checkForChanges = () => {
+		currentHash = createHashableString(thisNews);
+		if (currentHash !== originalHash) {
+			hasUnsavedChanges = true;
+		} else {
+			hasUnsavedChanges = false;
+		}
+	};
+
+	const isValidNews = $derived(!!thisNews.title && !!thisNews.text && !!thisNews.slug && !!thisNews.publishdate);
+
+	/* # form functions */
+	const cleanUpForm = () => {
+		thisNews = { ...initialNews };
+	};
+
+	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
+		thisNews = { ...thisNews, pdfFile: pdfDocument.url };
+		checkForChanges();
+	};
+
+	const handleImageChange = () => {
+		thisNews = { ...thisNews, image: $selectedImage?.url };
+		checkForChanges();
 	};
 
 	const handleReset = () => {
 		cleanUpForm();
 	};
 
-	const handleImageChange = () => {
-		hasImage.set(!!$selectedImage);
+	const handleSaveDraft = () => {
+		if (onSaveDraft) {
+			onSaveDraft(thisNews);
+		}
 	};
 
-	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
-		newNews.pdfFile = pdfDocument.url;
-		hasPDF.set(!!pdfDocument);
+	const handleSlugChange = (slugText: string) => {
+		thisNews = { ...thisNews, slug: slugText.trim() };
+		checkForChanges();
+	};
+
+	const handleSubmit = async (e: SubmitEvent) => {
+		e.preventDefault();
+
+		if ($EditModeStore === EditMode.New && onCreateNew) {
+			await onCreateNew(thisNews);
+		} else if ($EditModeStore === EditMode.Update && onUpdate) {
+			await onUpdate(thisNews);
+		}
+	};
+
+	const prepareSlugText = async () => {
+		if (!thisNews.text) {
+			thisNews = { ...thisNews, slug: '' };
+			return;
+		}
+		const parsedText = await marked.parse(thisNews.text);
+		const slugText = cleanText(parsedText).slice(0, MAX_SLUG_TEXT);
+		thisNews = { ...thisNews, slug: slugText };
+		checkForChanges();
 	};
 </script>
 
-<div class="form bg-white-primary">
-	<h1 class="">{$EditModeStore === EditMode.Update ? 'Edit news item' : 'Create news item'}</h1>
-
-	<form
-		id="form-container"
-		enctype="multipart/form-data"
-		onsubmit={handleSubmit}
-		onreset={handleReset}
-	>
-		<!-- Titel -->
-		<div>
-			<Label child="title">News Headline *</Label>
-			<input
-				type="text"
-				id="title"
-				class="input input-bordered w-full"
-				placeholder="News Title"
-				bind:value={newNews.title}
-				required
-			/>
-		</div>
-
-		<!-- Author -->
-		<div>
-			<Label child="author" disabled={true}>Author</Label>
-			<input
-				type="text"
-				id="author"
-				class="input input-bordered w-full"
-				bind:value={newNews.author}
-				disabled
-			/>
-		</div>
-
-		<!-- News text -->
-		<div>
-			<div class="flex flex-row justify-between">
-				<Label child="news-text">News text *</Label>
-				<p class="explanation self-end text-right">
-					<strong>{newNews.text.length}</strong> characters.
-				</p>
-			</div>
-			<Editor bind:content={newNews.text} />
-		</div>
-		<div>
-			<SlugText text={newNews.text} slugText={newNews.slug} onSlugChange={handleSlugChange} />
-		</div>
-		<!-- Publish date  -->
-		<div>
-			<Label child="publishdate">Publish Date *</Label>
-			<input
-				type="date"
-				id="publishdate"
-				class="input input-bordered w-full"
-				bind:value={newNews.publishdate}
-			/>
-			<p class="explanation">If you don't select a publish date, it will be set to today.</p>
-		</div>
-
-		<!-- Publish time  -->
-		<div>
-			<Label child="publishtime" disabled={!newNews.publishdate}>Publish Time</Label>
-			<input
-				type="time"
-				id="publishtime"
-				class="input input-bordered w-full"
-				disabled={!newNews.publishdate}
-				bind:value={newNews.publishtime}
-			/>
-			<p class="explanation">
-				If you don't select a publish time, it will be set to 09:00 of the selected day.
-			</p>
-		</div>
-
-		<!-- Image -->
-		<div>
-			<Label child="image">Image</Label>
-			<div class="flex flex-col items-center justify-center">
-				{#if newNews.image}
-					<UploadImage imageUrl={newNews.image} onImageChange={handleImageChange} />
-				{:else}
-					<UploadImage imageUrl="" onImageChange={handleImageChange} />
+{#if loading}
+	<div>Loading...</div>
+{:else}
+	<div class="form bg-white-primary">
+		<div id="headline" class="flex flex-row items-center justify-between">
+			<h1 class="">{$EditModeStore === EditMode.Update ? 'Edit news item' : 'Create news item'}</h1>
+			<div class=" flex h-full flex-row items-end justify-center gap-4">
+				<StateLabel state={thisNews.state} class="mx-10 h-10 w-30" />
+				{#if hasUnsavedChanges}
+					<Icon icon="fa6-regular:pen-to-square" class="mr-10 h-6 w-6 self-center" />
 				{/if}
 			</div>
 		</div>
-		<div class="imageMeta">
-			<div class="imageAlt">
-				<div>
-					<Label child="imageAlt" disabled={!$hasImage}>Image Alt text *</Label>
-					<input
-						type="text"
-						id="imageAlt"
-						class="input input-bordered w-full"
-						bind:value={newNews.imageAlt}
-						required={$hasImage}
-						disabled={!$hasImage}
-						placeholder={$hasImage ? 'Image Alt text' : 'Please select an image first'}
-					/>
-					<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
-						This text helps interpreting the image for visually impaired users.
-					</p>
-				</div>
-			</div>
-			<div class="imageCaption mt-10">
-				<div>
-					<Label child="imageCaption" disabled={!$hasImage}>Image caption</Label>
-					<input
-						type="text"
-						id="imageCaption"
-						class="input input-bordered w-full"
-						bind:value={newNews.imageCaption}
-						placeholder={$hasImage ? 'Image by ...' : 'Please select an image first'}
-						disabled={!$hasImage}
-					/>
-					<p class="explanation {!$hasImage ? 'opacity-30' : 'opacity-100'}">
-						This text will be displayed below the image.
-					</p>
-				</div>
-			</div>
-		</div>
 
-		<!-- PDF Upload -->
-		<div>
-			<Label child="pdfFile">PDF Document</Label>
-			<div class="flex flex-col items-center justify-center">
-				<UploadPDF fileUrl={newNews.pdfFile} onUpload={assignPDF} />
-				{#if !$hasPDF}
-					<p class="explanation opacity-30">
-						Upload a PDF document that will be attached to this news item (max 5MB).
-					</p>
-				{/if}
-			</div>
+		<form id="form-container" enctype="multipart/form-data" onsubmit={handleSubmit} onreset={handleReset}>
+			<!-- Titel -->
 			<div>
-				<Label child="pdfText" disabled={!$hasPDF}>PDF Description</Label>
+				<Label child="title">News Headline *</Label>
 				<input
 					type="text"
-					id="pdfText"
+					id="title"
 					class="input input-bordered w-full"
-					bind:value={newNews.pdfText}
-					required={$hasPDF}
-					disabled={!$hasPDF}
-					placeholder={$hasPDF ? 'PDF Description' : 'Please select a PDF file first'}
+					placeholder="News Title"
+					bind:value={thisNews.title}
+					required
+					onblur={() => {
+						thisNews = { ...thisNews, title: thisNews.title?.trim() || '' };
+						checkForChanges();
+					}}
 				/>
-				<p class="explanation {!$hasPDF ? 'opacity-30' : 'opacity-100'}">
-					This text is the visible text for the PDF download link on the news page..
-				</p>
 			</div>
-		</div>
 
-		<!-- Buttons -->
-		<div
-			class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-2/3 gap-4 bg-slate-100 p-10 shadow-2xl"
-		>
-			<div class="buttons col-span-2 w-2/3">
-				<button class="btn" type="reset" onclick={() => goto('/admin/newsadmin')}>Cancel</button>
-				<button class="btn btn-neutral" type="reset" disabled={docRef}>Empty form</button>
-				<button class="btn btn-primary" type="submit" disabled={newNews.title.length === 0}
-					>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</button
-				>
+			<!-- Author -->
+			<div>
+				<Label child="author" disabled={true}>Author</Label>
+				<input type="text" id="author" class="input input-bordered w-full" bind:value={thisNews.author} disabled />
 			</div>
-		</div>
-	</form>
-</div>
+
+			<!-- News text -->
+			<div>
+				<div class="flex flex-row justify-between">
+					<Label child="news-text">News text *</Label>
+					<p class="explanation self-end text-right">
+						<strong>{thisNews.text ? thisNews.text.length : 0}</strong> characters.
+					</p>
+				</div>
+				<Editor
+					bind:content={thisNews.text}
+					onBlur={() => {
+						thisNews = { ...thisNews, text: thisNews.text?.trim() || '' };
+						prepareSlugText();
+					}}
+				/>
+			</div>
+
+			<!-- SlugText -->
+			<div>
+				<SlugText slugText={thisNews.slug} required={true} onBlur={handleSlugChange} />
+			</div>
+
+			<!-- Publish date  -->
+			<div>
+				<Label child="publishdate">Publish Date *</Label>
+				<input
+					type="date"
+					id="publishdate"
+					class="input input-bordered w-full"
+					bind:value={thisNews.publishdate}
+					onblur={checkForChanges}
+				/>
+				<p class="explanation">If you don't select a publish date, it will be set to today.</p>
+			</div>
+
+			<!-- Publish time  -->
+			<div>
+				<Label child="publishtime" disabled={!thisNews.publishdate}>Publish Time</Label>
+				<input
+					type="time"
+					id="publishtime"
+					class="input input-bordered w-full"
+					disabled={!thisNews.publishdate}
+					bind:value={thisNews.publishtime}
+					onblur={checkForChanges}
+				/>
+				<p class="explanation">If you don't select a publish time, it will be set to 09:00 of the selected day.</p>
+			</div>
+
+			<!-- Image -->
+			<div>
+				<Label child="image">Image</Label>
+				<div class="flex flex-col items-center justify-center">
+					{#if thisNews.image}
+						<UploadImage imageUrl={thisNews.image} onImageChange={handleImageChange} />
+					{:else}
+						<UploadImage imageUrl="" onImageChange={handleImageChange} />
+					{/if}
+				</div>
+			</div>
+
+			<!-- Image Alt Text-->
+			<div class="imageMeta">
+				<div class="imageAlt">
+					<div>
+						<Label child="imageAlt" disabled={!hasImage}>Image Alt text *</Label>
+						<input
+							type="text"
+							id="imageAlt"
+							class="input input-bordered w-full"
+							bind:value={thisNews.imageAlt}
+							required={hasImage}
+							disabled={!hasImage}
+							placeholder={hasImage ? 'Image Alt text' : 'Please select an image first'}
+							onblur={checkForChanges}
+						/>
+						<p class="explanation {!hasImage ? 'opacity-30' : 'opacity-100'}">
+							This text helps interpreting the image for visually impaired users.
+						</p>
+					</div>
+				</div>
+
+				<!-- Image Caption -->
+				<div class="imageCaption mt-10">
+					<div>
+						<Label child="imageCaption" disabled={!hasImage}>Image caption</Label>
+						<input
+							type="text"
+							id="imageCaption"
+							class="input input-bordered w-full"
+							bind:value={thisNews.imageCaption}
+							placeholder={hasImage ? 'Image by ...' : 'Please select an image first'}
+							disabled={!hasImage}
+							onblur={checkForChanges}
+						/>
+						<p class="explanation {!hasImage ? 'opacity-30' : 'opacity-100'}">
+							This text will be displayed below the image.
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- PDF Upload -->
+			<div>
+				<Label child="pdfFile">PDF Document</Label>
+				<div class="flex flex-col items-center justify-center">
+					<UploadPDF fileUrl={thisNews.pdfFile} onUpload={assignPDF} />
+					{#if !hasPDF}
+						<p class="explanation opacity-30">
+							Upload a PDF document that will be attached to this news item (max 5MB).
+						</p>
+					{/if}
+				</div>
+
+				<!-- PDF Description -->
+				<div>
+					<Label child="pdfText" disabled={!hasPDF}>PDF Description</Label>
+					<input
+						type="text"
+						id="pdfText"
+						class="input input-bordered w-full"
+						bind:value={thisNews.pdfText}
+						required={hasPDF}
+						disabled={!hasPDF}
+						placeholder={hasPDF ? 'PDF Description' : 'Please select a PDF file first'}
+						onblur={checkForChanges}
+					/>
+					<p class="explanation {!hasPDF ? 'opacity-30' : 'opacity-100'}">
+						This text is the visible text for the PDF download link on the news page..
+					</p>
+				</div>
+			</div>
+
+			<!-- Buttons -->
+			<div class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-3/4 gap-4 bg-slate-100 p-10 shadow-2xl">
+				<div class="buttons col-span-2">
+					<button class="btn" type="reset" color="light" onclick={onCancel}>Cancel</button>
+					<button class="btn btn-soft" type="reset" disabled={docRef}>Empty form</button>
+					{#if thisNews.state === ItemState.DRAFT}
+						<button class="btn btn-soft" type="button" disabled={!hasUnsavedChanges} onclick={handleSaveDraft}
+							>Save draft</button
+						>
+					{/if}
+					<button class="btn btn-primary" type="submit" disabled={!isValidNews || !hasUnsavedChanges}
+						>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</button
+					>
+				</div>
+			</div>
+		</form>
+	</div>
+{/if}
 
 <ToastContainer />
 
@@ -247,7 +332,7 @@
 
 	.buttons {
 		display: grid;
-		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
 		gap: 50px;
 		padding: 0 50px;
 		justify-content: space-between;

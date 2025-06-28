@@ -115,7 +115,7 @@ export interface News {
 	publishtime: string | null;
 	publishDateTime: Timestamp;
 	comments: string | null;
-	image: string | null;
+	image?: string | null;
 	imageAlt?: string | null;
 	imageCaption?: string | null;
 	author: string | null;
@@ -442,4 +442,14 @@ export const duplicateItem = async (itemId: string, type: CollectionType): Promi
 		console.error(error);
 		return undefined;
 	}
+};
+
+export const createHashableString = (obj: any) => {
+	const normalized = { ...obj };
+	Object.keys(normalized).forEach((key) => {
+		if (typeof normalized[key] === 'string') {
+			normalized[key] = normalized[key].trim() || null;
+		}
+	});
+	return JSON.stringify(normalized, Object.keys(normalized).sort());
 };

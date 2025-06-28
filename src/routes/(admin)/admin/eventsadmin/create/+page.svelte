@@ -5,12 +5,7 @@
 
 	//import { notificationStore } from '$lib/stores/notifications';
 	import { EditMode, EditModeStore, type DomainEvent } from '$lib/stores/ObjectStore';
-	import {
-		selectedImage,
-		imageExists,
-		existingImageUrl,
-		resetImageselection,
-	} from '$lib/stores/ImageSelectionStore';
+	import { selectedImage, imageExists, existingImageUrl, resetImageselection } from '$lib/stores/ImageSelectionStore';
 
 	import { validateEventData, buildTimeStamp } from '$lib/services/validateForm';
 	import { eventFormService } from '$lib/services/EventFormService';
@@ -43,6 +38,20 @@
 		}
 	};
 
+	const saveDraft = async (thisEvent: DomainEvent) => {
+		if (!thisEvent) return;
+		try {
+			await addDoc(eventsColRef, thisEvent);
+			EditModeStore.set(EditMode.Empty);
+			notificationStore.addToast('success', 'Draft saved successfully!');
+			resetImageselection();
+			goto('/admin/eventsadmin');
+		} catch (error) {
+			notificationStore.addToast('error', 'Failed to safe draft. Please try again.');
+			console.error('Error creating event: ', error);
+		}
+	};
+
 	const handleCancel = () => {
 		EditModeStore.set(EditMode.Empty);
 		resetSelectedLocation();
@@ -51,7 +60,7 @@
 </script>
 
 <div>
-	<EventForm onCreateNew={saveNewEvent} onCancel={handleCancel} />
+	<EventForm onCreateNew={saveNewEvent} onCancel={handleCancel} onSaveDraft={saveDraft} />
 </div>
 
 <ToastContainer />

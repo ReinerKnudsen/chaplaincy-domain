@@ -7,7 +7,7 @@
 	import { browser } from '$app/environment';
 
 	interface Props {
-		initialContent?: string;
+		initialContent?: string | null;
 		onImageUpload: (blob: Blob, callback: (imageUrl: string) => void) => void;
 		onChange: (content: { markdown: string; html: string }) => void;
 		onBlur?: () => void;
@@ -38,7 +38,7 @@
 				height: '500px',
 				initialEditType: 'markdown',
 				previewStyle: 'vertical',
-				initialValue: initialContent,
+				initialValue: initialContent || '',
 				hooks: {
 					addImageBlobHook: (blob, callback) => {
 						onImageUpload(blob, callback);

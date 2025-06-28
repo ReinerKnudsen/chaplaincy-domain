@@ -15,70 +15,91 @@ import {
 } from 'firebase/firestore';
 import { database } from '$lib/firebase/firebaseConfig';
 
+export enum ItemState {
+	DRAFT = 'draft',
+	SCHEDULED = 'scheduled',
+	PUBLIC = 'public',
+	UNPUBLISHED = 'unpublished',
+}
+
 export interface CollectionItem {
 	id: string;
 	data: DocumentData;
 }
 
+export const setItemState = (item: DomainEvent | News, type: 'Event' | 'News') => {
+	if (!item || !type) return;
+	if (item.publishDateTime) {
+		const publishDate = new Date(item.publishDateTime.seconds * 1000);
+		if (publishDate <= new Date()) {
+			item.state = ItemState.PUBLIC;
+		} else {
+			item.state = ItemState.SCHEDULED;
+		}
+	}
+};
+
 export interface DomainEvent {
-	id: string;
-	title: string;
-	subtitle: string;
-	description: string;
-	slug: string;
-	startdate: string;
+	id: string | null;
+	state: ItemState;
+	title: string | null;
+	subtitle?: string | null;
+	description: string | null;
+	slug: string | null;
+	startdate: string | null;
 	starttime: string | null;
 	enddate: string | null;
 	endtime: string | null;
-	startDateTimeUtc?: string | undefined;
-	endDateTimeUtc?: string | undefined;
-	location: string;
-	joinOnline: boolean;
-	condition?: string;
-	publishdate: string;
-	publishtime: string;
+	startDateTimeUtc?: string | null;
+	endDateTimeUtc?: string | null;
+	location: string | null;
+	joinOnline?: boolean;
+	condition?: string | null;
+	publishdate: string | null;
+	publishtime: string | null;
 	publishDateTime: Timestamp;
-	unpublishdate: string;
-	unpublishtime: string;
+	unpublishdate: string | null;
+	unpublishtime: string | null;
 	unpublishDateTime: Timestamp;
-	comments: string;
+	comments?: string | null;
 	image?: string | null;
-	imageAlt?: string;
-	imageCaption?: string;
-	author: string;
-	pdfFile?: string;
-	pdfText?: string;
-	tags: string[];
+	imageAlt?: string | null;
+	imageCaption?: string | null;
+	author: string | null;
+	pdfFile?: string | null;
+	pdfText?: string | null;
+	tags?: string[];
 }
 
 export const initialDomainEvent: DomainEvent = {
-	id: '',
-	title: '',
-	subtitle: '',
-	description: '',
-	slug: '',
-	startdate: '',
+	id: null,
+	state: ItemState.DRAFT,
+	title: null,
+	subtitle: null,
+	description: null,
+	slug: null,
+	startdate: null,
 	starttime: null,
-	startDateTimeUtc: undefined, // Add this for our new field
+	startDateTimeUtc: null, // Add this for our new field
 	enddate: null,
 	endtime: null,
-	endDateTimeUtc: undefined, // Add this for our new field
-	location: '',
+	endDateTimeUtc: null, // Add this for our new field
+	location: null,
 	joinOnline: false,
-	condition: '',
-	publishdate: '',
+	condition: null,
+	publishdate: null,
 	publishDateTime: Timestamp.fromDate(new Date()),
-	publishtime: '',
-	unpublishdate: '',
-	unpublishtime: '',
+	publishtime: null,
+	unpublishdate: null,
+	unpublishtime: null,
 	unpublishDateTime: Timestamp.fromDate(new Date()),
-	comments: '',
+	comments: null,
 	image: null,
-	imageAlt: '',
-	imageCaption: '',
-	author: '',
-	pdfFile: '',
-	pdfText: '',
+	imageAlt: null,
+	imageCaption: null,
+	author: null,
+	pdfFile: null,
+	pdfText: null,
 	tags: [],
 };
 
@@ -86,39 +107,41 @@ export type DomainEventSortableFields = keyof DomainEvent;
 
 // News
 export interface News {
-	title: string;
-	text: string;
-	slug: string;
+	title: string | null;
+	state: ItemState;
+	text: string | null;
+	slug: string | null;
 	publishdate: string | null;
 	publishtime: string | null;
-	publishDateTime: string | null;
-	comments: string;
+	publishDateTime: Timestamp;
+	comments: string | null;
 	image: string | null;
-	imageAlt?: string;
-	imageCaption?: string;
-	author: string;
-	pdfFile?: string;
-	pdfText?: string;
+	imageAlt?: string | null;
+	imageCaption?: string | null;
+	author: string | null;
+	pdfFile?: string | null;
+	pdfText?: string | null;
 	tags: string[];
 }
 
 export type NewsSortableFields = keyof News;
 
 export const initialNews: News = {
-	title: '',
-	text: '',
-	slug: '',
+	title: null,
+	state: ItemState.DRAFT,
+	text: null,
+	slug: null,
 	publishdate: null,
 	publishtime: null,
-	publishDateTime: null,
+	publishDateTime: Timestamp.fromDate(new Date()),
 	tags: [],
-	comments: '',
+	comments: null,
 	image: null,
-	imageAlt: '',
-	author: '',
-	imageCaption: '',
-	pdfFile: '',
-	pdfText: '',
+	imageAlt: null,
+	author: null,
+	imageCaption: null,
+	pdfFile: null,
+	pdfText: null,
 };
 
 // WeeklySheet
@@ -214,10 +237,7 @@ export function resetEditModeStore() {
 
 // Collection and document related functions
 // Load a single item by id and type
-export const loadItem = async (
-	id: string,
-	type: CollectionType
-): Promise<DocumentReference | null> => {
+export const loadItem = async (id: string, type: CollectionType): Promise<DocumentReference | null> => {
 	try {
 		const docRef = doc(database, type, id);
 		const docSnap = await getDoc(docRef);
@@ -312,12 +332,7 @@ export const loadDocument = async (type: DocumentType): Promise<void> => {
 		return;
 	}
 	try {
-		const q = query(
-			collection(database, 'documents'),
-			where('type', '==', type),
-			orderBy('date', 'desc'),
-			limit(1)
-		);
+		const q = query(collection(database, 'documents'), where('type', '==', type), orderBy('date', 'desc'), limit(1));
 		const querySnapshot = await getDocs(q);
 		if (!querySnapshot.empty) {
 			const doc = querySnapshot.docs[0];
@@ -360,11 +375,7 @@ export const loadDocuments = async (type: DocumentType) => {
 		return;
 	}
 	try {
-		const q = query(
-			collection(database, 'documents'),
-			where('type', '==', type),
-			orderBy('date', 'desc')
-		);
+		const q = query(collection(database, 'documents'), where('type', '==', type), orderBy('date', 'desc'));
 		const querySnapshot = await getDocs(q);
 		if (!querySnapshot.empty) {
 			const documents: CollectionItem[] = [];
@@ -417,10 +428,7 @@ const removeDateFields = (data: DocumentData): DocumentData => {
 	return newData;
 };
 
-export const duplicateItem = async (
-	itemId: string,
-	type: CollectionType
-): Promise<string | undefined> => {
+export const duplicateItem = async (itemId: string, type: CollectionType): Promise<string | undefined> => {
 	try {
 		const itemRef = doc(database, type, itemId);
 		const item = await getDoc(itemRef);

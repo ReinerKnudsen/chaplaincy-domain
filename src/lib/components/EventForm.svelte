@@ -3,7 +3,7 @@
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 
-	import { EditMode, EditModeStore, type DomainEvent, initialDomainEvent } from '$lib/stores/ObjectStore';
+	import { EditMode, EditModeStore, type DomainEvent, initialDomainEvent, ItemState } from '$lib/stores/ObjectStore';
 
 	import {
 		selectedLocation,
@@ -15,6 +15,11 @@
 
 	import { selectedImage } from '$lib/stores/ImageSelectionStore';
 
+	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
+	import { marked } from 'marked';
+
+	import { cleanText } from '$lib/utils/HTMLfunctions';
+
 	import UploadImage from '$lib/components/UploadImage.svelte';
 	import LocationDropdown from './LocationDropdown.svelte';
 	import NewLocationModal from './NewLocationModal.svelte';
@@ -24,17 +29,18 @@
 	import SlugText from './SlugText.svelte';
 	import Checkbox from './Checkbox.svelte';
 	import Icon from '@iconify/svelte';
+	import StateLabel from './StateLabel.svelte';
 
 	interface Props {
 		thisEvent?: DomainEvent;
+		onSaveDraft?: (event: DomainEvent) => Promise<void>;
 		onCreateNew?: (event: DomainEvent) => Promise<void>;
 		onUpdate?: (event: DomainEvent) => Promise<void>;
 		onCancel: () => void;
 	}
 
-	let { thisEvent = initialDomainEvent, onCreateNew, onUpdate, onCancel }: Props = $props();
+	let { thisEvent = initialDomainEvent, onSaveDraft, onCreateNew, onUpdate, onCancel }: Props = $props();
 
-	let newEvent: DomainEvent = $state(initialDomainEvent);
 	let hasImage = writable(!!thisEvent.image);
 	let hasPDF = writable(!!thisEvent.pdfFile);
 	let showModal = $state(false);
@@ -44,12 +50,12 @@
 
 	onMount(async () => {
 		if ($EditModeStore === EditMode.Update) {
-			newEvent = structuredClone(thisEvent);
-			originalHash = createHashableString(newEvent);
+			thisEvent = structuredClone(thisEvent);
+			originalHash = createHashableString(thisEvent);
 			const location = $AllLocations.find((loc) => loc.id === thisEvent.location);
 			selectedLocation.set(location || initialLocationState);
 		} else {
-			newEvent = { ...initialDomainEvent };
+			thisEvent = { ...initialDomainEvent };
 			originalHash = createHashableString(initialDomainEvent);
 		}
 		loading = false;
@@ -57,7 +63,7 @@
 
 	const checkForChanges = () => {
 		//console.log('🔍 checkForChanges called from:', new Error().stack?.split('\n')[2]);
-		const currentHash = createHashableString(newEvent);
+		const currentHash = createHashableString(thisEvent);
 		if (currentHash !== originalHash) {
 			hasUnsavedChanges = true;
 		} else {
@@ -65,10 +71,23 @@
 		}
 	};
 
+	const isValidEvent = $derived(
+		thisEvent.title?.trim() &&
+			thisEvent.description?.trim() &&
+			thisEvent.slug?.trim() &&
+			thisEvent.startdate &&
+			thisEvent.starttime &&
+			thisEvent.enddate &&
+			thisEvent.endtime &&
+			thisEvent.location
+	);
+
+	//$inspect(thisEvent);
+
 	const createHashableString = (obj: any) => JSON.stringify(obj, Object.keys(obj).sort());
 
 	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
-		newEvent.pdfFile = pdfDocument.url;
+		thisEvent.pdfFile = pdfDocument.url;
 		hasPDF.set(!!pdfDocument);
 		checkForChanges();
 	};
@@ -78,27 +97,28 @@
 	};
 
 	const handleChangeJoinOnline = (checked: boolean) => {
-		newEvent.joinOnline = checked;
+		thisEvent.joinOnline = checked;
 		checkForChanges();
 	};
 
 	const handleConditionChange = (e: Event) => {
 		const target = e.target as HTMLInputElement;
 		if (target.checked) {
-			newEvent.condition = 'Entry is free, donations are welcome.';
+			thisEvent.condition = 'Entry is free, donations are welcome.';
 		} else {
-			newEvent.condition = '';
+			thisEvent.condition = '';
 		}
 		checkForChanges();
 	};
 
 	const handleImageChange = () => {
+		thisEvent.image = $selectedImage?.name;
 		hasImage.set(!!$selectedImage);
 		checkForChanges();
 	};
 
 	const handleLocationChange = (locationId: string) => {
-		newEvent.location = locationId;
+		thisEvent.location = locationId;
 		if (locationId) {
 			selectedLocation.set($AllLocations.find((loc) => loc.id === locationId) || initialLocationState);
 		} else {
@@ -119,39 +139,39 @@
 
 		if (foundLocation) {
 			selectedLocation.set({ ...foundLocation });
-			newEvent.location = newLocId;
-			newEvent = { ...newEvent };
+			thisEvent.location = newLocId;
+			thisEvent = { ...thisEvent };
 		}
 		checkForChanges();
 	};
 
 	const handleReset = () => {
-		newEvent = { ...initialDomainEvent };
+		thisEvent = { ...initialDomainEvent };
 		EditModeStore.set('');
 		checkForChanges();
 	};
 
 	const handleSetEndDate = (e: MouseEvent) => {
 		e.preventDefault();
-		if (newEvent.startdate) {
-			const enddate = new Date(newEvent.startdate);
-			newEvent.enddate = enddate.toISOString().split('T')[0];
+		if (thisEvent.startdate) {
+			const enddate = new Date(thisEvent.startdate);
+			thisEvent.enddate = enddate.toISOString().split('T')[0];
 		}
 		checkForChanges();
 	};
 
 	const handleSetPublishDate = (e: MouseEvent) => {
 		e.preventDefault();
-		if (newEvent.startdate) {
-			const pubdate = new Date(newEvent.startdate);
+		if (thisEvent.startdate) {
+			const pubdate = new Date(thisEvent.startdate);
 			pubdate.setDate(pubdate.getDate() - 14);
-			newEvent.publishdate = pubdate.toISOString().split('T')[0];
+			thisEvent.publishdate = pubdate.toISOString().split('T')[0];
 		}
 		checkForChanges();
 	};
 
 	const handleSlugChange = (slugText: string) => {
-		newEvent.slug = slugText;
+		thisEvent.slug = slugText;
 		checkForChanges();
 	};
 
@@ -159,13 +179,29 @@
 		e.preventDefault();
 
 		if ($EditModeStore === EditMode.New && onCreateNew) {
-			await onCreateNew(newEvent);
+			await onCreateNew(thisEvent);
 		} else if ($EditModeStore === EditMode.Update && onUpdate) {
-			await onUpdate(newEvent);
+			await onUpdate(thisEvent);
 		}
 	};
 
-	function handleCancel() {}
+	async function handleCancel() {}
+
+	const handleSaveDraft = async () => {
+		if (onSaveDraft) {
+			await onSaveDraft(thisEvent);
+		}
+	};
+
+	const prepareSlugText = async () => {
+		if (!thisEvent.description) {
+			thisEvent.slug = '';
+			return;
+		}
+		const parsedText = await marked.parse(thisEvent.description);
+		thisEvent.slug = cleanText(parsedText).slice(0, MAX_SLUG_TEXT);
+		checkForChanges();
+	};
 </script>
 
 {#if loading}
@@ -173,13 +209,17 @@
 {:else}
 	<div class="form bg-white-primary">
 		<div id="headline" class="flex flex-row items-center justify-between">
-			<h1 class="mx-10 p-0">
+			<h1 class="mx-10">
 				{$EditModeStore === 'update' ? 'Edit event' : 'Create new event'}
 			</h1>
-			{#if hasUnsavedChanges}
-				<Icon icon="fa6-regular:pen-to-square" class="mx-10 h-6 w-6" />
-			{/if}
+			<div class=" flex h-full flex-row items-end justify-center gap-4">
+				<StateLabel state={thisEvent.state} class="mx-10 h-10 w-30" />
+				{#if hasUnsavedChanges}
+					<Icon icon="fa6-regular:pen-to-square" class="mr-10 h-6 w-6 self-center" />
+				{/if}
+			</div>
 		</div>
+		{#if thisEvent.state}{/if}
 	</div>
 
 	<form id="form-container" enctype="multipart/form-data" onsubmit={handleSubmit} onreset={handleReset}>
@@ -193,7 +233,7 @@
 					id="title"
 					class="input input-bordered w-full"
 					placeholder="Event Title"
-					bind:value={newEvent.title}
+					bind:value={thisEvent.title}
 					onblur={checkForChanges}
 					required
 				/>
@@ -208,7 +248,7 @@
 					id="subtitle"
 					placeholder="Sub Title"
 					onblur={checkForChanges}
-					bind:value={newEvent.subtitle}
+					bind:value={thisEvent.subtitle}
 				/>
 			</div>
 
@@ -217,13 +257,13 @@
 				<div class="flex-rows flex justify-between">
 					<Label child="description">Description *</Label>
 					<p class="self-end text-right text-base">
-						<strong>{newEvent.description.length}</strong> characters.
+						<strong>{thisEvent.description ? thisEvent.description.length : 0}</strong> characters.
 					</p>
 				</div>
-				<Editor bind:content={newEvent.description} onBlur={checkForChanges} />
+				<Editor bind:content={thisEvent.description} onBlur={prepareSlugText} />
 			</div>
 
-			<SlugText text={!newEvent.slug ? newEvent.description : ''} slugText={newEvent.slug} onBlur={handleSlugChange} />
+			<SlugText slugText={thisEvent.slug} required={true} onBlur={handleSlugChange} />
 
 			<!-- Location -->
 			<div class="form-area">
@@ -242,7 +282,7 @@
 							<Checkbox
 								label="Join online"
 								id="joinonline"
-								bind:checked={newEvent.joinOnline}
+								bind:checked={thisEvent.joinOnline}
 								onChange={handleChangeJoinOnline}
 							/>
 						</div>
@@ -258,7 +298,7 @@
 					class="input input-bordered w-full"
 					type="text"
 					id="conditions"
-					bind:value={newEvent.condition}
+					bind:value={thisEvent.condition}
 					onblur={checkForChanges}
 				/>
 				<div class="mt-1 p-1">
@@ -285,7 +325,7 @@
 					class="input input-bordered w-full"
 					type="date"
 					id="startdate"
-					bind:value={newEvent.startdate}
+					bind:value={thisEvent.startdate}
 					onblur={checkForChanges}
 				/>
 			</div>
@@ -293,31 +333,31 @@
 
 			<!-- Start time -->
 			<div>
-				<Label child="starttime" disabled={!newEvent.startdate}>Start Time *</Label>
+				<Label child="starttime" disabled={!thisEvent.startdate}>Start Time *</Label>
 				<input
 					type="time"
 					id="starttime"
 					class="input input-bordered w-full"
-					bind:value={newEvent.starttime}
+					bind:value={thisEvent.starttime}
 					onblur={checkForChanges}
-					disabled={!newEvent.startdate}
+					disabled={!thisEvent.startdate}
 				/>
 			</div>
 
 			<!-- End date -->
 			<div class="flex-1">
-				<Label child="enddate" disabled={!newEvent.startdate}>End Date *</Label>
+				<Label child="enddate" disabled={!thisEvent.startdate}>End Date *</Label>
 				<div class="flex w-full flex-row items-center gap-4">
 					<input
 						type="date"
 						id="enddate"
 						class="input input-bordered w-full"
-						bind:value={newEvent.enddate}
+						bind:value={thisEvent.enddate}
 						onblur={checkForChanges}
-						disabled={!newEvent.startdate}
+						disabled={!thisEvent.startdate}
 					/>
 					<div class="tooltip" data-tip="Sets the end date to the start date">
-						<button class="btn btn-primary min-w-28" onclick={handleSetEndDate} disabled={!newEvent.startdate}
+						<button class="btn btn-primary min-w-28" onclick={handleSetEndDate} disabled={!thisEvent.startdate}
 							>Auto set
 						</button>
 					</div>
@@ -326,13 +366,13 @@
 
 			<!-- End time -->
 			<div>
-				<Label child="endtime" disabled={!newEvent.enddate}>End Time *</Label>
+				<Label child="endtime" disabled={!thisEvent.enddate}>End Time *</Label>
 				<input
 					type="time"
 					id="endtime"
 					class="input input-bordered w-full"
-					bind:value={newEvent.endtime}
-					disabled={!newEvent.enddate}
+					bind:value={thisEvent.endtime}
+					disabled={!thisEvent.enddate}
 					onblur={checkForChanges}
 				/>
 			</div>
@@ -349,11 +389,11 @@
 							class="input input-bordered w-full"
 							type="date"
 							id="publishdate"
-							bind:value={newEvent.publishdate}
+							bind:value={thisEvent.publishdate}
 							onblur={checkForChanges}
 						/>
 						<div class="tooltip" data-tip="Sets the publish date to 14 days before the start date">
-							<button class="btn btn-primary min-w-28" onclick={handleSetPublishDate} disabled={!newEvent.startdate}
+							<button class="btn btn-primary min-w-28" onclick={handleSetPublishDate} disabled={!thisEvent.startdate}
 								>Auto set
 							</button>
 						</div>
@@ -364,62 +404,61 @@
 				<!-- Publish time  -->
 				<div>
 					<div>
-						<Label child="publishTime" disabled={!newEvent.publishdate}>Publish Time</Label>
+						<Label child="publishTime" disabled={!thisEvent.publishdate}>Publish Time</Label>
 						<input
 							type="time"
 							id="publishtime"
 							class="input input-bordered w-full"
-							bind:value={newEvent.publishtime}
-							disabled={!newEvent.publishdate}
+							bind:value={thisEvent.publishtime}
+							disabled={!thisEvent.publishdate}
 							onblur={checkForChanges}
 						/>
 					</div>
-					<p class="explanation {newEvent.publishdate ? 'opacity-100' : 'opacity-30'}">
+					<p class="explanation {thisEvent.publishdate ? 'opacity-100' : 'opacity-30'}">
 						If you don't select a publish time, it will be set to 09:00 of the selected day.
 					</p>
 				</div>
 
 				<!-- Unpublish Date -->
 				<div>
-					<Label child="unpublishdate" disabled={!newEvent.publishdate}>Unpublish Date</Label>
+					<Label child="unpublishdate" disabled={!thisEvent.publishdate}>Unpublish Date</Label>
 					<input
 						type="date"
 						id="unpublishdate"
 						class="input input-bordered w-full"
 						title="Select a date when the event shall be unpublished (optional)"
-						bind:value={newEvent.unpublishdate}
-						disabled={!newEvent.publishdate}
+						bind:value={thisEvent.unpublishdate}
+						disabled={!thisEvent.publishdate}
 						onblur={checkForChanges}
 					/>
 
-					<p class="explanation {newEvent.publishdate ? 'opacity-100' : 'opacity-30'}">
+					<p class="explanation {thisEvent.publishdate ? 'opacity-100' : 'opacity-30'}">
 						If you don't set a date and time here the event will automatically be unpublished at the given start time.
 					</p>
 				</div>
 
 				<!-- Unpublish Time -->
 				<div>
-					<Label child="unpublishtime" disabled={!newEvent.unpublishdate}>Unpublish Time</Label>
+					<Label child="unpublishtime" disabled={!thisEvent.unpublishdate}>Unpublish Time</Label>
 					<input
 						type="time"
 						id="unpublishtime"
 						class="input input-bordered w-full"
 						title="Select a time when the event shall be unpublished. (optional) "
-						bind:value={newEvent.unpublishtime}
-						disabled={!newEvent.unpublishdate}
+						bind:value={thisEvent.unpublishtime}
+						disabled={!thisEvent.unpublishdate}
 						onblur={checkForChanges}
 					/>
 				</div>
 			</div>
 
-			<!-- Fourth block -->
+			<!-- Image -->
 			<div class="form bg-white-primary my-8 p-10">
-				<!-- Image -->
 				<div>
 					<Label child="image">Image</Label>
 					<div class="flex items-center justify-center">
-						{#if newEvent.image}
-							<UploadImage imageUrl={newEvent.image} onImageChange={handleImageChange} />
+						{#if thisEvent.image}
+							<UploadImage imageUrl={thisEvent.image} onImageChange={handleImageChange} />
 						{:else}
 							<UploadImage imageUrl="" onImageChange={handleImageChange} />
 						{/if}
@@ -433,7 +472,7 @@
 								type="text"
 								id="imageAlt"
 								class="input input-bordered w-full"
-								bind:value={newEvent.imageAlt}
+								bind:value={thisEvent.imageAlt}
 								onblur={checkForChanges}
 								required={$hasImage}
 								disabled={!$hasImage}
@@ -451,7 +490,7 @@
 								type="text"
 								id="imageCaption"
 								class="input input-bordered w-full"
-								bind:value={newEvent.imageCaption}
+								bind:value={thisEvent.imageCaption}
 								onblur={checkForChanges}
 								disabled={!$hasImage}
 								placeholder={$hasImage ? 'Image by ...' : 'Please select an image first'}
@@ -466,7 +505,7 @@
 				<div>
 					<Label child="pdfFile">PDF Document</Label>
 					<div class="flex flex-col items-center justify-center">
-						<UploadPDF fileUrl={newEvent.pdfFile} onUpload={assignPDF} />
+						<UploadPDF fileUrl={thisEvent.pdfFile} onUpload={assignPDF} />
 						{#if !$hasPDF}
 							<p class="explanation opacity-30">Upload a PDF document that will be attached to this event (max 5MB).</p>
 						{/if}
@@ -477,7 +516,7 @@
 							type="text"
 							id="pdfText"
 							class="input input-bordered w-full"
-							bind:value={newEvent.pdfText}
+							bind:value={thisEvent.pdfText}
 							required={$hasPDF}
 							disabled={!$hasPDF}
 							placeholder={$hasPDF ? 'PDF Description' : 'Please select a PDF file first'}
@@ -500,7 +539,7 @@
 						placeholder="If there is anything people should need to know about this event? Put it here. (Parking instructions, public transport connections...)"
 						rows="4"
 						name="comments"
-						bind:value={newEvent.comments}
+						bind:value={thisEvent.comments}
 						onblur={checkForChanges}
 					></textarea>
 				</div>
@@ -513,8 +552,16 @@
 			<div class="buttons col-span-2 w-2/3">
 				<button class="btn" type="reset" color="light" onclick={onCancel}>Cancel</button>
 				<button class="btn btn-soft" type="reset" color="light">Empty form</button>
-				<button class="btn btn-soft" type="button" color="light">Save draft</button>
-				<button class="btn btn-primary" type="submit" disabled={newEvent.title.length === 0}
+				{#if thisEvent.state === ItemState.DRAFT}
+					<button
+						class="btn btn-soft"
+						type="button"
+						color="light"
+						disabled={!hasUnsavedChanges}
+						onclick={handleSaveDraft}>Save draft</button
+					>
+				{/if}
+				<button class="btn btn-primary" type="submit" disabled={!isValidEvent || !hasUnsavedChanges}
 					>{$EditModeStore === 'update' ? 'Update' : 'Save'} event</button
 				>
 			</div>

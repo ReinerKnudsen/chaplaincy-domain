@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import { updateDoc, type DocumentReference, type DocumentData } from 'firebase/firestore';
 
 	import { type News, EditModeStore } from '$lib/stores/ObjectStore';
@@ -11,6 +11,8 @@
 
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 	import NewsForm from '$lib/components/NewsForm.svelte';
+
+	let pageHasUnsavedChanges = $state(false);
 
 	interface Props {
 		data: {
@@ -25,6 +27,20 @@
 		EditModeStore.set('');
 		goto('/admin/newsadmin');
 	};
+
+	const handleUnsavedChangesUpdate = (formHasUnsavedChanges: boolean): void => {
+		pageHasUnsavedChanges = formHasUnsavedChanges;
+	};
+	/**
+	 * TODO: replcae dialog with the global modal (to be delivered)
+	 */
+	beforeNavigate(({ cancel }) => {
+		if (pageHasUnsavedChanges) {
+			if (!confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
+				cancel();
+			}
+		}
+	});
 
 	const updateNews = async (updatedNews: News) => {
 		try {
@@ -68,7 +84,13 @@
 </script>
 
 <div>
-	<NewsForm thisNews={data.newsItem} onUpdate={updateNews} onSaveDraft={handleSaveDraft} onCancel={handleCancel} />
+	<NewsForm
+		thisNews={data.newsItem}
+		onUpdate={updateNews}
+		onSaveDraft={handleSaveDraft}
+		onCancel={handleCancel}
+		onUnsavedChangesUpdate={handleUnsavedChangesUpdate}
+	/>
 </div>
 
 <ToastContainer />

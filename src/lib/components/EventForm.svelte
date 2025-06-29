@@ -39,9 +39,17 @@
 		onCreateNew?: (event: DomainEvent) => Promise<void>;
 		onUpdate?: (event: DomainEvent) => Promise<void>;
 		onCancel: () => void;
+		onUnsavedChangesUpdate: (hasUnsavedChanges: boolean) => void;
 	}
 
-	let { thisEvent: propEvent = initialDomainEvent, onSaveDraft, onCreateNew, onUpdate, onCancel }: Props = $props();
+	let {
+		thisEvent: propEvent = initialDomainEvent,
+		onUnsavedChangesUpdate,
+		onSaveDraft,
+		onCreateNew,
+		onUpdate,
+		onCancel,
+	}: Props = $props();
 
 	let thisEvent = $state(propEvent);
 	let hasImage = $derived(!!thisEvent.image);
@@ -53,8 +61,8 @@
 
 	onMount(async () => {
 		if ($EditModeStore === EditMode.Update) {
-			thisEvent = structuredClone(thisEvent);
-			originalHash = createHashableString(thisEvent);
+			const cloneEvent = JSON.parse(JSON.stringify(thisEvent));
+			originalHash = createHashableString(cloneEvent);
 			const location = $AllLocations.find((loc) => loc.id === thisEvent.location);
 			selectedLocation.set(location || initialLocationState);
 		} else {
@@ -72,6 +80,7 @@
 		} else {
 			hasUnsavedChanges = false;
 		}
+		onUnsavedChangesUpdate(hasUnsavedChanges);
 	};
 
 	const isValidEvent = $derived(

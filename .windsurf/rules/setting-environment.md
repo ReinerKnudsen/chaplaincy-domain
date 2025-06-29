@@ -8,3 +8,4 @@ globs: *.svelte, *.css, *.ts
 - My project uses SvelteKit
 - The project uses Svelte 5
 - The project uses Tailwind 4
+- I prefer to use arrow functions for new functions

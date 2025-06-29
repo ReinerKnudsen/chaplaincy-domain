@@ -34,9 +34,17 @@
 		onCreateNew?: (event: News) => Promise<void>;
 		onUpdate?: (event: News) => Promise<void>;
 		onCancel?: () => void;
+		onUnsavedChangesUpdate?: (hasUnsavedChanges: boolean) => void;
 	}
 
-	let { thisNews: propNews = initialNews, onSaveDraft, onCancel, onUpdate, onCreateNew }: Props = $props();
+	let {
+		thisNews: propNews = initialNews,
+		onUnsavedChangesUpdate,
+		onSaveDraft,
+		onCancel,
+		onUpdate,
+		onCreateNew,
+	}: Props = $props();
 
 	let thisNews = $state(propNews);
 	let docRef;
@@ -66,6 +74,7 @@
 		} else {
 			hasUnsavedChanges = false;
 		}
+		onUnsavedChangesUpdate?.(hasUnsavedChanges);
 	};
 
 	const isValidNews = $derived(!!thisNews.title && !!thisNews.text && !!thisNews.slug && !!thisNews.publishdate);

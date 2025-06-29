@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { page } from '$app/state';
 
-	import { addDoc, deleteDoc, doc, collection, updateDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
+	import { addDoc, deleteDoc, doc, collection, updateDoc } from 'firebase/firestore';
 
+	import { notificationStore } from '$lib/stores/notifications';
+	import { TOAST_DURATION } from '$lib/utils/constants';
 	import {
 		CurrentLocation,
 		initialLocationState,
@@ -14,16 +17,21 @@
 		type Location,
 	} from '$lib/stores/LocationsStore';
 
+	import { pathName } from '$lib/stores/NavigationStore';
 	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
 
 	import Icon from '@iconify/svelte';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
+
+	let currentLocationId = $state(0);
+	let deleteDialog: HTMLDialogElement | null = $state(null);
+	let deleteLocation: Location | null = $state(null);
+	let updateItem = $state(true);
 
 	onMount(() => {
+		pathName.set(page.url.pathname);
 		fetchLocations();
 	});
-
-	let updateItem = $state(true);
-	let currentLocationId = $state(0);
 
 	// Only set CurrentLocation when AllLocations has items
 	$effect(() => {
@@ -45,13 +53,33 @@
 		updateItem = false;
 	};
 
-	const handleDelete = async (location: Location) => {
-		try {
-			const docRef = doc(database, 'location', location.id);
-			await deleteDoc(docRef);
-			updateAndSortLocations((locations) => locations.filter((loc) => loc.id !== location.id));
-		} catch (e) {
-			console.error('Error deleting document: ', e);
+	const openDeleteModal = (location: Location) => {
+		if (!deleteDialog || !location) return;
+		deleteLocation = location;
+		deleteDialog.showModal();
+	};
+
+	const handleDelete = async () => {
+		if (deleteLocation) {
+			try {
+				const docRef = doc(database, 'location', deleteLocation.id);
+				await deleteDoc(docRef);
+				updateAndSortLocations((locations) =>
+					locations.filter((loc) => loc.id !== deleteLocation!.id)
+				);
+				deleteDialog!.close();
+				deleteLocation = null;
+				notificationStore.addToast('success', 'Location deleted successfully', TOAST_DURATION);
+			} catch (e) {
+				notificationStore.addToast(
+					'error',
+					'Error deleting location. Try again later.',
+					TOAST_DURATION
+				);
+				console.error('Error deleting document: ', e);
+			}
+		} else {
+			return;
 		}
 	};
 
@@ -69,22 +97,45 @@
 				updateAndSortLocations((locations) =>
 					locations.map((loc) => (loc.id === id ? { id, ...dataToSave } : loc))
 				);
+				notificationStore.addToast('success', 'Location updated successfully', TOAST_DURATION);
 			} catch (e) {
+				notificationStore.addToast('error', "Couldn't update the location. Please try again.", 0);
 				console.error('Error updating document: ', e);
 			}
 		} else {
 			// Creating new location
 			try {
 				const docRef = await addDoc(collection(database, 'location'), dataToSave);
-
-				// Add the new location to the local store with the new ID from Firestore
 				updateAndSortLocations((locations) => [...locations, { id: docRef.id, ...dataToSave }]);
+				notificationStore.addToast('success', 'Location added successfully', TOAST_DURATION);
 			} catch (e) {
+				notificationStore.addToast('error', "Couldn't add the new location. Please try again.", 0);
 				console.error('Error adding document: ', e);
 			}
 		}
 	};
 </script>
+
+<dialog bind:this={deleteDialog} class="modal">
+	<div class="modal-box">
+		<h3 class="text-lg font-bold">Confirm location delete</h3>
+		<hr class="py-2" />
+		<p class="py-4">
+			Deleting a location document can not be undone.<br /><strong
+				>Do you really want to delete this item?</strong
+			>
+		</p>
+		<div class="modal-action">
+			<form method="dialog">
+				<button class="btn btn-default mr-2">Cancel</button>
+				<button class="btn btn-error" onclick={() => handleDelete()}>Delete</button>
+			</form>
+		</div>
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button>Cancel</button>
+	</form>
+</dialog>
 
 <div class="w-full gap-2">
 	<h1>Locations</h1>
@@ -100,7 +151,7 @@
 								: 'list-item flex-1'}
 							onclick={() => handleLocationChange(location, index)}>{location.name}</button
 						>
-						<button class="icon-button" onclick={() => handleDelete(location)}>
+						<button class="icon-button" onclick={() => openDeleteModal(location)}>
 							<Icon icon="proicons:delete" class="h-6 w-6" />
 						</button>
 					</div>
@@ -110,6 +161,7 @@
 				<button class="btn btn-primary" onclick={handleCreateNew}>Create new</button>
 			</div>
 		</div>
+
 		<div class="location-details">
 			<h2>Location Details</h2>
 			<NewLocationForm
@@ -120,6 +172,8 @@
 		</div>
 	</div>
 </div>
+
+<ToastContainer />
 
 <style>
 	.locations-container {

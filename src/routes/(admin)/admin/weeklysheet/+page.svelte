@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
+	import { page } from '$app/state';
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+
+	import { pathName } from '$lib/stores/NavigationStore';
 
 	// Get the data from the server
 	interface Props {
@@ -10,6 +12,10 @@
 	}
 
 	let { data }: Props = $props();
+
+	onMount(() => {
+		pathName.set(page.url.pathname);
+	});
 
 	// Sort table items
 	const sortKey = writable<string>('date'); // default sort key

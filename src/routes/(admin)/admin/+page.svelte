@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { authStore } from '$lib/stores/AuthStore';
+	import { pathName } from '$lib/stores/NavigationStore';
+	import { page } from '$app/state';
 
 	let role: string | null = $state(null);
 	let user = $state();
@@ -10,7 +12,9 @@
 		role = $authStore.role;
 	});
 
-	onMount(() => {});
+	onMount(() => {
+		pathName.set(page.url.pathname);
+	});
 </script>
 
 <div class="ml-3 flex-1">

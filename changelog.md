@@ -12,17 +12,30 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- add path highlighting in menu on admin pages
+- add floating buttons for both events and news form
+- add function to clean text for slugtext
+- add notifications for new location and update location in both form and modal
+- add confirmation modal for delete location
+- add verification if an item open in the editor has changes
+- add items now have states "draft", "scheduled", "public" and "unpublished"
+- add items can be saved as draft (no check for mandatory fields or auto setting of dates)
+- the user receives a warning when navigating away from a form with unsaved changes
 
 ### Changed
 
--
+- "save" button is only available on change && all mandatory fields provided
+- "save as draft" is only available on changes
+- the slug text field is filled automatically when a description is available
+- all notification messages are defined centrally
 
 ### Fixed
 
--
+- location will now be properly reset when canceling an event form with a location selected in it
+- the flag "online" was not correctly saved when a new location was created in the event form
+- slugText is now trimmed and cleaned before being entered into the slugtext field
 
-## [2.1.0] - 2025-06-27
+## [2.0.5] 2025-06-27
 
 ### Added
 

@@ -28,7 +28,6 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - "save as draft" is only available on changes
 - the slug text field is filled automatically when a description is available
 - all notification messages are defined centrally
--
 
 ### Fixed
 
@@ -54,11 +53,6 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - dates are therefore also validated for updated events
 - minor adjustment to location dropdown
 - all table styles in app.css
-
-### Fixed
-
--
-
 ## [2.0.0] - 2025-06-24
 
 ### Added

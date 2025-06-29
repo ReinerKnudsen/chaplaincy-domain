@@ -12,6 +12,8 @@
 		newsletterStorageRef,
 	} from '$lib/firebase/firebaseConfig';
 
+	import { Button } from '$lib/components/ui/button';
+
 	interface Props {
 		fileUrl?: string | null;
 		target?: 'pdf' | 'weeklysheet' | 'newsletter';
@@ -161,7 +163,7 @@
 			>
 		</div>
 		<div class="col-span-2 text-center">
-			<button class="btn btn-primary w-1/2" onclick={resetInput}>Change</button>
+			<Button variant="primary" onclick={resetInput}>Change</Button>
 		</div>
 	</div>
 {/if}

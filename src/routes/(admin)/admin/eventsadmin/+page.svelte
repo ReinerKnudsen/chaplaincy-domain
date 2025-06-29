@@ -7,8 +7,6 @@
 	import { doc, deleteDoc } from 'firebase/firestore';
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
 
-	import { notificationStore } from '$lib/stores/notifications';
-
 	import { pathName } from '$lib/stores/NavigationStore';
 	import {
 		CollectionType,
@@ -25,6 +23,7 @@
 	} from '$lib/stores/ObjectStore';
 	import { AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
+	import { Button } from '$lib/components/ui/button';
 
 	let deleteDialog: HTMLDialogElement | null = $state(null);
 	let duplicateDialog: HTMLDialogElement | null = $state(null);
@@ -85,10 +84,7 @@
 	$effect(() => {
 		// Update sessionStorage
 		if (typeof window !== 'undefined') {
-			sessionStorage.setItem(
-				STORAGE_KEY,
-				JSON.stringify({ key: $sortKey, direction: $sortDirection })
-			);
+			sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ key: $sortKey, direction: $sortDirection }));
 		}
 
 		// Sort items if available
@@ -178,19 +174,17 @@
 		<h3 class="text-lg font-bold">Confirm Delete</h3>
 		<hr class="py-2" />
 		<p class="py-4">
-			Deleting an item can not be undone.<br /><strong
-				>Do you really want to delete this item?</strong
-			>
+			Deleting an item can not be undone.<br /><strong>Do you really want to delete this item?</strong>
 		</p>
 		<div class="modal-action">
 			<form method="dialog">
-				<button class="btn btn-default mr-2">Cancel</button>
-				<button class="btn btn-error" onclick={() => handleDelete()}>Delete</button>
+				<Button variant="outline">Cancel</Button>
+				<Button variant="destructive" onclick={() => handleDelete()}>Delete</Button>
 			</form>
 		</div>
 	</div>
 	<form method="dialog" class="modal-backdrop">
-		<button>Cancel</button>
+		<Button variant="outline">Cancel</Button>
 	</form>
 </dialog>
 
@@ -198,18 +192,17 @@
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">Duplicate Event</h3>
 		<p class="py-4">
-			Do you want to duplicate this event?<br />All information will be kept but all dates will be
-			reset.
+			Do you want to duplicate this event?<br />All information will be kept but all dates will be reset.
 		</p>
 		<div class="modal-action">
 			<form method="dialog">
-				<button class="btn btn-default mr-2">Cancel</button>
-				<button class="btn btn-primary" onclick={() => handleDuplicate()}>Duplicate</button>
+				<Button variant="outline">Cancel</Button>
+				<Button variant="primary" onclick={() => handleDuplicate()}>Duplicate</Button>
 			</form>
 		</div>
 	</div>
 	<form method="dialog" class="modal-backdrop">
-		<button>Cancel</button>
+		<Button variant="outline">Cancel</Button>
 	</form>
 </dialog>
 
@@ -220,7 +213,7 @@
 			<input class="w-full rounded-lg" placeholder="Search (not yet active)" type="text" />
 		</div>
 		<div class="col-span-3 justify-self-end py-2">
-			<button onclick={handleCreateNew} class="btn btn-primary btn-lg">Create Event</button>
+			<Button variant="primary" size="lg" onclick={handleCreateNew}>Create Event</Button>
 		</div>
 	</div>
 
@@ -232,14 +225,10 @@
 				<thead class="table-row">
 					<tr class="table-row">
 						<th class="table-header table-cell" onclick={() => sortTable('title')}>Title</th>
-						<th class="table-header table-cell" onclick={() => sortTable('startdate')}
-							>Start Date</th
-						>
+						<th class="table-header table-cell" onclick={() => sortTable('startdate')}>Start Date</th>
 						<th class="table-header table-cell" onclick={() => sortTable('enddate')}>End Date</th>
 						<th class="table-header table-cell" onclick={() => sortTable('location')}>Location</th>
-						<th class="table-header table-cell" onclick={() => sortTable('publishdate')}
-							>Publish Date</th
-						>
+						<th class="table-header table-cell" onclick={() => sortTable('publishdate')}>Publish Date</th>
 						<th class="table-header table-cell">Actions</th>
 					</tr>
 				</thead>
@@ -247,9 +236,9 @@
 					{#each $sortItems as item}
 						<tr class="table-row">
 							<td class="table-data table-cell">
-								<button class="btn btn-link px-0" onclick={() => handleOpenItem(item.id)}>
+								<Button variant="link" onclick={() => handleOpenItem(item.id)}>
 									{item.data.title}
-								</button>
+								</Button>
 							</td>
 							<td class="table-data table-cell">{item.data.startdate}</td>
 							<td class="table-data table-cell">{item.data.enddate}</td>
@@ -257,13 +246,12 @@
 							<td class="table-data table-cell">{item.data.publishdate}</td>
 							<td class="table-data table-cell">
 								<div class="flex flex-row gap-2">
-									<button class="btn-sm btn-custom-delete" onclick={() => openDeleteModal(item.id)}
-										>Delete</button
-									>
-									<button
-										class="btn btn-active btn-sm btn-default"
+									<Button variant="destructive" class="min-w-0" onclick={() => openDeleteModal(item.id)}>Delete</Button>
+									<Button
+										variant="default"
+										class="min-w-0"
 										color="alternative"
-										onclick={() => openDuplicateModal(item.id)}>Duplicate</button
+										onclick={() => openDuplicateModal(item.id)}>Duplicate</Button
 									>
 								</div>
 							</td>
@@ -286,6 +274,6 @@
 			minmax(130px, 1fr)
 			minmax(150px, 2fr)
 			minmax(150px, 1fr)
-			minmax(100px, 1fr);
+			minmax(100px, 1.5fr);
 	}
 </style>

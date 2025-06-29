@@ -32,6 +32,7 @@
 	import Checkbox from './Checkbox.svelte';
 	import Icon from '@iconify/svelte';
 	import StateLabel from './StateLabel.svelte';
+	import { Button } from '$lib/components/ui/button';
 
 	interface Props {
 		thisEvent?: DomainEvent;
@@ -380,9 +381,9 @@
 						disabled={!thisEvent.startdate}
 					/>
 					<div class="tooltip" data-tip="Sets the end date to the start date">
-						<button class="btn btn-primary min-w-28" onclick={handleSetEndDate} disabled={!thisEvent.startdate}
-							>Auto set
-						</button>
+						<Button variant="primary" class="min-w-32" onclick={handleSetEndDate} disabled={!thisEvent.startdate}
+							>Auto set</Button
+						>
 					</div>
 				</div>
 			</div>
@@ -415,9 +416,9 @@
 							onblur={checkForChanges}
 						/>
 						<div class="tooltip" data-tip="Sets the publish date to 14 days before the start date">
-							<button class="btn btn-primary min-w-28" onclick={handleSetPublishDate} disabled={!thisEvent.startdate}
+							<Button variant="primary" class="min-w-32" onclick={handleSetPublishDate} disabled={!thisEvent.startdate}
 								>Auto set
-							</button>
+							</Button>
 						</div>
 					</div>
 					<p class="explanation">If you don't select a publish date, the event will be published immediately.</p>
@@ -559,19 +560,15 @@
 		<div class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-3/4 gap-4 bg-slate-100 p-10 shadow-2xl">
 			<!-- Buttons -->
 			<div class="buttons col-span-2">
-				<button class="btn" type="reset" color="light" onclick={onCancel}>Cancel</button>
-				<button class="btn btn-soft" type="reset" color="light">Empty form</button>
+				<Button variant="outline" type="reset" color="light" onclick={onCancel}>Cancel</Button>
+				<Button variant="outline" type="reset" color="light">Empty form</Button>
 				{#if thisEvent.state === ItemState.DRAFT}
-					<button
-						class="btn btn-soft"
-						type="button"
-						color="light"
-						disabled={!hasUnsavedChanges}
-						onclick={handleSaveDraft}>Save draft</button
+					<Button variant="primary" type="button" color="light" disabled={!hasUnsavedChanges} onclick={handleSaveDraft}
+						>Save draft</Button
 					>
 				{/if}
-				<button class="btn btn-primary" type="submit" disabled={!isValidEvent || !hasUnsavedChanges}
-					>{$EditModeStore === 'update' ? 'Update' : 'Save'} event</button
+				<Button variant="primary" type="submit" disabled={!isValidEvent || !hasUnsavedChanges}
+					>{$EditModeStore === 'update' ? 'Update' : 'Save'} event</Button
 				>
 			</div>
 		</div>

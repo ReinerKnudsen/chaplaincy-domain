@@ -17,6 +17,7 @@
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
 	import { cleanText } from '$lib/utils/HTMLfunctions';
 
+	import { Button } from '$lib/components/ui/button';
 	import Editor from './Editor.svelte';
 	import Icon from '@iconify/svelte';
 	import Label from './Label.svelte';
@@ -305,15 +306,15 @@
 			<!-- Buttons -->
 			<div class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-3/4 gap-4 bg-slate-100 p-10 shadow-2xl">
 				<div class="buttons col-span-2">
-					<button class="btn" type="reset" color="light" onclick={onCancel}>Cancel</button>
-					<button class="btn btn-soft" type="reset" disabled={docRef}>Empty form</button>
+					<Button variant="outline" type="reset" color="light" onclick={onCancel}>Cancel</Button>
+					<Button variant="outline" type="reset" disabled={docRef}>Empty form</Button>
 					{#if thisNews.state === ItemState.DRAFT}
-						<button class="btn btn-soft" type="button" disabled={!hasUnsavedChanges} onclick={handleSaveDraft}
-							>Save draft</button
+						<Button variant="primary" type="button" disabled={!hasUnsavedChanges} onclick={handleSaveDraft}
+							>Save draft</Button
 						>
 					{/if}
-					<button class="btn btn-primary" type="submit" disabled={!isValidNews || !hasUnsavedChanges}
-						>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</button
+					<Button variant="primary" type="submit" disabled={!isValidNews || !hasUnsavedChanges}
+						>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</Button
 					>
 				</div>
 			</div>

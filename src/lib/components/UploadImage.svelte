@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
 
-	import { FileType, checkIfFileExists } from '$lib/services/fileService';
+	import type { QueryDocumentSnapshot } from 'firebase/firestore';
+
 	import { selectedImage, imageExists, existingImageUrl } from '$lib/stores/ImageSelectionStore';
+	import { FileType, checkIfFileExists } from '$lib/services/fileService';
 
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
-	import type { QueryDocumentSnapshot } from 'firebase/firestore';
+
+	import { Button } from '$lib/components/ui/button';
 
 	interface Props {
 		imageUrl?: string;
@@ -76,22 +79,13 @@
 
 {#if !imageUrl}
 	<form class={moduleWidth}>
-		<label
-			class={moduleWidth +
-				'group flex h-[300px] flex-col rounded-lg border bg-slate-100 p-10 text-center '}
-		>
+		<label class={moduleWidth + 'group flex h-[300px] flex-col rounded-lg border bg-slate-100 p-10 text-center '}>
 			<div class="flex h-full w-full flex-col items-center justify-center text-center">
 				<p class="pointer-none font-semibold text-gray-600">
 					<span class="text-sm">Click here to select an image</span>
 				</p>
 			</div>
-			<input
-				type="file"
-				id="uploadFile"
-				accept={authorizedExtensions}
-				class="hidden"
-				onchange={handleFileChange}
-			/>
+			<input type="file" id="uploadFile" accept={authorizedExtensions} class="hidden" onchange={handleFileChange} />
 		</label>
 		<div class="mt-3 text-center text-sm">
 			(jpeg, jpg, png, webp, max {MAX_IMAGE_SIZE / 1000}KB)
@@ -107,7 +101,7 @@
 			<p class="mt-3 text-center text-base text-gray-700">Note: {@html imageNote}</p>
 		{/if}
 		<div class="col-span-2 mt-8 text-center">
-			<button class="btn btn-primary w-1/2" onclick={resetInput}>Change</button>
+			<Button variant="primary" onclick={resetInput}>Change</Button>
 		</div>
 	</div>
 {/if}

@@ -10,8 +10,9 @@
 
 	import { pathName } from '$lib/stores/NavigationStore';
 	import { decodeHtml } from '$lib/utils/HTMLfunctions';
-	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
+	import { Button } from '$lib/components/ui/button';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
 	import {
 		resetNewsStore,
@@ -75,10 +76,7 @@
 	// Update sorting and sessionStorage when sort settings or items change
 	$effect(() => {
 		if (typeof window !== 'undefined') {
-			sessionStorage.setItem(
-				STORAGE_KEY,
-				JSON.stringify({ key: $sortKey, direction: $sortDirection }),
-			);
+			sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ key: $sortKey, direction: $sortDirection }));
 		}
 
 		// Sort items if available
@@ -144,13 +142,13 @@
 		</p>
 		<div class="modal-action">
 			<form method="dialog">
-				<button class="btn btn-default mr-2">Cancel</button>
-				<button class="btn btn-error" onclick={() => handleDelete()}>Delete</button>
+				<Button variant="outline">Cancel</Button>
+				<Button variant="destructive" onclick={() => handleDelete()}>Delete</Button>
 			</form>
 		</div>
 	</div>
 	<form method="dialog" class="modal-backdrop">
-		<button>Cancel</button>
+		<Button variant="outline">Cancel</Button>
 	</form>
 </dialog>
 
@@ -158,15 +156,10 @@
 	<h1>News</h1>
 	<div class="mb-6 grid grid-cols-12 items-center gap-2 lg:gap-20">
 		<div class="col-span-9">
-			<input
-				class="w-full rounded-lg"
-				placeholder="Search (not yet active)"
-				type="text"
-				oninput={handleSearchInput}
-			/>
+			<input class="w-full rounded-lg" placeholder="Search (not yet active)" type="text" oninput={handleSearchInput} />
 		</div>
 		<div class="col-span-3 justify-self-end py-2">
-			<button onclick={handleCreateNew} class="btn btn-primary btn-lg">Create News</button>
+			<Button variant="primary" size="lg" onclick={handleCreateNew}>Create News</Button>
 		</div>
 	</div>
 
@@ -179,9 +172,7 @@
 					<tr class="table-row">
 						<th class="table-header table-cell" onclick={() => sortTable('title')}>Title</th>
 						<th class="table-header table-cell" onclick={() => sortTable('text')}>News Text</th>
-						<th class="table-header table-cell" onclick={() => sortTable('publishdate')}
-							>Publish date</th
-						>
+						<th class="table-header table-cell" onclick={() => sortTable('publishdate')}>Publish date</th>
 						<th class="table-header table-cell" onclick={() => sortTable('author')}>Author</th>
 						<th class="table-header table-cell">Actions</th>
 					</tr>
@@ -190,18 +181,14 @@
 					{#each $sortItems as item}
 						<tr class="table-row">
 							<td class="table-data table-cell">
-								<button class="btn btn-link px-0" onclick={() => handleOpenItem(item.id)}
-									>{item.data.title}</button
-								>
+								<Button variant="link" onclick={() => handleOpenItem(item.id)}>{item.data.title}</Button>
 							</td>
 							<td class="table-data table-cell">{decodeHtml(item.data.text)}</td>
 							<td class="table-data table-cell">{item.data.publishdate}</td>
 							<td class="table-data table-cell">{item.data.author}</td>
 							<td class="table-data table-cell">
 								<div class="flex flex-row justify-between">
-									<button class="btn-sm btn-custom-delete" onclick={() => openModal(item.id)}
-										>Delete</button
-									>
+									<Button variant="destructive" onclick={() => openModal(item.id)}>Delete</Button>
 								</div>
 							</td>
 						</tr>
@@ -218,9 +205,10 @@
 	.admin-table {
 		display: grid;
 		grid-template-columns:
-			minmax(150px, 2.5fr) minmax(130px, 2.5fr) minmax(130px, 1fr) minmax(150px, 1fr)
+			minmax(150px, 2.5fr)
+			minmax(130px, 2.5fr)
+			minmax(130px, 1fr)
+			minmax(150px, 1fr)
 			minmax(150px, 1fr);
 	}
-
-	
 </style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
 	import { addDoc } from 'firebase/firestore';
 
@@ -15,6 +15,8 @@
 	import EventForm from '$lib/components/EventForm.svelte';
 	import { notificationStore } from '$lib/stores/notifications';
 	import { resetSelectedLocation } from '$lib/stores/LocationsStore';
+
+	let pageHasUnsavedChanges = $state(false);
 
 	const saveNewEvent = async (newEvent: DomainEvent) => {
 		if (validateEventData(newEvent)) {
@@ -58,10 +60,29 @@
 		resetSelectedLocation();
 		goto('/admin/eventsadmin');
 	};
+
+	const handleUnsavedChangesUpdate = (formHasUnsavedChanges: boolean): void => {
+		pageHasUnsavedChanges = formHasUnsavedChanges;
+	};
+	/**
+	 * TODO: replcae dialog with the global modal (to be delivered)
+	 */
+	beforeNavigate(({ cancel }) => {
+		if (pageHasUnsavedChanges) {
+			if (!confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
+				cancel();
+			}
+		}
+	});
 </script>
 
 <div>
-	<EventForm onCreateNew={saveNewEvent} onCancel={handleCancel} onSaveDraft={saveDraft} />
+	<EventForm
+		onCreateNew={saveNewEvent}
+		onCancel={handleCancel}
+		onSaveDraft={saveDraft}
+		onUnsavedChangesUpdate={handleUnsavedChangesUpdate}
+	/>
 </div>
 
 <ToastContainer />

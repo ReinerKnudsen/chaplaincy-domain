@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 
 	import { updateDoc } from 'firebase/firestore';
 	import { DocumentReference, type DocumentData } from 'firebase/firestore';
@@ -28,6 +28,7 @@
 	let currentDocRef: DocumentReference | null = null;
 
 	let { data }: Props = $props();
+	let pageHasUnsavedChanges = $state(false);
 	currentDocRef = data.docRef;
 
 	const handleCancel = () => {
@@ -82,10 +83,31 @@
 			console.error('Error updating the event: ', error);
 		}
 	};
+
+	function handleUnsavedChangesUpdate(formHasUnsavedChanges: boolean): void {
+		pageHasUnsavedChanges = formHasUnsavedChanges;
+	}
+
+	/**
+	 * TODO: replcae dialog with the global modal (to be delivered)
+	 */
+	beforeNavigate(({ cancel }) => {
+		if (pageHasUnsavedChanges) {
+			if (!confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
+				cancel();
+			}
+		}
+	});
 </script>
 
 <div>
-	<EventForm thisEvent={data.newEvent} onCancel={handleCancel} onUpdate={updateEvent} onSaveDraft={handleSaveDraft} />
+	<EventForm
+		thisEvent={data.newEvent}
+		onCancel={handleCancel}
+		onUpdate={updateEvent}
+		onSaveDraft={handleSaveDraft}
+		onUnsavedChangesUpdate={handleUnsavedChangesUpdate}
+	/>
 </div>
 
 <ToastContainer />

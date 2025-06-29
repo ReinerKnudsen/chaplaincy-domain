@@ -20,6 +20,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - add verification if an item open in the editor has changes
 - add items now have states "draft", "scheduled", "public" and "unpublished"
 - add items can be saved as draft (no check for mandatory fields or auto setting of dates)
+- the user receives a warning when navigating away from a form with unsaved changes
 
 ### Changed
 

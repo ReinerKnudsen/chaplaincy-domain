@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 
 	import { addDoc } from 'firebase/firestore';
 	import { newsColRef } from '$lib/firebase/firebaseConfig';
@@ -13,6 +13,8 @@
 	import { notificationStore } from '$lib/stores/notifications';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
+	let pageHasUnsavedChanges = $state(false);
+
 	const handleSaveDraft = async (newNewsItem: News) => {
 		try {
 			await addDoc(newsColRef, newNewsItem);
@@ -24,6 +26,20 @@
 			console.error('Error writing document:', error);
 		}
 	};
+
+	const handleUnsavedChangesUpdate = (formHasUnsavedChanges: boolean): void => {
+		pageHasUnsavedChanges = formHasUnsavedChanges;
+	};
+	/**
+	 * TODO: replcae dialog with the global modal (to be delivered)
+	 */
+	beforeNavigate(({ cancel }) => {
+		if (pageHasUnsavedChanges) {
+			if (!confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
+				cancel();
+			}
+		}
+	});
 
 	const saveNewItem = async (newNewsItem: News) => {
 		try {
@@ -45,7 +61,11 @@
 </script>
 
 <div>
-	<NewsForm onCreateNew={saveNewItem} onSaveDraft={handleSaveDraft} />
+	<NewsForm
+		onCreateNew={saveNewItem}
+		onSaveDraft={handleSaveDraft}
+		onUnsavedChangesUpdate={handleUnsavedChangesUpdate}
+	/>
 </div>
 
 <ToastContainer />

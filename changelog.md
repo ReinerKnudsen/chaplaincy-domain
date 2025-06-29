@@ -17,9 +17,16 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - add function to clean text for slugtext
 - add notifications for new location and update location in both form and modal
 - add confirmation modal for delete location
+- add verification if an item open in the editor has changes
+- add items now have states "draft", "scheduled", "public" and "unpublished"
+- add items can be saved as draft (no check for mandatory fields or auto setting of dates)
 
 ### Changed
 
+- "save" button is only available on change && all mandatory fields provided
+- "save as draft" is only available on changes
+- the slug text field is filled automatically when a description is available
+- all notification messages are defined centrally
 -
 
 ### Fixed

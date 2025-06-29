@@ -93,7 +93,6 @@
   --color-black-100: rgba(0, 0, 0, 1);
 
   --color-warning-100: var(--color-orange-500)
-
 }
 
 @layer base {
@@ -310,7 +309,7 @@
 
   .btn-custom-primary {
     color: var(--color-white-primary);
-    background-color: var(--color-purple-100);
+    background-color: var(--color-primary-100);
   }
 
   .btn-custom-secondary {

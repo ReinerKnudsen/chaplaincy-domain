@@ -11,18 +11,18 @@ export function decodeHtml(html: string) {
 		.replace(/&gt;/g, '>')
 		.replace(/&quot;/g, "'")
 		.replace(/&#39;/g, "'")
-		.replace(/&amp;/g, '&')
-		.replace(/<br>/g, '\n');
+		.replace(/<br>/g, '\n')
+		.replace(/&amp;/g, '&');
 }
 
 export function cleanText(text: string) {
 	return text
 		.replace(/<[^>]*>/g, '') // Remove HTML tags
-		.replace(/&amp;/g, '&') // Decode HTML entities
 		.replace(/&lt;/g, '<')
 		.replace(/&gt;/g, '>')
 		.replace(/&quot;/g, '"')
 		.replace(/&#39;/g, "'")
+		.replace(/&amp;/g, '&') // Decode HTML entities
 		.replace(/\s+/g, ' ') // Normalize whitespace
 		.trim();
 }

@@ -12,6 +12,20 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
+-
+
+### Changed
+
+-
+
+### Fixed
+
+-
+
+## [2.2.0] - 2025-06-29
+
+### Added
+
 - add path highlighting in menu on admin pages
 - add floating buttons for both events and news form
 - add function to clean text for slugtext
@@ -34,7 +48,6 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - location will now be properly reset when canceling an event form with a location selected in it
 - the flag "online" was not correctly saved when a new location was created in the event form
 - slugText is now trimmed and cleaned before being entered into the slugtext field
-
 ## [2.0.5] 2025-06-27
 
 ### Added

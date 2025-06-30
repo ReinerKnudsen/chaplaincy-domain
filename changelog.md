@@ -16,13 +16,18 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
-- installes Shadcn UI for better UI control
-- migrated all components from Daisy UI to Shadcn-Ui
+-
 
 ### Fixed
 
 -
 
+## [2.2.1] - 2025-06-30
+
+### Changed
+
+- installes Shadcn UI for better UI control
+- migrated all components from Daisy UI to Shadcn-Ui
 ## [2.2.0] - 2025-06-29
 
 ### Added

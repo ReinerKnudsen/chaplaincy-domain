@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { writable, type Writable } from 'svelte/store';
 	import { onMount } from 'svelte';
+	import { writable, type Writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 
 	import { doc, deleteDoc } from 'firebase/firestore';
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
@@ -22,13 +22,16 @@
 		type DomainEventSortableFields,
 	} from '$lib/stores/ObjectStore';
 	import { AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
-	import ToastContainer from '$lib/components/ToastContainer.svelte';
-	import { Button } from '$lib/components/ui/button';
 
-	let deleteDialog: HTMLDialogElement | null = $state(null);
-	let duplicateDialog: HTMLDialogElement | null = $state(null);
+	import { Button } from '$lib/components/ui/button';
+	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
+
+	let showDeleteDialog = $state(false);
+	let showDuplicateDialog = $state(false);
 	let deleteID: string = '';
 	let dupeID: string = '';
+
 	let loading: boolean = $state(true);
 	let sortItems: Writable<CollectionItem[]> = writable([]);
 
@@ -42,10 +45,6 @@
 		await fetchLocations();
 		loading = false;
 	});
-
-	/**
-	 *
-	 */
 
 	// Sort table items
 	const STORAGE_KEY = 'events_sort';
@@ -124,7 +123,7 @@
 	};
 
 	const handleDuplicate = async () => {
-		if (!duplicateDialog || !dupeID) return;
+		if (!dupeID) return;
 
 		const newEvent = await duplicateItem(dupeID, CollectionType.Events);
 		if (!newEvent) {
@@ -134,30 +133,28 @@
 		await loadData();
 		loading = false;
 		EditModeStore.set(EditMode.Update);
-		duplicateDialog.close();
+		showDuplicateDialog = false;
 		dupeID = '';
 		goto(`/admin/eventsadmin/${newEvent}`);
 	};
 
 	const handleDelete = async () => {
-		if (!deleteDialog || !deleteID) return;
+		if (!deleteID) return;
 
 		await deleteDoc(doc(eventsColRef, deleteID));
 		await loadData();
-		deleteDialog.close();
+		showDeleteDialog = false;
 		deleteID = '';
 	};
 
 	const openDeleteModal = (id: string) => {
-		if (!deleteDialog) return;
 		deleteID = id;
-		deleteDialog.showModal();
+		showDeleteDialog = true;
 	};
 
 	const openDuplicateModal = (id: string) => {
-		if (!duplicateDialog) return;
 		dupeID = id;
-		duplicateDialog.showModal();
+		showDuplicateDialog = true;
 	};
 
 	const printLocation = (id: string) => {
@@ -169,42 +166,26 @@
 	};
 </script>
 
-<dialog bind:this={deleteDialog} class="modal">
-	<div class="modal-box">
-		<h3 class="text-lg font-bold">Confirm Delete</h3>
-		<hr class="py-2" />
-		<p class="py-4">
-			Deleting an item can not be undone.<br /><strong>Do you really want to delete this item?</strong>
-		</p>
-		<div class="modal-action">
-			<form method="dialog">
-				<Button variant="outline">Cancel</Button>
-				<Button variant="destructive" onclick={() => handleDelete()}>Delete</Button>
-			</form>
-		</div>
-	</div>
-	<form method="dialog" class="modal-backdrop">
-		<Button variant="outline">Cancel</Button>
-	</form>
-</dialog>
-
-<dialog bind:this={duplicateDialog} class="modal">
-	<div class="modal-box">
-		<h3 class="text-lg font-bold">Duplicate Event</h3>
-		<p class="py-4">
-			Do you want to duplicate this event?<br />All information will be kept but all dates will be reset.
-		</p>
-		<div class="modal-action">
-			<form method="dialog">
-				<Button variant="outline">Cancel</Button>
-				<Button variant="primary" onclick={() => handleDuplicate()}>Duplicate</Button>
-			</form>
-		</div>
-	</div>
-	<form method="dialog" class="modal-backdrop">
-		<Button variant="outline">Cancel</Button>
-	</form>
-</dialog>
+<ConfirmDialog
+	open={showDeleteDialog}
+	title="Confirm Delete"
+	description="Deleting an item can not be undone. <br>Are you sure you want to delete this item?"
+	confirmText="Delete"
+	confirmVariant="destructive"
+	cancelText="Cancel"
+	onConfirm={() => handleDelete()}
+	onCancel={() => (showDeleteDialog = false)}
+/>
+<ConfirmDialog
+	open={showDuplicateDialog}
+	title="Confirm Duplicate"
+	description="Do you want to duplicate this event? All information will be kept but all dates will be reset."
+	confirmText="Duplicate"
+	confirmVariant="primary"
+	cancelText="Cancel"
+	onConfirm={() => handleDuplicate()}
+	onCancel={() => (showDuplicateDialog = false)}
+/>
 
 <div>
 	<h1>Events</h1>

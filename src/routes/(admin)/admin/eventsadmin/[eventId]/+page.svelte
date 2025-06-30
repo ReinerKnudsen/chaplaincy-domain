@@ -6,9 +6,8 @@
 
 	import { selectedImage, imageExists, existingImageUrl } from '$lib/stores/ImageSelectionStore';
 	import { selectedLocation, resetSelectedLocation } from '$lib/stores/LocationsStore';
-	import { notificationStore } from '$lib/stores/notifications';
+	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';
 	import { type DomainEvent, EditMode, EditModeStore } from '$lib/stores/ObjectStore';
-	import { Messages } from '$lib/utils/messages';
 
 	import { validateEventData } from '$lib/services/validateForm';
 	import { eventFormService } from '$lib/services/EventFormService';
@@ -45,7 +44,7 @@
 			const itemData = { ...thisEvent } as DocumentData;
 			await updateDoc(data.docRef, itemData);
 			EditModeStore.set('');
-			notificationStore.addToast('success', Messages.UPDATESUCCESS);
+			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 			goto('/admin/newsadmin');
 		} catch (error) {
 			notificationStore.addToast('error', Messages.UPDATEERROR);
@@ -76,7 +75,7 @@
 			await updateDoc(data.docRef, eventData);
 			EditModeStore.set(EditMode.Empty);
 			resetSelectedLocation();
-			notificationStore.addToast('success', Messages.UPDATESUCCESS);
+			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 			goto('/admin/eventsadmin');
 		} catch (error) {
 			notificationStore.addToast('error', Messages.UPDATEERROR);

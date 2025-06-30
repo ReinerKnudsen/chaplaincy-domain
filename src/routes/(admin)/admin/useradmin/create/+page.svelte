@@ -3,7 +3,7 @@
 
 	import { createNewUser } from '$lib/services/authService';
 	import { type User } from '$lib/stores/ObjectStore';
-	import { notificationStore, Messages } from '$lib/stores/notifications';
+	import { notificationStore, Messages, TOAST_DURATION } from '$lib/stores/notifications';
 
 	import UserForm from '$lib/components/UserForm.svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
@@ -15,7 +15,7 @@
 		working = true;
 		try {
 			await createNewUser(newUser);
-			notificationStore.addToast('success', Messages.SAVESUCCESS, 3000);
+			notificationStore.addToast('success', Messages.SAVESUCCESS, TOAST_DURATION);
 			goto('/admin/useradmin');
 		} catch (error) {
 			console.error('Error creating user:', error);

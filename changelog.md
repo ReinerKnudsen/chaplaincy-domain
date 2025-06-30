@@ -17,6 +17,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Changed
 
 - installes Shadcn UI for better UI control
+- migrated all components from Daisy UI to Shadcn-Ui
 
 ### Fixed
 
@@ -48,6 +49,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - location will now be properly reset when canceling an event form with a location selected in it
 - the flag "online" was not correctly saved when a new location was created in the event form
 - slugText is now trimmed and cleaned before being entered into the slugtext field
+
 ## [2.0.5] 2025-06-27
 
 ### Added
@@ -66,6 +68,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - dates are therefore also validated for updated events
 - minor adjustment to location dropdown
 - all table styles in app.css
+
 ## [2.0.0] - 2025-06-24
 
 ### Added

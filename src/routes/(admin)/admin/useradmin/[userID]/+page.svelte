@@ -6,7 +6,7 @@
 	import { getDoc, doc, updateDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
 	import { type User } from '$lib/stores/ObjectStore';
-	import { notificationStore, Messages } from '$lib/stores/notifications';
+	import { notificationStore, Messages, TOAST_DURATION } from '$lib/stores/notifications';
 
 	import { updateUserProfile, countAdmins } from '$lib/services/authService';
 	import UserForm from '$lib/components/UserForm.svelte';
@@ -62,7 +62,7 @@
 					lastname: currentUser.lastname,
 					displayName: currentUser.displayName,
 				});
-				notificationStore.addToast('success', Messages.UPDATESUCCESS, 3000);
+				notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 				goto('/admin/useradmin');
 			} catch (error) {
 				console.error("Couldn't update user profile: ", error);

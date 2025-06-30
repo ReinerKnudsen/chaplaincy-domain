@@ -12,6 +12,8 @@
 	import { decodeHtml } from '$lib/utils/HTMLfunctions';
 
 	import { Button } from '$lib/components/ui/button';
+	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
+
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
 	import {
@@ -30,7 +32,7 @@
 		await loadItems(CollectionType.News);
 	};
 
-	let deleteDialog: HTMLDialogElement | null = $state(null);
+	let showDeleteDialog = $state(false);
 	let deleteID: string = '';
 	let loading = $state(true);
 
@@ -116,41 +118,31 @@
 	};
 
 	const handleDelete = async () => {
-		if (!deleteDialog || !deleteID) return;
+		if (!showDeleteDialog || !deleteID) return;
 
 		await deleteDoc(doc(newsColRef, deleteID));
 		await loadData();
 		NewsItemsStore.set($NewsItemsStore.filter((item) => item.id !== deleteID));
-		deleteDialog.close();
+		showDeleteDialog = false;
 		deleteID = '';
 	};
 
 	const openModal = (id: string) => {
-		if (!deleteDialog) return;
 		deleteID = id;
-		deleteDialog.showModal();
+		showDeleteDialog = true;
 	};
 </script>
 
-<dialog bind:this={deleteDialog} class="modal">
-	<div class="modal-box">
-		<h3 class="py-4">Confirm Delete</h3>
-		<hr class="py-2" />
-		<p class="py-4">
-			Deleting an item can not be undone.
-			<br /><strong>Do you really want to delete this item?</strong>
-		</p>
-		<div class="modal-action">
-			<form method="dialog">
-				<Button variant="outline">Cancel</Button>
-				<Button variant="destructive" onclick={() => handleDelete()}>Delete</Button>
-			</form>
-		</div>
-	</div>
-	<form method="dialog" class="modal-backdrop">
-		<Button variant="outline">Cancel</Button>
-	</form>
-</dialog>
+<ConfirmDialog
+	open={showDeleteDialog}
+	title="Confirm Delete"
+	description="Deleting an item can not be undone. <br \>Do you really want to delete this item?"
+	confirmText="Delete"
+	cancelText="Cancel"
+	confirmVariant="destructive"
+	onConfirm={handleDelete}
+	onCancel={() => (showDeleteDialog = false)}
+/>
 
 <div>
 	<h1>News</h1>

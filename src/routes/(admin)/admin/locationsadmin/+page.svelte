@@ -5,8 +5,10 @@
 	import { database } from '$lib/firebase/firebaseConfig';
 	import { addDoc, deleteDoc, doc, collection, updateDoc } from 'firebase/firestore';
 
-	import { notificationStore } from '$lib/stores/notifications';
-	import { TOAST_DURATION } from '$lib/utils/constants';
+	import Icon from '@iconify/svelte';
+
+	import { notificationStore, TOAST_DURATION } from '$lib/stores/notifications';
+
 	import {
 		CurrentLocation,
 		initialLocationState,
@@ -16,16 +18,15 @@
 		fetchLocations,
 		type Location,
 	} from '$lib/stores/LocationsStore';
-
 	import { pathName } from '$lib/stores/NavigationStore';
-	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
 
-	import Icon from '@iconify/svelte';
+	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 
 	let currentLocationId = $state(0);
-	let deleteDialog: HTMLDialogElement | null = $state(null);
+	let showDeleteDialog = $state(false);
 	let deleteLocation: Location | null = $state(null);
 	let updateItem = $state(true);
 
@@ -55,9 +56,9 @@
 	};
 
 	const openDeleteModal = (location: Location) => {
-		if (!deleteDialog || !location) return;
+		if (!location) return;
 		deleteLocation = location;
-		deleteDialog.showModal();
+		showDeleteDialog = true;
 	};
 
 	const handleDelete = async () => {
@@ -66,7 +67,7 @@
 				const docRef = doc(database, 'location', deleteLocation.id);
 				await deleteDoc(docRef);
 				updateAndSortLocations((locations) => locations.filter((loc) => loc.id !== deleteLocation!.id));
-				deleteDialog!.close();
+				showDeleteDialog = false;
 				deleteLocation = null;
 				notificationStore.addToast('success', 'Location deleted successfully', TOAST_DURATION);
 			} catch (e) {
@@ -76,6 +77,11 @@
 		} else {
 			return;
 		}
+	};
+
+	const handleCancel = () => {
+		showDeleteDialog = false;
+		deleteLocation = null;
 	};
 
 	const handleSave = async () => {
@@ -109,24 +115,16 @@
 	};
 </script>
 
-<dialog bind:this={deleteDialog} class="modal">
-	<div class="modal-box">
-		<h3 class="text-lg font-bold">Confirm location delete</h3>
-		<hr class="py-2" />
-		<p class="py-4">
-			Deleting a location document can not be undone.<br /><strong>Do you really want to delete this item?</strong>
-		</p>
-		<div class="modal-action">
-			<form method="dialog">
-				<Button variant="outline">Cancel</Button>
-				<Button variant="destructive" onclick={() => handleDelete()}>Delete</Button>
-			</form>
-		</div>
-	</div>
-	<form method="dialog" class="modal-backdrop">
-		<Button variant="outline">Cancel</Button>
-	</form>
-</dialog>
+<ConfirmDialog
+	open={showDeleteDialog}
+	title="Confirm Delete"
+	description="Deleting a location document can not be undone.\nDo you really want to delete this item?"
+	confirmText="Delete"
+	confirmVariant="destructive"
+	cancelText="Cancel"
+	onConfirm={() => handleDelete()}
+	onCancel={() => handleCancel()}
+/>
 
 <div class="w-full gap-2">
 	<h1>Locations</h1>

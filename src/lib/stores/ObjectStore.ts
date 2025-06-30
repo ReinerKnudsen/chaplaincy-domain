@@ -176,6 +176,24 @@ export const initialNewsletter: Newsletter = {
 	id: '',
 };
 
+export type User = {
+	firstname: string;
+	lastname: string;
+	email: string;
+	displayName: string;
+	uid: string;
+	role: string;
+};
+
+export const initUser: User = {
+	firstname: '',
+	lastname: '',
+	email: '',
+	displayName: '',
+	uid: '',
+	role: '',
+};
+
 export enum CollectionType {
 	Events = 'events',
 	News = 'news',

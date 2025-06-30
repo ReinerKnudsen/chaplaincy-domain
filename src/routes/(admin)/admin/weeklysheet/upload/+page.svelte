@@ -6,6 +6,7 @@
 
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
 	import Label from '$lib/components/Label.svelte';
+	import { Button } from '$lib/components/ui/button';
 
 	type WeeklySheet = {
 		date: string;
@@ -47,13 +48,7 @@
 		<!-- Date -->
 		<div>
 			<Label child="date" class="mt-8 mb-2 text-xl font-semibold">Date *</Label>
-			<input
-				type="date"
-				class="input input-bordered input-lg w-full"
-				id="date"
-				bind:value={newItem.date}
-				required
-			/>
+			<input type="date" class="input input-bordered input-lg w-full" id="date" bind:value={newItem.date} required />
 		</div>
 
 		<div>
@@ -64,13 +59,8 @@
 		</div>
 		<!-- Buttons -->
 		<div class="mt-10 mb-20 flex flex-row justify-center gap-32">
-			<button
-				class="btn btn-custom btn-custom-secondary"
-				type="reset"
-				color="light"
-				onclick={() => goto('/admin/weeklysheet')}>Cancel</button
-			>
-			<button class="btn btn-custom btn-primary" type="submit">Complete</button>
+			<Button variant="outline" type="reset" color="light" onclick={() => goto('/admin/weeklysheet')}>Cancel</Button>
+			<Button variant="primary" type="submit">Complete</Button>
 		</div>
 	</form>
 </div>

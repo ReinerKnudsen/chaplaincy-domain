@@ -1,0 +1,118 @@
+{
+	"menu": [
+		{
+			"title": "Home",
+			"url": "/"
+		},
+		{
+			"title": "Faith",
+			"url": "",
+			"subMenu": [
+				{
+					"title": "What we believe",
+					"url": "/what-we-believe/"
+				},
+				{
+					"title": "How we worship",
+					"url": "/how-we-worship/"
+				},
+				{
+					"title": "Church of England",
+					"url": "/church-of-england/"
+				},
+				{
+					"title": "Diocese in Europe",
+					"url": "/diocese-in-europe/"
+				},
+				{
+					"title": "Resources",
+					"url": "/resources/"
+				}
+			]
+		},
+		{
+			"title": "What's on",
+			"url": "",
+			"subMenu": [
+				{
+					"title": "Events",
+					"url": "/events/"
+				},
+				{
+					"title": "News",
+					"url": "/news/"
+				},
+				{
+					"title": "Newsletter",
+					"url": "/newsletter/"
+				}
+			]
+		},
+		{
+			"title": "Community",
+			"url": "",
+			"subMenu": [
+				{
+					"title": "I'm new",
+					"url": "/im-new/"
+				},
+				{
+					"title": "Groups",
+					"url": "/groups/"
+				},
+				{
+					"title": "Charities we support",
+					"url": "/charities-we-support/"
+				}
+			]
+		},
+		{
+			"title": "Giving",
+			"url": "",
+			"subMenu": [
+				{
+					"title": "Donations",
+					"url": "/donations/"
+				},
+				{
+					"title": "Get involved",
+					"url": "/get-involved/"
+				}
+			]
+		},
+		{
+			"title": "About us",
+			"url": "",
+			"subMenu": [
+				{
+					"title": "Who we are",
+					"url": "/about/"
+				},
+				{
+					"title": "Where we are",
+					"url": "locations"
+				},
+				{
+					"title": "Safeguarding",
+					"url": "safeguarding"
+				},
+				{
+					"title": "Life events",
+					"url": "life-events/"
+				},
+				{
+					"title": "Responsibilities",
+					"url": "responsibilities/"
+				},
+				{
+					"title": "The FACBC e.V.",
+					"url": "facbc"
+				},
+				{
+					"title": "Get in touch",
+					"url": "contact"
+				}
+			]
+		}
+	]
+}

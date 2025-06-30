@@ -8,8 +8,9 @@
 	import { newsFormService } from '$lib/services/NewsFormService';
 	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';
 
-	import ToastContainer from '$lib/components/ToastContainer.svelte';
+	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 	import NewsForm from '$lib/components/NewsForm.svelte';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
 	let pageHasUnsavedChanges = $state(false);
 
@@ -21,6 +22,7 @@
 	}
 
 	let { data }: Props = $props();
+	let showNavigateWarning = $state(false);
 
 	const handleCancel = () => {
 		EditModeStore.set('');
@@ -30,14 +32,11 @@
 	const handleUnsavedChangesUpdate = (formHasUnsavedChanges: boolean): void => {
 		pageHasUnsavedChanges = formHasUnsavedChanges;
 	};
-	/**
-	 * TODO: replcae dialog with the global modal (to be delivered)
-	 */
+
 	beforeNavigate(({ cancel }) => {
 		if (pageHasUnsavedChanges) {
-			if (!confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
-				cancel();
-			}
+			cancel();
+			showNavigateWarning = true;
 		}
 	});
 
@@ -80,7 +79,26 @@
 			console.error('Error updating the news: ', error);
 		}
 	};
+
+	const handleNavigateConfirm = () => {
+		showNavigateWarning = false;
+		pageHasUnsavedChanges = false;
+		goto('/admin/newsadmin');
+	};
 </script>
+
+<ConfirmDialog
+	open={showNavigateWarning}
+	title="Unsaved Changes"
+	message="You have unsaved changes. \nAre you sure you want to leave this page?"
+	confirmText="Leave Page"
+	cancelText="Stay on Page"
+	confirmVariant="destructive"
+	onConfirm={handleNavigateConfirm}
+	onCancel={() => {
+		showNavigateWarning = false;
+	}}
+/>
 
 <div>
 	<NewsForm

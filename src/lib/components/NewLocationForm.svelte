@@ -5,11 +5,13 @@
 		type Location,
 		initialLocationState,
 	} from '$lib/stores/LocationsStore';
+	import { createHashableString, EditMode, EditModeStore } from '$lib/stores/ObjectStore';
 
 	import { Button } from '$lib/components/ui/button';
 	import Checkbox from './Checkbox.svelte';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
+	import { onMount } from 'svelte';
 
 	type Mode = 'create' | 'update';
 
@@ -18,11 +20,22 @@
 		mode?: Mode;
 		onSave: () => void;
 		onClose?: () => void;
+		onUnsavedChangesUpdate?: (hasUnsavedChanges: boolean) => void;
 	}
 
-	let { showClose = true, mode = 'create', onSave, onClose }: Props = $props();
+	let { showClose = true, mode = 'create', onSave, onClose, onUnsavedChangesUpdate }: Props = $props();
 
-	let thisLocation: Location = $state({ ...initialLocationState });
+	let thisLocation: Location = $state(mode === 'update' ? $CurrentLocation : { ...initialLocationState });
+	let originalHash = $state('');
+	let hasUnsavedChanges = $state(false);
+
+	onMount(() => {
+		if (mode === 'update') {
+			originalHash = createHashableString($CurrentLocation);
+		} else {
+			originalHash = createHashableString(initialLocationState);
+		}
+	});
 
 	$effect(() => {
 		if (mode === 'update') {
@@ -33,6 +46,16 @@
 		}
 	});
 
+	const checkForChanges = () => {
+		const currentHash = createHashableString(thisLocation);
+		if (currentHash !== originalHash) {
+			hasUnsavedChanges = true;
+		} else {
+			hasUnsavedChanges = false;
+		}
+		if (onUnsavedChangesUpdate) onUnsavedChangesUpdate(hasUnsavedChanges);
+	};
+
 	const handleOnlineChange = (checked: boolean) => {
 		thisLocation.online = checked;
 		if (checked) {
@@ -40,6 +63,7 @@
 			thisLocation.city = '';
 			thisLocation.zip = '';
 		}
+		checkForChanges();
 	};
 
 	const handleSubmit = (e: SubmitEvent) => {
@@ -59,11 +83,24 @@
 	<form autocomplete="off" onsubmit={handleSubmit}>
 		<fieldset>
 			<Label for="name">Name *</Label>
-			<Input id="name" type="text" placeholder="Name" bind:value={thisLocation.name} required />
+			<Input
+				id="name"
+				type="text"
+				placeholder="Name"
+				bind:value={thisLocation.name}
+				required
+				onblur={checkForChanges}
+			/>
 		</fieldset>
 		<fieldset>
 			<Label for="description">Description</Label>
-			<Input id="description" type="text" placeholder="Description" bind:value={thisLocation.description} />
+			<Input
+				id="description"
+				type="text"
+				placeholder="Description"
+				bind:value={thisLocation.description}
+				onblur={checkForChanges}
+			/>
 		</fieldset>
 		<fieldset>
 			<Label for="isonline">Location type</Label>
@@ -73,20 +110,26 @@
 		{#if !thisLocation.online}
 			<fieldset>
 				<Label for="street">Street</Label>
-				<Input id="street" type="text" placeholder="Street" bind:value={thisLocation.street} />
+				<Input id="street" type="text" placeholder="Street" bind:value={thisLocation.street} onblur={checkForChanges} />
 			</fieldset>
 			<fieldset>
 				<Label for="city">City</Label>
-				<Input id="city" type="text" placeholder="City" bind:value={thisLocation.city} />
+				<Input id="city" type="text" placeholder="City" bind:value={thisLocation.city} onblur={checkForChanges} />
 			</fieldset>
 			<fieldset>
 				<Label for="zip">Zip</Label>
-				<Input id="zip" type="text" placeholder="Zip" bind:value={thisLocation.zip} />
+				<Input id="zip" type="text" placeholder="Zip" bind:value={thisLocation.zip} onblur={checkForChanges} />
 			</fieldset>
 		{/if}
 		<fieldset>
 			<Label for="url">URL</Label>
-			<Input id="url" type="url" placeholder="OpenStreetMap Url or service Url" bind:value={thisLocation.locationUrl} />
+			<Input
+				id="url"
+				type="url"
+				placeholder="OpenStreetMap Url or service Url"
+				bind:value={thisLocation.locationUrl}
+				onblur={checkForChanges}
+			/>
 			{#if thisLocation.locationUrl}
 				<div class="text-md mt-2 flex flex-row justify-end">
 					<Button variant="outline">

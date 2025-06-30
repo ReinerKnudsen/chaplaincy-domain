@@ -136,7 +136,7 @@
 <ConfirmDialog
 	open={showDeleteDialog}
 	title="Confirm Delete"
-	description="Deleting an item can not be undone. <br \>Do you really want to delete this item?"
+	message="Deleting an item can not be undone. <br \>Do you really want to delete this item?"
 	confirmText="Delete"
 	cancelText="Cancel"
 	confirmVariant="destructive"

@@ -14,6 +14,7 @@
 
 	import EventForm from '$lib/components/EventForm.svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
+	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 
 	type Params = {
 		newEvent: DomainEvent;
@@ -29,6 +30,8 @@
 	let { data }: Props = $props();
 	let pageHasUnsavedChanges = $state(false);
 	currentDocRef = data.docRef;
+
+	let showNavigateWarning = $state(false);
 
 	const handleCancel = () => {
 		resetSelectedLocation();
@@ -83,21 +86,39 @@
 		}
 	};
 
-	function handleUnsavedChangesUpdate(formHasUnsavedChanges: boolean): void {
+	const handleUnsavedChangesUpdate = (formHasUnsavedChanges: boolean): void => {
 		pageHasUnsavedChanges = formHasUnsavedChanges;
-	}
+	};
 
-	/**
-	 * TODO: replcae dialog with the global modal (to be delivered)
-	 */
+	$inspect('Changes? ', pageHasUnsavedChanges);
+	$inspect('Show warning? ', showNavigateWarning);
+
 	beforeNavigate(({ cancel }) => {
 		if (pageHasUnsavedChanges) {
-			if (!confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
-				cancel();
-			}
+			cancel();
+			showNavigateWarning = true;
 		}
 	});
+
+	const handleNavigateConfirm = () => {
+		showNavigateWarning = false;
+		pageHasUnsavedChanges = false;
+		goto('/admin/eventsadmin');
+	};
 </script>
+
+<ConfirmDialog
+	open={showNavigateWarning}
+	title="Unsaved Changes"
+	message="You have unsaved changes. \nAre you sure you want to leave this page?"
+	confirmText="Leave Page"
+	cancelText="Stay on Page"
+	confirmVariant="destructive"
+	onConfirm={handleNavigateConfirm}
+	onCancel={() => {
+		showNavigateWarning = false;
+	}}
+/>
 
 <div>
 	<EventForm

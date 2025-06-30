@@ -169,7 +169,7 @@
 <ConfirmDialog
 	open={showDeleteDialog}
 	title="Confirm Delete"
-	description="Deleting an item can not be undone. <br>Are you sure you want to delete this item?"
+	message="Deleting an item can not be undone. <br>Are you sure you want to delete this item?"
 	confirmText="Delete"
 	confirmVariant="destructive"
 	cancelText="Cancel"
@@ -179,7 +179,7 @@
 <ConfirmDialog
 	open={showDuplicateDialog}
 	title="Confirm Duplicate"
-	description="Do you want to duplicate this event? All information will be kept but all dates will be reset."
+	message="Do you want to duplicate this event? All information will be kept but all dates will be reset."
 	confirmText="Duplicate"
 	confirmVariant="primary"
 	cancelText="Cancel"

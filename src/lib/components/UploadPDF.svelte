@@ -132,7 +132,10 @@
 
 {#if !fileUrl}
 	<form class={moduleWidth}>
-		<label class={moduleWidth + 'group flex h-[200px] flex-col rounded-lg border bg-slate-100 p-10 text-center '}>
+		<label
+			class={moduleWidth +
+				'group flex h-[200px] cursor-pointer flex-col rounded-lg border bg-slate-100 p-10 text-center transition-colors hover:bg-slate-200'}
+		>
 			<div class="flex h-full w-full flex-col items-center justify-center text-center">
 				<p class="pointer-none font-semibold text-gray-600">
 					<span class="text-sm">Click here to select a PDF file</span>

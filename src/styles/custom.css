@@ -195,6 +195,25 @@
 
 @layer components {
 
+	/* Disabled fieldset styling */
+	fieldset:disabled {
+		opacity: 0.6;
+		pointer-events: none;
+	}
+
+	fieldset:disabled label,
+	fieldset:disabled input,
+	fieldset:disabled button,
+	fieldset:disabled select,
+	fieldset:disabled textarea {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	fieldset:disabled .explanation {
+		opacity: 0.6;
+	}
+
 	.content-container {
 		margin-left: auto;
 		margin-right: auto;
@@ -425,8 +444,8 @@
 		width: 100%;
 	}
 
-	.label {
-		margin-bottom: 8px;
+	.form-label {
+		padding-bottom: 40px;
 		font-weight: 700;
 	}
 

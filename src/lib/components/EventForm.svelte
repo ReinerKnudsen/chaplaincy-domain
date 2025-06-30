@@ -21,17 +21,18 @@
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
 	import { cleanText } from '$lib/utils/HTMLfunctions';
 
-	import UploadImage from '$lib/components/UploadImage.svelte';
+	import { Button } from '$lib/components/ui/button';
+	import Checkbox from './Checkbox.svelte';
+	import Editor from './Editor.svelte';
+	import Icon from '@iconify/svelte';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
 	import LocationDropdown from './LocationDropdown.svelte';
 	import NewLocationModal from './NewLocationModal.svelte';
-	import UploadPDF from '$lib/components/UploadPDF.svelte';
-	import Label from './Label.svelte';
-	import Editor from './Editor.svelte';
 	import SlugText from './SlugText.svelte';
-	import Checkbox from './Checkbox.svelte';
-	import Icon from '@iconify/svelte';
 	import StateLabel from './StateLabel.svelte';
-	import { Button } from '$lib/components/ui/button';
+	import UploadImage from '$lib/components/UploadImage.svelte';
+	import UploadPDF from '$lib/components/UploadPDF.svelte';
 
 	interface Props {
 		thisEvent?: DomainEvent;
@@ -234,12 +235,11 @@
 		<!-- First block -->
 		<div class="form bg-white-primary my-8 p-10">
 			<!-- Titel -->
-			<div>
-				<Label child="title">Event Titel *</Label>
-				<input
+			<fieldset>
+				<Label for="title">Event Titel *</Label>
+				<Input
 					type="text"
 					id="title"
-					class="input input-bordered w-full"
 					placeholder="Event Title"
 					bind:value={thisEvent.title}
 					onblur={() => {
@@ -248,13 +248,12 @@
 					}}
 					required
 				/>
-			</div>
+			</fieldset>
 
 			<!-- Sub Title -->
-			<div>
-				<Label child="subtitle">Sub Title</Label>
-				<input
-					class="input input-bordered w-full"
+			<fieldset>
+				<Label for="subtitle">Sub Title</Label>
+				<Input
 					type="text"
 					id="subtitle"
 					placeholder="Sub Title"
@@ -264,12 +263,12 @@
 					}}
 					bind:value={thisEvent.subtitle}
 				/>
-			</div>
+			</fieldset>
 
 			<!-- Description -->
-			<div>
+			<fieldset>
 				<div class="flex-rows flex justify-between">
-					<Label child="description">Description *</Label>
+					<Label for="description">Description *</Label>
 					<p class="self-end text-right text-base">
 						<strong>{thisEvent.description ? thisEvent.description.length : 0}</strong> characters.
 					</p>
@@ -281,18 +280,18 @@
 						prepareSlugText();
 					}}
 				/>
-			</div>
+			</fieldset>
 
 			<!-- SlugText -->
 
-			<div>
+			<fieldset>
 				<SlugText slugText={thisEvent.slug} required={true} onBlur={handleSlugChange} />
-			</div>
+			</fieldset>
 
 			<!-- Location -->
 			<div class="form-area">
-				<div>
-					<Label child="Location">Location *</Label>
+				<fieldset>
+					<Label for="Location">Location *</Label>
 					<LocationDropdown onLocationChange={handleLocationChange} onNewLocation={createNewLocation} />
 
 					<!-- Modal for new location -->
@@ -300,8 +299,8 @@
 						<NewLocationModal onLocationAdded={handleLocationAddedModal} onClose={() => (showModal = false)} />
 					{/if}
 					{#if $selectedLocation.online}
-						<div>
-							<Label class="mt-4 mb-2 font-semibold" child="joinonline">Join online</Label>
+						<fieldset>
+							<Label class="mt-4 mb-2 font-semibold" for="joinonline">Join online</Label>
 
 							<Checkbox
 								label="Join online"
@@ -309,22 +308,16 @@
 								bind:checked={thisEvent.joinOnline}
 								onChange={handleChangeJoinOnline}
 							/>
-						</div>
+						</fieldset>
 						<p class="explanation">Adds a join button to the event 20 minutes before the event starts</p>
 					{/if}
-				</div>
+				</fieldset>
 			</div>
 
 			<!-- Conditions -->
-			<div>
-				<Label child="conditions">Conditions</Label>
-				<input
-					class="input input-bordered w-full"
-					type="text"
-					id="conditions"
-					bind:value={thisEvent.condition}
-					onblur={checkForChanges}
-				/>
+			<fieldset>
+				<Label for="conditions">Conditions</Label>
+				<Input type="text" id="conditions" bind:value={thisEvent.condition} onblur={checkForChanges} />
 				<div class="mt-1 p-1">
 					<label class="flex flex-row items-center">
 						<input
@@ -337,44 +330,36 @@
 						Entry is free, donations are welcome
 					</label>
 				</div>
-			</div>
+			</fieldset>
 		</div>
 
-		<div class="form bg-white-primary my-8 p-10">
+		<div id="dates" class="form bg-white-primary my-8 p-10">
 			<!-- Start date -->
-			<div>
-				<Label child="startdate">Start Date *</Label>
-				<input
-					class="input input-bordered w-full"
-					type="date"
-					id="startdate"
-					bind:value={thisEvent.startdate}
-					onblur={checkForChanges}
-				/>
-			</div>
+			<fieldset>
+				<Label for="startdate">Start Date *</Label>
+				<Input type="date" id="startdate" bind:value={thisEvent.startdate} onblur={checkForChanges} />
+			</fieldset>
 			<p class="explanation">Please enter all dates as dd.mm.yyyy or use the calendar picker.</p>
 
 			<!-- Start time -->
-			<div>
-				<Label child="starttime" disabled={!thisEvent.startdate}>Start Time *</Label>
-				<input
+			<fieldset disabled={!thisEvent.startdate}>
+				<Label for="starttime">Start Time *</Label>
+				<Input
 					type="time"
 					id="starttime"
-					class="input input-bordered w-full"
 					bind:value={thisEvent.starttime}
 					onblur={checkForChanges}
 					disabled={!thisEvent.startdate}
 				/>
-			</div>
+			</fieldset>
 
 			<!-- End date -->
-			<div class="flex-1">
-				<Label child="enddate" disabled={!thisEvent.startdate}>End Date *</Label>
+			<fieldset class="flex-1" disabled={!thisEvent.startdate}>
+				<Label for="enddate">End Date *</Label>
 				<div class="flex w-full flex-row items-center gap-4">
-					<input
+					<Input
 						type="date"
 						id="enddate"
-						class="input input-bordered w-full"
 						bind:value={thisEvent.enddate}
 						onblur={checkForChanges}
 						disabled={!thisEvent.startdate}
@@ -385,174 +370,158 @@
 						>
 					</div>
 				</div>
-			</div>
+			</fieldset>
 
 			<!-- End time -->
-			<div>
-				<Label child="endtime" disabled={!thisEvent.enddate}>End Time *</Label>
-				<input
+			<fieldset disabled={!thisEvent.enddate}>
+				<Label for="endtime">End Time *</Label>
+				<Input
 					type="time"
 					id="endtime"
-					class="input input-bordered w-full"
 					bind:value={thisEvent.endtime}
 					disabled={!thisEvent.enddate}
 					onblur={checkForChanges}
 				/>
-			</div>
+			</fieldset>
 		</div>
 
-		<div class="form bg-white-primary my-8 p-10">
+		<div id="publish" class="form bg-white-primary my-8 p-10">
 			<!-- Publish date  -->
 			<div>
-				<Label child="publishdate">Publish Date</Label>
-				<div class="flex flex-col">
+				<fieldset class="flex flex-col" disabled={!thisEvent.startdate}>
+					<Label for="publishdate">Publish Date</Label>
 					<div class="flex w-full flex-row items-center gap-4">
-						<input
-							class="input input-bordered w-full"
-							type="date"
-							id="publishdate"
-							bind:value={thisEvent.publishdate}
-							onblur={checkForChanges}
-						/>
+						<Input type="date" id="publishdate" bind:value={thisEvent.publishdate} onblur={checkForChanges} />
 						<div class="tooltip" data-tip="Sets the publish date to 14 days before the start date">
-							<Button variant="primary" class="min-w-32" onclick={handleSetPublishDate} disabled={!thisEvent.startdate}
-								>Auto set
-							</Button>
+							<Button variant="primary" class="min-w-32" onclick={handleSetPublishDate}>Auto set</Button>
 						</div>
 					</div>
 					<p class="explanation">If you don't select a publish date, the event will be published immediately.</p>
-				</div>
+				</fieldset>
 
 				<!-- Publish time  -->
 				<div>
-					<div>
-						<Label child="publishTime" disabled={!thisEvent.publishdate}>Publish Time</Label>
-						<input
+					<fieldset disabled={!thisEvent.publishdate}>
+						<Label for="publishTime">Publish Time</Label>
+						<Input
 							type="time"
 							id="publishtime"
-							class="input input-bordered w-full"
 							bind:value={thisEvent.publishtime}
 							disabled={!thisEvent.publishdate}
 							onblur={checkForChanges}
 						/>
-					</div>
-					<p class="explanation {thisEvent.publishdate ? 'opacity-100' : 'opacity-30'}">
-						If you don't select a publish time, it will be set to 09:00 of the selected day.
-					</p>
+						<div class="explanation {thisEvent.publishdate ? 'opacity-100' : 'opacity-30'}">
+							If you don't select a publish time, it will be set to 09:00 of the selected day.
+						</div>
+					</fieldset>
 				</div>
 
 				<!-- Unpublish Date -->
-				<div>
-					<Label child="unpublishdate" disabled={!thisEvent.publishdate}>Unpublish Date</Label>
-					<input
+				<fieldset disabled={!thisEvent.publishdate}>
+					<Label for="unpublishdate">Unpublish Date</Label>
+					<Input
 						type="date"
 						id="unpublishdate"
-						class="input input-bordered w-full"
 						title="Select a date when the event shall be unpublished (optional)"
 						bind:value={thisEvent.unpublishdate}
 						disabled={!thisEvent.publishdate}
 						onblur={checkForChanges}
 					/>
-
 					<p class="explanation {thisEvent.publishdate ? 'opacity-100' : 'opacity-30'}">
 						If you don't set a date and time here the event will automatically be unpublished at the given start time.
 					</p>
-				</div>
+				</fieldset>
 
 				<!-- Unpublish Time -->
-				<div>
-					<Label child="unpublishtime" disabled={!thisEvent.unpublishdate}>Unpublish Time</Label>
-					<input
+				<fieldset disabled={!thisEvent.unpublishdate}>
+					<Label for="unpublishtime">Unpublish Time</Label>
+					<Input
 						type="time"
 						id="unpublishtime"
-						class="input input-bordered w-full"
 						title="Select a time when the event shall be unpublished. (optional) "
 						bind:value={thisEvent.unpublishtime}
 						disabled={!thisEvent.unpublishdate}
 						onblur={checkForChanges}
 					/>
-				</div>
+				</fieldset>
 			</div>
-
-			<!-- Image -->
-			<div class="form bg-white-primary my-8 p-10">
-				<div>
-					<Label child="image">Image</Label>
-					<div class="flex items-center justify-center">
-						{#if thisEvent.image}
-							<UploadImage imageUrl={thisEvent.image} onImageChange={handleImageChange} />
-						{:else}
-							<UploadImage imageUrl="" onImageChange={handleImageChange} />
-						{/if}
-					</div>
+		</div>
+		<!-- Image -->
+		<div id="image" class="form bg-white-primary my-8 p-10">
+			<fieldset>
+				<Label for="image">Image</Label>
+				<div class="flex items-center justify-center">
+					{#if thisEvent.image}
+						<UploadImage imageUrl={thisEvent.image} onImageChange={handleImageChange} />
+					{:else}
+						<UploadImage imageUrl="" onImageChange={handleImageChange} />
+					{/if}
 				</div>
+			</fieldset>
 
-				<!-- Image Alt Text-->
-				<div class="imageMeta">
-					<div class="imageAlt">
-						<div>
-							<Label child="imageAlt" disabled={!hasImage}>Image Alt text *</Label>
-							<input
-								type="text"
-								id="imageAlt"
-								class="input input-bordered w-full"
-								bind:value={thisEvent.imageAlt}
-								onblur={checkForChanges}
-								required={hasImage}
-								disabled={!hasImage}
-								placeholder={hasImage ? 'Image Alt text' : 'Please select an image first'}
-							/>
-							<p class="explanation {!hasImage ? 'opacity-30' : 'opacity-100'}">
-								This text helps interpreting the image for visually impaired users.
-							</p>
+			<!-- Image Alt Text-->
+			<fieldset disabled={!hasImage} class="imageMeta">
+				<fieldset>
+					<Label for="imageAlt">Image Alt text *</Label>
+					<Input
+						type="text"
+						id="imageAlt"
+						bind:value={thisEvent.imageAlt}
+						onblur={checkForChanges}
+						required={hasImage}
+						disabled={!hasImage}
+						placeholder={hasImage ? 'Image Alt text' : 'Please select an image first'}
+					/>
+					<div class="explanation {!hasImage ? 'opacity-30' : 'opacity-100'}">
+						This text helps interpreting the image for visually impaired users.
+					</div>
+				</fieldset>
+
+				<!-- Image Caption -->
+				<fieldset>
+					<Label for="imageCaption">Image caption</Label>
+					<Input
+						type="text"
+						id="imageCaption"
+						bind:value={thisEvent.imageCaption}
+						onblur={checkForChanges}
+						disabled={!hasImage}
+						placeholder={hasImage ? 'Image by ...' : 'Please select an image first'}
+					/>
+					<div class="explanation {!hasImage ? 'opacity-30' : 'opacity-100'}">
+						This text will be displayed below the image.
+					</div>
+				</fieldset>
+			</fieldset>
+		</div>
+
+		<div id="pdf" class="form bg-white-primary my-8 p-10">
+			<fieldset>
+				<Label for="pdfFile">PDF Document</Label>
+				<div class="flex flex-col items-center justify-center">
+					<UploadPDF fileUrl={thisEvent.pdfFile} onUpload={assignPDF} />
+					{#if !hasPDF}
+						<div class="explanation opacity-30">
+							Upload a PDF document that will be attached to this event (max 5MB).
 						</div>
-					</div>
-
-					<!-- Image Caption -->
-					<div class="imageCaption mt-10">
-						<div>
-							<Label child="imageCaption" disabled={!hasImage}>Image caption</Label>
-							<input
-								type="text"
-								id="imageCaption"
-								class="input input-bordered w-full"
-								bind:value={thisEvent.imageCaption}
-								onblur={checkForChanges}
-								disabled={!hasImage}
-								placeholder={hasImage ? 'Image by ...' : 'Please select an image first'}
-							/>
-							<p class="explanation {!hasImage ? 'opacity-30' : 'opacity-100'}">
-								This text will be displayed below the image.
-							</p>
-						</div>
-					</div>
+					{/if}
 				</div>
+			</fieldset>
 
-				<div>
-					<Label child="pdfFile">PDF Document</Label>
-					<div class="flex flex-col items-center justify-center">
-						<UploadPDF fileUrl={thisEvent.pdfFile} onUpload={assignPDF} />
-						{#if !hasPDF}
-							<p class="explanation opacity-30">Upload a PDF document that will be attached to this event (max 5MB).</p>
-						{/if}
-					</div>
-					<div>
-						<Label child="pdfText" disabled={!hasPDF}>PDF Description</Label>
-						<input
-							type="text"
-							id="pdfText"
-							class="input input-bordered w-full"
-							bind:value={thisEvent.pdfText}
-							required={hasPDF}
-							disabled={!hasPDF}
-							placeholder={hasPDF ? 'PDF Description' : 'Please select a PDF file first'}
-						/>
-						<p class="explanation {!hasPDF ? 'opacity-30' : 'opacity-100'}">
-							This text is the visible text for the PDF download link on the event page..
-						</p>
-					</div>
-				</div>
-			</div>
+			<fieldset disabled={!hasPDF}>
+				<Label for="pdfText">PDF Description</Label>
+				<Input
+					type="text"
+					id="pdfText"
+					bind:value={thisEvent.pdfText}
+					required={hasPDF}
+					disabled={!hasPDF}
+					placeholder={hasPDF ? 'PDF Description' : 'Please select a PDF file first'}
+				/>
+				<p class="explanation {!hasPDF ? 'opacity-30' : 'opacity-100'}">
+					This text is the visible text for the PDF download link on the event page..
+				</p>
+			</fieldset>
 		</div>
 
 		<!-- Buttons block -->
@@ -572,8 +541,6 @@
 			</div>
 		</div>
 	</form>
-
-	<div>&NonBreakingSpace;</div>
 {/if}
 
 <style>

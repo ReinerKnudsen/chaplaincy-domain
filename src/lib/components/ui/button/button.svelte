@@ -4,7 +4,7 @@
 	import { type VariantProps, tv } from 'tailwind-variants';
 
 	export const buttonVariants = tv({
-		base: "min-w-32 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex shrink-0 items-center  gap-2 whitespace-nowrap rounded-md text-md font-medium outline-none transition-all focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0 cursor-pointer",
+		base: "min-w-32 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-md text-md font-medium outline-none transition-all focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0 cursor-pointer",
 		variants: {
 			variant: {
 				default: 'justify-center bg-primary text-primary-foreground shadow-xs hover:bg-primary/90',
@@ -14,6 +14,7 @@
 				outline:
 					'justify-center bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 border',
 				secondary: 'justify-center bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80',
+				menu: 'justify-center hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 text-xl font-semibold',
 				ghost: 'justify-center hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
 				link: 'justify-center text-primary underline underline-offset-4 hover:font-semibold hover:text-lg',
 				active: 'bg-secondary-40 w-full rounded-lg py-4 px-2 text-left border-b hover:bg-secondary-60',

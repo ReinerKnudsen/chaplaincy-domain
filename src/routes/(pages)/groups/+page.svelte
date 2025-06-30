@@ -4,10 +4,10 @@
 
 	const headerData = {
 		title: 'Groups',
-		photoName: 'JJ Ying',
-		photoUrl: 'https://unsplash.com/@jjying',
+		photoName: 'kp yamu Jayanath',
+		photoUrl: 'https://pixabay.com/users/yamu_jay-44818947',
 		imageUrl:
-			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fheaders%2Fgroups.jpg?alt=media&token=94f6da6c-dad6-40c1-bb82-69db5a5eedc1',
+			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fheaders%2Fgroup_lg.png?alt=media&token=4a405346-6dfb-4b6a-8769-6222a9f712e6',
 	};
 
 	const groups = [
@@ -41,11 +41,11 @@
 	];
 </script>
 
-<PageHeader {headerData} textStyle="dark" />
+<PageHeader {headerData} textStyle="white" />
 <div class="mx-auto w-[80%] text-lg">
 	<div class="intro pb-4">
-		Groups are organized by members of the congregation. They are open to everybody. Below you can
-		find all information required about the groups of the church.
+		Groups are organized by members of the congregation. They are open to everybody. Below you can find all information
+		required about the groups of the church.
 	</div>
 	<div class="border-b-2 pb-4">
 		If you want to find out more or would like to join one of the groups, please <a

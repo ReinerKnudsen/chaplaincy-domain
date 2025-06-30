@@ -399,6 +399,7 @@
 		text-align: center;
 		width: 100%;
 		font-weight: 600;
+		color: var(--color-primary-100);
 	}
 
 	.page-subtitle {
@@ -407,6 +408,7 @@
 		width: 100%;
 		padding: 1rem;
 		font-weight: 600;
+		color: var(--color-primary-100);
 	}
 
 	/* # Section */

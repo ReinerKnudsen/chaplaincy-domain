@@ -98,7 +98,7 @@
 	a,
 	a:where(:not(.btn)) {
 		cursor: pointer;
-		color: var(--color-purple-80);
+		color: var(--color-seablue-100);
 		text-decoration: none !important;
 	}
 
@@ -118,7 +118,7 @@
 		width: 100%;
 		transform-origin: bottom left;
 		transform: scaleX(0);
-		background-color: var(--color-purple-700);
+		background-color: var(--color-seablue-100);
 		transition-property: transform;
 		transition-duration: 200ms;
 		content: '';

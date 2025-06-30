@@ -1,21 +1,21 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { goto } from '$app/navigation';
-
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
 	import { auth } from '$lib/firebase/firebaseConfig';
 	import { signOut } from 'firebase/auth';
-
 	import caplogo from '$lib/assets/chaplaincy_logo.png';
-	import { about as aboutItems } from '$lib/data/data.json';
+	import { menu } from '$lib/data/menu.json';
 
-	import NavigationItem from '$lib/components/NavigationItem.svelte';
-	import NavigationRollUp from '$lib/components/NavigationRollUp.svelte';
+	import { Button } from '$lib/components/ui/button';
 
-	let user = $state();
-	let menuOpen = $state(false);
-	let aboutMenuOpen = $state(true);
+	interface MenuItem {
+		title: string;
+		url: string;
+		subMenu?: MenuItem[];
+	}
+
+	let user = $state<any>(null);
+	let mobileMenuOpen = $state(false);
 
 	$effect(() => {
 		user = $authStore.user;
@@ -29,30 +29,25 @@
 		} catch (error) {
 			console.error('Error signing out:', error);
 		}
-		if (menuOpen) toggleMobileMenu;
+		mobileMenuOpen = false;
 	};
 
 	const toggleMobileMenu = () => {
-		menuOpen = !menuOpen;
+		mobileMenuOpen = !mobileMenuOpen;
 	};
 
-	const toggleAboutMenu = () => {
-		aboutMenuOpen = !aboutMenuOpen;
+	const closeMobileMenu = () => {
+		mobileMenuOpen = false;
 	};
 
 	const handleLogin = () => {
 		goto('/login');
-		toggleMobileMenu();
+		mobileMenuOpen = false;
 	};
-
-	const noop = () => {}; // No-operation function for default onClick
 </script>
 
 <nav
-	class="bg-white-primary sticky top-0 z-50 flex h-full min-h-28
-	w-full items-center justify-between divide-gray-100 rounded-b-2xl
-	border-b border-gray-100 px-4 py-2.5 text-gray-700 shadow-xl
-	dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+	class="sticky top-0 z-50 flex h-full min-h-28 w-full items-center justify-between border-b border-gray-100 bg-white px-4 py-2.5 text-gray-700 shadow-xl"
 >
 	<!-- Logo -->
 	<div class="nav-container flex w-full justify-between">
@@ -60,99 +55,99 @@
 			<img class="logo-image me-3 h-9 lg:h-[70%]" src={caplogo} alt="Chaplaincy Logo" />
 		</a>
 
-		<!-- Mobile Menu -->
-		<div class="mobile-menu-container lg:hidden">
+		<!-- Mobile Menu Button -->
+		<div class="lg:hidden">
 			<button
 				type="button"
-				id="mobile-menu"
-				class="m-0.5 ms-3 rounded-lg p-1.5 whitespace-normal hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:outline-hidden lg:hidden dark:hover:bg-gray-600"
-				aria-label="Open main menu"
+				class="rounded-lg p-2 hover:bg-gray-100"
+				aria-label="Toggle mobile menu"
 				onclick={toggleMobileMenu}
-				><span class="sr-only">Open main menu</span>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					role="button"
-					tabindex="0"
-					width="24"
-					height="24"
-					class="h-6 w-6 shrink-0"
-					aria-label="bars 3"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke-width="2"
-				>
-					<path
-						stroke="currentColor"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M4 6h16M4 12h16M4 18h16"
-					></path>
-				</svg></button
 			>
-			{#if menuOpen}
-				<div
-					class="mobile-menu bg-white-primary/95 fixed top-28 right-0 z-20 w-[80%] max-w-md cursor-pointer rounded-lg px-4 py-4 shadow-xl backdrop-blur-sm"
-				>
-					<ul class="text-primary-100 mt-4 flex flex-col gap-2 p-4">
-						<NavigationItem url="/" label="Home" onClick={toggleMobileMenu} />
-						<NavigationItem url="/worship" label="Worship" onClick={toggleMobileMenu} />
-						<NavigationItem url="/news" label="News" onClick={toggleMobileMenu} />
-						<NavigationItem url="/events" label="Events" onClick={toggleMobileMenu} />
-						<NavigationItem url="/groups" label="Groups" onClick={toggleMobileMenu} />
-						<NavigationItem url="#" label="About us" onClick={toggleAboutMenu} />
-						{#if aboutMenuOpen}
-							<div class="bg-white-primary/95 relative w-full rounded-lg py-2 shadow-lg">
-								<NavigationItem url="/about" label="Who we are" onClick={toggleMobileMenu} />
-								<NavigationItem
-									url="/about/responsibilities"
-									label="Who is who"
-									onClick={toggleMobileMenu}
-								/>
-								<NavigationItem
-									url="/about/locations"
-									label="Where we are"
-									onClick={toggleMobileMenu}
-								/>
-								<NavigationItem
-									url="/about/facbc"
-									label="The FACBC e.V."
-									onClick={toggleMobileMenu}
-								/>
-								<NavigationItem
-									url="/about/safeguarding"
-									label="Safeguarding"
-									onClick={toggleMobileMenu}
-								/>
-								<NavigationItem
-									url="/about/contact"
-									label="Get in touch"
-									onClick={toggleMobileMenu}
-								/>
-							</div>
-						{/if}
-
-						{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
-							<hr class="mb-4" />
-							<NavigationItem url="/admin" label="Admin" onClick={toggleMobileMenu} />
-						{/if}
-					</ul>
-				</div>
-			{/if}
+				<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+				</svg>
+			</button>
 		</div>
 
 		<!-- Desktop Menu -->
-		<div class="menu hidden w-full cursor-pointer lg:block lg:w-auto">
-			<ul class="text-primary-100 mt-4 flex flex-row items-center justify-center space-x-6 p-4">
-				<NavigationItem url="/" label="Home" onClick={noop} />
-				<NavigationItem url="/worship" label="Worship" onClick={noop} />
-				<NavigationItem url="/news" label="News" onClick={noop} />
-				<NavigationItem url="/events" label="Events" onClick={noop} />
-				<NavigationItem url="/groups" label="Groups" onClick={noop} />
-				<NavigationRollUp menuItems={aboutItems} title="About us" />
-				{#if $authStore.role === 'admin' || $authStore.role === 'editor'}
-					<NavigationItem url="/admin" label="Admin" onClick={noop} />
+		<div class="hidden lg:flex lg:items-center lg:space-x-6">
+			{#each menu as menuItem}
+				{#if menuItem.subMenu && menuItem.subMenu.length > 0}
+					<!-- Desktop Dropdown -->
+					<div class="group relative">
+						<Button variant="menu">
+							{menuItem.title}
+							<svg class="ml-1 inline h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+								<path
+									fill-rule="evenodd"
+									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+									clip-rule="evenodd"
+								></path>
+							</svg>
+						</Button>
+						<div
+							class="invisible absolute left-0 z-50 mt-2 w-48 rounded-md bg-white opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100"
+						>
+							{#each menuItem.subMenu as subItem}
+								<a href={subItem.url} class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+									{subItem.title}
+								</a>
+							{/each}
+						</div>
+					</div>
+				{:else}
+					<Button variant="menu">
+						<a href={menuItem.url} class="px-3 py-2 font-medium text-gray-700 hover:text-blue-600">
+							{menuItem.title}
+						</a>
+					</Button>
 				{/if}
-			</ul>
+			{/each}
+
+			<!-- Admin Link -->
+			{#if $authStore?.role === 'admin' || $authStore?.role === 'author' || $authStore?.role === 'editor'}
+				<Button variant="menu"
+					><a href="/admin/" class="px-3 py-2 font-medium text-gray-700 hover:text-blue-600">Admin</a></Button
+				>
+			{/if}
 		</div>
 	</div>
+
+	<!-- Mobile Menu -->
+	{#if mobileMenuOpen}
+		<div class="absolute top-full left-0 z-40 w-full bg-white shadow-lg lg:hidden">
+			<div class="px-4 py-2">
+				{#each menu as menuItem}
+					{#if menuItem.subMenu && menuItem.subMenu.length > 0}
+						<div class="py-2">
+							<div class="py-2 font-medium text-gray-900">{menuItem.title}</div>
+							<div class="pl-4">
+								{#each menuItem.subMenu as subItem}
+									<a href={subItem.url} onclick={closeMobileMenu} class="block py-2 text-gray-600 hover:text-blue-600">
+										{subItem.title}
+									</a>
+								{/each}
+							</div>
+						</div>
+					{:else}
+						<a
+							href={menuItem.url}
+							onclick={closeMobileMenu}
+							class="block py-3 font-medium text-gray-700 hover:text-blue-600"
+						>
+							{menuItem.title}
+						</a>
+					{/if}
+				{/each}
+
+				<div class="mt-2 border-t pt-2">
+					{#if $authStore?.role === 'admin' || $authStore?.role === 'author' || $authStore?.role === 'editor'}
+						<a href="/admin/" onclick={closeMobileMenu} class="block py-2 font-medium text-gray-700 hover:text-blue-600"
+							>Admin</a
+						>
+					{/if}
+				</div>
+			</div>
+		</div>
+	{/if}
 </nav>

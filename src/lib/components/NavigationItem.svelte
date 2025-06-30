@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Button } from '$lib/components/ui/button';
+
 	interface Props {
 		url: string;
 		label: string;
@@ -9,7 +11,7 @@
 </script>
 
 <li>
-	<button class="btn btn-outline border-0 text-xl font-semibold">
+	<Button variant="menu" class="min-w-0 text-xl font-semibold">
 		<a href={url} class="text-primary-80" onclick={onClick}>{label}</a>
-	</button>
+	</Button>
 </li>

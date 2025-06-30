@@ -3,6 +3,9 @@
 	import type { ActionData } from './$types';
 
 	import Icon from '@iconify/svelte';
+	import { Button } from '$lib/components/ui/button';
+	import { Label } from '$lib/components/ui/label';
+	import { Input } from '$lib/components/ui/input';
 
 	interface Props {
 		form: ActionData;
@@ -23,51 +26,34 @@
 	<div class="pb-10">All fields marked with * are required.</div>
 	<form method="POST" class="flex flex-col space-y-6" use:enhance>
 		<!-- Name -->
-		<div class="flex flex-col space-y-2">
-			<label for="name">Name</label>
-			<input
-				type="text"
-				id="name"
-				name="name"
-				class=" bg-white-primary rounded-lg border p-2 px-4"
-			/>
-		</div>
+		<fieldset>
+			<Label for="name">Name</Label>
+			<Input type="text" id="name" name="name" />
+		</fieldset>
 
 		<!-- Email -->
-		<div class="flex flex-col space-y-2">
-			<label for="email">Email *</label>
-			<input
-				type="email"
-				id="email"
-				name="email"
-				required
-				class=" bg-white-primary rounded-lg border p-2 px-4"
-			/>
-		</div>
+		<fieldset>
+			<Label for="email">Email *</Label>
+			<Input type="email" id="email" name="email" required />
+		</fieldset>
 
 		<!-- Subject -->
-		<div class="flex flex-col space-y-2">
-			<label for="subject">Subject *</label>
-			<input
-				type="text"
-				id="subject"
-				name="subject"
-				required
-				class=" bg-white-primary rounded-lg border p-2 px-4"
-			/>
-		</div>
+		<fieldset>
+			<Label for="subject">Subject *</Label>
+			<Input type="text" id="subject" name="subject" required />
+		</fieldset>
 
 		<!-- Message -->
-		<div class="flex flex-col space-y-2">
-			<label for="message">Message *</label>
+		<fieldset>
+			<Label for="message">Message *</Label>
 			<textarea
 				id="message"
 				name="message"
 				rows="6"
 				required
-				class=" bg-white-primary rounded-lg border p-2 px-4"
+				class=" bg-white-primary w-full rounded-lg border p-2 px-4"
 			></textarea>
-		</div>
+		</fieldset>
 
 		<!-- Disclaimer -->
 		<div class="flex flex-row items-center gap-4">
@@ -89,7 +75,7 @@
 			</div>
 		{/if}
 		<div class="flex justify-center pt-10">
-			<button type="submit" class="calltoaction self-start">Send Message</button>
+			<Button variant="primary">Send Message</Button>
 		</div>
 	</form>
 </div>

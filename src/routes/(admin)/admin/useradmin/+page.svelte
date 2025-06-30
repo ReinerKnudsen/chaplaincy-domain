@@ -2,6 +2,8 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { listAllUsers, type AdminUserData } from '$lib/services/authService';
+	import { Button } from '$lib/components/ui/button';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
 	let userList: AdminUserData[] = $state([]);
 	let loading = $state(true);
@@ -48,12 +50,14 @@
 							{/if}
 						</td>
 						<td class="px-6 py-4">
-							<a
-								href="/admin/useradmin/{user.uid}"
-								class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
-							>
-								Edit
-							</a>
+							<Button variant="secondary">
+								<a
+									href="/admin/useradmin/{user.uid}"
+									class="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+								>
+									Edit
+								</a>
+							</Button>
 						</td>
 					</tr>
 				{/each}
@@ -61,11 +65,11 @@
 		</table>
 	</div>
 	<div class="mt-10 text-right">
-		<button type="button" class="btn btn-primary min-w-28" onclick={handleCreateUser}>
-			Create user
-		</button>
+		<Button type="button" variant="primary" size="lg" onclick={handleCreateUser}>Create user</Button>
 	</div>
 {/if}
+
+<ToastContainer />
 
 <style>
 	table {

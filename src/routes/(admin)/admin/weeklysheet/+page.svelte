@@ -1,10 +1,12 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { writable } from 'svelte/store';
-	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 
 	import { pathName } from '$lib/stores/NavigationStore';
+
+	import { Button } from '$lib/components/ui/button';
 
 	// Get the data from the server
 	interface Props {
@@ -63,19 +65,14 @@
 	<h1>Weekly sheets</h1>
 	<div class="mb-6 grid grid-cols-2 items-center gap-2 lg:gap-20">
 		<div>
-			<input
-				class="w-full rounded-lg"
-				placeholder="Search (not yet active)"
-				type="text"
-				oninput={handleSearchInput}
-			/>
+			<input class="w-full rounded-lg" placeholder="Search (not yet active)" type="text" oninput={handleSearchInput} />
 		</div>
 		<div class="justify-self-end">
-			<button onclick={handleClick} class="btn btn-c btn-primary">Upload</button>
+			<Button variant="primary" size="lg" onclick={handleClick}>Upload</Button>
 		</div>
 	</div>
 	<div class="">
-		<table class="admin-table">
+		<table class="admin-table locations-table">
 			<thead class="table-row">
 				<tr class="table-row">
 					<th class="table-header table-cell" onclick={() => sortTable('date')}>
@@ -89,7 +86,7 @@
 					<tr class="table-row">
 						<td class="table-data table-cell">{item.date}</td>
 						<td class="table-data table-cell"
-							><a href={item.path} target="_blank">Open in browser</a></td
+							><Button variant="link"><a href={item.path} target="_blank">Open in browser</a></Button></td
 						>
 					</tr>
 				{/each}
@@ -99,39 +96,10 @@
 </div>
 
 <style>
-	.admin-table {
+	.locations-table {
 		display: grid;
-		border-collapse: collapse;
-		min-width: 100%;
-		grid-template-columns: minmax(150px, 2.5fr) minmax(130px, 2.5fr);
-	}
-
-	.table-row {
-		display: contents;
-	}
-
-	.table-header {
-		background-color: white;
-		cursor: pointer;
-		padding: 0.75rem 0.5rem;
-		text-align: left;
-		font-size: 0.875rem;
-		font-weight: 600;
-		color: rgb(17 24 39);
-		text-transform: uppercase;
-	}
-
-	.table-cell {
-		font-size: 0.875rem;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		color: rgb(71 85 105);
-	}
-
-	.table-data {
-		padding: 1.25rem 0.5rem;
-		border-bottom: 1px solid rgb(203 213 225);
-		align-content: center;
+		grid-template-columns:
+			minmax(150px, 1fr)
+			minmax(130px, 1fr);
 	}
 </style>

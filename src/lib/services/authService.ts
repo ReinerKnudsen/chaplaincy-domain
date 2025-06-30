@@ -2,11 +2,7 @@ import { functions, auth, database } from '../firebase/firebaseConfig';
 import { authStore, unloadUser, unloadAuthStore } from '$lib/stores/AuthStore';
 import { doc, setDoc } from 'firebase/firestore';
 import type { User } from 'firebase/auth';
-import {
-	signInWithEmailAndPassword,
-	createUserWithEmailAndPassword,
-	sendPasswordResetEmail,
-} from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { httpsCallable } from 'firebase/functions';
 
 export interface UserData {
@@ -41,10 +37,7 @@ interface CreateUserResponse {
 // List all users (only for admins)
 // *****
 
-const listAllUsersFunction = httpsCallable<unknown, { users: AdminUserData[] }>(
-	functions,
-	'listUsers',
-);
+const listAllUsersFunction = httpsCallable<unknown, { users: AdminUserData[] }>(functions, 'listUsers');
 export const listAllUsers = async (): Promise<AdminUserData[]> => {
 	try {
 		const result = await listAllUsersFunction();
@@ -74,10 +67,7 @@ export async function countAdmins(): Promise<number> {
 // *****
 
 export async function changeUserRole(email: string, role: string): Promise<void> {
-	const changeUserRole = httpsCallable<{ email: string; role: string }, void>(
-		functions,
-		'changeUserRole',
-	);
+	const changeUserRole = httpsCallable<{ email: string; role: string }, void>(functions, 'changeUserRole');
 	await changeUserRole({ email, role });
 }
 
@@ -87,10 +77,7 @@ export async function changeUserRole(email: string, role: string): Promise<void>
 
 export async function getUserByID(uid: string): Promise<User | null> {
 	try {
-		const getUserProfile = httpsCallable<{ uid: string }, { user: User }>(
-			functions,
-			'getUserProfile',
-		);
+		const getUserProfile = httpsCallable<{ uid: string }, { user: User }>(functions, 'getUserProfile');
 		const result = await getUserProfile({ uid });
 		if (!result?.data?.user) {
 			return null;
@@ -142,7 +129,7 @@ export async function createNewUser(userData: UserData): Promise<User | null> {
 					email: userData.email,
 					displayName: userData.displayName,
 				},
-				{ merge: true },
+				{ merge: true }
 			);
 		} catch (error: unknown) {
 			console.error('Error creating user profile:', error);
@@ -230,7 +217,7 @@ export async function registerUser(userData: UserData, password?: string): Promi
 						email: userData.email,
 						displayName: userData.displayName,
 					},
-					{ merge: true },
+					{ merge: true }
 				);
 			} catch (error: unknown) {
 				if (error instanceof Error) {
@@ -241,10 +228,7 @@ export async function registerUser(userData: UserData, password?: string): Promi
 
 			// Set custom claims for the user
 			const role = userData.role || 'user';
-			const setUserRole = httpsCallable<{ uid: string; role: string }, void>(
-				functions,
-				'setUserRole',
-			);
+			const setUserRole = httpsCallable<{ uid: string; role: string }, void>(functions, 'setUserRole');
 			await setUserRole({
 				uid: authenticatedUser.uid,
 				role: role,
@@ -321,6 +305,5 @@ export const requestPasswordReset = async (email: string): Promise<void> => {
 		await sendPasswordResetEmail(auth, email);
 	} catch (error: unknown) {
 		console.error('Error sending password reset email:', error);
-		throw error;
 	}
 };

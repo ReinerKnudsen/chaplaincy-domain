@@ -6,17 +6,18 @@
 	//import { notificationStore } from '$lib/stores/notifications';
 	import { EditMode, EditModeStore, type DomainEvent } from '$lib/stores/ObjectStore';
 	import { selectedImage, imageExists, existingImageUrl, resetImageselection } from '$lib/stores/ImageSelectionStore';
-	import { Messages } from '$lib/utils/messages';
+	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';
+	import { resetSelectedLocation } from '$lib/stores/LocationsStore';
 
 	import { validateEventData, buildTimeStamp } from '$lib/services/validateForm';
 	import { eventFormService } from '$lib/services/EventFormService';
 
-	import ToastContainer from '$lib/components/ToastContainer.svelte';
 	import EventForm from '$lib/components/EventForm.svelte';
-	import { notificationStore } from '$lib/stores/notifications';
-	import { resetSelectedLocation } from '$lib/stores/LocationsStore';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
+	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 
 	let pageHasUnsavedChanges = $state(false);
+	let showNavigateWarning = $state(false);
 
 	const saveNewEvent = async (newEvent: DomainEvent) => {
 		if (validateEventData(newEvent)) {
@@ -32,7 +33,7 @@
 		try {
 			await addDoc(eventsColRef, thisEvent);
 			EditModeStore.set(EditMode.Empty);
-			notificationStore.addToast('success', Messages.SAVESUCCESS);
+			notificationStore.addToast('success', Messages.SAVESUCCESS, TOAST_DURATION);
 			resetImageselection();
 			goto('/admin/eventsadmin');
 		} catch (error) {
@@ -46,7 +47,7 @@
 		try {
 			await addDoc(eventsColRef, thisEvent);
 			EditModeStore.set(EditMode.Empty);
-			notificationStore.addToast('success', Messages.DRAFTSUCCESS);
+			notificationStore.addToast('success', Messages.DRAFTSUCCESS, TOAST_DURATION);
 			resetImageselection();
 			goto('/admin/eventsadmin');
 		} catch (error) {
@@ -64,17 +65,33 @@
 	const handleUnsavedChangesUpdate = (formHasUnsavedChanges: boolean): void => {
 		pageHasUnsavedChanges = formHasUnsavedChanges;
 	};
-	/**
-	 * TODO: replcae dialog with the global modal (to be delivered)
-	 */
+
 	beforeNavigate(({ cancel }) => {
 		if (pageHasUnsavedChanges) {
-			if (!confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
-				cancel();
-			}
+			cancel();
+			showNavigateWarning = true;
 		}
 	});
+
+	const handleNavigateConfirm = () => {
+		showNavigateWarning = false;
+		pageHasUnsavedChanges = false;
+		goto('/admin/eventsadmin');
+	};
 </script>
+
+<ConfirmDialog
+	open={showNavigateWarning}
+	title="Unsaved Changes"
+	message="You have unsaved changes. \nAre you sure you want to leave this page?"
+	confirmText="Leave Page"
+	cancelText="Stay on Page"
+	confirmVariant="destructive"
+	onConfirm={handleNavigateConfirm}
+	onCancel={() => {
+		showNavigateWarning = false;
+	}}
+/>
 
 <div>
 	<EventForm

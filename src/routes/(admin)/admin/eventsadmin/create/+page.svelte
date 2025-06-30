@@ -6,14 +6,13 @@
 	//import { notificationStore } from '$lib/stores/notifications';
 	import { EditMode, EditModeStore, type DomainEvent } from '$lib/stores/ObjectStore';
 	import { selectedImage, imageExists, existingImageUrl, resetImageselection } from '$lib/stores/ImageSelectionStore';
-	import { Messages } from '$lib/utils/messages';
 
 	import { validateEventData, buildTimeStamp } from '$lib/services/validateForm';
 	import { eventFormService } from '$lib/services/EventFormService';
 
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 	import EventForm from '$lib/components/EventForm.svelte';
-	import { notificationStore } from '$lib/stores/notifications';
+	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';
 	import { resetSelectedLocation } from '$lib/stores/LocationsStore';
 
 	let pageHasUnsavedChanges = $state(false);
@@ -32,7 +31,7 @@
 		try {
 			await addDoc(eventsColRef, thisEvent);
 			EditModeStore.set(EditMode.Empty);
-			notificationStore.addToast('success', Messages.SAVESUCCESS);
+			notificationStore.addToast('success', Messages.SAVESUCCESS, TOAST_DURATION);
 			resetImageselection();
 			goto('/admin/eventsadmin');
 		} catch (error) {
@@ -46,7 +45,7 @@
 		try {
 			await addDoc(eventsColRef, thisEvent);
 			EditModeStore.set(EditMode.Empty);
-			notificationStore.addToast('success', Messages.DRAFTSUCCESS);
+			notificationStore.addToast('success', Messages.DRAFTSUCCESS, TOAST_DURATION);
 			resetImageselection();
 			goto('/admin/eventsadmin');
 		} catch (error) {

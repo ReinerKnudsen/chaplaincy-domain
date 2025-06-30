@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { MenuItem } from '$lib/types.d';
 	import { onMount } from 'svelte';
+	import { Button } from '$lib/components/ui/button';
 
 	interface Props {
 		title: string;
@@ -43,11 +44,8 @@
 </script>
 
 <div>
-	<button
-		type="button"
-		id="showMenue"
-		class="btn btn-outline border-0 text-xl font-semibold"
-		onclick={toggleDropdown}><span class="text-primary-80">{title}</span></button
+	<Button variant="menu" type="button" id="showMenue" class="text-xl font-semibold" onclick={toggleDropdown}
+		><span class="text-primary-80">{title}</span></Button
 	>
 	{#if showDropdown}
 		<div
@@ -57,14 +55,11 @@
 			aria-labelledby="options-menu"
 		>
 			{#each menuItems as menuItem}
-				<a
-					href={menuItem.url}
-					class="text-primary-100 block px-6 py-3 text-sm transition-colors first:rounded-t-md last:rounded-b-md hover:bg-gray-50 focus:bg-gray-50 active:bg-gray-50"
-					role="menuitem"
-					onclick={toggleDropdown}
-				>
-					{menuItem.title}
-				</a>
+				<Button variant="inactive" class="py-6">
+					<a href={menuItem.url} role="menuitem" onclick={toggleDropdown}>
+						{menuItem.title}
+					</a>
+				</Button>
 			{/each}
 		</div>
 	{/if}

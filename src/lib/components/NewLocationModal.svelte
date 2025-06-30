@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { addDoc, collection } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
-	import { notificationStore } from '$lib/stores/notifications';
+	import { notificationStore, TOAST_DURATION } from '$lib/stores/notifications';
 
 	import {
 		CurrentLocation,
@@ -12,7 +12,6 @@
 	} from '$lib/stores/LocationsStore';
 
 	import NewLocationForm from './NewLocationForm.svelte';
-	import { TOAST_DURATION } from '$lib/utils/constants';
 
 	const db = database;
 
@@ -69,14 +68,5 @@
 		align-items: center;
 		justify-content: center;
 		z-index: 1000;
-	}
-
-	.modal {
-		background-color: white;
-		padding: 20px;
-		border-radius: 8px;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-		width: 400px;
-		max-width: 90%;
 	}
 </style>

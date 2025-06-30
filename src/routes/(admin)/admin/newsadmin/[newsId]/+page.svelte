@@ -6,8 +6,7 @@
 	import { selectedImage, imageExists, existingImageUrl } from '$lib/stores/ImageSelectionStore';
 
 	import { newsFormService } from '$lib/services/NewsFormService';
-	import { notificationStore } from '$lib/stores/notifications';
-	import { Messages } from '$lib/utils/messages';
+	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';
 
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 	import NewsForm from '$lib/components/NewsForm.svelte';
@@ -58,7 +57,7 @@
 			const newsData = { ...thisNews } as DocumentData;
 			await updateDoc(data.docRef, newsData);
 			EditModeStore.set('');
-			notificationStore.addToast('success', Messages.UPDATESUCCESS);
+			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 			goto('/admin/newsadmin');
 		} catch (error) {
 			notificationStore.addToast('error', Messages.UPDATEERROR);
@@ -74,7 +73,7 @@
 			const newsData = { ...thisNews } as DocumentData;
 			await updateDoc(data.docRef, newsData);
 			EditModeStore.set('');
-			notificationStore.addToast('success', Messages.UPDATESUCCESS);
+			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 			goto('/admin/newsadmin');
 		} catch (error) {
 			notificationStore.addToast('error', Messages.UPDATEERROR);

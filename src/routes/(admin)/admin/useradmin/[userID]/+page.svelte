@@ -1,133 +1,96 @@
-<script>
-	import { preventDefault } from 'svelte/legacy';
-
+<script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 
 	import { getDoc, doc, updateDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
+	import { type User } from '$lib/stores/ObjectStore';
+	import { notificationStore, Messages, TOAST_DURATION } from '$lib/stores/notifications';
 
 	import { updateUserProfile, countAdmins } from '$lib/services/authService';
-
-	import Label from '$lib/components/Label.svelte';
-	import { userRoles } from '$lib/utils/constants';
+	import UserForm from '$lib/components/UserForm.svelte';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
+	import Spinner from '$lib/components/Spinner.svelte';
 
 	const userID = page.params.userID;
 	/** @type {{data: any}} */
 	let { data } = $props();
-	let currentUser = $state(data.user);
-	const docRef = doc(database, 'users', userID);
-	let numberOfAdmins;
+	// data.user is a Firebase Auth User, not our custom User type
+	let firebaseUser = data.user;
+	let loading = $state(true);
 
-	const errorObject = $state({
-		emailErr: '',
-		roleErr: '',
+	// Create our custom User object from Firebase user data
+	let currentUser = $state<User>({
+		firstname: '',
+		lastname: '',
+		email: firebaseUser?.email || '',
+		displayName: firebaseUser?.displayName || '',
+		uid: firebaseUser?.uid || '',
+		role: firebaseUser?.role || '',
 	});
+
+	const docRef = doc(database, 'users', userID);
+	let numberOfAdmins = 0;
+	let working = $state(false);
 
 	onMount(async () => {
 		const doc = await getDoc(docRef);
 		currentUser = {
 			...currentUser,
-			firstname: doc.data().firstname,
-			lastname: doc.data().lastname,
+			firstname: doc.data()?.firstname || '',
+			lastname: doc.data()?.lastname || '',
 		};
+		/**
+		 * TODO: Hash and compare objects for changes
+		 */
 		numberOfAdmins = await countAdmins();
+		loading = false;
 	});
 
 	const handleSave = async () => {
 		/** we must prevent to have the final admin being changed */
 		if (data.user.role === 'admin' && currentUser.role !== 'admin' && numberOfAdmins === 1) {
 			currentUser.role = 'admin';
-			errorObject.roleErr = 'You can not override the only admin.';
+			notificationStore.addToast('error', 'You can not override the only admin.', 0);
 			return;
 		} else {
-			errorObject.roleErr = '';
 			try {
-				const result = await updateUserProfile(currentUser);
-				if (result) {
-					updateDoc(docRef, {
-						firstname: currentUser.firstname,
-						lastname: currentUser.lastname,
-						displayName: currentUser.displayName,
-					});
-				}
+				await updateUserProfile(currentUser);
+				updateDoc(docRef, {
+					firstname: currentUser.firstname,
+					lastname: currentUser.lastname,
+					displayName: currentUser.displayName,
+				});
+				notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
+				goto('/admin/useradmin');
 			} catch (error) {
 				console.error("Couldn't update user profile: ", error);
+				notificationStore.addToast('error', Messages.UPDATEERROR, 0);
 			}
-			goto('/admin/useradmin');
 		}
 	};
 
 	const handleCancel = () => {
 		goto('/admin/useradmin');
 	};
-
-	const handleSetRole = async () => {};
 </script>
 
-<form onsubmit={preventDefault(handleSave)}>
-	<div class="mb-6 grid gap-6 md:grid-cols-2">
-		<div class="mb-6">
-			<Label class="mb-2 block" child="firstname">First Name</Label>
-			<input
-				id="firstname"
-				class="input input-bordered input-lg w-full"
-				placeholder="First name"
-				bind:value={currentUser.firstname}
-			/>
-		</div>
-		<div class="mb-6">
-			<Label child="lastname" class="mb-2 block">Last Name</Label>
-			<input
-				id="lastname"
-				class="input input-bordered input-lg w-full"
-				placeholder="Last name"
-				bind:value={currentUser.lastname}
-			/>
-		</div>
-		<div class="mb-6">
-			<Label child="displayname" class="mb-2 block">Display Name *</Label>
-			<input
-				id="displayname"
-				class="input input-bordered input-lg w-full"
-				placeholder="Display name"
-				bind:value={currentUser.displayName}
-				required
-			/>
-		</div>
-		<div class="mb-6">
-			<Label child="email" class="mb-2 block">Email</Label>
-			<input
-				id="email"
-				class="input input-bordered input-lg w-full"
-				placeholder="Email"
-				bind:value={currentUser.email}
-				disabled
-			/>
-		</div>
-		<div class="mb-6">
-			<Label child="role" class="mb-2 block">User role</Label>
-			<select class="select select-bordered select-lg w-full" d bind:value={currentUser.role}>
-				{#each userRoles as role}
-					<option value={role.value}>{role.name}</option>
-				{/each}
-			</select>
-		</div>
-		{#if errorObject.roleErr}
-			<div class="mb-6 flex w-full items-center justify-center font-semibold text-red-800">
-				{errorObject.roleErr}
-			</div>
-		{/if}
-	</div>
+{#if loading}
+	<div>Loading...</div>
+{:else}
+	<UserForm user={currentUser} onUpdate={handleSave} onCancel={handleCancel} />
+{/if}
 
-	<div class="mx-[25%] mb-6 flex flex-row justify-between">
-		<button type="button" class="btn-custom btn-custom-secondary" onclick={handleCancel}
-			>Cancel</button
-		>
-		<button type="submit" class="btn-custom btn btn-primary">Save</button>
+{#if working}
+	<div class=" fixed inset-0 z-50 flex items-center justify-center">
+		<div class="scale-150">
+			<Spinner />
+		</div>
 	</div>
-</form>
+{/if}
+
+<ToastContainer />
 
 <style>
 </style>

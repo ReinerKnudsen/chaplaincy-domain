@@ -12,7 +12,7 @@
 	interface Props {
 		open: boolean;
 		title: string;
-		description: string;
+		message: string;
 		confirmText: string;
 		cancelText: string;
 		confirmVariant?: ButtonProps['variant'];
@@ -23,7 +23,7 @@
 	let {
 		open = false,
 		title,
-		description,
+		message,
 		confirmText,
 		cancelText,
 		confirmVariant = 'primary',
@@ -49,7 +49,7 @@
 				{title}
 			</DialogTitle>
 			<DialogDescription>
-				{@html description}
+				{@html message}
 			</DialogDescription>
 		</DialogHeader>
 		<DialogFooter>

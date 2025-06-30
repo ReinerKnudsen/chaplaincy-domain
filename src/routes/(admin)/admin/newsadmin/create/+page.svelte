@@ -12,8 +12,10 @@
 	import NewsForm from '$lib/components/NewsForm.svelte';
 	import { notificationStore } from '$lib/stores/notifications';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
+	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 
 	let pageHasUnsavedChanges = $state(false);
+	let showNavigateWarning = $state(false);
 
 	const handleSaveDraft = async (newNewsItem: News) => {
 		try {
@@ -30,14 +32,11 @@
 	const handleUnsavedChangesUpdate = (formHasUnsavedChanges: boolean): void => {
 		pageHasUnsavedChanges = formHasUnsavedChanges;
 	};
-	/**
-	 * TODO: replcae dialog with the global modal (to be delivered)
-	 */
+
 	beforeNavigate(({ cancel }) => {
 		if (pageHasUnsavedChanges) {
-			if (!confirm('You have unsaved changes. Are you sure you want to leave this page?')) {
-				cancel();
-			}
+			cancel();
+			showNavigateWarning = true;
 		}
 	});
 
@@ -58,7 +57,26 @@
 			console.error('Error writing document:', error);
 		}
 	};
+
+	const handleNavigateConfirm = () => {
+		showNavigateWarning = false;
+		pageHasUnsavedChanges = false;
+		goto('/admin/newsadmin');
+	};
 </script>
+
+<ConfirmDialog
+	open={showNavigateWarning}
+	title="Unsaved Changes"
+	message="You have unsaved changes. \nAre you sure you want to leave this page?"
+	confirmText="Leave Page"
+	cancelText="Stay on Page"
+	confirmVariant="destructive"
+	onConfirm={handleNavigateConfirm}
+	onCancel={() => {
+		showNavigateWarning = false;
+	}}
+/>
 
 <div>
 	<NewsForm

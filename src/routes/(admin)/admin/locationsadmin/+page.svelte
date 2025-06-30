@@ -20,6 +20,8 @@
 	} from '$lib/stores/LocationsStore';
 	import { pathName } from '$lib/stores/NavigationStore';
 
+	import { EditMode, EditModeStore } from '$lib/stores/ObjectStore';
+
 	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -118,7 +120,7 @@
 <ConfirmDialog
 	open={showDeleteDialog}
 	title="Confirm Delete"
-	description="Deleting a location document can not be undone.\nDo you really want to delete this item?"
+	message="Deleting a location document can not be undone.\nDo you really want to delete this item?"
 	confirmText="Delete"
 	confirmVariant="destructive"
 	cancelText="Cancel"

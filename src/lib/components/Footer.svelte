@@ -7,6 +7,7 @@
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
 
 	import Icon from '@iconify/svelte';
+	import { Button } from '$lib/components/ui/button';
 
 	const handleLogin = () => {
 		goto('/login');
@@ -32,9 +33,7 @@
 			<div>
 				<h2 class="mb-4 text-lg font-semibold tracking-wide text-gray-800 uppercase">Resources</h2>
 				<nav class="flex flex-col space-y-2">
-					<a href="/newsletter/archive" class="text-gray-600 hover:text-gray-900"
-						>Newsletter Archive</a
-					>
+					<a href="/newsletter/archive" class="text-gray-600 hover:text-gray-900">Newsletter Archive</a>
 				</nav>
 			</div>
 
@@ -64,13 +63,9 @@
 				<h2 class="mb-4 text-lg font-extrabold tracking-wide text-gray-800 uppercase">User</h2>
 				<nav class="flex flex-col space-y-2">
 					{#if !$authStore.isLoggedIn}
-						<button class="text-left text-gray-600 hover:text-gray-900" onclick={handleLogin}
-							>Login</button
-						>
+						<Button variant="inactive" class="border-0" onclick={handleLogin}>Login</Button>
 					{:else}
-						<button class="text-left text-gray-600 hover:text-gray-900" onclick={handleLogout}
-							>Sign out</button
-						>
+						<Button variant="inactive" class="border-0" onclick={handleLogout}>Sign out</Button>
 					{/if}
 				</nav>
 			</div>
@@ -88,18 +83,10 @@
 				>
 					<Icon icon="fa-brands:facebook" class="h-6 w-6" />
 				</a>
-				<a
-					href="https://www.achurchnearyou.com/church/8388/"
-					class="text-gray-500 hover:text-gray-900"
-					target="_blank"
-				>
+				<a href="https://www.achurchnearyou.com/church/8388/" class="text-gray-500 hover:text-gray-900" target="_blank">
 					<Icon icon="streamline-plump:user-pin" class="h-6 w-6" />
 				</a>
-				<a
-					href="https://www.achurchnearyou.com/church/8389/"
-					class="text-gray-500 hover:text-gray-900"
-					target="_blank"
-				>
+				<a href="https://www.achurchnearyou.com/church/8389/" class="text-gray-500 hover:text-gray-900" target="_blank">
 					<Icon icon="streamline-plump:user-pin" class="h-6 w-6" />
 				</a>
 				<a href="/about/contact" class="text-gray-500 hover:text-gray-900">

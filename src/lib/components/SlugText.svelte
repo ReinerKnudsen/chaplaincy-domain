@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
-	import Label from './Label.svelte';
+	import Label from './ui/label/label.svelte';
 
 	interface Props {
 		required?: boolean | null;
@@ -13,7 +13,7 @@
 
 <div id="component-container" class="my-8 rounded-xl border p-4">
 	<div id="component-label" class="flex flex-row items-center justify-between gap-4">
-		<Label class="m-0 text-xl font-semibold" child="slug">Short text (slug) {required ? '*' : ''}</Label>
+		<Label for="slug">Short text (slug) {required ? '*' : ''}</Label>
 		<p class="explanation text-right">
 			<strong>{slugText ? slugText.length : 0} of {MAX_SLUG_TEXT} </strong> characters.
 		</p>

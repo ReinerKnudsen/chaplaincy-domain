@@ -13,6 +13,8 @@
 	import NavigationItem from '$lib/components/NavigationItem.svelte';
 	import NavigationRollUp from '$lib/components/NavigationRollUp.svelte';
 
+	import { Button } from '$lib/components/ui/button';
+
 	let user = $state();
 	let menuOpen = $state(false);
 	let aboutMenuOpen = $state(true);
@@ -62,12 +64,7 @@
 
 		<!-- Mobile Menu -->
 		<div class="mobile-menu-container lg:hidden">
-			<button
-				type="button"
-				id="mobile-menu"
-				class="m-0.5 ms-3 rounded-lg p-1.5 whitespace-normal hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:outline-hidden lg:hidden dark:hover:bg-gray-600"
-				aria-label="Open main menu"
-				onclick={toggleMobileMenu}
+			<Button type="button" id="mobile-menu" variant="ghost" aria-label="Open main menu" onclick={toggleMobileMenu}
 				><span class="sr-only">Open main menu</span>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -81,13 +78,8 @@
 					viewBox="0 0 24 24"
 					stroke-width="2"
 				>
-					<path
-						stroke="currentColor"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M4 6h16M4 12h16M4 18h16"
-					></path>
-				</svg></button
+					<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+				</svg></Button
 			>
 			{#if menuOpen}
 				<div
@@ -103,31 +95,11 @@
 						{#if aboutMenuOpen}
 							<div class="bg-white-primary/95 relative w-full rounded-lg py-2 shadow-lg">
 								<NavigationItem url="/about" label="Who we are" onClick={toggleMobileMenu} />
-								<NavigationItem
-									url="/about/responsibilities"
-									label="Who is who"
-									onClick={toggleMobileMenu}
-								/>
-								<NavigationItem
-									url="/about/locations"
-									label="Where we are"
-									onClick={toggleMobileMenu}
-								/>
-								<NavigationItem
-									url="/about/facbc"
-									label="The FACBC e.V."
-									onClick={toggleMobileMenu}
-								/>
-								<NavigationItem
-									url="/about/safeguarding"
-									label="Safeguarding"
-									onClick={toggleMobileMenu}
-								/>
-								<NavigationItem
-									url="/about/contact"
-									label="Get in touch"
-									onClick={toggleMobileMenu}
-								/>
+								<NavigationItem url="/about/responsibilities" label="Who is who" onClick={toggleMobileMenu} />
+								<NavigationItem url="/about/locations" label="Where we are" onClick={toggleMobileMenu} />
+								<NavigationItem url="/about/facbc" label="The FACBC e.V." onClick={toggleMobileMenu} />
+								<NavigationItem url="/about/safeguarding" label="Safeguarding" onClick={toggleMobileMenu} />
+								<NavigationItem url="/about/contact" label="Get in touch" onClick={toggleMobileMenu} />
 							</div>
 						{/if}
 

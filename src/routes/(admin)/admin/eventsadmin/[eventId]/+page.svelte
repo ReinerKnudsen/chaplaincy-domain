@@ -90,10 +90,7 @@
 		pageHasUnsavedChanges = formHasUnsavedChanges;
 	};
 
-	$inspect('Changes? ', pageHasUnsavedChanges);
-	$inspect('Show warning? ', showNavigateWarning);
-
-	beforeNavigate(({ cancel }) => {
+	beforeNavigate(({ cancel }: any) => {
 		if (pageHasUnsavedChanges) {
 			cancel();
 			showNavigateWarning = true;

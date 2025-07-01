@@ -12,7 +12,8 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- add image metadata (alt text and caption) are now saved with the image
+- when an image is re-used the meta data saved with it is re-used as well
 
 ### Changed
 
@@ -28,6 +29,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 - installes Shadcn UI for better UI control
 - migrated all components from Daisy UI to Shadcn-Ui
+
 ## [2.2.0] - 2025-06-29
 
 ### Added

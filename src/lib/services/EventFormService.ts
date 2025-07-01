@@ -63,7 +63,16 @@ export const eventFormService = async (
 
 	// Upload selected image
 	if (selectedImage && !imageExists) {
-		newEvent.image = await uploadImage(selectedImage);
+		// Validate that alt text is provided when uploading an image (accessibility requirement)
+		if (!newEvent.imageAlt || newEvent.imageAlt.trim() === '') {
+			throw new Error('Alt text is required when uploading an image for accessibility.');
+		}
+		
+		newEvent.image = await uploadImage(
+			selectedImage, 
+			newEvent.imageAlt, 
+			newEvent.imageCaption || ''
+		);
 	} else {
 		newEvent.image = existingImageUrl;
 	}

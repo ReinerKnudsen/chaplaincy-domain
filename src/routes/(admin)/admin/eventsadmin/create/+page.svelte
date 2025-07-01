@@ -19,10 +19,46 @@
 	let pageHasUnsavedChanges = $state(false);
 	let showNavigateWarning = $state(false);
 
-	const saveNewEvent = async (newEvent: DomainEvent) => {
+	beforeNavigate(({ cancel }) => {
+		if (pageHasUnsavedChanges) {
+			cancel();
+			showNavigateWarning = true;
+		}
+	});
+
+	const handleCancel = () => {
+		EditModeStore.set(EditMode.Empty);
+		resetImageselection();
+		pageHasUnsavedChanges = false;
+		goto('/admin/eventsadmin');
+	};
+
+	const handleNavigateConfirm = () => {
+		showNavigateWarning = false;
+		pageHasUnsavedChanges = false;
+		goto('/admin/eventsadmin');
+	};
+
+	const handleSaveDraft = async (thisEvent: DomainEvent) => {
+		if (!thisEvent) return;
+		try {
+			await addDoc(eventsColRef, thisEvent);
+			EditModeStore.set(EditMode.Empty);
+			notificationStore.addToast('success', Messages.DRAFTSUCCESS, TOAST_DURATION);
+			resetImageselection();
+			pageHasUnsavedChanges = false;
+			goto('/admin/eventsadmin');
+		} catch (error) {
+			notificationStore.addToast('error', Messages.DRAFTERROR);
+			console.error('Error creating event: ', error);
+		}
+	};
+
+	const handlesaveNewEvent = async (newEvent: DomainEvent) => {
 		if (validateEventData(newEvent)) {
 			return;
 		}
+		// Validate event and upload selected image
 		const thisEvent: DomainEvent | undefined = await eventFormService(
 			newEvent,
 			$selectedImage,
@@ -35,6 +71,7 @@
 			EditModeStore.set(EditMode.Empty);
 			notificationStore.addToast('success', Messages.SAVESUCCESS, TOAST_DURATION);
 			resetImageselection();
+			pageHasUnsavedChanges = false;
 			goto('/admin/eventsadmin');
 		} catch (error) {
 			notificationStore.addToast('error', Messages.SAVERROR);
@@ -42,41 +79,8 @@
 		}
 	};
 
-	const saveDraft = async (thisEvent: DomainEvent) => {
-		if (!thisEvent) return;
-		try {
-			await addDoc(eventsColRef, thisEvent);
-			EditModeStore.set(EditMode.Empty);
-			notificationStore.addToast('success', Messages.DRAFTSUCCESS, TOAST_DURATION);
-			resetImageselection();
-			goto('/admin/eventsadmin');
-		} catch (error) {
-			notificationStore.addToast('error', Messages.DRAFTERROR);
-			console.error('Error creating event: ', error);
-		}
-	};
-
-	const handleCancel = () => {
-		EditModeStore.set(EditMode.Empty);
-		resetSelectedLocation();
-		goto('/admin/eventsadmin');
-	};
-
 	const handleUnsavedChangesUpdate = (formHasUnsavedChanges: boolean): void => {
 		pageHasUnsavedChanges = formHasUnsavedChanges;
-	};
-
-	beforeNavigate(({ cancel }) => {
-		if (pageHasUnsavedChanges) {
-			cancel();
-			showNavigateWarning = true;
-		}
-	});
-
-	const handleNavigateConfirm = () => {
-		showNavigateWarning = false;
-		pageHasUnsavedChanges = false;
-		goto('/admin/eventsadmin');
 	};
 </script>
 
@@ -95,9 +99,9 @@
 
 <div>
 	<EventForm
-		onCreateNew={saveNewEvent}
+		onCreateNew={handlesaveNewEvent}
 		onCancel={handleCancel}
-		onSaveDraft={saveDraft}
+		onSaveDraft={handleSaveDraft}
 		onUnsavedChangesUpdate={handleUnsavedChangesUpdate}
 	/>
 </div>

@@ -25,16 +25,21 @@
 		data: Params;
 	}
 
-	let currentDocRef: DocumentReference | null = null;
-
 	let { data }: Props = $props();
 	let pageHasUnsavedChanges = $state(false);
-	currentDocRef = data.docRef;
-
+	let currentDocRef: DocumentReference | null = data.docRef;
 	let showNavigateWarning = $state(false);
+
+	beforeNavigate(({ cancel }: any) => {
+		if (pageHasUnsavedChanges) {
+			cancel();
+			showNavigateWarning = true;
+		}
+	});
 
 	const handleCancel = () => {
 		resetSelectedLocation();
+		pageHasUnsavedChanges = false;
 		EditModeStore.set(EditMode.Empty);
 		goto('/admin/eventsadmin');
 	};
@@ -47,15 +52,16 @@
 			const itemData = { ...thisEvent } as DocumentData;
 			await updateDoc(data.docRef, itemData);
 			EditModeStore.set('');
+			pageHasUnsavedChanges = false;
 			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
-			goto('/admin/newsadmin');
+			goto('/admin/	newsadmin');
 		} catch (error) {
 			notificationStore.addToast('error', Messages.UPDATEERROR);
 			console.error('Error updating the news: ', error);
 		}
 	};
 
-	const updateEvent = async (updatedEvent: DomainEvent) => {
+	const handleUpdateEvent = async (updatedEvent: DomainEvent) => {
 		try {
 			if (!data.docRef) {
 				throw new Error('No document reference provided');
@@ -78,6 +84,7 @@
 			await updateDoc(data.docRef, eventData);
 			EditModeStore.set(EditMode.Empty);
 			resetSelectedLocation();
+			pageHasUnsavedChanges = false;
 			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 			goto('/admin/eventsadmin');
 		} catch (error) {
@@ -89,13 +96,6 @@
 	const handleUnsavedChangesUpdate = (formHasUnsavedChanges: boolean): void => {
 		pageHasUnsavedChanges = formHasUnsavedChanges;
 	};
-
-	beforeNavigate(({ cancel }: any) => {
-		if (pageHasUnsavedChanges) {
-			cancel();
-			showNavigateWarning = true;
-		}
-	});
 
 	const handleNavigateConfirm = () => {
 		showNavigateWarning = false;
@@ -121,7 +121,7 @@
 	<EventForm
 		thisEvent={data.newEvent}
 		onCancel={handleCancel}
-		onUpdate={updateEvent}
+		onUpdate={handleUpdateEvent}
 		onSaveDraft={handleSaveDraft}
 		onUnsavedChangesUpdate={handleUnsavedChangesUpdate}
 	/>

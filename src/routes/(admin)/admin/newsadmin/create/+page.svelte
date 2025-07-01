@@ -4,8 +4,8 @@
 	import { addDoc } from 'firebase/firestore';
 	import { newsColRef } from '$lib/firebase/firebaseConfig';
 
-	import { type News, EditModeStore } from '$lib/stores/ObjectStore';
-	import { selectedImage, imageExists, existingImageUrl } from '$lib/stores/ImageSelectionStore';
+	import { type News, EditModeStore, EditMode } from '$lib/stores/ObjectStore';
+	import { selectedImage, imageExists, existingImageUrl, resetImageselection } from '$lib/stores/ImageSelectionStore';
 	import { newsFormService } from '$lib/services/NewsFormService';
 	import { Messages } from '$lib/utils/messages';
 
@@ -20,7 +20,8 @@
 	const handleSaveDraft = async (newNewsItem: News) => {
 		try {
 			await addDoc(newsColRef, newNewsItem);
-			EditModeStore.set('');
+			EditModeStore.set(EditMode.Empty);
+			pageHasUnsavedChanges = false;
 			notificationStore.addToast('success', Messages.DRAFTSUCCESS);
 			goto('/admin/newsadmin');
 		} catch (error) {
@@ -49,6 +50,7 @@
 				$existingImageUrl
 			);
 			await addDoc(newsColRef, thisNews);
+			pageHasUnsavedChanges = false;
 			goto('/admin/newsadmin');
 			EditModeStore.set('');
 			notificationStore.addToast('success', Messages.SAVESUCCESS);
@@ -61,6 +63,12 @@
 	const handleNavigateConfirm = () => {
 		showNavigateWarning = false;
 		pageHasUnsavedChanges = false;
+		goto('/admin/newsadmin');
+	};
+
+	const handleCancel = () => {
+		EditModeStore.set(EditMode.Empty);
+		resetImageselection();
 		goto('/admin/newsadmin');
 	};
 </script>
@@ -83,6 +91,7 @@
 		onCreateNew={saveNewItem}
 		onSaveDraft={handleSaveDraft}
 		onUnsavedChangesUpdate={handleUnsavedChangesUpdate}
+		onCancel={handleCancel}
 	/>
 </div>
 

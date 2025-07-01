@@ -11,18 +11,21 @@
 	import { Button } from '$lib/components/ui/button';
 
 	interface Props {
-		imageUrl?: string;
-		onImageChange: () => void;
+		imageUrl?: string | null | undefined;
+		onImageChange: (imageData?: { url: string; altText: string; caption: string }) => void;
 	}
 
-	let { imageUrl = $bindable(), onImageChange }: Props = $props();
+	let { imageUrl, onImageChange }: Props = $props();
 
 	const authorizedExtensions = '.jpg, .jpeg, .png, .webp';
 
 	let selectedFile: File | null = null;
 	let moduleWidth = 'w-[400px]';
 	let imageError: string = $state('');
-	let imageNote: string = $state('');
+	let imageMessage: string = $state('');
+
+	// Separate display URL from binding URL to prevent parent override
+	let displayUrl: string = $state(imageUrl || '');
 
 	const handleFileChange = async (event: Event) => {
 		event.preventDefault();
@@ -48,11 +51,20 @@
 		}
 		// If the file already exists
 		if (!!existingFile) {
+			// reset any error and define the message
 			imageError = '';
-			imageNote = 'This image already exists.';
+			imageMessage = 'This image already exists.';
 			imageExists.set(true);
 			existingImageUrl.set(existingFile.data().url);
-			imageUrl = existingFile.data().url;
+			displayUrl = existingFile.data().url; // Use for display
+			
+			// Cast DocumentData to ImageDocument and handle null values
+			const imageData = existingFile.data() as { url: string; altText: string | null; caption?: string | null };
+			onImageChange({
+				url: imageData.url,
+				altText: imageData.altText || '',
+				caption: imageData.caption || ''
+			});
 		} else {
 			if ($selectedImage.size > MAX_IMAGE_SIZE) {
 				imageError = 'The image is too big.';
@@ -60,16 +72,17 @@
 				return;
 			} else {
 				imageError = '';
-				imageUrl = URL.createObjectURL($selectedImage);
+				displayUrl = URL.createObjectURL($selectedImage); // Use for display
 			}
+			onImageChange && onImageChange();
 		}
-		onImageChange();
 	};
 
 	const resetInput = () => {
 		selectedFile = null;
 		if (imageUrl) URL.revokeObjectURL(imageUrl);
 		imageUrl = '';
+		displayUrl = '';
 	};
 
 	onDestroy(() => {
@@ -77,7 +90,7 @@
 	});
 </script>
 
-{#if !imageUrl}
+{#if !displayUrl}
 	<form class={moduleWidth}>
 		<label class={moduleWidth + 'group flex h-[300px] flex-col rounded-lg border bg-slate-100 p-10 text-center '}>
 			<div class="flex h-full w-full flex-col items-center justify-center text-center">
@@ -96,9 +109,9 @@
 	</form>
 {:else}
 	<div class="image-container">
-		<img class="w-full" src={imageUrl} alt="selectedFile" />
-		{#if imageNote}
-			<p class="mt-3 text-center text-base text-gray-700">Note: {@html imageNote}</p>
+		<img class="w-full" src={displayUrl} alt="selectedFile" />
+		{#if imageMessage}
+			<p class="mt-3 text-center text-base text-gray-700">Note: {@html imageMessage}</p>
 		{/if}
 		<div class="col-span-2 mt-8 text-center">
 			<Button variant="primary" onclick={resetInput}>Change</Button>

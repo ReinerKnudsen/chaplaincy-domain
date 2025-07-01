@@ -122,8 +122,13 @@
 		checkForChanges();
 	};
 
-	const handleImageChange = () => {
-		thisEvent = { ...thisEvent, image: $selectedImage?.name };
+	const handleImageChange = (imageData?: { url: string; altText: string; caption: string }) => {
+		if (imageData) {
+			thisEvent = { ...thisEvent, image: imageData.url, imageAlt: imageData.altText, imageCaption: imageData.caption };
+		} else {
+			// the image prop is temporarily set to the name of the image file, to be replaced at save
+			thisEvent = { ...thisEvent, image: $selectedImage?.name, imageAlt: '', imageCaption: '' };
+		}
 		checkForChanges();
 	};
 
@@ -451,11 +456,7 @@
 			<fieldset>
 				<Label for="image">Image</Label>
 				<div class="flex items-center justify-center">
-					{#if thisEvent.image}
-						<UploadImage imageUrl={thisEvent.image} onImageChange={handleImageChange} />
-					{:else}
-						<UploadImage imageUrl="" onImageChange={handleImageChange} />
-					{/if}
+					<UploadImage imageUrl={thisEvent.image} onImageChange={handleImageChange} />
 				</div>
 			</fieldset>
 

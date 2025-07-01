@@ -7,6 +7,8 @@ interface ImageDocument {
 	name: string;
 	url: string;
 	createdAt: Date;
+	altText: string | null;
+	caption?: string | null;
 }
 
 export enum FileType {
@@ -15,7 +17,7 @@ export enum FileType {
 }
 
 // Upload an image to Firebase storage
-export const uploadImage = async (selectedImage: File): Promise<string | null> => {
+export const uploadImage = async (selectedImage: File, altText: string, caption: string): Promise<string | null> => {
 	if (selectedImage) {
 		const storageRef = ref(storage, 'images/' + selectedImage.name);
 		try {
@@ -25,6 +27,8 @@ export const uploadImage = async (selectedImage: File): Promise<string | null> =
 				name: selectedImage.name,
 				url: imageUrl,
 				createdAt: new Date(),
+				altText: altText,
+				caption: caption || '',
 			} as ImageDocument);
 			return imageUrl;
 		} catch (error) {

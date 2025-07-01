@@ -91,8 +91,13 @@
 		checkForChanges();
 	};
 
-	const handleImageChange = () => {
-		thisNews = { ...thisNews, image: $selectedImage?.url };
+	const handleImageChange = (imageData?: { url: string; altText: string; caption: string }) => {
+		if (imageData) {
+			thisNews = { ...thisNews, image: imageData.url, imageAlt: imageData.altText, imageCaption: imageData.caption };
+		} else {
+			// the image prop is temporarily set to the name of the image file, to be replaced at save
+			thisNews = { ...thisNews, image: $selectedImage?.name, imageAlt: '', imageCaption: '' };
+		}
 		checkForChanges();
 	};
 

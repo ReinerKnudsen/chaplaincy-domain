@@ -24,15 +24,6 @@
 	let { data }: Props = $props();
 	let showNavigateWarning = $state(false);
 
-	const handleCancel = () => {
-		EditModeStore.set('');
-		goto('/admin/newsadmin');
-	};
-
-	const handleUnsavedChangesUpdate = (formHasUnsavedChanges: boolean): void => {
-		pageHasUnsavedChanges = formHasUnsavedChanges;
-	};
-
 	beforeNavigate(({ cancel }) => {
 		if (pageHasUnsavedChanges) {
 			cancel();
@@ -40,7 +31,40 @@
 		}
 	});
 
-	const updateNews = async (updatedNews: News) => {
+	const handleCancel = () => {
+		EditModeStore.set('');
+		pageHasUnsavedChanges = false;
+		goto('/admin/newsadmin');
+	};
+
+	const handleNavigateConfirm = () => {
+		showNavigateWarning = false;
+		pageHasUnsavedChanges = false;
+		goto('/admin/newsadmin');
+	};
+
+	const handleSaveDraft = async (thisNews: News) => {
+		try {
+			if (!data.docRef) {
+				throw new Error('No document reference provided');
+			}
+			const newsData = { ...thisNews } as DocumentData;
+			await updateDoc(data.docRef, newsData);
+			EditModeStore.set('');
+			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
+			pageHasUnsavedChanges = false;
+			goto('/admin/newsadmin');
+		} catch (error) {
+			notificationStore.addToast('error', Messages.UPDATEERROR);
+			console.error('Error updating the news: ', error);
+		}
+	};
+
+	const handleUnsavedChangesUpdate = (formHasUnsavedChanges: boolean): void => {
+		pageHasUnsavedChanges = formHasUnsavedChanges;
+	};
+
+	const handleUpdateNews = async (updatedNews: News) => {
 		try {
 			if (!data.docRef) {
 				throw new Error('No document reference provided');
@@ -57,33 +81,12 @@
 			await updateDoc(data.docRef, newsData);
 			EditModeStore.set('');
 			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
+			pageHasUnsavedChanges = false;
 			goto('/admin/newsadmin');
 		} catch (error) {
 			notificationStore.addToast('error', Messages.UPDATEERROR);
 			console.error('Error updating the news: ', error);
 		}
-	};
-
-	const handleSaveDraft = async (thisNews: News) => {
-		try {
-			if (!data.docRef) {
-				throw new Error('No document reference provided');
-			}
-			const newsData = { ...thisNews } as DocumentData;
-			await updateDoc(data.docRef, newsData);
-			EditModeStore.set('');
-			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
-			goto('/admin/newsadmin');
-		} catch (error) {
-			notificationStore.addToast('error', Messages.UPDATEERROR);
-			console.error('Error updating the news: ', error);
-		}
-	};
-
-	const handleNavigateConfirm = () => {
-		showNavigateWarning = false;
-		pageHasUnsavedChanges = false;
-		goto('/admin/newsadmin');
 	};
 </script>
 
@@ -103,7 +106,7 @@
 <div>
 	<NewsForm
 		thisNews={data.newsItem}
-		onUpdate={updateNews}
+		onUpdate={handleUpdateNews}
 		onSaveDraft={handleSaveDraft}
 		onCancel={handleCancel}
 		onUnsavedChangesUpdate={handleUnsavedChangesUpdate}

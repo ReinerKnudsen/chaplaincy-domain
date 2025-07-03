@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
 
-	import { getMetadata, getDownloadURL } from 'firebase/storage';
+	import { getDownloadURL, type StorageReference } from 'firebase/storage';
 
-	import { selectedImage, existingImageData } from '$lib/stores/ImageSelectionStore';
-	import { FileType, checkIfFileExists } from '$lib/services/fileService';
+	import { checkIfFileExists } from '$lib/services/fileService';
 
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
 
@@ -12,78 +11,57 @@
 
 	interface Props {
 		imageUrl?: string | null | undefined;
-		onImageChange: (imageData?: { url: string; altText: string; caption: string }) => void;
+		onNewFileSelected: (file: File) => void;
+		onExistingFileSelected: (fileRef: StorageReference) => void;
 	}
 
-	let { imageUrl, onImageChange }: Props = $props();
+	let { imageUrl, onNewFileSelected, onExistingFileSelected }: Props = $props();
 
 	const authorizedExtensions = '.jpg, .jpeg, .png, .webp';
 
-	let selectedFile: File | null = null;
+	let selectedImage: File | null = null;
 	let moduleWidth = 'w-[400px]';
-	let imageError: string = $state('');
 	let imageMessage: string = $state('');
 
 	// Separate display URL from binding URL to prevent parent override
 	let displayUrl: string = $state(imageUrl || '');
 
 	const handleImageChange = async (event: Event) => {
+		// all the component does is to return the File object and display the selected image
 		event.preventDefault();
-		imageError = '';
+		imageMessage = '';
 		const target = event.target as HTMLInputElement;
 		const files = target.files;
 
 		if (!files || files.length === 0) {
-			imageError = 'No file selected';
-			$selectedImage = null;
+			imageMessage = 'No file selected';
 			return;
 		}
-		selectedImage.set(files[0]);
-		$inspect('In upload component: ', selectedImage);
-		// If there is no image than leave here
-		if (!$selectedImage) return;
+		selectedImage = files[0];
 
 		// Verify if image already exists
-		const currentImageRef = await checkIfFileExists($selectedImage.name);
+		const currentImageRef = await checkIfFileExists(selectedImage.name);
 		if (currentImageRef) {
-			imageError = '';
 			imageMessage = 'This image already exists.';
-
-			// Get the actual download URL
-			const downloadUrl = await getDownloadURL(currentImageRef);
-			displayUrl = downloadUrl;
-			// Safely get custom metadata
-			const metadata = await getMetadata(currentImageRef);
-			const altText = metadata.customMetadata?.imageAlt || '';
-			const caption = metadata.customMetadata?.imageCaption || '';
-
-			existingImageData.set({
-				downloadUrl: downloadUrl,
-				altText: altText,
-				caption: caption,
-			});
-
-			onImageChange({
-				url: downloadUrl,
-				altText: altText,
-				caption: caption,
-			});
-		} else {
-			if ($selectedImage.size > MAX_IMAGE_SIZE) {
-				imageError = 'The image is too big.';
-				selectedFile = null;
-				return;
-			} else {
-				imageError = '';
-				displayUrl = URL.createObjectURL($selectedImage); // Use for display
-			}
-			existingImageData.set(null);
-			onImageChange && onImageChange();
+			displayUrl = await getDownloadURL(currentImageRef); // Use for display
+			onExistingFileSelected(currentImageRef);
+			return;
 		}
+
+		// Verify file size
+		if (selectedImage.size > MAX_IMAGE_SIZE) {
+			imageMessage = 'The image is too big.';
+			return;
+		}
+
+		imageMessage = '';
+
+		displayUrl = URL.createObjectURL(selectedImage); // Use for display
+		selectedImage && onNewFileSelected(selectedImage);
 	};
 
 	const resetInput = () => {
-		selectedFile = null;
+		selectedImage = null;
 		if (imageUrl) URL.revokeObjectURL(imageUrl);
 		imageUrl = '';
 		displayUrl = '';
@@ -107,8 +85,8 @@
 		<div class="mt-3 text-center text-sm">
 			(jpeg, jpg, png, webp, max {MAX_IMAGE_SIZE / 1000}KB)
 		</div>
-		{#if imageError}
-			<p class="mt-3 text-center text-base text-red-700">{@html imageError}</p>
+		{#if imageMessage}
+			<p class="mt-3 text-center text-base text-red-700">{@html imageMessage}</p>
 		{/if}
 	</form>
 {:else}

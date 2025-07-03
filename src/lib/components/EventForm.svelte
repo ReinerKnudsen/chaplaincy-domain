@@ -17,7 +17,6 @@
 		initialLocationState,
 		type Location,
 	} from '$lib/stores/LocationsStore';
-	import { selectedImage } from '$lib/stores/ImageSelectionStore';
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
 	import { cleanText } from '$lib/utils/HTMLfunctions';
 
@@ -33,12 +32,13 @@
 	import StateLabel from './StateLabel.svelte';
 	import UploadImage from '$lib/components/UploadImage.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
+	import { getDownloadURL, getMetadata, type StorageReference } from 'firebase/storage';
 
 	interface Props {
 		thisEvent?: DomainEvent;
-		onSaveDraft?: (event: DomainEvent) => Promise<void>;
-		onCreateNew?: (event: DomainEvent) => Promise<void>;
-		onUpdate?: (event: DomainEvent) => Promise<void>;
+		onSaveDraft?: (event: DomainEvent, image: File | null) => Promise<void>;
+		onCreateNew?: (event: DomainEvent, image: File | null) => Promise<void>;
+		onUpdate?: (event: DomainEvent, image: File | null) => Promise<void>;
 		onCancel: () => void;
 		onUnsavedChangesUpdate: (hasUnsavedChanges: boolean) => void;
 	}
@@ -54,6 +54,7 @@
 
 	let thisEvent = $state(propEvent);
 	let hasImage = $derived(!!thisEvent.image);
+	let newImage: File | null = $state(null);
 	let hasPDF = $derived(!!thisEvent.pdfFile);
 	let showModal = $state(false);
 	let loading = $state(true);
@@ -122,13 +123,18 @@
 		checkForChanges();
 	};
 
-	const handleImageChange = (imageData?: { url: string; altText: string; caption: string }) => {
-		if (imageData) {
-			thisEvent = { ...thisEvent, image: imageData.url, imageAlt: imageData.altText, imageCaption: imageData.caption };
-		} else {
-			// the image prop is temporarily set to the name of the image file, to be replaced at save
-			thisEvent = { ...thisEvent, image: $selectedImage?.name, imageAlt: '', imageCaption: '' };
-		}
+	const handleExistingFileSelected = async (imageRef: StorageReference) => {
+		newImage = null;
+		const altText = await getMetadata(imageRef).then((metadata) => metadata.customMetadata?.imageAlt);
+		const captionText = await getMetadata(imageRef).then((metadata) => metadata.customMetadata?.imageCaption);
+		const imagePath = await getDownloadURL(imageRef);
+		thisEvent = { ...thisEvent, image: imagePath, imageAlt: altText || '', imageCaption: captionText || '' };
+		checkForChanges();
+	};
+
+	const handleNewFileSelected = (image: File) => {
+		newImage = image;
+		thisEvent = { ...thisEvent, image: image.name, imageAlt: '', imageCaption: '' };
 		checkForChanges();
 	};
 
@@ -168,7 +174,7 @@
 
 	const handleSaveDraft = async () => {
 		if (onSaveDraft) {
-			await onSaveDraft(thisEvent);
+			await onSaveDraft(thisEvent, newImage);
 		}
 	};
 
@@ -200,9 +206,9 @@
 		e.preventDefault();
 
 		if ($EditModeStore === EditMode.New && onCreateNew) {
-			await onCreateNew(thisEvent);
+			await onCreateNew(thisEvent, newImage);
 		} else if ($EditModeStore === EditMode.Update && onUpdate) {
-			await onUpdate(thisEvent);
+			await onUpdate(thisEvent, newImage);
 		}
 	};
 
@@ -390,8 +396,8 @@
 			</fieldset>
 		</div>
 
+		<!-- Publish date  -->
 		<div id="publish" class="form bg-white-primary my-8 p-10">
-			<!-- Publish date  -->
 			<div>
 				<fieldset class="flex flex-col" disabled={!thisEvent.startdate}>
 					<Label for="publishdate">Publish Date</Label>
@@ -457,7 +463,11 @@
 			<fieldset>
 				<Label for="image">Image</Label>
 				<div class="flex items-center justify-center">
-					<UploadImage imageUrl={thisEvent.image} onImageChange={handleImageChange} />
+					<UploadImage
+						imageUrl={thisEvent.image}
+						onNewFileSelected={handleNewFileSelected}
+						onExistingFileSelected={handleExistingFileSelected}
+					/>
 				</div>
 			</fieldset>
 

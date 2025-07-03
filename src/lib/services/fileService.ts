@@ -1,7 +1,7 @@
 // fileService.ts provides file related services
 import { database, storage } from '../firebase/firebaseConfig';
 import { ref, uploadBytes, getDownloadURL, updateMetadata, type StorageReference, getMetadata } from 'firebase/storage';
-import { setDoc, doc, getDoc } from 'firebase/firestore';
+import { setDoc, doc } from 'firebase/firestore';
 
 interface ImageDocument {
 	name: string;

@@ -1,19 +1,10 @@
-import { validateEventData, buildTimeStamp } from '$lib/services/validateForm';
-import { existingImageData as data, selectedImage as image } from '$lib/stores/ImageSelectionStore';
-import { get } from 'svelte/store';
 import { Timestamp } from 'firebase/firestore';
-import { type DomainEvent } from '$lib/stores/ObjectStore';
+
+import { type DomainEvent, setItemState } from '$lib/stores/ObjectStore';
 import { uploadImage, type ReturnType } from './fileService';
-import { setItemState } from '$lib/stores/ObjectStore';
+import { buildTimeStamp } from '$lib/services/validateForm';
 
 export const eventFormService = async (newEvent: DomainEvent) => {
-	const existingImageData = get(data);
-	const selectedImage = get(image);
-
-	if (validateEventData(newEvent)) {
-		return;
-	}
-
 	// Add calculated Date values
 	// Set publish date to now if not defined
 	if (!newEvent.publishdate) {
@@ -61,18 +52,19 @@ export const eventFormService = async (newEvent: DomainEvent) => {
 		newEvent.endDateTimeUtc = endDateTime.toISOString();
 	}
 
-	// Upload selected image
-	if (selectedImage && !existingImageData) {
-		// Validate that alt text is provided when uploading an image (accessibility requirement)
-		if (!newEvent.imageAlt || newEvent.imageAlt.trim() === '') {
-			throw new Error('Alt text is required when uploading an image for accessibility.');
-		}
-
-		const result: ReturnType = await uploadImage(selectedImage, newEvent.imageAlt, newEvent.imageCaption || '');
-		newEvent.image = result.url;
-		newEvent.imageRef = result.ref;
-	} else {
-		newEvent.image = existingImageData?.downloadUrl || null;
-	}
 	return newEvent;
+};
+
+export const uploadEventImage = async (event: DomainEvent, newImage: File | null): Promise<DomainEvent> => {
+	if (!newImage) {
+		return event;
+	}
+	if (newImage) {
+		if (!event.imageAlt || event.imageAlt.trim() === '') {
+			throw new Error('Image alt text is required');
+		}
+		const result: ReturnType = await uploadImage(newImage, event.imageAlt, event.imageCaption || '');
+		event.image = result.url;
+	}
+	return event;
 };

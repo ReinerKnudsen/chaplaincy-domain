@@ -3,14 +3,11 @@
 	import { eventsColRef } from '$lib/firebase/firebaseConfig';
 	import { addDoc } from 'firebase/firestore';
 
-	//import { notificationStore } from '$lib/stores/notifications';
 	import { EditMode, EditModeStore, type DomainEvent } from '$lib/stores/ObjectStore';
-	import { selectedImage, imageExists, existingImageUrl, resetImageselection } from '$lib/stores/ImageSelectionStore';
 	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';
-	import { resetSelectedLocation } from '$lib/stores/LocationsStore';
 
 	import { validateEventData, buildTimeStamp } from '$lib/services/validateForm';
-	import { eventFormService } from '$lib/services/EventFormService';
+	import { eventFormService, uploadEventImage } from '$lib/services/EventFormService';
 
 	import EventForm from '$lib/components/EventForm.svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
@@ -28,7 +25,6 @@
 
 	const handleCancel = () => {
 		EditModeStore.set(EditMode.Empty);
-		resetImageselection();
 		pageHasUnsavedChanges = false;
 		goto('/admin/eventsadmin');
 	};
@@ -39,13 +35,18 @@
 		goto('/admin/eventsadmin');
 	};
 
-	const handleSaveDraft = async (thisEvent: DomainEvent) => {
+	const handleSaveDraft = async (thisEvent: DomainEvent, newImage?: File | null) => {
 		if (!thisEvent) return;
 		try {
-			await addDoc(eventsColRef, thisEvent);
+			let updatedEvent: DomainEvent;
+			if (newImage) {
+				updatedEvent = await uploadEventImage(thisEvent, newImage);
+			} else {
+				updatedEvent = thisEvent;
+			}
+			await addDoc(eventsColRef, updatedEvent);
 			EditModeStore.set(EditMode.Empty);
 			notificationStore.addToast('success', Messages.DRAFTSUCCESS, TOAST_DURATION);
-			resetImageselection();
 			pageHasUnsavedChanges = false;
 			goto('/admin/eventsadmin');
 		} catch (error) {
@@ -54,23 +55,16 @@
 		}
 	};
 
-	const handlesaveNewEvent = async (newEvent: DomainEvent) => {
-		if (validateEventData(newEvent)) {
-			return;
-		}
-		// Validate event and upload selected image
-		const thisEvent: DomainEvent | undefined = await eventFormService(
-			newEvent,
-			$selectedImage,
-			$imageExists,
-			$existingImageUrl
-		);
-
+	const handlesaveNewEvent = async (thisEvent: DomainEvent, newImage?: File | null) => {
+		if (validateEventData(thisEvent) || !thisEvent) return;
 		try {
-			await addDoc(eventsColRef, thisEvent);
+			if (newImage) {
+				thisEvent = await uploadEventImage(thisEvent, newImage);
+			}
+			const updatedEvent = await eventFormService(thisEvent);
+			await addDoc(eventsColRef, updatedEvent);
 			EditModeStore.set(EditMode.Empty);
 			notificationStore.addToast('success', Messages.SAVESUCCESS, TOAST_DURATION);
-			resetImageselection();
 			pageHasUnsavedChanges = false;
 			goto('/admin/eventsadmin');
 		} catch (error) {

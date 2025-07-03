@@ -4,13 +4,12 @@
 	import { updateDoc } from 'firebase/firestore';
 	import { DocumentReference, type DocumentData } from 'firebase/firestore';
 
-	import { selectedImage, imageExists, existingImageUrl } from '$lib/stores/ImageSelectionStore';
 	import { selectedLocation, resetSelectedLocation } from '$lib/stores/LocationsStore';
 	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';
 	import { type DomainEvent, EditMode, EditModeStore } from '$lib/stores/ObjectStore';
 
 	import { validateEventData } from '$lib/services/validateForm';
-	import { eventFormService } from '$lib/services/EventFormService';
+	import { eventFormService, uploadEventImage } from '$lib/services/EventFormService';
 
 	import EventForm from '$lib/components/EventForm.svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
@@ -44,24 +43,29 @@
 		goto('/admin/eventsadmin');
 	};
 
-	const handleSaveDraft = async (thisEvent: DomainEvent) => {
+	const handleSaveDraft = async (thisEvent: DomainEvent, newImage?: File | null) => {
+		if (!thisEvent) return;
 		try {
 			if (!data.docRef) {
 				throw new Error('No document reference provided');
 			}
+			if (newImage) {
+				thisEvent = await uploadEventImage(thisEvent, newImage || null);
+			}
 			const itemData = { ...thisEvent } as DocumentData;
 			await updateDoc(data.docRef, itemData);
-			EditModeStore.set('');
 			pageHasUnsavedChanges = false;
 			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 			goto('/admin/	newsadmin');
+			EditModeStore.set('');
 		} catch (error) {
 			notificationStore.addToast('error', Messages.UPDATEERROR);
 			console.error('Error updating the news: ', error);
 		}
 	};
 
-	const handleUpdateEvent = async (updatedEvent: DomainEvent) => {
+	const handleUpdateEvent = async (thisEvent: DomainEvent, newImage?: File | null) => {
+		if (!validateEventData(thisEvent) || !thisEvent) return;
 		try {
 			if (!data.docRef) {
 				throw new Error('No document reference provided');
@@ -69,19 +73,18 @@
 			if (!currentDocRef) {
 				throw new Error('No document reference provided');
 			}
-			if (validateEventData(updatedEvent)) {
-				return;
+
+			if (newImage) {
+				thisEvent = await uploadEventImage(thisEvent, newImage);
 			}
-
-			const thisEvent: DomainEvent | undefined = await eventFormService(updatedEvent, $selectedImage);
-
-			const eventData = { ...thisEvent } as DocumentData;
+			const updatedEvent: DomainEvent = await eventFormService(thisEvent);
+			const eventData = { ...updatedEvent } as DocumentData;
 			await updateDoc(data.docRef, eventData);
-			EditModeStore.set(EditMode.Empty);
 			resetSelectedLocation();
 			pageHasUnsavedChanges = false;
 			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 			goto('/admin/eventsadmin');
+			EditModeStore.set(EditMode.Empty);
 		} catch (error) {
 			notificationStore.addToast('error', Messages.UPDATEERROR);
 			console.error('Error updating the event: ', error);

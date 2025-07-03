@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 	import { marked } from 'marked';
 
 	import { authStore } from '$lib/stores/AuthStore';
@@ -27,14 +26,15 @@
 	import ToastContainer from './ToastContainer.svelte';
 	import UploadImage from './UploadImage.svelte';
 	import UploadPDF from './UploadPDF.svelte';
+	import { getMetadata, type StorageReference } from 'firebase/storage';
 
 	const author = $authStore.name;
 
 	interface Props {
 		thisNews?: News;
-		onSaveDraft?: (event: News) => Promise<void>;
-		onCreateNew?: (event: News) => Promise<void>;
-		onUpdate?: (event: News) => Promise<void>;
+		onSaveDraft?: (event: News, image: File | null) => Promise<void>;
+		onCreateNew?: (event: News, image: File | null) => Promise<void>;
+		onUpdate?: (event: News, image: File | null) => Promise<void>;
 		onCancel?: () => void;
 		onUnsavedChangesUpdate?: (hasUnsavedChanges: boolean) => void;
 	}
@@ -52,6 +52,7 @@
 	let docRef;
 	let hasPDF = $derived(!!thisNews.pdfFile);
 	let hasImage = $derived(!!thisNews.image);
+	let newImage: File | null = $state(null);
 	let originalHash = $state('');
 	let currentHash = $state('');
 	let hasUnsavedChanges = $state(false);
@@ -91,13 +92,17 @@
 		checkForChanges();
 	};
 
-	const handleImageChange = (imageData?: { url: string; altText: string; caption: string }) => {
-		if (imageData) {
-			thisNews = { ...thisNews, image: imageData.url, imageAlt: imageData.altText, imageCaption: imageData.caption };
-		} else {
-			// the image prop is temporarily set to the name of the image file, to be replaced at save
-			thisNews = { ...thisNews, image: $selectedImage?.name, imageAlt: '', imageCaption: '' };
-		}
+	const handleExistingFileSelected = async (imageRef: StorageReference) => {
+		newImage = null;
+		const altText = await getMetadata(imageRef).then((metadata) => metadata.customMetadata?.imageAlt);
+		const captionText = await getMetadata(imageRef).then((metadata) => metadata.customMetadata?.imageCaption);
+		thisNews = { ...thisNews, image: imageRef.fullPath, imageAlt: altText || '', imageCaption: captionText || '' };
+		checkForChanges();
+	};
+
+	const handleNewFileSelected = (image: File) => {
+		newImage = image;
+		thisNews = { ...thisNews, image: image.name, imageAlt: '', imageCaption: '' };
 		checkForChanges();
 	};
 
@@ -107,7 +112,7 @@
 
 	const handleSaveDraft = () => {
 		if (onSaveDraft) {
-			onSaveDraft(thisNews);
+			onSaveDraft(thisNews, newImage);
 		}
 	};
 
@@ -120,9 +125,9 @@
 		e.preventDefault();
 
 		if ($EditModeStore === EditMode.New && onCreateNew) {
-			await onCreateNew(thisNews);
+			await onCreateNew(thisNews, newImage);
 		} else if ($EditModeStore === EditMode.Update && onUpdate) {
-			await onUpdate(thisNews);
+			await onUpdate(thisNews, newImage);
 		}
 	};
 
@@ -216,11 +221,11 @@
 				<fieldset>
 					<Label for="image">Image</Label>
 					<div class="flex flex-col items-center justify-center">
-						{#if thisNews.image}
-							<UploadImage imageUrl={thisNews.image} onImageChange={handleImageChange} />
-						{:else}
-							<UploadImage imageUrl="" onImageChange={handleImageChange} />
-						{/if}
+						<UploadImage
+							imageUrl={thisNews.image}
+							onExistingFileSelected={handleExistingFileSelected}
+							onNewFileSelected={handleNewFileSelected}
+						/>
 					</div>
 				</fieldset>
 

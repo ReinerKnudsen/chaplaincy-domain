@@ -3,6 +3,7 @@
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
 	import { auth } from '$lib/firebase/firebaseConfig';
 	import { signOut } from 'firebase/auth';
+
 	import caplogo from '$lib/assets/chaplaincy_logo.png';
 	import { menu } from '$lib/data/menu.json';
 
@@ -11,6 +12,7 @@
 	interface MenuItem {
 		title: string;
 		url: string;
+		active: boolean;
 		subMenu?: MenuItem[];
 	}
 
@@ -72,35 +74,39 @@
 		<!-- Desktop Menu -->
 		<div class="hidden lg:flex lg:items-center lg:space-x-6">
 			{#each menu as menuItem}
-				{#if menuItem.subMenu && menuItem.subMenu.length > 0}
-					<!-- Desktop Dropdown -->
-					<div class="group relative">
-						<Button variant="menu">
-							{menuItem.title}
-							<svg class="ml-1 inline h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-								<path
-									fill-rule="evenodd"
-									d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-									clip-rule="evenodd"
-								></path>
-							</svg>
-						</Button>
-						<div
-							class="invisible absolute left-0 z-50 mt-2 w-48 rounded-md bg-white opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100"
-						>
-							{#each menuItem.subMenu as subItem}
-								<a href={subItem.url} class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-									{subItem.title}
-								</a>
-							{/each}
+				{#if menuItem.active}
+					{#if menuItem.subMenu && menuItem.subMenu.length > 0}
+						<!-- Desktop Dropdown -->
+						<div class="group relative">
+							<Button variant="menu">
+								{menuItem.title}
+								<svg class="ml-1 inline h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+									<path
+										fill-rule="evenodd"
+										d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+										clip-rule="evenodd"
+									></path>
+								</svg>
+							</Button>
+							<div
+								class="invisible absolute left-0 z-50 mt-2 w-48 rounded-md bg-white opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100"
+							>
+								{#each menuItem.subMenu as subItem}
+									{#if subItem.active}
+										<a href={subItem.url} class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+											{subItem.title}
+										</a>
+									{/if}
+								{/each}
+							</div>
 						</div>
-					</div>
-				{:else}
-					<Button variant="menu">
-						<a href={menuItem.url} class="px-3 py-2 font-medium text-gray-700 hover:text-blue-600">
-							{menuItem.title}
-						</a>
-					</Button>
+					{:else}
+						<Button variant="menu">
+							<a href={menuItem.url} class="px-3 py-2 font-medium text-gray-700 hover:text-blue-600">
+								{menuItem.title}
+							</a>
+						</Button>
+					{/if}
 				{/if}
 			{/each}
 

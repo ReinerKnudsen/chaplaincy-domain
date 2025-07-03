@@ -73,12 +73,7 @@
 				return;
 			}
 
-			const thisEvent: DomainEvent | undefined = await eventFormService(
-				updatedEvent,
-				$selectedImage,
-				$imageExists,
-				$existingImageUrl
-			);
+			const thisEvent: DomainEvent | undefined = await eventFormService(updatedEvent, $selectedImage);
 
 			const eventData = { ...thisEvent } as DocumentData;
 			await updateDoc(data.docRef, eventData);

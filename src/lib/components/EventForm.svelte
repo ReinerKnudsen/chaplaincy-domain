@@ -451,6 +451,7 @@
 				</fieldset>
 			</div>
 		</div>
+
 		<!-- Image -->
 		<div id="image" class="form bg-white-primary my-8 p-10">
 			<fieldset>

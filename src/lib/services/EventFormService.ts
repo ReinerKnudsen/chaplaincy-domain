@@ -1,15 +1,15 @@
 import { validateEventData, buildTimeStamp } from '$lib/services/validateForm';
+import { existingImageData as data, selectedImage as image } from '$lib/stores/ImageSelectionStore';
+import { get } from 'svelte/store';
 import { Timestamp } from 'firebase/firestore';
 import { type DomainEvent } from '$lib/stores/ObjectStore';
-import { uploadImage } from './fileService';
+import { uploadImage, type ReturnType } from './fileService';
 import { setItemState } from '$lib/stores/ObjectStore';
 
-export const eventFormService = async (
-	newEvent: DomainEvent,
-	selectedImage: File | null,
-	imageExists: boolean,
-	existingImageUrl: string | null
-) => {
+export const eventFormService = async (newEvent: DomainEvent) => {
+	const existingImageData = get(data);
+	const selectedImage = get(image);
+
 	if (validateEventData(newEvent)) {
 		return;
 	}
@@ -62,19 +62,17 @@ export const eventFormService = async (
 	}
 
 	// Upload selected image
-	if (selectedImage && !imageExists) {
+	if (selectedImage && !existingImageData) {
 		// Validate that alt text is provided when uploading an image (accessibility requirement)
 		if (!newEvent.imageAlt || newEvent.imageAlt.trim() === '') {
 			throw new Error('Alt text is required when uploading an image for accessibility.');
 		}
-		
-		newEvent.image = await uploadImage(
-			selectedImage, 
-			newEvent.imageAlt, 
-			newEvent.imageCaption || ''
-		);
+
+		const result: ReturnType = await uploadImage(selectedImage, newEvent.imageAlt, newEvent.imageCaption || '');
+		newEvent.image = result.url;
+		newEvent.imageRef = result.ref;
 	} else {
-		newEvent.image = existingImageUrl;
+		newEvent.image = existingImageData?.downloadUrl || null;
 	}
 	return newEvent;
 };

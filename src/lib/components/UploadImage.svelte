@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
 
-	import type { QueryDocumentSnapshot } from 'firebase/firestore';
+	import { getMetadata, getDownloadURL } from 'firebase/storage';
 
-	import { selectedImage, imageExists, existingImageUrl } from '$lib/stores/ImageSelectionStore';
+	import { selectedImage, existingImageData } from '$lib/stores/ImageSelectionStore';
 	import { FileType, checkIfFileExists } from '$lib/services/fileService';
 
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
@@ -27,7 +27,7 @@
 	// Separate display URL from binding URL to prevent parent override
 	let displayUrl: string = $state(imageUrl || '');
 
-	const handleFileChange = async (event: Event) => {
+	const handleImageChange = async (event: Event) => {
 		event.preventDefault();
 		imageError = '';
 		const target = event.target as HTMLInputElement;
@@ -38,32 +38,35 @@
 			$selectedImage = null;
 			return;
 		}
-
 		selectedImage.set(files[0]);
-
+		$inspect('In upload component: ', selectedImage);
 		// If there is no image than leave here
 		if (!$selectedImage) return;
 
-		// Verify if image exists already
-		let existingFile: QueryDocumentSnapshot | null = null;
-		if ($selectedImage) {
-			existingFile = await checkIfFileExists($selectedImage.name, FileType.Image);
-		}
-		// If the file already exists
-		if (!!existingFile) {
-			// reset any error and define the message
+		// Verify if image already exists
+		const currentImageRef = await checkIfFileExists($selectedImage.name);
+		if (currentImageRef) {
 			imageError = '';
 			imageMessage = 'This image already exists.';
-			imageExists.set(true);
-			existingImageUrl.set(existingFile.data().url);
-			displayUrl = existingFile.data().url; // Use for display
-			
-			// Cast DocumentData to ImageDocument and handle null values
-			const imageData = existingFile.data() as { url: string; altText: string | null; caption?: string | null };
+
+			// Get the actual download URL
+			const downloadUrl = await getDownloadURL(currentImageRef);
+			displayUrl = downloadUrl;
+			// Safely get custom metadata
+			const metadata = await getMetadata(currentImageRef);
+			const altText = metadata.customMetadata?.imageAlt || '';
+			const caption = metadata.customMetadata?.imageCaption || '';
+
+			existingImageData.set({
+				downloadUrl: downloadUrl,
+				altText: altText,
+				caption: caption,
+			});
+
 			onImageChange({
-				url: imageData.url,
-				altText: imageData.altText || '',
-				caption: imageData.caption || ''
+				url: downloadUrl,
+				altText: altText,
+				caption: caption,
 			});
 		} else {
 			if ($selectedImage.size > MAX_IMAGE_SIZE) {
@@ -74,6 +77,7 @@
 				imageError = '';
 				displayUrl = URL.createObjectURL($selectedImage); // Use for display
 			}
+			existingImageData.set(null);
 			onImageChange && onImageChange();
 		}
 	};
@@ -98,7 +102,7 @@
 					<span class="text-sm">Click here to select an image</span>
 				</p>
 			</div>
-			<input type="file" id="uploadFile" accept={authorizedExtensions} class="hidden" onchange={handleFileChange} />
+			<input type="file" id="uploadFile" accept={authorizedExtensions} class="hidden" onchange={handleImageChange} />
 		</label>
 		<div class="mt-3 text-center text-sm">
 			(jpeg, jpg, png, webp, max {MAX_IMAGE_SIZE / 1000}KB)

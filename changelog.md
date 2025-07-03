@@ -12,6 +12,20 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
+-
+
+### Changed
+
+-
+
+### Fixed
+
+-
+
+## [2.4.0] - 2025-07-03
+
+### Added
+
 - add: menu items can be de-activated and activated
 
 ### Changed
@@ -25,7 +39,6 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - issues with text handling in event texts
-
 ## [2.3.0] - 2025-07-03
 
 ### Added

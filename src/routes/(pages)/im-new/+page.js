@@ -1,6 +1,6 @@
 export function load() {
 	return {
-		title: "I'm New",
+		title: "I'm new",
 		caption: 'Image by Mabel Amber on Pixabay',
 		image: 'im-new',
 	};

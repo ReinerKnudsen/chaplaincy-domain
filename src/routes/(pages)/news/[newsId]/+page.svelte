@@ -37,6 +37,11 @@
 			<div class="article-title">
 				{thisNews.title}
 			</div>
+			{#if thisNews.subtitle}
+				<div class="article-subtitle">
+					{thisNews.subtitle}
+				</div>
+			{/if}
 			<div class="article-metadata">
 				<div class="article-metadata-item">
 					<Icon icon="fa6-regular:calendar" />
@@ -68,11 +73,7 @@
 			{#if thisNews.pdfFile}
 				<div id="pdf-download" class="bg-white-smoke flex flex-row justify-start gap-4 p-6">
 					<Icon icon="fa6-regular:file-pdf" class="h-6 w-6" />
-					<a
-						class="link flex flex-row gap-4 text-lg font-semibold"
-						href={thisNews.pdfFile}
-						target="_blank"
-					>
+					<a class="link flex flex-row gap-4 text-lg font-semibold" href={thisNews.pdfFile} target="_blank">
 						<div>Download {thisNews.pdfText ? thisNews.pdfText : 'PDF'}</div>
 						<Icon icon="famicons:open-outline" class="h-6 w-6" />
 					</a>

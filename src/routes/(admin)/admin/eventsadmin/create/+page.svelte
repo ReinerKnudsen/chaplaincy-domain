@@ -5,6 +5,7 @@
 
 	import { EditMode, EditModeStore, type DomainEvent } from '$lib/stores/ObjectStore';
 	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';
+	import { selectedLocation, resetSelectedLocation } from '$lib/stores/LocationsStore';
 
 	import { validateEventData, buildTimeStamp } from '$lib/services/validateForm';
 	import { eventFormService, uploadEventImage } from '$lib/services/EventFormService';
@@ -46,8 +47,9 @@
 			}
 			await addDoc(eventsColRef, updatedEvent);
 			EditModeStore.set(EditMode.Empty);
-			notificationStore.addToast('success', Messages.DRAFTSUCCESS, TOAST_DURATION);
+			resetSelectedLocation();
 			pageHasUnsavedChanges = false;
+			notificationStore.addToast('success', Messages.DRAFTSUCCESS, TOAST_DURATION);
 			goto('/admin/eventsadmin');
 		} catch (error) {
 			notificationStore.addToast('error', Messages.DRAFTERROR);
@@ -64,8 +66,9 @@
 			const updatedEvent = await eventFormService(thisEvent);
 			await addDoc(eventsColRef, updatedEvent);
 			EditModeStore.set(EditMode.Empty);
-			notificationStore.addToast('success', Messages.SAVESUCCESS, TOAST_DURATION);
+			resetSelectedLocation();
 			pageHasUnsavedChanges = false;
+			notificationStore.addToast('success', Messages.SAVESUCCESS, TOAST_DURATION);
 			goto('/admin/eventsadmin');
 		} catch (error) {
 			notificationStore.addToast('error', Messages.SAVERROR);

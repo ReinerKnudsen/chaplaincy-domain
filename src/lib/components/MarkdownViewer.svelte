@@ -56,7 +56,7 @@
 		font-size: 1.125rem;
 		line-height: 1.75;
 		margin: 1.5em 0;
-		color: #475569; /* slate-600 */
+		color: #000;
 	}
 
 	:global(.toastui-editor-contents ul),
@@ -64,7 +64,7 @@
 		font-size: 1.125rem;
 		line-height: 1.75;
 		padding-left: 2em;
-		color: #475569; /* slate-600 */
+		color: #000;
 	}
 
 	:global(.toastui-editor-contents li) {

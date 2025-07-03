@@ -4,7 +4,7 @@
 	import { updateDoc } from 'firebase/firestore';
 	import { DocumentReference, type DocumentData } from 'firebase/firestore';
 
-	import { selectedLocation, resetSelectedLocation } from '$lib/stores/LocationsStore';
+	import { resetSelectedLocation } from '$lib/stores/LocationsStore';
 	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';
 	import { type DomainEvent, EditMode, EditModeStore } from '$lib/stores/ObjectStore';
 
@@ -54,10 +54,11 @@
 			}
 			const itemData = { ...thisEvent } as DocumentData;
 			await updateDoc(data.docRef, itemData);
+			EditModeStore.set('');
+			resetSelectedLocation();
 			pageHasUnsavedChanges = false;
 			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 			goto('/admin/	newsadmin');
-			EditModeStore.set('');
 		} catch (error) {
 			notificationStore.addToast('error', Messages.UPDATEERROR);
 			console.error('Error updating the news: ', error);
@@ -80,11 +81,11 @@
 			const updatedEvent: DomainEvent = await eventFormService(thisEvent);
 			const eventData = { ...updatedEvent } as DocumentData;
 			await updateDoc(data.docRef, eventData);
+			EditModeStore.set(EditMode.Empty);
 			resetSelectedLocation();
 			pageHasUnsavedChanges = false;
 			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 			goto('/admin/eventsadmin');
-			EditModeStore.set(EditMode.Empty);
 		} catch (error) {
 			notificationStore.addToast('error', Messages.UPDATEERROR);
 			console.error('Error updating the event: ', error);

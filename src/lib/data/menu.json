@@ -2,73 +2,89 @@
 	"menu": [
 		{
 			"title": "Home",
-			"url": "/"
+			"url": "/",
+			"active": true
 		},
 		{
 			"title": "Faith",
 			"url": "",
+			"active": true,
 			"subMenu": [
 				{
 					"title": "What we believe",
-					"url": "/what-we-believe/"
+					"url": "/what-we-believe/",
+					"active": true
 				},
 				{
 					"title": "How we worship",
-					"url": "/how-we-worship/"
+					"url": "/how-we-worship/",
+					"active": true
 				},
 				{
 					"title": "Church of England",
-					"url": "/church-of-england/"
+					"url": "/church-of-england/",
+					"active": false
 				},
 				{
 					"title": "Diocese in Europe",
-					"url": "/diocese-in-europe/"
+					"url": "/diocese-in-europe/",
+					"active": false
 				},
 				{
 					"title": "Resources",
-					"url": "/resources/"
+					"url": "/resources/",
+					"active": false
 				}
 			]
 		},
 		{
 			"title": "What's on",
 			"url": "",
+			"active": true,
 			"subMenu": [
 				{
 					"title": "Events",
-					"url": "/events/"
+					"url": "/events/",
+					"active": true
 				},
 				{
 					"title": "News",
-					"url": "/news/"
+					"url": "/news/",
+					"active": true
 				},
 				{
 					"title": "Newsletter",
-					"url": "/newsletter/"
+					"url": "/newsletter/",
+					"active": false
 				}
 			]
 		},
 		{
 			"title": "Community",
 			"url": "",
+			"active": true,
 			"subMenu": [
 				{
 					"title": "I'm new",
-					"url": "/im-new/"
+					"url": "/im-new/",
+					"active": true
 				},
 				{
 					"title": "Groups",
-					"url": "/groups/"
+					"url": "/groups/",
+					"active": true
 				},
 				{
 					"title": "Charities we support",
-					"url": "/charities-we-support/"
+					"url": "/charities-we-support/",
+					"active": true
 				}
 			]
 		},
 		{
 			"title": "Giving",
 			"url": "",
+			"active": false,
 			"subMenu": [
 				{
 					"title": "Donations",
@@ -83,34 +99,42 @@
 		{
 			"title": "About us",
 			"url": "",
+			"active": true,
 			"subMenu": [
 				{
 					"title": "Who we are",
-					"url": "/about/"
+					"url": "/about/",
+					"active": true
 				},
 				{
 					"title": "Where we are",
-					"url": "locations"
+					"url": "locations",
+					"active": true
 				},
 				{
 					"title": "Safeguarding",
-					"url": "safeguarding"
+					"url": "safeguarding",
+					"active": true
 				},
 				{
 					"title": "Life events",
-					"url": "life-events/"
+					"url": "life-events/",
+					"active": true
 				},
 				{
 					"title": "Responsibilities",
-					"url": "responsibilities/"
+					"url": "responsibilities/",
+					"active": false
 				},
 				{
 					"title": "The FACBC e.V.",
-					"url": "facbc"
+					"url": "facbc",
+					"active": true
 				},
 				{
 					"title": "Get in touch",
-					"url": "contact"
+					"url": "contact",
+					"active": true
 				}
 			]
 		}

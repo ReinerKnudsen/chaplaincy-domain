@@ -348,7 +348,7 @@
 		justify-content: center;
 		width: 200px;
 		height: 100px;
-		background-color: var(--color-purple-600);
+		background-color: var(--color-seablue-100);
 		color: white;
 		text-align: center;
 		position: relative;
@@ -358,7 +358,7 @@
 	}
 
 	.download-item:hover {
-		background-color: var(--color-purple-300);
+		background-color: var(--color-seablue-60);
 		color: var(--color-black-100);
 	}
 

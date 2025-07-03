@@ -14,12 +14,9 @@
 	let { form }: Props = $props();
 </script>
 
-<div class="my-3 w-full">
-	<div class="page-title">Contact us</div>
-	<div class="mx-auto mt-10 max-w-[60%] px-10">
-		<h3>We would like to hear from you!</h3>
-		<p>Please leave us a message. We will reply to you as soon as possible.</p>
-	</div>
+<div class="mx-auto mt-10 max-w-[60%] px-10">
+	<h3>We would like to hear from you!</h3>
+	<p>Please leave us a message. We will reply to you as soon as possible.</p>
 </div>
 
 <div class="mx-auto mb-20 max-w-[60%] rounded-xl p-10">

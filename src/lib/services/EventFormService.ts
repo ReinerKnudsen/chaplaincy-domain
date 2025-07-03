@@ -1,19 +1,10 @@
-import { validateEventData, buildTimeStamp } from '$lib/services/validateForm';
 import { Timestamp } from 'firebase/firestore';
-import { type DomainEvent } from '$lib/stores/ObjectStore';
-import { uploadImage } from './fileService';
-import { setItemState } from '$lib/stores/ObjectStore';
 
-export const eventFormService = async (
-	newEvent: DomainEvent,
-	selectedImage: File | null,
-	imageExists: boolean,
-	existingImageUrl: string | null
-) => {
-	if (validateEventData(newEvent)) {
-		return;
-	}
+import { type DomainEvent, setItemState } from '$lib/stores/ObjectStore';
+import { uploadImage, type ReturnType } from './fileService';
+import { buildTimeStamp } from '$lib/services/validateForm';
 
+export const eventFormService = async (newEvent: DomainEvent) => {
 	// Add calculated Date values
 	// Set publish date to now if not defined
 	if (!newEvent.publishdate) {
@@ -61,20 +52,19 @@ export const eventFormService = async (
 		newEvent.endDateTimeUtc = endDateTime.toISOString();
 	}
 
-	// Upload selected image
-	if (selectedImage && !imageExists) {
-		// Validate that alt text is provided when uploading an image (accessibility requirement)
-		if (!newEvent.imageAlt || newEvent.imageAlt.trim() === '') {
-			throw new Error('Alt text is required when uploading an image for accessibility.');
-		}
-		
-		newEvent.image = await uploadImage(
-			selectedImage, 
-			newEvent.imageAlt, 
-			newEvent.imageCaption || ''
-		);
-	} else {
-		newEvent.image = existingImageUrl;
-	}
 	return newEvent;
+};
+
+export const uploadEventImage = async (event: DomainEvent, newImage: File | null): Promise<DomainEvent> => {
+	if (!newImage) {
+		return event;
+	}
+	if (newImage) {
+		if (!event.imageAlt || event.imageAlt.trim() === '') {
+			throw new Error('Image alt text is required');
+		}
+		const result: ReturnType = await uploadImage(newImage, event.imageAlt, event.imageCaption || '');
+		event.image = result.url;
+	}
+	return event;
 };

@@ -3,9 +3,8 @@
 	import { updateDoc, type DocumentReference, type DocumentData } from 'firebase/firestore';
 
 	import { type News, EditModeStore } from '$lib/stores/ObjectStore';
-	import { selectedImage, imageExists, existingImageUrl } from '$lib/stores/ImageSelectionStore';
 
-	import { newsFormService } from '$lib/services/NewsFormService';
+	import { newsFormService, uploadNewsImage } from '$lib/services/NewsFormService';
 	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';
 
 	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
@@ -43,17 +42,21 @@
 		goto('/admin/newsadmin');
 	};
 
-	const handleSaveDraft = async (thisNews: News) => {
+	const handleSaveDraft = async (thisNews: News, newImage: File | null) => {
+		if (!thisNews) return;
 		try {
 			if (!data.docRef) {
 				throw new Error('No document reference provided');
 			}
+			if (newImage) {
+				thisNews = await uploadNewsImage(thisNews, newImage);
+			}
 			const newsData = { ...thisNews } as DocumentData;
 			await updateDoc(data.docRef, newsData);
-			EditModeStore.set('');
 			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 			pageHasUnsavedChanges = false;
 			goto('/admin/newsadmin');
+			EditModeStore.set('');
 		} catch (error) {
 			notificationStore.addToast('error', Messages.UPDATEERROR);
 			console.error('Error updating the news: ', error);
@@ -64,25 +67,22 @@
 		pageHasUnsavedChanges = formHasUnsavedChanges;
 	};
 
-	const handleUpdateNews = async (updatedNews: News) => {
+	const handleUpdateNews = async (thisNews: News, newImage: File | null) => {
+		if (!thisNews) return;
 		try {
 			if (!data.docRef) {
 				throw new Error('No document reference provided');
 			}
-
-			const thisNews: News | undefined = await newsFormService(
-				updatedNews,
-				$selectedImage,
-				$imageExists,
-				$existingImageUrl
-			);
-
+			if (newImage) {
+				thisNews = await uploadNewsImage(thisNews, newImage);
+			}
+			thisNews = await newsFormService(thisNews);
 			const newsData = { ...thisNews } as DocumentData;
 			await updateDoc(data.docRef, newsData);
-			EditModeStore.set('');
 			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 			pageHasUnsavedChanges = false;
 			goto('/admin/newsadmin');
+			EditModeStore.set('');
 		} catch (error) {
 			notificationStore.addToast('error', Messages.UPDATEERROR);
 			console.error('Error updating the news: ', error);

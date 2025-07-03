@@ -12,15 +12,19 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- add: menu items can be de-activated and activated
 
 ### Changed
 
--
+- internal: optimised the image handling for events and news
+- optimised the button placement for events and news creation
+- background color of download items changed to seablue
+- new: all pages now have the same design
+- the pages pull header image and apge title dynamically into layout
 
 ### Fixed
 
--
+- issues with text handling in event texts
 
 ## [2.3.0] - 2025-07-03
 
@@ -28,6 +32,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 - add image metadata (alt text and caption) are now saved with the image
 - when an image is re-used the meta data saved with it is re-used as well
+
 ## [2.2.1] - 2025-06-30
 
 ### Changed

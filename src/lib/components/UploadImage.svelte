@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
 
-	import type { QueryDocumentSnapshot } from 'firebase/firestore';
+	import { getDownloadURL, type StorageReference } from 'firebase/storage';
 
-	import { selectedImage, imageExists, existingImageUrl } from '$lib/stores/ImageSelectionStore';
-	import { FileType, checkIfFileExists } from '$lib/services/fileService';
+	import { checkIfFileExists } from '$lib/services/fileService';
 
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
 
@@ -12,74 +11,57 @@
 
 	interface Props {
 		imageUrl?: string | null | undefined;
-		onImageChange: (imageData?: { url: string; altText: string; caption: string }) => void;
+		onNewFileSelected: (file: File) => void;
+		onExistingFileSelected: (fileRef: StorageReference) => void;
 	}
 
-	let { imageUrl, onImageChange }: Props = $props();
+	let { imageUrl, onNewFileSelected, onExistingFileSelected }: Props = $props();
 
 	const authorizedExtensions = '.jpg, .jpeg, .png, .webp';
 
-	let selectedFile: File | null = null;
+	let selectedImage: File | null = null;
 	let moduleWidth = 'w-[400px]';
-	let imageError: string = $state('');
 	let imageMessage: string = $state('');
 
 	// Separate display URL from binding URL to prevent parent override
 	let displayUrl: string = $state(imageUrl || '');
 
-	const handleFileChange = async (event: Event) => {
+	const handleImageChange = async (event: Event) => {
+		// all the component does is to return the File object and display the selected image
 		event.preventDefault();
-		imageError = '';
+		imageMessage = '';
 		const target = event.target as HTMLInputElement;
 		const files = target.files;
 
 		if (!files || files.length === 0) {
-			imageError = 'No file selected';
-			$selectedImage = null;
+			imageMessage = 'No file selected';
+			return;
+		}
+		selectedImage = files[0];
+
+		// Verify if image already exists
+		const currentImageRef = await checkIfFileExists(selectedImage.name);
+		if (currentImageRef) {
+			imageMessage = 'This image already exists.';
+			displayUrl = await getDownloadURL(currentImageRef); // Use for display
+			onExistingFileSelected(currentImageRef);
 			return;
 		}
 
-		selectedImage.set(files[0]);
-
-		// If there is no image than leave here
-		if (!$selectedImage) return;
-
-		// Verify if image exists already
-		let existingFile: QueryDocumentSnapshot | null = null;
-		if ($selectedImage) {
-			existingFile = await checkIfFileExists($selectedImage.name, FileType.Image);
+		// Verify file size
+		if (selectedImage.size > MAX_IMAGE_SIZE) {
+			imageMessage = 'The image is too big.';
+			return;
 		}
-		// If the file already exists
-		if (!!existingFile) {
-			// reset any error and define the message
-			imageError = '';
-			imageMessage = 'This image already exists.';
-			imageExists.set(true);
-			existingImageUrl.set(existingFile.data().url);
-			displayUrl = existingFile.data().url; // Use for display
-			
-			// Cast DocumentData to ImageDocument and handle null values
-			const imageData = existingFile.data() as { url: string; altText: string | null; caption?: string | null };
-			onImageChange({
-				url: imageData.url,
-				altText: imageData.altText || '',
-				caption: imageData.caption || ''
-			});
-		} else {
-			if ($selectedImage.size > MAX_IMAGE_SIZE) {
-				imageError = 'The image is too big.';
-				selectedFile = null;
-				return;
-			} else {
-				imageError = '';
-				displayUrl = URL.createObjectURL($selectedImage); // Use for display
-			}
-			onImageChange && onImageChange();
-		}
+
+		imageMessage = '';
+
+		displayUrl = URL.createObjectURL(selectedImage); // Use for display
+		selectedImage && onNewFileSelected(selectedImage);
 	};
 
 	const resetInput = () => {
-		selectedFile = null;
+		selectedImage = null;
 		if (imageUrl) URL.revokeObjectURL(imageUrl);
 		imageUrl = '';
 		displayUrl = '';
@@ -98,13 +80,13 @@
 					<span class="text-sm">Click here to select an image</span>
 				</p>
 			</div>
-			<input type="file" id="uploadFile" accept={authorizedExtensions} class="hidden" onchange={handleFileChange} />
+			<input type="file" id="uploadFile" accept={authorizedExtensions} class="hidden" onchange={handleImageChange} />
 		</label>
 		<div class="mt-3 text-center text-sm">
 			(jpeg, jpg, png, webp, max {MAX_IMAGE_SIZE / 1000}KB)
 		</div>
-		{#if imageError}
-			<p class="mt-3 text-center text-base text-red-700">{@html imageError}</p>
+		{#if imageMessage}
+			<p class="mt-3 text-center text-base text-red-700">{@html imageMessage}</p>
 		{/if}
 	</form>
 {:else}

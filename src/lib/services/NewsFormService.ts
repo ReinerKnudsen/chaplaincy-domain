@@ -1,12 +1,7 @@
 import { type News } from '$lib/stores/ObjectStore';
-import { uploadImage } from './fileService';
+import { uploadImage, type ReturnType } from '$lib/services/fileService';
 
-export const newsFormService = async (
-	newNews: News,
-	selectedImage: File | null,
-	imageExists: boolean,
-	existingImageUrl: string | null
-) => {
+export const newsFormService = async (newNews: News) => {
 	if (!newNews.publishdate) {
 		/* create current date as ISO strings */
 		const now = new Date();
@@ -22,11 +17,19 @@ export const newsFormService = async (
 	}
 
 	if (!newNews.publishtime) newNews.publishtime = '09:00';
-
-	if (selectedImage && !imageExists) {
-		newNews.image = await uploadImage(selectedImage, newNews.imageAlt || '', newNews.imageCaption || '');
-	} else {
-		newNews.image = existingImageUrl;
-	}
 	return newNews;
+};
+
+export const uploadNewsImage = async (news: News, newImage: File | null): Promise<News> => {
+	if (!newImage) {
+		return news;
+	}
+	if (newImage) {
+		if (!news.imageAlt || news.imageAlt.trim() === '') {
+			throw new Error('Image alt text is required');
+		}
+		const result: ReturnType = await uploadImage(newImage, news.imageAlt, news.imageCaption || '');
+		news.image = result.url;
+	}
+	return news;
 };

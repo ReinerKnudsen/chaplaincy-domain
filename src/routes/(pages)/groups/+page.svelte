@@ -1,14 +1,5 @@
 <script lang="ts">
-	import PageHeader from '$lib/components/PageHeader.svelte';
 	import GroupCard from '$lib/components/GroupCard.svelte';
-
-	const headerData = {
-		title: 'Groups',
-		photoName: 'kp yamu Jayanath',
-		photoUrl: 'https://pixabay.com/users/yamu_jay-44818947',
-		imageUrl:
-			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fheaders%2Fgroup_lg.png?alt=media&token=4a405346-6dfb-4b6a-8769-6222a9f712e6',
-	};
 
 	const groups = [
 		{
@@ -41,7 +32,6 @@
 	];
 </script>
 
-<PageHeader {headerData} textStyle="white" />
 <div class="mx-auto w-[80%] text-lg">
 	<div class="intro pb-4">
 		Groups are organized by members of the congregation. They are open to everybody. Below you can find all information

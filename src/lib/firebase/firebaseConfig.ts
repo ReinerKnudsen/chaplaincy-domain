@@ -1,36 +1,36 @@
 import { deleteApp, getApps, getApp, initializeApp, type FirebaseApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, collection, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection } from 'firebase/firestore';
 import { getStorage, ref } from 'firebase/storage';
-import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
+import { getFunctions } from 'firebase/functions';
 
 interface FirebaseConfig {
-    apiKey: string;
-    authDomain: string;
-    projectId: string;
-    storageBucket: string;
-    messagingSenderId: string;
-    appId: string;
+	apiKey: string;
+	authDomain: string;
+	projectId: string;
+	storageBucket: string;
+	messagingSenderId: string;
+	appId: string;
 }
 
 const firebaseConfig: FirebaseConfig = {
-    apiKey: import.meta.env.VITE_APIKEY,
-    authDomain: import.meta.env.VITE_AUTHDOMAIN,
-    projectId: import.meta.env.VITE_PROJECTID,
-    storageBucket: import.meta.env.VITE_STORAGEBUCKET,
-    messagingSenderId: import.meta.env.VITE_MESSAGINGSENDERID,
-    appId: import.meta.env.VITE_APPID,
+	apiKey: import.meta.env.VITE_APIKEY,
+	authDomain: import.meta.env.VITE_AUTHDOMAIN,
+	projectId: import.meta.env.VITE_PROJECTID,
+	storageBucket: import.meta.env.VITE_STORAGEBUCKET,
+	messagingSenderId: import.meta.env.VITE_MESSAGINGSENDERID,
+	appId: import.meta.env.VITE_APPID,
 };
 
 export let firebaseApp: FirebaseApp;
 
 // Initialize Firebase
 if (!getApps().length) {
-    firebaseApp = initializeApp(firebaseConfig);
+	firebaseApp = initializeApp(firebaseConfig);
 } else {
-    firebaseApp = getApp();
-    deleteApp(firebaseApp);
-    firebaseApp = initializeApp(firebaseConfig);
+	firebaseApp = getApp();
+	deleteApp(firebaseApp);
+	firebaseApp = initializeApp(firebaseConfig);
 }
 
 export const auth = getAuth(firebaseApp);
@@ -42,7 +42,6 @@ export const functions = getFunctions(firebaseApp);
 // if (import.meta.env.DEV && typeof window !== 'undefined') {
 //     connectFunctionsEmulator(functions, 'localhost', 5001);
 // }
-
 
 // Create database references
 export const eventsColRef = collection(database, 'events');
@@ -59,6 +58,7 @@ export const eventsStoreRef = ref(storage, 'events');
 export const articlesStoreRef = ref(storage, 'articles');
 export const docsStorageRef = ref(storage, 'documents');
 export const imgStorageRef = ref(storage, 'images');
+export const headerStorageRef = ref(storage, 'images/headers');
 export const pdfStorageRef = ref(storage, 'pdfs');
 export const weeklysheetStorageRef = ref(storage, 'documents/weeklysheet');
 export const newsletterStorageRef = ref(storage, 'documents/newsletter');

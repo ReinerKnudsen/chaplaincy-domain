@@ -1,29 +1,30 @@
 {
-  "semi": true,
-  "useTabs": true,
-  "singleQuote": true,
-  "tabWidth": 2,
-  "printWidth": 100,
-  "trailingComma": "es5",
-  "plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
-  "overrides": [
-    {
-      "files": ["*.svelte"],
-      "options": {
-        "parser": "svelte"
-      }
-    },
-    {
-      "files": ["*.css"],
-      "options": {
-        "tabWidth": 2,
-        "singleQuote": true,
-        "bracketSameLine": false,
-        "bracketSpacing": true,
-        "arrowParens": "always",
-        "endOfLine": "lf",
-        "useTabs": false
-      }
-    }
-  ]
+	"semi": true,
+	"useTabs": true,
+	"singleQuote": true,
+	"tabWidth": 2,
+	"printWidth": 120,
+	"trailingComma": "es5",
+	"bracketSameLine": false,
+	"bracketSpacing": true,
+	"arrowParens": "always",
+	"endOfLine": "lf",
+	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
+	"overrides": [
+		{
+			"files": ["*.svelte"],
+			"options": {
+				"parser": "svelte"
+			}
+		},
+		{
+			"files": ["*.css", "*.ts", "*.tsx"],
+			"options": {
+				"bracketSameLine": false,
+				"bracketSpacing": true,
+				"arrowParens": "always",
+				"endOfLine": "lf"
+			}
+		}
+	]
 }

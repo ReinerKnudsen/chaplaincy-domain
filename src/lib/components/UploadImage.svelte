@@ -1,59 +1,70 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
 
-	import { FileType, checkIfFileExists } from '$lib/services/fileService';
+	import { getDownloadURL, type StorageReference } from 'firebase/storage';
+
+	import { checkIfFileExists } from '$lib/services/fileService';
 
 	import { MAX_IMAGE_SIZE } from '$lib/utils/constants';
 
+	import { Button } from '$lib/components/ui/button';
+
 	interface Props {
-		imageUrl?: string;
-		onImageChange: (file: File) => void;
+		imageUrl?: string | null | undefined;
+		onNewFileSelected: (file: File) => void;
+		onExistingFileSelected: (fileRef: StorageReference) => void;
 	}
 
-	let { imageUrl = $bindable(), onImageChange }: Props = $props();
+	let { imageUrl, onNewFileSelected, onExistingFileSelected }: Props = $props();
 
 	const authorizedExtensions = '.jpg, .jpeg, .png, .webp';
 
-	let selectedFile: File | null = null;
+	let selectedImage: File | null = null;
 	let moduleWidth = 'w-[400px]';
-	let imageError: string = $state('');
-	let imageNote: string = $state('');
+	let imageMessage: string = $state('');
 
-	const handleFileChange = async (event: Event) => {
+	// Separate display URL from binding URL to prevent parent override
+	let displayUrl: string = $state(imageUrl || '');
+
+	const handleImageChange = async (event: Event) => {
+		// all the component does is to return the File object and display the selected image
 		event.preventDefault();
-		imageError = '';
+		imageMessage = '';
 		const target = event.target as HTMLInputElement;
 		const files = target.files;
 
 		if (!files || files.length === 0) {
-			imageError = 'No file selected';
+			imageMessage = 'No file selected';
+			return;
+		}
+		selectedImage = files[0];
+
+		// Verify if image already exists
+		const currentImageRef = await checkIfFileExists(selectedImage.name);
+		if (currentImageRef) {
+			imageMessage = 'This image already exists.';
+			displayUrl = await getDownloadURL(currentImageRef); // Use for display
+			onExistingFileSelected(currentImageRef);
 			return;
 		}
 
-		selectedFile = files[0];
-		const existingFile = await checkIfFileExists(selectedFile.name, FileType.Image);
-
-		if (existingFile) {
-			imageError = '';
-			imageNote = 'This image already exists.';
-			imageUrl = existingFile.data().url;
-			onImageChange(selectedFile);
-		} else {
-			if (selectedFile.size > MAX_IMAGE_SIZE) {
-				imageError = 'The image is too big.';
-				selectedFile = null;
-			} else {
-				imageError = '';
-				imageUrl = URL.createObjectURL(selectedFile);
-				onImageChange(selectedFile);
-			}
+		// Verify file size
+		if (selectedImage.size > MAX_IMAGE_SIZE) {
+			imageMessage = 'The image is too big.';
+			return;
 		}
+
+		imageMessage = '';
+
+		displayUrl = URL.createObjectURL(selectedImage); // Use for display
+		selectedImage && onNewFileSelected(selectedImage);
 	};
 
 	const resetInput = () => {
-		selectedFile = null;
-		if(imageUrl) URL.revokeObjectURL(imageUrl);
+		selectedImage = null;
+		if (imageUrl) URL.revokeObjectURL(imageUrl);
 		imageUrl = '';
+		displayUrl = '';
 	};
 
 	onDestroy(() => {
@@ -61,40 +72,31 @@
 	});
 </script>
 
-{#if !imageUrl}
+{#if !displayUrl}
 	<form class={moduleWidth}>
-		<label
-			class={moduleWidth +
-				'group flex h-[300px] flex-col rounded-lg border bg-slate-100 p-10 text-center '}
-		>
+		<label class={moduleWidth + 'group flex h-[300px] flex-col rounded-lg border bg-slate-100 p-10 text-center '}>
 			<div class="flex h-full w-full flex-col items-center justify-center text-center">
 				<p class="pointer-none font-semibold text-gray-600">
 					<span class="text-sm">Click here to select an image</span>
 				</p>
 			</div>
-			<input
-				type="file"
-				id="uploadFile"
-				accept={authorizedExtensions}
-				class="hidden"
-				onchange={handleFileChange}
-			/>
+			<input type="file" id="uploadFile" accept={authorizedExtensions} class="hidden" onchange={handleImageChange} />
 		</label>
 		<div class="mt-3 text-center text-sm">
 			(jpeg, jpg, png, webp, max {MAX_IMAGE_SIZE / 1000}KB)
 		</div>
-		{#if imageError}
-			<p class="mt-3 text-center text-base text-red-700">{@html imageError}</p>
+		{#if imageMessage}
+			<p class="mt-3 text-center text-base text-red-700">{@html imageMessage}</p>
 		{/if}
 	</form>
 {:else}
 	<div class="image-container">
-		<img class="w-full" src={imageUrl} alt="selectedFile" />
-		{#if imageNote}
-			<p class="mt-3 text-center text-base text-gray-700">Note: {@html imageNote}</p>
+		<img class="w-full" src={displayUrl} alt="selectedFile" />
+		{#if imageMessage}
+			<p class="mt-3 text-center text-base text-gray-700">Note: {@html imageMessage}</p>
 		{/if}
 		<div class="col-span-2 mt-8 text-center">
-			<button class="btn btn-primary w-1/2" onclick={resetInput}>Change</button>
+			<Button variant="primary" onclick={resetInput}>Change</Button>
 		</div>
 	</div>
 {/if}

@@ -1,23 +1,99 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 
 	import { addDoc } from 'firebase/firestore';
 	import { newsColRef } from '$lib/firebase/firebaseConfig';
 
-	import type { News } from '$lib/stores/ObjectStore';
+	import { type News, EditModeStore, EditMode } from '$lib/stores/ObjectStore';
+	import { newsFormService, uploadNewsImage } from '$lib/services/NewsFormService';
+	import { Messages } from '$lib/utils/messages';
 
 	import NewsForm from '$lib/components/NewsForm.svelte';
+	import { notificationStore } from '$lib/stores/notifications';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
+	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 
-	const saveNewItem = async (newNewsItem: News) => {
+	let pageHasUnsavedChanges = $state(false);
+	let showNavigateWarning = $state(false);
+
+	const handleSaveDraft = async (thisNews: News, newImage: File | null) => {
+		if (!thisNews) return;
 		try {
-			await addDoc(newsColRef, newNewsItem);
+			if (newImage) {
+				thisNews = await uploadNewsImage(thisNews, newImage);
+			}
+			await addDoc(newsColRef, thisNews);
+			pageHasUnsavedChanges = false;
+			notificationStore.addToast('success', Messages.DRAFTSUCCESS);
 			goto('/admin/newsadmin');
+			EditModeStore.set(EditMode.Empty);
 		} catch (error) {
+			notificationStore.addToast('error', Messages.DRAFTERROR);
 			console.error('Error writing document:', error);
 		}
 	};
+
+	const handleUnsavedChangesUpdate = (formHasUnsavedChanges: boolean): void => {
+		pageHasUnsavedChanges = formHasUnsavedChanges;
+	};
+
+	beforeNavigate(({ cancel }) => {
+		if (pageHasUnsavedChanges) {
+			cancel();
+			showNavigateWarning = true;
+		}
+	});
+
+	const handleSaveNewItem = async (thisNews: News, newImage?: File | null) => {
+		if (!thisNews) return;
+		try {
+			if (newImage) {
+				thisNews = await uploadNewsImage(thisNews, newImage);
+			}
+			const updatedNews: News = await newsFormService(thisNews);
+			await addDoc(newsColRef, updatedNews);
+			pageHasUnsavedChanges = false;
+			notificationStore.addToast('success', Messages.SAVESUCCESS);
+			goto('/admin/newsadmin');
+			EditModeStore.set('');
+		} catch (error) {
+			notificationStore.addToast('error', Messages.SAVERROR);
+			console.error('Error writing document:', error);
+		}
+	};
+
+	const handleNavigateConfirm = () => {
+		showNavigateWarning = false;
+		pageHasUnsavedChanges = false;
+		goto('/admin/newsadmin');
+	};
+
+	const handleCancel = () => {
+		EditModeStore.set(EditMode.Empty);
+		goto('/admin/newsadmin');
+	};
 </script>
 
+<ConfirmDialog
+	open={showNavigateWarning}
+	title="Unsaved Changes"
+	message="You have unsaved changes. \nAre you sure you want to leave this page?"
+	confirmText="Leave Page"
+	cancelText="Stay on Page"
+	confirmVariant="destructive"
+	onConfirm={handleNavigateConfirm}
+	onCancel={() => {
+		showNavigateWarning = false;
+	}}
+/>
+
 <div>
-	<NewsForm onCreateNew={saveNewItem} />
+	<NewsForm
+		onCreateNew={handleSaveNewItem}
+		onSaveDraft={handleSaveDraft}
+		onUnsavedChangesUpdate={handleUnsavedChangesUpdate}
+		onCancel={handleCancel}
+	/>
 </div>
+
+<ToastContainer />

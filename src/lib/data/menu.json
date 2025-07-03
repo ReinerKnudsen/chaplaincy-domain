@@ -1,0 +1,142 @@
+{
+	"menu": [
+		{
+			"title": "Home",
+			"url": "/",
+			"active": true
+		},
+		{
+			"title": "Faith",
+			"url": "",
+			"active": true,
+			"subMenu": [
+				{
+					"title": "What we believe",
+					"url": "/what-we-believe/",
+					"active": true
+				},
+				{
+					"title": "How we worship",
+					"url": "/how-we-worship/",
+					"active": false
+				},
+				{
+					"title": "Church of England",
+					"url": "/church-of-england/",
+					"active": false
+				},
+				{
+					"title": "Diocese in Europe",
+					"url": "/diocese-in-europe/",
+					"active": false
+				},
+				{
+					"title": "Resources",
+					"url": "/resources/",
+					"active": false
+				}
+			]
+		},
+		{
+			"title": "What's on",
+			"url": "",
+			"active": true,
+			"subMenu": [
+				{
+					"title": "Events",
+					"url": "/events/",
+					"active": true
+				},
+				{
+					"title": "News",
+					"url": "/news/",
+					"active": true
+				},
+				{
+					"title": "Newsletter",
+					"url": "/newsletter/",
+					"active": false
+				}
+			]
+		},
+		{
+			"title": "Community",
+			"url": "",
+			"active": true,
+			"subMenu": [
+				{
+					"title": "I'm new",
+					"url": "/im-new/",
+					"active": true
+				},
+				{
+					"title": "Groups",
+					"url": "/groups/",
+					"active": true
+				},
+				{
+					"title": "Charities we support",
+					"url": "/charities-we-support/",
+					"active": true
+				}
+			]
+		},
+		{
+			"title": "Giving",
+			"url": "",
+			"active": false,
+			"subMenu": [
+				{
+					"title": "Donations",
+					"url": "/donations/"
+				},
+				{
+					"title": "Get involved",
+					"url": "/get-involved/"
+				}
+			]
+		},
+		{
+			"title": "About us",
+			"url": "",
+			"active": true,
+			"subMenu": [
+				{
+					"title": "Who we are",
+					"url": "/about-us/",
+					"active": true
+				},
+				{
+					"title": "Where we are",
+					"url": "where-we-are/",
+					"active": true
+				},
+				{
+					"title": "Safeguarding",
+					"url": "safeguarding",
+					"active": true
+				},
+				{
+					"title": "Life events",
+					"url": "life-events/",
+					"active": true
+				},
+				{
+					"title": "Responsibilities",
+					"url": "responsibilities/",
+					"active": false
+				},
+				{
+					"title": "The FACBC e.V.",
+					"url": "facbc",
+					"active": true
+				},
+				{
+					"title": "Get in touch",
+					"url": "contact",
+					"active": true
+				}
+			]
+		}
+	]
+}

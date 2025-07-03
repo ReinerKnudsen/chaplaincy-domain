@@ -36,14 +36,6 @@
 		loading = false;
 	});
 
-	const headerData = {
-		photoName: 'Reiner Knudsen',
-		photoUrl: 'https://unsplash.com/@reinerknudsen',
-		imageUrl:
-			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fheaders%2Fnews.jpg?alt=media&token=aa27a23c-2004-4f8b-be58-2930c5bbedff',
-		title: 'News and Notices',
-	};
-
 	// Handle sorting and data updates in a single effect
 	$effect(() => {
 		if ($NewsItemsStore?.length) {
@@ -60,8 +52,6 @@
 		}
 	});
 </script>
-
-<PageHeader {headerData} textStyle="white" />
 
 {#if loading}
 	loading...

@@ -77,14 +77,14 @@
 				class="flex h-[60px] w-full flex-row items-center rounded-lg bg-white p-5 shadow-xl"
 			>
 				{#each adminMenu as item, i}
-					<div class="px-8 {i !== adminMenu.length - 1 ? 'border-r border-gray-300' : ''}">
-						{#if item.url === $pathName}
-							<div class="cursor-not-allowed font-light text-gray-500">{item.name}</div>
-						{:else}
-							<a href={item.url} class="hover:text-primary-600 font-semibold transition-colors"
-								>{item.name}</a
-							>
-						{/if}
+					<div class=" px-8 py-4">
+						<a
+							href={item.url}
+							class="hover:text-primary-600
+							{item.url === $pathName ? 'text-seablue-100 font-bold' : 'text-primary-100 font-semibold'} 
+
+transition-colors">{item.name}</a
+						>
 					</div>
 				{/each}
 			</div>

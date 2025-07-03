@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { addDoc, collection } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
+	import { notificationStore, TOAST_DURATION } from '$lib/stores/notifications';
 
 	import {
 		CurrentLocation,
@@ -22,7 +23,7 @@
 	let { onLocationAdded, onClose }: Props = $props();
 
 	const handleSave = async () => {
-		const { name, description, street, city, zip, locationUrl } = $CurrentLocation;
+		const { name, description, street, city, zip, locationUrl, online } = $CurrentLocation;
 		try {
 			const docRef = await addDoc(collection(db, 'location'), {
 				name,
@@ -31,15 +32,18 @@
 				city,
 				zip,
 				locationUrl,
+				online,
 			});
 			await fetchLocations();
 			const newLocation = $AllLocations.find((loc) => loc.id === docRef.id);
 			if (newLocation) {
 				selectedLocation.set(newLocation);
 				onLocationAdded(newLocation);
+				notificationStore.addToast('success', 'Location added successfully', TOAST_DURATION);
 				onClose();
 			}
 		} catch (error) {
+			notificationStore.addToast('error', "Couldn't add the new location. Please try again.", 0);
 			console.error('Error adding document: ', error);
 		}
 	};
@@ -64,14 +68,5 @@
 		align-items: center;
 		justify-content: center;
 		z-index: 1000;
-	}
-
-	.modal {
-		background-color: white;
-		padding: 20px;
-		border-radius: 8px;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-		width: 400px;
-		max-width: 90%;
 	}
 </style>

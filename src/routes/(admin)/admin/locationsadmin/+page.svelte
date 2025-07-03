@@ -1,8 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { page } from '$app/state';
 
-	import { addDoc, deleteDoc, doc, collection, updateDoc } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
+	import { addDoc, deleteDoc, doc, collection, updateDoc } from 'firebase/firestore';
+
+	import Icon from '@iconify/svelte';
+
+	import { notificationStore, TOAST_DURATION } from '$lib/stores/notifications';
 
 	import {
 		CurrentLocation,
@@ -13,17 +18,24 @@
 		fetchLocations,
 		type Location,
 	} from '$lib/stores/LocationsStore';
+	import { pathName } from '$lib/stores/NavigationStore';
+
+	import { EditMode, EditModeStore } from '$lib/stores/ObjectStore';
 
 	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
+	import { Button } from '$lib/components/ui/button';
+	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 
-	import Icon from '@iconify/svelte';
+	let currentLocationId = $state(0);
+	let showDeleteDialog = $state(false);
+	let deleteLocation: Location | null = $state(null);
+	let updateItem = $state(true);
 
 	onMount(() => {
+		pathName.set(page.url.pathname);
 		fetchLocations();
 	});
-
-	let updateItem = $state(true);
-	let currentLocationId = $state(0);
 
 	// Only set CurrentLocation when AllLocations has items
 	$effect(() => {
@@ -45,14 +57,33 @@
 		updateItem = false;
 	};
 
-	const handleDelete = async (location: Location) => {
-		try {
-			const docRef = doc(database, 'location', location.id);
-			await deleteDoc(docRef);
-			updateAndSortLocations((locations) => locations.filter((loc) => loc.id !== location.id));
-		} catch (e) {
-			console.error('Error deleting document: ', e);
+	const openDeleteModal = (location: Location) => {
+		if (!location) return;
+		deleteLocation = location;
+		showDeleteDialog = true;
+	};
+
+	const handleDelete = async () => {
+		if (deleteLocation) {
+			try {
+				const docRef = doc(database, 'location', deleteLocation.id);
+				await deleteDoc(docRef);
+				updateAndSortLocations((locations) => locations.filter((loc) => loc.id !== deleteLocation!.id));
+				showDeleteDialog = false;
+				deleteLocation = null;
+				notificationStore.addToast('success', 'Location deleted successfully', TOAST_DURATION);
+			} catch (e) {
+				notificationStore.addToast('error', 'Error deleting location. Try again later.', TOAST_DURATION);
+				console.error('Error deleting document: ', e);
+			}
+		} else {
+			return;
 		}
+	};
+
+	const handleCancel = () => {
+		showDeleteDialog = false;
+		deleteLocation = null;
 	};
 
 	const handleSave = async () => {
@@ -66,25 +97,36 @@
 				await updateDoc(docRef, dataToSave);
 
 				// Update the local store with the new data
-				updateAndSortLocations((locations) =>
-					locations.map((loc) => (loc.id === id ? { id, ...dataToSave } : loc))
-				);
+				updateAndSortLocations((locations) => locations.map((loc) => (loc.id === id ? { id, ...dataToSave } : loc)));
+				notificationStore.addToast('success', 'Location updated successfully', TOAST_DURATION);
 			} catch (e) {
+				notificationStore.addToast('error', "Couldn't update the location. Please try again.", 0);
 				console.error('Error updating document: ', e);
 			}
 		} else {
 			// Creating new location
 			try {
 				const docRef = await addDoc(collection(database, 'location'), dataToSave);
-
-				// Add the new location to the local store with the new ID from Firestore
 				updateAndSortLocations((locations) => [...locations, { id: docRef.id, ...dataToSave }]);
+				notificationStore.addToast('success', 'Location added successfully', TOAST_DURATION);
 			} catch (e) {
+				notificationStore.addToast('error', "Couldn't add the new location. Please try again.", 0);
 				console.error('Error adding document: ', e);
 			}
 		}
 	};
 </script>
+
+<ConfirmDialog
+	open={showDeleteDialog}
+	title="Confirm Delete"
+	message="Deleting a location document can not be undone.\nDo you really want to delete this item?"
+	confirmText="Delete"
+	confirmVariant="destructive"
+	cancelText="Cancel"
+	onConfirm={() => handleDelete()}
+	onCancel={() => handleCancel()}
+/>
 
 <div class="w-full gap-2">
 	<h1>Locations</h1>
@@ -94,32 +136,30 @@
 			<ul class="locations-list">
 				{#each $AllLocations as location, index}
 					<div class="flex w-full flex-row items-center gap-2">
-						<button
-							class={$CurrentLocation.id === location.id
-								? 'active list-item flex-1'
-								: 'list-item flex-1'}
-							onclick={() => handleLocationChange(location, index)}>{location.name}</button
+						<Button
+							variant={$CurrentLocation.id === location.id ? 'active' : 'inactive'}
+							class="py-6"
+							onclick={() => handleLocationChange(location, index)}>{location.name}</Button
 						>
-						<button class="icon-button" onclick={() => handleDelete(location)}>
-							<Icon icon="proicons:delete" class="h-6 w-6" />
-						</button>
+						<Button variant="destructive" class="min-w-0" onclick={() => openDeleteModal(location)}>
+							<Icon icon="proicons:delete" class="h-8 w-8" />
+						</Button>
 					</div>
 				{/each}
 			</ul>
 			<div class="button-container">
-				<button class="btn btn-primary" onclick={handleCreateNew}>Create new</button>
+				<Button variant="primary" size="wide" onclick={handleCreateNew}>Create new</Button>
 			</div>
 		</div>
+
 		<div class="location-details">
 			<h2>Location Details</h2>
-			<NewLocationForm
-				onSave={handleSave}
-				showClose={false}
-				mode={updateItem ? 'update' : 'create'}
-			/>
+			<NewLocationForm onSave={handleSave} showClose={false} mode={updateItem ? 'update' : 'create'} />
 		</div>
 	</div>
 </div>
+
+<ToastContainer />
 
 <style>
 	.locations-container {
@@ -133,38 +173,6 @@
 		background-color: white;
 		border-radius: 30px;
 		padding: 20px;
-	}
-
-	.list-item {
-		padding: 0.5rem 1rem;
-		border: none;
-		background-color: transparent;
-		border-radius: 5px;
-		width: 100%;
-		text-align: left;
-	}
-
-	.active {
-		background-color: #d3d3d3;
-	}
-	.active:hover {
-		background-color: #a3a3a3;
-		color: white;
-	}
-
-	.icon-button {
-		padding: 0.5rem;
-		border: none;
-		background-color: transparent;
-		border-radius: 5px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		min-width: 2.5rem;
-	}
-
-	.icon-button:hover {
-		background-color: var(--color-primary-40);
 	}
 
 	.location-details {

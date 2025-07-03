@@ -12,14 +12,15 @@
 		newsletterStorageRef,
 	} from '$lib/firebase/firebaseConfig';
 
+	import { Button } from '$lib/components/ui/button';
+
 	interface Props {
-		fileUrl?: string;
+		fileUrl?: string | null;
 		target?: 'pdf' | 'weeklysheet' | 'newsletter';
 		onUpload: ({ url, docRef }: { url: string; docRef: any }) => void;
 	}
 
 	let { fileUrl = $bindable(''), target = 'pdf', onUpload }: Props = $props();
-
 
 	const MAX_PDF_SIZE = 5 * 1024 * 1024; // 5MB max size for PDFs
 	const authorizedExtensions = '.pdf';
@@ -63,16 +64,14 @@
 		}
 	};
 
-	const handleFileChange = async (event: Event & {target: HTMLInputElement}) => {
+	const handleFileChange = async (event: any) => {
 		event.preventDefault();
 		fileError = '';
 		if (event.target.files) {
 			selectedFile = event.target.files[0];
 			let fileExists = await checkIfFileExists(selectedFile.name);
 			if (fileExists) {
-				const userConfirmed = confirm(
-					'A file with this name already exists. Do you want to overwrite it?',
-				);
+				const userConfirmed = confirm('A file with this name already exists. Do you want to overwrite it?');
 				fileError = `<em>${selectedFile.name}</em> already exists. <p>Please choose another file.`;
 				resetInput();
 			} else {
@@ -121,7 +120,7 @@
 
 	const resetInput = () => {
 		selectedFile = new File([], '');
-		URL.revokeObjectURL(fileUrl);
+		if (fileUrl) URL.revokeObjectURL(fileUrl);
 		fileUrl = '';
 		fileName = '';
 	};
@@ -135,20 +134,14 @@
 	<form class={moduleWidth}>
 		<label
 			class={moduleWidth +
-				'group flex h-[200px] flex-col rounded-lg border bg-slate-100 p-10 text-center '}
+				'group flex h-[200px] cursor-pointer flex-col rounded-lg border bg-slate-100 p-10 text-center transition-colors hover:bg-slate-200'}
 		>
 			<div class="flex h-full w-full flex-col items-center justify-center text-center">
 				<p class="pointer-none font-semibold text-gray-600">
 					<span class="text-sm">Click here to select a PDF file</span>
 				</p>
 			</div>
-			<input
-				type="file"
-				id="uploadFile"
-				accept={authorizedExtensions}
-				class="hidden"
-				onchange={handleFileChange}
-			/>
+			<input type="file" id="uploadFile" accept={authorizedExtensions} class="hidden" onchange={handleFileChange} />
 		</label>
 		<div class="mt-3 text-center text-sm">(PDF files only, max 5MB)</div>
 		{#if fileError}
@@ -162,23 +155,18 @@
 	<div class="pdf-container">
 		<div class="flex items-center justify-center rounded-lg bg-slate-100 p-4">
 			<svg class="h-8 w-8 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-				<path
-					d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z"
-				/>
+				<path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
 				<path
 					d="M3 8a2 2 0 012-2h2.93a.25.25 0 01.174.073l2.6 2.6a.25.25 0 00.174.073H13a2 2 0 012 2v3a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"
 				/>
 			</svg>
 			<span class="ml-2 text-sm font-medium text-gray-900">{fileName}</span>
-			<a
-				href={fileUrl}
-				target="_blank"
-				rel="noopener noreferrer"
-				class="ml-2 text-sm text-blue-600 hover:text-blue-800">View PDF</a
+			<a href={fileUrl} target="_blank" rel="noopener noreferrer" class="ml-2 text-sm text-blue-600 hover:text-blue-800"
+				>View PDF</a
 			>
 		</div>
 		<div class="col-span-2 text-center">
-			<button class="btn btn-primary w-1/2" onclick={resetInput}>Change</button>
+			<Button variant="primary" onclick={resetInput}>Change</Button>
 		</div>
 	</div>
 {/if}

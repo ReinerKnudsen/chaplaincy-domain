@@ -9,6 +9,7 @@
 	import mainhero from '$lib/assets/mainhero.webp';
 
 	import Icon from '@iconify/svelte';
+	import { Button } from '$lib/components/ui/button';
 
 	import servicesData from '$lib/services.json';
 
@@ -31,7 +32,7 @@
 			...service,
 			place_address: service.place_address?.replace(/\n/g, '<br>') ?? '',
 			mode: service.mode as 'onsite' | 'online',
-		}),
+		})
 	);
 
 	let user = $state();
@@ -56,12 +57,23 @@
 	});
 </script>
 
-<section >
+<section>
 	<main class="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
 		<div class="page-title">Anglican Chaplaincy of Bonn and Cologne</div>
 		<div class="page-subtitle">St. Boniface, Bonn and All Saints, Cologne</div>
 		<div class="image-container">
 			<img src={mainhero} alt="main hero" />
+		</div>
+		<div class="flex flex-row items-center justify-center">
+			<img
+				src="https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Flogos%2Fdiocese2025_sm.png?alt=media&token=844f1d21-945a-426f-872d-59c157a2d5dd"
+				alt="diocese in europe logo"
+				class="my-4 w-60"
+			/>
+			<div class="flex flex-col items-start justify-center">
+				<div class="pl-4 text-lg">Our chaplaincy is part of the Diocese of Europe</div>
+				<Button variant="link"><a href="https://www.europe.anglican.org/">Learn more</a></Button>
+			</div>
 		</div>
 	</main>
 </section>
@@ -90,11 +102,10 @@
 					<Icon icon="fa-solid:cross" class="h-12 w-12" />
 				</div>
 				<div class="font-lg italic">
-					A welcoming, safe, diverse and open congregation, inclusive of all. Our worship tradition
-					is Eucharistic, to which we welcome everyone. We invite people of whatever background,
-					age, ethnicity, gender and sexuality to share our worship and to join our church family,
-					wherever they may be on their spiritual journey. We welcome and enjoy having children of
-					all ages worshipping with us.
+					A welcoming, safe, diverse and open congregation, inclusive of all. Our worship tradition is Eucharistic, to
+					which we welcome everyone. We invite people of whatever background, age, ethnicity, gender and sexuality to
+					share our worship and to join our church family, wherever they may be on their spiritual journey. We welcome
+					and enjoy having children of all ages worshipping with us.
 				</div>
 			</div>
 		</div>
@@ -108,22 +119,21 @@
 		<div class="content-container">
 			<h2 class="section-header">What's up?</h2>
 			{#if $LatestNewsStore.length > 0}
-			<div class="itemContainer">
+				<div class="itemContainer">
 					{#each $LatestNewsStore as item}
 						<ItemCard {item} kind="news" />
 					{/each}
 				</div>
 				<div class="more-link">
-					<a href="/news"><button class="calltoaction">See all news</button></a>
+					<a href="/news"><Button variant="calltoaction" size="xl">See all news</Button></a>
 				</div>
-				{:else}
+			{:else}
 				<div class="itemContainer">
 					<p>Currently there are no news articles available.</p>
 				</div>
 			{/if}
-			</div>
-		</section>
-	
+		</div>
+	</section>
 
 	<!-- Events section -->
 	<section class="bg-white-smoke">
@@ -136,81 +146,61 @@
 					{/each}
 				</div>
 				<div class="more-link">
-					<a href="/events"><button class="calltoaction">See all events</button></a>
+					<a href="/events"><Button variant="calltoaction" size="xl">See all events</Button></a>
 				</div>
-				{:else}
+			{:else}
 				<div class="itemContainer">
 					<p>Currently there are no events scheduled.</p>
 				</div>
-				{/if}
-			</div>
-		</section>
-
+			{/if}
+		</div>
+	</section>
 {/if}
 
 <!-- Safeguarding -->
-<section >
+<section>
 	<div class="content-container">
 		<h2 class="section-header">Safeguarding</h2>
 		<div class="pl-10 text-lg">
 			<p>
-				Our chaplaincy in Bonn and Cologne is committed to safeguarding children, young people and
-				adults from harm. We follow the House of Bishops guidance and policies and have our own
-				Chaplaincy Safeguarding Officer.
+				Our chaplaincy in Bonn and Cologne is committed to safeguarding children, young people and adults from harm. We
+				follow the House of Bishops guidance and policies and have our own Chaplaincy Safeguarding Officer.
 			</p>
 			<p class="pt-4">
-				Our Diocese of Europe’s safeguarding pages contain vital links and information including
-				contacts for the Diocesan Safeguarding Advisor who advises our Safeguarding Officer. If you
-				are concerned that a child or adult has been harmed or may be at risk of harm, <a
-					href="about/safeguarding"
-					class="link">please contact our Safeguarding Officer Patra Al-Saadi</a
+				Our Diocese of Europe’s safeguarding pages contain vital links and information including contacts for the
+				Diocesan Safeguarding Advisor who advises our Safeguarding Officer. If you are concerned that a child or adult
+				has been harmed or may be at risk of harm, <a href="about/safeguarding" class="link"
+					>please contact our Safeguarding Officer Patra Al-Saadi</a
 				> or the Diocesan Safeguarding Advisor.
 			</p>
 			<p class="pt-4 font-semibold">
-				If you have immediate concerns about the safety of someone, please contact the police and
-				your local authority’s children or adult social care services.
+				If you have immediate concerns about the safety of someone, please contact the police and your local authority’s
+				children or adult social care services.
 			</p>
 			<div class="more-link">
-				<a href="/about/safeguarding"><button class="calltoaction">Learn more</button></a>
+				<a href="/about/safeguarding"><Button variant="calltoaction" size="xl">Learn more</Button></a>
 			</div>
 		</div>
 	</div>
 </section>
-
 
 <!-- signup section-->
 <section class="bg-white-smoke">
 	<div class="content-container">
 		<div class="section-header">Sign up for our news</div>
 		<div class="mt-4 mb-10 pl-10 text-lg">
-			We provide you with the latest news from our chaplaincy and the diocese in our regular email
-			news.
+			We provide you with the latest news from our chaplaincy and the diocese in our regular email news.
 
-			<form
-				method="POST"
-				action="?/subscribe"
-				use:enhance
-				class="flex w-full flex-col space-y-6 pr-10"
-			>
+			<form method="POST" action="?/subscribe" use:enhance class="flex w-full flex-col space-y-6">
 				<div class="my-8 flex flex-col gap-4 md:flex-row md:gap-8">
 					<div class="flex flex-1 flex-col space-y-2">
 						<label for="firstName">First Name</label>
-						<input
-							type="text"
-							id="firstName"
-							name="firstName"
-							class="bg-white-primary w-full rounded-lg border p-2"
-						/>
+						<input type="text" id="firstName" name="firstName" class="bg-white-primary w-full rounded-lg border p-2" />
 					</div>
 
 					<div class="flex flex-1 flex-col space-y-2">
 						<label for="lastName">Last Name</label>
-						<input
-							type="text"
-							id="lastName"
-							name="lastName"
-							class="bg-white-primary w-full rounded-lg border p-2"
-						/>
+						<input type="text" id="lastName" name="lastName" class="bg-white-primary w-full rounded-lg border p-2" />
 					</div>
 
 					<div class="flex flex-1 flex-col space-y-2">
@@ -225,7 +215,7 @@
 					</div>
 				</div>
 				<div class="more-link">
-					<button type="submit" class="calltoaction">Subscribe to Newsletter</button>
+					<Button variant="calltoaction" size="xl" type="submit">Subscribe to Newsletter</Button>
 				</div>
 				{#if form?.success}
 					<div class="rounded-lg border-2 border-green-500 p-4 text-green-500">
@@ -254,9 +244,7 @@
 							<div class="download-item mt-10">
 								Weekly Sheet
 								<div class="circle">
-									<span class="icon"
-										><Icon class="text-primary-text h-10 w-10" icon="la:file-download" /></span
-									>
+									<span class="icon"><Icon class="text-primary-text h-10 w-10" icon="la:file-download" /></span>
 								</div>
 							</div></a
 						>
@@ -265,9 +253,7 @@
 						<div class="download-item mt-10">
 							Newsletter
 							<div class="circle">
-								<span class="icon"
-									><Icon class="text-primary-text h-10 w-10" icon="la:file-download" /></span
-								>
+								<span class="icon"><Icon class="text-primary-text h-10 w-10" icon="la:file-download" /></span>
 							</div>
 						</div>
 					{/if}

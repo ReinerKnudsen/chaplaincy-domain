@@ -301,7 +301,7 @@
 				</div>
 
 				<!-- Buttons -->
-				<div class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-3/4 gap-4 bg-slate-100 p-10 shadow-2xl">
+				<div class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-1/2 gap-4 bg-slate-100 p-10 shadow-2xl">
 					<div class="buttons col-span-2">
 						<Button variant="outline" type="reset" color="light" onclick={onCancel}>Cancel</Button>
 						<Button variant="outline" type="reset" disabled={docRef}>Empty form</Button>
@@ -339,8 +339,8 @@
 	}
 
 	.buttons {
-		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr;
+		display: flex;
+		flex-direction: row;
 		gap: 50px;
 		padding: 0 50px;
 		justify-content: space-between;

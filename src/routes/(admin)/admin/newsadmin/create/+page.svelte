@@ -5,8 +5,7 @@
 	import { newsColRef } from '$lib/firebase/firebaseConfig';
 
 	import { type News, EditModeStore, EditMode } from '$lib/stores/ObjectStore';
-	import { selectedImage, imageExists, existingImageUrl, resetImageselection } from '$lib/stores/ImageSelectionStore';
-	import { newsFormService } from '$lib/services/NewsFormService';
+	import { newsFormService, uploadNewsImage } from '$lib/services/NewsFormService';
 	import { Messages } from '$lib/utils/messages';
 
 	import NewsForm from '$lib/components/NewsForm.svelte';
@@ -17,13 +16,17 @@
 	let pageHasUnsavedChanges = $state(false);
 	let showNavigateWarning = $state(false);
 
-	const handleSaveDraft = async (newNewsItem: News) => {
+	const handleSaveDraft = async (thisNews: News, newImage: File | null) => {
+		if (!thisNews) return;
 		try {
-			await addDoc(newsColRef, newNewsItem);
-			EditModeStore.set(EditMode.Empty);
+			if (newImage) {
+				thisNews = await uploadNewsImage(thisNews, newImage);
+			}
+			await addDoc(newsColRef, thisNews);
 			pageHasUnsavedChanges = false;
 			notificationStore.addToast('success', Messages.DRAFTSUCCESS);
 			goto('/admin/newsadmin');
+			EditModeStore.set(EditMode.Empty);
 		} catch (error) {
 			notificationStore.addToast('error', Messages.DRAFTERROR);
 			console.error('Error writing document:', error);
@@ -41,19 +44,18 @@
 		}
 	});
 
-	const saveNewItem = async (newNewsItem: News) => {
+	const handleSaveNewItem = async (thisNews: News, newImage?: File | null) => {
+		if (!thisNews) return;
 		try {
-			const thisNews: News | undefined = await newsFormService(
-				newNewsItem,
-				$selectedImage,
-				$imageExists,
-				$existingImageUrl
-			);
-			await addDoc(newsColRef, thisNews);
+			if (newImage) {
+				thisNews = await uploadNewsImage(thisNews, newImage);
+			}
+			const updatedNews: News = await newsFormService(thisNews);
+			await addDoc(newsColRef, updatedNews);
 			pageHasUnsavedChanges = false;
+			notificationStore.addToast('success', Messages.SAVESUCCESS);
 			goto('/admin/newsadmin');
 			EditModeStore.set('');
-			notificationStore.addToast('success', Messages.SAVESUCCESS);
 		} catch (error) {
 			notificationStore.addToast('error', Messages.SAVERROR);
 			console.error('Error writing document:', error);
@@ -68,7 +70,6 @@
 
 	const handleCancel = () => {
 		EditModeStore.set(EditMode.Empty);
-		resetImageselection();
 		goto('/admin/newsadmin');
 	};
 </script>
@@ -88,7 +89,7 @@
 
 <div>
 	<NewsForm
-		onCreateNew={saveNewItem}
+		onCreateNew={handleSaveNewItem}
 		onSaveDraft={handleSaveDraft}
 		onUnsavedChangesUpdate={handleUnsavedChangesUpdate}
 		onCancel={handleCancel}

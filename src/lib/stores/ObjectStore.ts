@@ -12,6 +12,7 @@ import {
 	where,
 	limit,
 	type DocumentReference,
+	type StorageReference,
 } from 'firebase/firestore';
 import { database } from '$lib/firebase/firebaseConfig';
 
@@ -65,6 +66,7 @@ export interface DomainEvent {
 	image?: string | null;
 	imageAlt?: string | null;
 	imageCaption?: string | null;
+	imageRef: StorageReference;
 	author: string | null;
 	pdfFile?: string | null;
 	pdfText?: string | null;
@@ -97,6 +99,7 @@ export const initialDomainEvent: DomainEvent = {
 	image: null,
 	imageAlt: null,
 	imageCaption: null,
+	imageRef: null,
 	author: null,
 	pdfFile: null,
 	pdfText: null,
@@ -118,6 +121,7 @@ export interface News {
 	image?: string | null;
 	imageAlt?: string | null;
 	imageCaption?: string | null;
+	imageRef: StorageReference;
 	author: string | null;
 	pdfFile?: string | null;
 	pdfText?: string | null;
@@ -128,20 +132,21 @@ export type NewsSortableFields = keyof News;
 
 export const initialNews: News = {
 	title: null,
+	author: null,
 	state: ItemState.DRAFT,
 	text: null,
 	slug: null,
 	publishdate: null,
 	publishtime: null,
 	publishDateTime: Timestamp.fromDate(new Date()),
-	tags: [],
 	comments: null,
 	image: null,
 	imageAlt: null,
-	author: null,
+	imageRef: null,
 	imageCaption: null,
 	pdfFile: null,
 	pdfText: null,
+	tags: [],
 };
 
 // WeeklySheet

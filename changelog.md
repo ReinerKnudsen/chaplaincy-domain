@@ -12,16 +12,23 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
-- add image metadata (alt text and caption) are now saved with the image
-- when an image is re-used the meta data saved with it is re-used as well
+-
 
 ### Changed
 
--
+- internal: optimised the image handling for events and news
+- optimised the button placement for events and news creation
 
 ### Fixed
 
--
+- issues with text handling in event texts
+
+## [2.3.0] - 2025-07-03
+
+### Added
+
+- add image metadata (alt text and caption) are now saved with the image
+- when an image is re-used the meta data saved with it is re-used as well
 
 ## [2.2.1] - 2025-06-30
 

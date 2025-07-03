@@ -18,7 +18,7 @@
 				{
 					"title": "How we worship",
 					"url": "/how-we-worship/",
-					"active": true
+					"active": false
 				},
 				{
 					"title": "Church of England",
@@ -103,12 +103,12 @@
 			"subMenu": [
 				{
 					"title": "Who we are",
-					"url": "/about/",
+					"url": "/about-us/",
 					"active": true
 				},
 				{
 					"title": "Where we are",
-					"url": "locations",
+					"url": "where-we-are/",
 					"active": true
 				},
 				{

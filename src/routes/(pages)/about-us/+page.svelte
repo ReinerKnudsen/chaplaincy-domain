@@ -1,15 +1,11 @@
 <script lang="ts">
 </script>
 
-<div class="my-3 w-full">
-	<div class="page-title">About us</div>
-</div>
 <div class="fliesstext mx-auto mb-20 flex flex-col items-center md:grid md:grid-cols-3">
 	<div class="col-span-1 text-left text-lg md:col-span-2">
-		Most of the congregation in Bonn and Cologne are native speakers of English. Many come from the
-		UK, but we have members from all parts of the world. Some are only temporarily in Germany;
-		others are long-term residents, either because they have married German nationals or because
-		their work is here.
+		Most of the congregation in Bonn and Cologne are native speakers of English. Many come from the UK, but we have
+		members from all parts of the world. Some are only temporarily in Germany; others are long-term residents, either
+		because they have married German nationals or because their work is here.
 	</div>
 	<div>
 		<figure class="image mx-2 max-h-60 md:mx-10 md:justify-self-end">
@@ -37,20 +33,19 @@
 		</figure>
 	</div>
 	<div class="col-span-2 mb-5 text-right text-lg">
-		Most non-German members of the congregation also speak good German. Germans play an active part
-		in our parish life. Both congregations range from families with young children to senior
-		citizens. Although the majority of our congregation is Anglican, a number of other denominations
-		are represented whose members, being English speakers, also regard the churches in Cologne and
-		Bonn as focal points for worship.
+		Most non-German members of the congregation also speak good German. Germans play an active part in our parish life.
+		Both congregations range from families with young children to senior citizens. Although the majority of our
+		congregation is Anglican, a number of other denominations are represented whose members, being English speakers,
+		also regard the churches in Cologne and Bonn as focal points for worship.
 	</div>
 
 	<!-- Row 3-->
 	<div class="col-span-2 mb-5 text-left text-lg">
-		We see this ethnically, culturally and denominationally very varied community as one of our
-		major strengths. It helps to make the congregation more flexible and dynamic in its attitudes.
-		In the main, our chaplaincy staff are volunteers from our congregation who take on different
-		aspects managing and supporting our community, under the guidance and support of our chaplain.
-		If you would like to get involved or support any of our events in any way, please get in touch.
+		We see this ethnically, culturally and denominationally very varied community as one of our major strengths. It
+		helps to make the congregation more flexible and dynamic in its attitudes. In the main, our chaplaincy staff are
+		volunteers from our congregation who take on different aspects managing and supporting our community, under the
+		guidance and support of our chaplain. If you would like to get involved or support any of our events in any way,
+		please get in touch.
 	</div>
 	<figure class="image mx-10 max-h-60 justify-self-end">
 		<img
@@ -63,7 +58,6 @@
 		</figcaption>
 	</figure>
 </div>
-<div class="mb-20">&nbsp;</div>
 
 <style>
 	.image {

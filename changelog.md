@@ -19,6 +19,8 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - internal: optimised the image handling for events and news
 - optimised the button placement for events and news creation
 - background color of download items changed to seablue
+- new: all pages now have the same design
+- the pages pull header image and apge title dynamically into layout
 
 ### Fixed
 

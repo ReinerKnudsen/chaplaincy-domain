@@ -12,12 +12,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- add: menu items can be de-activated and activated
 
 ### Changed
 
 - internal: optimised the image handling for events and news
 - optimised the button placement for events and news creation
+- background color of download items changed to seablue
 
 ### Fixed
 

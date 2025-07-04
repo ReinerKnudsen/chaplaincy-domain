@@ -14,12 +14,12 @@
 	let { form }: Props = $props();
 </script>
 
-<div class="mx-auto mt-10 max-w-[60%] px-10">
+<div class="mx-auto mt-10 max-w-[80%] px-10">
 	<h3>We would like to hear from you!</h3>
 	<p>Please leave us a message. We will reply to you as soon as possible.</p>
 </div>
 
-<div class="mx-auto mb-20 max-w-[60%] rounded-xl p-10">
+<div class="mx-auto mb-20 max-w-[80%] rounded-xl p-10">
 	<div class="pb-10">All fields marked with * are required.</div>
 	<form method="POST" class="flex flex-col space-y-6" use:enhance>
 		<!-- Name -->

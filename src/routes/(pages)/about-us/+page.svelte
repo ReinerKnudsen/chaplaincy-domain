@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<div class="fliesstext mx-auto mb-20 flex flex-col items-center md:grid md:grid-cols-3">
+<div class="flex flex-col items-center md:grid md:grid-cols-3">
 	<div class="col-span-1 text-left text-lg md:col-span-2">
 		Most of the congregation in Bonn and Cologne are native speakers of English. Many come from the UK, but we have
 		members from all parts of the world. Some are only temporarily in Germany; others are long-term residents, either

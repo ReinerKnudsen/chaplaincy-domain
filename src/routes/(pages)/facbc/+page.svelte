@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<div class="fliesstext mx-auto mb-20 text-lg">
+<div class="text-lg">
 	<p>
 		The FACBC e.V. is a legal entity and a registered association governed by German law. The main purpose of the FACBC
 		is to collect all regular income and to pay all regular expenses.

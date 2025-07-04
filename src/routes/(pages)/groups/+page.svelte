@@ -32,7 +32,7 @@
 	];
 </script>
 
-<div class="mx-auto w-[80%] text-lg">
+<div class="text-lg">
 	<div class="intro pb-4">
 		Groups are organized by members of the congregation. They are open to everybody. Below you can find all information
 		required about the groups of the church.

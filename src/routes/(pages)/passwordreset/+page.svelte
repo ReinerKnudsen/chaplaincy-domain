@@ -59,7 +59,6 @@
 		{#if oobCode}
 			<!-- Reset Password Form -->
 			<form class="flex flex-col" onsubmit={checkPasswords}>
-				<h3 class="p-0 text-xl font-medium text-gray-900 dark:text-white">Reset your password</h3>
 				<div class="my-6">
 					<Label>New Password</Label>
 					<Input type="password" name="new-password" id="new-password" bind:value={newPassword} required />
@@ -71,7 +70,6 @@
 		{:else}
 			<!-- Request Reset Form -->
 			<form class="flex flex-col" onsubmit={requestReset}>
-				<h3 class="p-0 text-xl font-medium text-gray-900 dark:text-white">Reset your password</h3>
 				<p class="text-sm text-gray-600">Enter your email address and we'll send you a link to reset your password.</p>
 				<div class="my-6">
 					<Label>Email</Label>

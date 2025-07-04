@@ -12,6 +12,7 @@
 	let pageName = $state('');
 	let pageTitle = $derived(page.data.title);
 	let pageCaption = $derived(page.data.caption);
+	let pageStatic = $derived(page.data.static || false);
 
 	// Get page name from current route
 	const getPageName = (routeId) => {
@@ -46,7 +47,7 @@
 	});
 </script>
 
-<div class="mx-auto mb-8 max-w-[1400px] px-4 sm:px-6 lg:px-8">
+<div class="mx-auto mb-20 max-w-[1400px] px-4 sm:px-6 lg:px-8">
 	<!-- Header Image -->
 	<div class="flex h-[250px] w-full items-center justify-center bg-gray-200">
 		{#if imageLoading}
@@ -71,7 +72,7 @@
 	</h1>
 
 	<!-- Page Content -->
-	<div class="mx-auto lg:w-[1000px]">
+	<div class="mx-auto {pageStatic ? 'max-w-10/12' : ''}">
 		{@render children?.()}
 	</div>
 </div>

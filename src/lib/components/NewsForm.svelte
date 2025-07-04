@@ -26,7 +26,7 @@
 	import ToastContainer from './ToastContainer.svelte';
 	import UploadImage from './UploadImage.svelte';
 	import UploadPDF from './UploadPDF.svelte';
-	import { getMetadata, type StorageReference } from 'firebase/storage';
+	import { getDownloadURL, getMetadata, type StorageReference } from 'firebase/storage';
 
 	const author = $authStore.name;
 
@@ -96,7 +96,9 @@
 		newImage = null;
 		const altText = await getMetadata(imageRef).then((metadata) => metadata.customMetadata?.imageAlt);
 		const captionText = await getMetadata(imageRef).then((metadata) => metadata.customMetadata?.imageCaption);
-		thisNews = { ...thisNews, image: imageRef.fullPath, imageAlt: altText || '', imageCaption: captionText || '' };
+		const imagePath = await getDownloadURL(imageRef);
+		thisNews = { ...thisNews, image: imagePath, imageAlt: altText || '', imageCaption: captionText || '' };
+		console.log(thisNews);
 		checkForChanges();
 	};
 

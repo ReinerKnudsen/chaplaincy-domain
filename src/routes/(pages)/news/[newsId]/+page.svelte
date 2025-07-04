@@ -32,7 +32,7 @@
 {#if loading}
 	Loading...
 {:else if thisNews}
-	<div class="article-container">
+	<div>
 		<div id="article-content">
 			<div class="article-title">
 				{thisNews.title}

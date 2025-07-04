@@ -33,7 +33,7 @@
 			<div>
 				<h2 class="mb-4 text-lg font-semibold tracking-wide text-gray-800 uppercase">Resources</h2>
 				<nav class="flex flex-col space-y-2">
-					<a href="/newsletter/archive" class="text-gray-600 hover:text-gray-900">Newsletter Archive</a>
+					<!--<a href="#" class="text-gray-600 hover:text-gray-900">Newsletter Archive</a>-->
 				</nav>
 			</div>
 

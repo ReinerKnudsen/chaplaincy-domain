@@ -26,12 +26,12 @@
 		{#if extraLink || eventsLink}
 			{#if extraLink && eventsLink}
 				<div class="flex flex-row justify-between gap-20 py-4">
-					<p class="bg-slate-200 p-4">
+					<div class="flex-1 bg-slate-200 p-4">
 						<a class="link" href={extraLink} target="_blank">{extraLinkText}</a>
-					</p>
-					<p class="bg-slate-200 p-4">
+					</div>
+					<div class="flex-1 bg-slate-200 p-4">
 						Please check our <a class="link" href="/events">Events</a> page for upcoming meetings.
-					</p>
+					</div>
 				</div>
 			{:else if extraLink}
 				<div class=" bg-slate-200 py-4 pl-4">

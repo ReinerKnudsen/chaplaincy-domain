@@ -5,10 +5,10 @@
 
 	import { EditMode, EditModeStore, type DomainEvent } from '$lib/stores/ObjectStore';
 	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';
-	import { selectedLocation, resetSelectedLocation } from '$lib/stores/LocationsStore';
+	import { resetSelectedLocation } from '$lib/stores/LocationsStore';
 
 	import { validateEventData, buildTimeStamp } from '$lib/services/validateForm';
-	import { eventFormService, uploadEventImage } from '$lib/services/EventFormService';
+	import { eventFormService, uploadEventImage, uploadNewPDF } from '$lib/services/EventFormService';
 
 	import EventForm from '$lib/components/EventForm.svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
@@ -27,6 +27,7 @@
 	const handleCancel = () => {
 		EditModeStore.set(EditMode.Empty);
 		pageHasUnsavedChanges = false;
+		resetSelectedLocation();
 		goto('/admin/eventsadmin');
 	};
 
@@ -36,16 +37,20 @@
 		goto('/admin/eventsadmin');
 	};
 
-	const handleSaveDraft = async (thisEvent: DomainEvent, newImage?: File | null) => {
+	const handleSaveDraft = async (thisEvent: DomainEvent, newImage?: File | null, newPDF?: File | null) => {
 		if (!thisEvent) return;
 		try {
-			let updatedEvent: DomainEvent;
+			let draftEvent: DomainEvent = thisEvent;
 			if (newImage) {
-				updatedEvent = await uploadEventImage(thisEvent, newImage);
-			} else {
-				updatedEvent = thisEvent;
+				draftEvent = await uploadEventImage(thisEvent, newImage);
 			}
-			await addDoc(eventsColRef, updatedEvent);
+
+			if (newPDF) {
+				const result = await uploadNewPDF(newPDF, 'documents');
+				if (result) draftEvent = { ...thisEvent, pdfFile: result.url };
+			}
+
+			await addDoc(eventsColRef, draftEvent);
 			EditModeStore.set(EditMode.Empty);
 			resetSelectedLocation();
 			pageHasUnsavedChanges = false;
@@ -57,11 +62,17 @@
 		}
 	};
 
-	const handlesaveNewEvent = async (thisEvent: DomainEvent, newImage?: File | null) => {
+	const handlesaveNewEvent = async (thisEvent: DomainEvent, newImage?: File | null, newPDF?: File | null) => {
 		if (validateEventData(thisEvent) || !thisEvent) return;
 		try {
 			if (newImage) {
 				thisEvent = await uploadEventImage(thisEvent, newImage);
+			}
+			if (newPDF) {
+				console.log('I have a new PDF');
+				const result = await uploadNewPDF(newPDF, 'documents');
+				console.log(result);
+				if (result) thisEvent = { ...thisEvent, pdfFile: result.url };
 			}
 			const updatedEvent = await eventFormService(thisEvent);
 			await addDoc(eventsColRef, updatedEvent);

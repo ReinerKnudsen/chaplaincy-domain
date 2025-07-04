@@ -1,7 +1,7 @@
 import { Timestamp } from 'firebase/firestore';
 
 import { type DomainEvent, setItemState } from '$lib/stores/ObjectStore';
-import { uploadImage, type ReturnType } from './fileService';
+import { uploadImage, uploadPDF, type ReturnType, type PDFType } from './fileService';
 import { buildTimeStamp } from '$lib/services/validateForm';
 
 export const eventFormService = async (newEvent: DomainEvent) => {
@@ -67,4 +67,13 @@ export const uploadEventImage = async (event: DomainEvent, newImage: File | null
 		event.image = result.url;
 	}
 	return event;
+};
+
+export const uploadNewPDF = async (newPDF: File | null, type: PDFType) => {
+	let result: ReturnType | null = null;
+	if (!newPDF) {
+		return;
+	}
+	result = await uploadPDF(newPDF, type);
+	if (result) return result;
 };

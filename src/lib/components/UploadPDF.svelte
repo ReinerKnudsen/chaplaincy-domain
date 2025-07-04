@@ -1,119 +1,64 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { ref, uploadBytes, getDownloadURL, getMetadata } from 'firebase/storage';
-	import { getDoc, addDoc, doc } from 'firebase/firestore';
-
-	import {
-		storage,
-		documentsColRef,
-		pdfStorageRef,
-		pdfColRef,
-		weeklysheetStorageRef,
-		newsletterStorageRef,
-	} from '$lib/firebase/firebaseConfig';
+	import { type StorageReference } from 'firebase/storage';
+	import { checkIfPDFExists } from '$lib/services/fileService';
 
 	import { Button } from '$lib/components/ui/button';
 
 	interface Props {
-		fileUrl?: string | null;
-		target?: 'pdf' | 'weeklysheet' | 'newsletter';
-		onUpload: ({ url, docRef }: { url: string; docRef: any }) => void;
+		existingPdf?: string | null;
+		pdftype?: 'documents' | 'weeklysheet' | 'newsletter';
+		onNewFileSelected?: (newDcoument: File) => void;
+		onExistingFileSelected?: (docRef: StorageReference) => void;
 	}
 
-	let { fileUrl = $bindable(''), target = 'pdf', onUpload }: Props = $props();
+	let { existingPdf, pdftype = 'documents', onNewFileSelected, onExistingFileSelected }: Props = $props();
 
 	const MAX_PDF_SIZE = 5 * 1024 * 1024; // 5MB max size for PDFs
 	const authorizedExtensions = '.pdf';
 
-	let selectedFile: File;
+	let selectedFile: File | null = $state(null);
+	let fileUrl: string = $state('');
 	let moduleWidth = 'w-[400px]';
 	let fileError: string = $state('');
 	let fileName: string = $state('');
 	let uploadProgress = $state(false);
 
 	onMount(async () => {
-		if (fileUrl) {
-			try {
-				// Get the file name from the URL
-				const fileRef = ref(storage, fileUrl);
-				const metadata = await getMetadata(fileRef);
-				fileName = metadata.name || 'PDF Document';
-			} catch (error) {
-				console.error('Error getting PDF metadata:', error);
-				fileName = 'PDF Document';
-			}
+		if (existingPdf) {
+			fileUrl = existingPdf;
+			fileName = existingPdf.split('/').pop() || '';
 		}
 	});
-
-	const targetRefs = {
-		pdf: { storage: pdfStorageRef, collection: pdfColRef },
-		weeklysheet: { storage: weeklysheetStorageRef, collection: documentsColRef },
-		newsletter: { storage: newsletterStorageRef, collection: documentsColRef },
-	};
-	const { storage: targetStorageRef, collection: targetCollectionRef } = targetRefs[target];
-
-	/** Verify in Firestore Collection if a PDF of this name is already present*/
-	const checkIfFileExists = async (thisFile: string) => {
-		const docRef = doc(targetCollectionRef, thisFile);
-		const docSnap = await getDoc(docRef);
-
-		if (docSnap.exists()) {
-			return true; // File exists in Firestore
-		} else {
-			return false; // File doesn't exist in Firestore
-		}
-	};
 
 	const handleFileChange = async (event: any) => {
 		event.preventDefault();
 		fileError = '';
 		if (event.target.files) {
 			selectedFile = event.target.files[0];
-			let fileExists = await checkIfFileExists(selectedFile.name);
-			if (fileExists) {
-				const userConfirmed = confirm('A file with this name already exists. Do you want to overwrite it?');
-				fileError = `<em>${selectedFile.name}</em> already exists. <p>Please choose another file.`;
+			if (!selectedFile) return;
+
+			let existingFileRef: StorageReference | null = await checkIfPDFExists(selectedFile.name, pdftype);
+
+			if (existingFileRef) {
+				fileError = 'This PDF file already exists in the collection.';
+				onExistingFileSelected && onExistingFileSelected(existingFileRef);
+				return;
+			}
+
+			if (selectedFile.size > MAX_PDF_SIZE) {
+				fileError = 'The PDF file is too big (max 5MB).';
 				resetInput();
-			} else {
-				if (selectedFile.size > MAX_PDF_SIZE) {
-					fileError = 'The PDF file is too big (max 5MB).';
-					selectedFile = new File([], '');
-				} else if (!selectedFile.type.includes('pdf')) {
-					fileError = 'Only PDF files are allowed.';
-					selectedFile = new File([], '');
-				} else {
-					fileError = '';
-					uploadProgress = true;
+				return;
+			}
 
-					try {
-						// Create a reference to the file location in Firebase Storage
-						const fileRef = ref(targetStorageRef, selectedFile.name);
-
-						// Upload the file to Firebase Storage
-						const uploadResult = await uploadBytes(fileRef, selectedFile);
-
-						// Get the download URL
-						const downloadURL = await getDownloadURL(fileRef);
-
-						// Add metadata to Firestore
-						const docRef = await addDoc(targetCollectionRef, {
-							name: selectedFile.name,
-							path: downloadURL,
-							size: selectedFile.size,
-							type: target,
-							uploadDate: new Date().toISOString(),
-						});
-
-						fileUrl = downloadURL;
-						fileName = selectedFile.name;
-						onUpload({ url: downloadURL, docRef: docRef });
-					} catch (error) {
-						console.error('Error uploading file:', error);
-						fileError = 'Error uploading file. Please try again.';
-					} finally {
-						uploadProgress = false;
-					}
-				}
+			fileError = '';
+			try {
+				fileName = selectedFile.name;
+				fileUrl = URL.createObjectURL(selectedFile);
+				onNewFileSelected && onNewFileSelected(selectedFile);
+			} catch (error) {
+				console.error('Error creating file:', error);
 			}
 		}
 	};
@@ -161,11 +106,11 @@
 				/>
 			</svg>
 			<span class="ml-2 text-sm font-medium text-gray-900">{fileName}</span>
-			<a href={fileUrl} target="_blank" rel="noopener noreferrer" class="ml-2 text-sm text-blue-600 hover:text-blue-800"
+			<a href={fileUrl} type="_blank" rel="noopener noreferrer" class="ml-2 text-sm text-blue-600 hover:text-blue-800"
 				>View PDF</a
 			>
 		</div>
-		<div class="col-span-2 text-center">
+		<div class="col-span-2 mt-6 text-center">
 			<Button variant="primary" onclick={resetInput}>Change</Button>
 		</div>
 	</div>

@@ -70,6 +70,7 @@ export interface DomainEvent {
 	author: string | null;
 	pdfFile?: string | null;
 	pdfText?: string | null;
+	pdfName?: string | null;
 	tags?: string[];
 }
 
@@ -103,6 +104,7 @@ export const initialDomainEvent: DomainEvent = {
 	author: null,
 	pdfFile: null,
 	pdfText: null,
+	pdfName: null,
 	tags: [],
 };
 
@@ -125,6 +127,7 @@ export interface News {
 	author: string | null;
 	pdfFile?: string | null;
 	pdfText?: string | null;
+	pdfName?: string | null;
 	tags: string[];
 }
 
@@ -146,6 +149,7 @@ export const initialNews: News = {
 	imageCaption: null,
 	pdfFile: null,
 	pdfText: null,
+	pdfName: null,
 	tags: [],
 };
 

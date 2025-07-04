@@ -6,6 +6,7 @@
 
 	import { newsFormService, uploadNewsImage } from '$lib/services/NewsFormService';
 	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';
+	import { uploadNewPDF } from '$lib/services/EventFormService';
 
 	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 	import NewsForm from '$lib/components/NewsForm.svelte';
@@ -42,16 +43,24 @@
 		goto('/admin/newsadmin');
 	};
 
-	const handleSaveDraft = async (thisNews: News, newImage: File | null) => {
+	const handleSaveDraft = async (thisNews: News, newImage: File | null, newPDF: File | null) => {
 		if (!thisNews) return;
 		try {
+			let draftNews: News = thisNews;
 			if (!data.docRef) {
 				throw new Error('No document reference provided');
 			}
+
 			if (newImage) {
-				thisNews = await uploadNewsImage(thisNews, newImage);
+				draftNews = await uploadNewsImage(thisNews, newImage);
 			}
-			const newsData = { ...thisNews } as DocumentData;
+
+			if (newPDF) {
+				const result = await uploadNewPDF(newPDF, 'documents');
+				if (result) draftNews = { ...thisNews, pdfFile: result.url, pdfName: result.ref.name };
+			}
+
+			const newsData = { ...draftNews } as DocumentData;
 			await updateDoc(data.docRef, newsData);
 			notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 			pageHasUnsavedChanges = false;
@@ -67,14 +76,20 @@
 		pageHasUnsavedChanges = formHasUnsavedChanges;
 	};
 
-	const handleUpdateNews = async (thisNews: News, newImage: File | null) => {
+	const handleUpdateNews = async (thisNews: News, newImage: File | null, newPDF: File | null) => {
 		if (!thisNews) return;
 		try {
 			if (!data.docRef) {
 				throw new Error('No document reference provided');
 			}
+
 			if (newImage) {
 				thisNews = await uploadNewsImage(thisNews, newImage);
+			}
+
+			if (newPDF) {
+				const result = await uploadNewPDF(newPDF, 'documents');
+				if (result) thisNews = { ...thisNews, pdfFile: result.url, pdfName: result.ref.name };
 			}
 			thisNews = await newsFormService(thisNews);
 			const newsData = { ...thisNews } as DocumentData;

@@ -81,7 +81,7 @@
 		onUnsavedChangesUpdate?.(hasUnsavedChanges);
 	};
 
-	const isValidNews = $derived(!!thisNews.title && !!thisNews.text && !!thisNews.slug && !!thisNews.publishdate);
+	const isValidNews = $derived(!!thisNews.title && !!thisNews.text && !!thisNews.slug);
 
 	/* # form functions */
 	const cleanUpForm = () => {
@@ -105,14 +105,14 @@
 
 	const handleExistingPDFSelected = async (pdfRef: StorageReference) => {
 		newPDF = null;
-		const pdfDocument = await getDownloadURL(pdfRef);
-		thisNews = { ...thisNews, pdfFile: pdfDocument };
+		const pdfUrl = await getDownloadURL(pdfRef);
+		thisNews = { ...thisNews, pdfFile: pdfUrl, pdfName: pdfRef.name };
 		checkForChanges();
 	};
 
 	const handleNewPDFSelected = (pdf: File) => {
 		newPDF = pdf;
-		thisNews = { ...thisNews, pdfFile: pdf.name };
+		thisNews = { ...thisNews, pdfFile: pdf.name, pdfName: pdf.name };
 		checkForChanges();
 	};
 
@@ -135,7 +135,7 @@
 		e.preventDefault();
 
 		if ($EditModeStore === EditMode.New && onCreateNew) {
-			await onCreateNew(thisNews, newImage, newPDf);
+			await onCreateNew(thisNews, newImage, newPDF);
 		} else if ($EditModeStore === EditMode.Update && onUpdate) {
 			await onUpdate(thisNews, newImage, newPDF);
 		}
@@ -166,6 +166,7 @@
 				{/if}
 			</div>
 		</div>
+		<div class="text-md mb-10 bg-slate-100 p-2">All fields marked with * are required</div>
 
 		<form id="form-container" enctype="multipart/form-data" onsubmit={handleSubmit} onreset={handleReset}>
 			<!-- Titel -->
@@ -284,7 +285,8 @@
 						<Label for="pdfFile">PDF Document</Label>
 						<div class="flex flex-col items-center justify-center">
 							<UploadPDF
-								existingPdf={thisNews.pdfFile}
+								pdftype="documents"
+								existingPdf={thisNews.pdfName}
 								onExistingFileSelected={handleExistingPDFSelected}
 								onNewFileSelected={handleNewPDFSelected}
 							/>
@@ -298,7 +300,7 @@
 
 					<!-- PDF Description -->
 					<fieldset disabled={!hasPDF}>
-						<Label for="pdfText">PDF Description</Label>
+						<Label for="pdfText">PDF Description *</Label>
 						<Input
 							type="text"
 							id="pdfText"

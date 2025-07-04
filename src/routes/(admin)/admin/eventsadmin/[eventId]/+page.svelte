@@ -29,6 +29,10 @@
 	let currentDocRef: DocumentReference | null = data.docRef;
 	let showNavigateWarning = $state(false);
 
+	$effect(() => {
+		console.log(data.newEvent);
+	});
+
 	beforeNavigate(({ cancel }: any) => {
 		if (pageHasUnsavedChanges) {
 			cancel();
@@ -54,7 +58,8 @@
 			}
 			if (newPDF) {
 				const result = await uploadNewPDF(newPDF, 'documents');
-				if (result) thisEvent = { ...thisEvent, pdfFile: result.url };
+				console.log(result);
+				if (result) thisEvent = { ...thisEvent, pdfFile: result.url, pdfName: result.ref.name };
 			}
 			const itemData = { ...thisEvent } as DocumentData;
 			await updateDoc(data.docRef, itemData);
@@ -70,7 +75,7 @@
 	};
 
 	const handleUpdateEvent = async (thisEvent: DomainEvent, newImage?: File | null, newPDF?: File | null) => {
-		if (!validateEventData(thisEvent) || !thisEvent) return;
+		if (validateEventData(thisEvent) || !thisEvent) return;
 		try {
 			if (!data.docRef) {
 				throw new Error('No document reference provided');
@@ -84,7 +89,8 @@
 			}
 			if (newPDF) {
 				const result = await uploadNewPDF(newPDF, 'documents');
-				if (result) thisEvent = { ...thisEvent, pdfFile: result.url };
+				console.log(result);
+				if (result) thisEvent = { ...thisEvent, pdfFile: result.url, pdfName: result.ref.name };
 			}
 			const updatedEvent: DomainEvent = await eventFormService(thisEvent);
 			const eventData = { ...updatedEvent } as DocumentData;

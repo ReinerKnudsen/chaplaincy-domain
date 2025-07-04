@@ -27,6 +27,7 @@
 	const handleCancel = () => {
 		EditModeStore.set(EditMode.Empty);
 		pageHasUnsavedChanges = false;
+		resetSelectedLocation();
 		goto('/admin/eventsadmin');
 	};
 
@@ -39,12 +40,11 @@
 	const handleSaveDraft = async (thisEvent: DomainEvent, newImage?: File | null, newPDF?: File | null) => {
 		if (!thisEvent) return;
 		try {
-			let draftEvent: DomainEvent;
+			let draftEvent: DomainEvent = thisEvent;
 			if (newImage) {
 				draftEvent = await uploadEventImage(thisEvent, newImage);
-			} else {
-				draftEvent = thisEvent;
 			}
+
 			if (newPDF) {
 				const result = await uploadNewPDF(newPDF, 'documents');
 				if (result) draftEvent = { ...thisEvent, pdfFile: result.url };
@@ -69,7 +69,9 @@
 				thisEvent = await uploadEventImage(thisEvent, newImage);
 			}
 			if (newPDF) {
+				console.log('I have a new PDF');
 				const result = await uploadNewPDF(newPDF, 'documents');
+				console.log(result);
 				if (result) thisEvent = { ...thisEvent, pdfFile: result.url };
 			}
 			const updatedEvent = await eventFormService(thisEvent);

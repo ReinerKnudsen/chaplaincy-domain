@@ -27,13 +27,15 @@
 		}
 		loading = false;
 	});
+
+	$effect(() => console.log(thisNews));
 </script>
 
 {#if loading}
 	Loading...
 {:else if thisNews}
 	<div>
-		<div id="article-content">
+		<div id="article-content" class="pt-30">
 			<div class="article-title">
 				{thisNews.title}
 			</div>

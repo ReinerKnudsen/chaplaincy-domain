@@ -36,40 +36,44 @@
 	};
 
 	$effect(async () => {
-		pageName = getPageName(page.route.id);
-		headerImageUrl = await loadHeaderImage(pageName);
-		imageLoading = false;
-		if (page.data?.headerImage) {
-			imageLoading = true;
+		if (pageStatic) {
+			pageName = getPageName(page.route.id);
 			headerImageUrl = await loadHeaderImage(pageName);
 			imageLoading = false;
+			if (page.data?.headerImage) {
+				imageLoading = true;
+				headerImageUrl = await loadHeaderImage(pageName);
+				imageLoading = false;
+			}
 		}
 	});
 </script>
 
 <div class="mx-auto mb-20 max-w-[1400px] px-4 sm:px-6 lg:px-8">
-	<!-- Header Image -->
-	<div class="flex h-[250px] w-full items-center justify-center bg-gray-200">
-		{#if imageLoading}
-			<div class="text-gray-500">Loading header...</div>
-		{:else}
-			<img src={headerImageUrl} alt="Page header" class="h-full w-full object-cover" />
-		{/if}
-	</div>
+	{#if pageStatic}
+		<!-- Header Image -->
+		<div class="flex h-[250px] w-full items-center justify-center bg-gray-200">
+			{#if imageLoading}
+				<div class="text-gray-500">Loading header...</div>
+			{:else}
+				<img src={headerImageUrl} alt="Page header" class="h-full w-full object-cover" />
+			{/if}
+		</div>
 
-	<!-- Caption -->
-	{#if pageCaption}
-		<div class="mt-2 text-right text-sm text-gray-600">{pageCaption}</div>
+		<!-- Caption -->
+		{#if pageCaption}
+			<div class="mt-2 text-right text-sm text-gray-600">{pageCaption}</div>
+		{/if}
+
+		<!-- Page Title -->
+		<h1 class="page-title">
+			{#if pageTitle}
+				{pageTitle}
+			{:else}
+				Page Title
+			{/if}
+		</h1>
 	{/if}
-
-	<!-- Page Title -->
-	<h1 class="page-title">
-		{#if pageTitle}
-			{pageTitle}
-		{:else}
-			Page Title
-		{/if}
-	</h1>
 
 	<!-- Page Content -->
 	<div class="mx-auto {pageStatic ? 'max-w-10/12' : ''}">

@@ -15,6 +15,7 @@
 		AllLocations,
 		fetchLocations,
 		initialLocationState,
+		resetSelectedLocation,
 		type Location,
 	} from '$lib/stores/LocationsStore';
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
@@ -36,9 +37,9 @@
 
 	interface Props {
 		thisEvent?: DomainEvent;
-		onSaveDraft?: (event: DomainEvent, image: File | null) => Promise<void>;
-		onCreateNew?: (event: DomainEvent, image: File | null) => Promise<void>;
-		onUpdate?: (event: DomainEvent, image: File | null) => Promise<void>;
+		onSaveDraft?: (event: DomainEvent, image: File | null, pdf: File | null) => Promise<void>;
+		onCreateNew?: (event: DomainEvent, image: File | null, pdf: File | null) => Promise<void>;
+		onUpdate?: (event: DomainEvent, image: File | null, pdf: File | null) => Promise<void>;
 		onCancel: () => void;
 		onUnsavedChangesUpdate: (hasUnsavedChanges: boolean) => void;
 	}
@@ -100,12 +101,6 @@
 	/**
 	 * # form functions
 	 */
-	const assignPDF = async (docRef: StorageReference) => {
-		const pdfDocument = await getDownloadURL(docRef);
-		thisEvent = { ...thisEvent, pdfFile: pdfDocument };
-		checkForChanges();
-	};
-
 	const createNewLocation = () => {
 		showModal = true;
 	};
@@ -142,14 +137,14 @@
 
 	const handleExistingPDFSelected = async (pdfRef: StorageReference) => {
 		newPDF = null;
-		const pdfDocument = await getDownloadURL(pdfRef);
-		thisEvent = { ...thisEvent, pdfFile: pdfDocument };
+		const pdfUrl = await getDownloadURL(pdfRef);
+		thisEvent = { ...thisEvent, pdfFile: pdfUrl, pdfName: pdfRef.name };
 		checkForChanges();
 	};
 
 	const handleNewPDFSelected = (pdf: File) => {
 		newPDF = pdf;
-		thisEvent = { ...thisEvent, pdfFile: pdf.name };
+		thisEvent = { ...thisEvent, pdfFile: pdf.name, pdfName: pdf.name };
 		checkForChanges();
 	};
 
@@ -183,17 +178,18 @@
 
 	const handleReset = () => {
 		thisEvent = { ...initialDomainEvent };
-		EditModeStore.set('');
+		EditModeStore.set(EditMode.Empty);
+		resetSelectedLocation();
 		checkForChanges();
 	};
 
 	const handleSaveDraft = async () => {
 		if (onSaveDraft) {
-			await onSaveDraft(thisEvent, newImage);
+			await onSaveDraft(thisEvent, newImage, newPDF);
 		}
 	};
 
-	const handleSetEndDate = (e: MouseEvent) => {
+	const handleSetEndDate = (e: Event) => {
 		e.preventDefault();
 		if (thisEvent.startdate) {
 			const enddate = new Date(thisEvent.startdate);
@@ -202,7 +198,7 @@
 		checkForChanges();
 	};
 
-	const handleSetPublishDate = (e: MouseEvent) => {
+	const handleSetPublishDate = (e: Event) => {
 		e.preventDefault();
 		if (thisEvent.startdate) {
 			const pubdate = new Date(thisEvent.startdate);
@@ -221,9 +217,10 @@
 		e.preventDefault();
 
 		if ($EditModeStore === EditMode.New && onCreateNew) {
-			await onCreateNew(thisEvent, newImage);
+			await onCreateNew(thisEvent, newImage, newPDF);
 		} else if ($EditModeStore === EditMode.Update && onUpdate) {
-			await onUpdate(thisEvent, newImage);
+			console.log('Upadte');
+			await onUpdate(thisEvent, newImage, newPDF);
 		}
 	};
 
@@ -255,6 +252,7 @@
 				{/if}
 			</div>
 		</div>
+		<div class="text-md mx-10 mb-10 bg-slate-100 p-2">All fields marked with * are required</div>
 	</div>
 
 	<form id="form-container" enctype="multipart/form-data" onsubmit={handleSubmit} onreset={handleReset}>
@@ -363,7 +361,7 @@
 			<!-- Start date -->
 			<fieldset>
 				<Label for="startdate">Start Date *</Label>
-				<Input type="date" id="startdate" bind:value={thisEvent.startdate} onblur={checkForChanges} />
+				<Input type="date" id="startdate" bind:value={thisEvent.startdate} onblur={handleSetEndDate} />
 			</fieldset>
 			<p class="explanation">Please enter all dates as dd.mm.yyyy or use the calendar picker.</p>
 
@@ -382,20 +380,15 @@
 			<!-- End date -->
 			<fieldset class="flex-1" disabled={!thisEvent.startdate}>
 				<Label for="enddate">End Date *</Label>
-				<div class="flex w-full flex-row items-center gap-4">
-					<Input
-						type="date"
-						id="enddate"
-						bind:value={thisEvent.enddate}
-						onblur={checkForChanges}
-						disabled={!thisEvent.startdate}
-					/>
-					<div class="tooltip" data-tip="Sets the end date to the start date">
-						<Button variant="primary" class="min-w-32" onclick={handleSetEndDate} disabled={!thisEvent.startdate}
-							>Auto set</Button
-						>
-					</div>
-				</div>
+
+				<Input
+					type="date"
+					id="enddate"
+					bind:value={thisEvent.enddate}
+					onblur={checkForChanges}
+					disabled={!thisEvent.startdate}
+					class="w-full"
+				/>
 			</fieldset>
 
 			<!-- End time -->
@@ -522,12 +515,14 @@
 			</fieldset>
 		</div>
 
+		<!-- PDF -->
 		<div id="pdf" class="form bg-white-primary my-8 p-10">
 			<fieldset>
 				<Label for="pdfFile">PDF Document</Label>
 				<div class="flex flex-col items-center justify-center">
 					<UploadPDF
-						existingPdf={thisEvent.pdfFile}
+						existingPdf={thisEvent.pdfName}
+						pdftype="documents"
 						onExistingFileSelected={handleExistingPDFSelected}
 						onNewFileSelected={handleNewPDFSelected}
 					/>
@@ -540,7 +535,7 @@
 			</fieldset>
 
 			<fieldset disabled={!hasPDF}>
-				<Label for="pdfText">PDF Description</Label>
+				<Label for="pdfText">PDF Description *</Label>
 				<Input
 					type="text"
 					id="pdfText"
@@ -556,7 +551,7 @@
 		</div>
 
 		<!-- Buttons block -->
-		<div class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-1/2 gap-4 bg-slate-100 p-10 shadow-2xl">
+		<div class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-2/3 gap-4 bg-slate-100 p-10 shadow-2xl">
 			<!-- Buttons -->
 			<div class="buttons col-span-2">
 				<Button variant="outline" type="reset" color="light" onclick={onCancel}>Cancel</Button>

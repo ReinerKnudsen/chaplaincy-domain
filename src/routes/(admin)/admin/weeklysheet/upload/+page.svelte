@@ -84,7 +84,7 @@
 		<div class="mt-4 w-1/2">
 			<Label>PDF Document</Label>
 			<div class="flex flex-col">
-				<UploadPDF target="weeklysheet" onNewFileSelected={saveDocRef} />
+				<UploadPDF pdftype="weeklysheet" onNewFileSelected={saveDocRef} />
 			</div>
 		</div>
 		<!-- Buttons -->

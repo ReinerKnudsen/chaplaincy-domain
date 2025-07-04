@@ -7,12 +7,12 @@
 
 	interface Props {
 		existingPdf?: string | null;
-		target?: 'documents' | 'weeklysheet' | 'newsletter';
+		pdftype?: 'documents' | 'weeklysheet' | 'newsletter';
 		onNewFileSelected?: (newDcoument: File) => void;
 		onExistingFileSelected?: (docRef: StorageReference) => void;
 	}
 
-	let { existingPdf, target = 'documents', onNewFileSelected, onExistingFileSelected }: Props = $props();
+	let { existingPdf, pdftype = 'documents', onNewFileSelected, onExistingFileSelected }: Props = $props();
 
 	const MAX_PDF_SIZE = 5 * 1024 * 1024; // 5MB max size for PDFs
 	const authorizedExtensions = '.pdf';
@@ -38,7 +38,7 @@
 			selectedFile = event.target.files[0];
 			if (!selectedFile) return;
 
-			let existingFileRef: StorageReference | null = await checkIfPDFExists(selectedFile.name, target);
+			let existingFileRef: StorageReference | null = await checkIfPDFExists(selectedFile.name, pdftype);
 
 			if (existingFileRef) {
 				fileError = 'This PDF file already exists in the collection.';
@@ -106,7 +106,7 @@
 				/>
 			</svg>
 			<span class="ml-2 text-sm font-medium text-gray-900">{fileName}</span>
-			<a href={fileUrl} target="_blank" rel="noopener noreferrer" class="ml-2 text-sm text-blue-600 hover:text-blue-800"
+			<a href={fileUrl} type="_blank" rel="noopener noreferrer" class="ml-2 text-sm text-blue-600 hover:text-blue-800"
 				>View PDF</a
 			>
 		</div>

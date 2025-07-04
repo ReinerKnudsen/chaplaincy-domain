@@ -64,11 +64,11 @@ export const checkIfFileExists = async (imageFileName: string): Promise<StorageR
 	}
 };
 
-export const checkIfPDFExists = async (pdfFileName: string, docFolder: string) => {
+export const checkIfPDFExists = async (pdfFileName: string, type: PDFType) => {
 	if (!pdfFileName) {
 		return null;
 	}
-	const storageRef = ref(storage, `${docFolder}/${pdfFileName}`);
+	const storageRef = ref(storage, `${type === 'documents' ? '' : 'documents'}/${type}/${pdfFileName}`);
 	try {
 		await getMetadata(storageRef);
 		return storageRef;
@@ -80,13 +80,14 @@ export const checkIfPDFExists = async (pdfFileName: string, docFolder: string) =
 
 export const uploadPDF = async (newPdf: File, type: PDFType): Promise<ReturnType | null> => {
 	if (!newPdf || !type) return null;
-	const storageRef = ref(storage, `documents/${type}/${newPdf.name}`);
+	const storageRef = ref(storage, `${type === 'documents' ? '' : 'documents'}/${type}/${newPdf.name}`);
 	let result: ReturnType | null = null;
 	try {
-		await uploadBytes(storageRef, newPdf);
-		const pdfUrl = await getDownloadURL(storageRef);
-		const pdfRef = storageRef;
+		const newPDF = await uploadBytes(storageRef, newPdf);
+		const pdfUrl = await getDownloadURL(newPDF.ref);
+		const pdfRef = newPDF.ref;
 		result = { url: pdfUrl, ref: pdfRef };
+		console.log(result);
 	} catch (error) {
 		console.error(error);
 	}

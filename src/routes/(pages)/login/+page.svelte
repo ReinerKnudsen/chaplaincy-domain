@@ -31,7 +31,6 @@
 <div class="flex flex-row justify-center">
 	<div class="bg-white-primary w-[80%] space-y-4 rounded-xl p-6 shadow-xl sm:p-8 md:space-y-6 lg:w-5/12">
 		<form class="flex flex-col space-y-6" action="/" onsubmit={handleSubmit}>
-			<h3 class="p-0 text-xl font-medium text-gray-900 dark:text-white">Login</h3>
 			<div class="form-control w-full">
 				<Label for="email">Your email</Label>
 				<Input type="email" id="email" placeholder="name@company.com" autocomplete="username" bind:value={thisEmail} />

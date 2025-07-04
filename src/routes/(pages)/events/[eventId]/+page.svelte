@@ -99,7 +99,7 @@
 {#if loading}
 	<p>Loading...</p>
 {:else if thisEvent}
-	<div id="article-container" class="article-container">
+	<div id="article-container">
 		<div id="article-content">
 			<div id="article-title" class="article-title">
 				{thisEvent.title}

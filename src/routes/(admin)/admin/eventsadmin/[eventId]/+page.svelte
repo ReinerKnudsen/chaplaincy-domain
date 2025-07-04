@@ -9,7 +9,7 @@
 	import { type DomainEvent, EditMode, EditModeStore } from '$lib/stores/ObjectStore';
 
 	import { validateEventData } from '$lib/services/validateForm';
-	import { eventFormService, uploadEventImage } from '$lib/services/EventFormService';
+	import { eventFormService, uploadEventImage, uploadNewPDF } from '$lib/services/EventFormService';
 
 	import EventForm from '$lib/components/EventForm.svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
@@ -43,7 +43,7 @@
 		goto('/admin/eventsadmin');
 	};
 
-	const handleSaveDraft = async (thisEvent: DomainEvent, newImage?: File | null) => {
+	const handleSaveDraft = async (thisEvent: DomainEvent, newImage?: File | null, newPDF?: File | null) => {
 		if (!thisEvent) return;
 		try {
 			if (!data.docRef) {
@@ -51,6 +51,10 @@
 			}
 			if (newImage) {
 				thisEvent = await uploadEventImage(thisEvent, newImage || null);
+			}
+			if (newPDF) {
+				const result = await uploadNewPDF(newPDF, 'documents');
+				if (result) thisEvent = { ...thisEvent, pdfFile: result.url };
 			}
 			const itemData = { ...thisEvent } as DocumentData;
 			await updateDoc(data.docRef, itemData);
@@ -65,7 +69,7 @@
 		}
 	};
 
-	const handleUpdateEvent = async (thisEvent: DomainEvent, newImage?: File | null) => {
+	const handleUpdateEvent = async (thisEvent: DomainEvent, newImage?: File | null, newPDF?: File | null) => {
 		if (!validateEventData(thisEvent) || !thisEvent) return;
 		try {
 			if (!data.docRef) {
@@ -77,6 +81,10 @@
 
 			if (newImage) {
 				thisEvent = await uploadEventImage(thisEvent, newImage);
+			}
+			if (newPDF) {
+				const result = await uploadNewPDF(newPDF, 'documents');
+				if (result) thisEvent = { ...thisEvent, pdfFile: result.url };
 			}
 			const updatedEvent: DomainEvent = await eventFormService(thisEvent);
 			const eventData = { ...updatedEvent } as DocumentData;

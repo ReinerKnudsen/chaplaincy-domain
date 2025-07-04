@@ -55,6 +55,7 @@
 	let thisEvent = $state(propEvent);
 	let hasImage = $derived(!!thisEvent.image);
 	let newImage: File | null = $state(null);
+	let newPDF: File | null = $state(null);
 	let hasPDF = $derived(!!thisEvent.pdfFile);
 	let showModal = $state(false);
 	let loading = $state(true);
@@ -99,8 +100,9 @@
 	/**
 	 * # form functions
 	 */
-	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
-		thisEvent = { ...thisEvent, pdfFile: pdfDocument.url };
+	const assignPDF = async (docRef: StorageReference) => {
+		const pdfDocument = await getDownloadURL(docRef);
+		thisEvent = { ...thisEvent, pdfFile: pdfDocument };
 		checkForChanges();
 	};
 
@@ -135,6 +137,19 @@
 	const handleNewFileSelected = (image: File) => {
 		newImage = image;
 		thisEvent = { ...thisEvent, image: image.name, imageAlt: '', imageCaption: '' };
+		checkForChanges();
+	};
+
+	const handleExistingPDFSelected = async (pdfRef: StorageReference) => {
+		newPDF = null;
+		const pdfDocument = await getDownloadURL(pdfRef);
+		thisEvent = { ...thisEvent, pdfFile: pdfDocument };
+		checkForChanges();
+	};
+
+	const handleNewPDFSelected = (pdf: File) => {
+		newPDF = pdf;
+		thisEvent = { ...thisEvent, pdfFile: pdf.name };
 		checkForChanges();
 	};
 
@@ -511,7 +526,11 @@
 			<fieldset>
 				<Label for="pdfFile">PDF Document</Label>
 				<div class="flex flex-col items-center justify-center">
-					<UploadPDF fileUrl={thisEvent.pdfFile} onUpload={assignPDF} />
+					<UploadPDF
+						existingPdf={thisEvent.pdfFile}
+						onExistingFileSelected={handleExistingPDFSelected}
+						onNewFileSelected={handleNewPDFSelected}
+					/>
 					{#if !hasPDF}
 						<div class="explanation opacity-30">
 							Upload a PDF document that will be attached to this event (max 5MB).

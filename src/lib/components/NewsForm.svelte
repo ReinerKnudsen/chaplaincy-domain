@@ -32,9 +32,9 @@
 
 	interface Props {
 		thisNews?: News;
-		onSaveDraft?: (event: News, image: File | null) => Promise<void>;
-		onCreateNew?: (event: News, image: File | null) => Promise<void>;
-		onUpdate?: (event: News, image: File | null) => Promise<void>;
+		onSaveDraft?: (event: News, image: File | null, pdf: File | null) => Promise<void>;
+		onCreateNew?: (event: News, image: File | null, pdf: File | null) => Promise<void>;
+		onUpdate?: (event: News, image: File | null, pdf: File | null) => Promise<void>;
 		onCancel?: () => void;
 		onUnsavedChangesUpdate?: (hasUnsavedChanges: boolean) => void;
 	}
@@ -53,6 +53,7 @@
 	let hasPDF = $derived(!!thisNews.pdfFile);
 	let hasImage = $derived(!!thisNews.image);
 	let newImage: File | null = $state(null);
+	let newPDF: File | null = $state(null);
 	let originalHash = $state('');
 	let currentHash = $state('');
 	let hasUnsavedChanges = $state(false);
@@ -80,16 +81,11 @@
 		onUnsavedChangesUpdate?.(hasUnsavedChanges);
 	};
 
-	const isValidNews = $derived(!!thisNews.title && !!thisNews.text && !!thisNews.slug && !!thisNews.publishdate);
+	const isValidNews = $derived(!!thisNews.title && !!thisNews.text && !!thisNews.slug);
 
 	/* # form functions */
 	const cleanUpForm = () => {
 		thisNews = { ...initialNews };
-	};
-
-	const assignPDF = (pdfDocument: { url: string; docRef: any }) => {
-		thisNews = { ...thisNews, pdfFile: pdfDocument.url };
-		checkForChanges();
 	};
 
 	const handleExistingFileSelected = async (imageRef: StorageReference) => {
@@ -98,7 +94,6 @@
 		const captionText = await getMetadata(imageRef).then((metadata) => metadata.customMetadata?.imageCaption);
 		const imagePath = await getDownloadURL(imageRef);
 		thisNews = { ...thisNews, image: imagePath, imageAlt: altText || '', imageCaption: captionText || '' };
-		console.log(thisNews);
 		checkForChanges();
 	};
 
@@ -108,13 +103,26 @@
 		checkForChanges();
 	};
 
+	const handleExistingPDFSelected = async (pdfRef: StorageReference) => {
+		newPDF = null;
+		const pdfUrl = await getDownloadURL(pdfRef);
+		thisNews = { ...thisNews, pdfFile: pdfUrl, pdfName: pdfRef.name };
+		checkForChanges();
+	};
+
+	const handleNewPDFSelected = (pdf: File) => {
+		newPDF = pdf;
+		thisNews = { ...thisNews, pdfFile: pdf.name, pdfName: pdf.name };
+		checkForChanges();
+	};
+
 	const handleReset = () => {
 		cleanUpForm();
 	};
 
 	const handleSaveDraft = () => {
 		if (onSaveDraft) {
-			onSaveDraft(thisNews, newImage);
+			onSaveDraft(thisNews, newImage, newPDF);
 		}
 	};
 
@@ -127,9 +135,9 @@
 		e.preventDefault();
 
 		if ($EditModeStore === EditMode.New && onCreateNew) {
-			await onCreateNew(thisNews, newImage);
+			await onCreateNew(thisNews, newImage, newPDF);
 		} else if ($EditModeStore === EditMode.Update && onUpdate) {
-			await onUpdate(thisNews, newImage);
+			await onUpdate(thisNews, newImage, newPDF);
 		}
 	};
 
@@ -158,6 +166,7 @@
 				{/if}
 			</div>
 		</div>
+		<div class="text-md mb-10 bg-slate-100 p-2">All fields marked with * are required</div>
 
 		<form id="form-container" enctype="multipart/form-data" onsubmit={handleSubmit} onreset={handleReset}>
 			<!-- Titel -->
@@ -275,7 +284,12 @@
 					<fieldset>
 						<Label for="pdfFile">PDF Document</Label>
 						<div class="flex flex-col items-center justify-center">
-							<UploadPDF fileUrl={thisNews.pdfFile} onUpload={assignPDF} />
+							<UploadPDF
+								pdftype="documents"
+								existingPdf={thisNews.pdfName}
+								onExistingFileSelected={handleExistingPDFSelected}
+								onNewFileSelected={handleNewPDFSelected}
+							/>
 							{#if !hasPDF}
 								<p class="explanation opacity-30">
 									Upload a PDF document that will be attached to this news item (max 5MB).
@@ -286,7 +300,7 @@
 
 					<!-- PDF Description -->
 					<fieldset disabled={!hasPDF}>
-						<Label for="pdfText">PDF Description</Label>
+						<Label for="pdfText">PDF Description *</Label>
 						<Input
 							type="text"
 							id="pdfText"

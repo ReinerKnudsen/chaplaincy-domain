@@ -8,6 +8,8 @@
 	import { newsFormService, uploadNewsImage } from '$lib/services/NewsFormService';
 	import { Messages } from '$lib/utils/messages';
 
+	import { uploadNewPDF } from '$lib/services/EventFormService';
+
 	import NewsForm from '$lib/components/NewsForm.svelte';
 	import { notificationStore } from '$lib/stores/notifications';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
@@ -16,12 +18,19 @@
 	let pageHasUnsavedChanges = $state(false);
 	let showNavigateWarning = $state(false);
 
-	const handleSaveDraft = async (thisNews: News, newImage: File | null) => {
+	const handleSaveDraft = async (thisNews: News, newImage: File | null, newPDF: File | null) => {
 		if (!thisNews) return;
 		try {
+			let draftNews: News = thisNews;
 			if (newImage) {
-				thisNews = await uploadNewsImage(thisNews, newImage);
+				draftNews = await uploadNewsImage(thisNews, newImage);
 			}
+
+			if (newPDF) {
+				const result = await uploadNewPDF(newPDF, 'documents');
+				if (result) draftNews = { ...thisNews, pdfFile: result.url, pdfName: result.ref.name };
+			}
+
 			await addDoc(newsColRef, thisNews);
 			pageHasUnsavedChanges = false;
 			notificationStore.addToast('success', Messages.DRAFTSUCCESS);
@@ -44,12 +53,18 @@
 		}
 	});
 
-	const handleSaveNewItem = async (thisNews: News, newImage?: File | null) => {
+	const handleSaveNewItem = async (thisNews: News, newImage?: File | null, newPDF?: File | null) => {
 		if (!thisNews) return;
 		try {
 			if (newImage) {
 				thisNews = await uploadNewsImage(thisNews, newImage);
 			}
+
+			if (newPDF) {
+				const result = await uploadNewPDF(newPDF, 'documents');
+				if (result) thisNews = { ...thisNews, pdfFile: result.url, pdfName: result.ref.name };
+			}
+
 			const updatedNews: News = await newsFormService(thisNews);
 			await addDoc(newsColRef, updatedNews);
 			pageHasUnsavedChanges = false;

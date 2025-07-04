@@ -11,6 +11,8 @@ interface ImageDocument {
 	caption?: string | null;
 }
 
+export type PDFType = 'documents' | 'weeklysheet' | 'newsletter';
+
 export enum FileType {
 	Image = 'images',
 	Pdf = 'pdf',
@@ -60,4 +62,34 @@ export const checkIfFileExists = async (imageFileName: string): Promise<StorageR
 	} catch (error) {
 		return null;
 	}
+};
+
+export const checkIfPDFExists = async (pdfFileName: string, type: PDFType) => {
+	if (!pdfFileName) {
+		return null;
+	}
+	const storageRef = ref(storage, `${type === 'documents' ? '' : 'documents'}/${type}/${pdfFileName}`);
+	try {
+		await getMetadata(storageRef);
+		return storageRef;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+};
+
+export const uploadPDF = async (newPdf: File, type: PDFType): Promise<ReturnType | null> => {
+	if (!newPdf || !type) return null;
+	const storageRef = ref(storage, `${type === 'documents' ? '' : 'documents'}/${type}/${newPdf.name}`);
+	let result: ReturnType | null = null;
+	try {
+		const newPDF = await uploadBytes(storageRef, newPdf);
+		const pdfUrl = await getDownloadURL(newPDF.ref);
+		const pdfRef = newPDF.ref;
+		result = { url: pdfUrl, ref: pdfRef };
+		console.log(result);
+	} catch (error) {
+		console.error(error);
+	}
+	return result;
 };

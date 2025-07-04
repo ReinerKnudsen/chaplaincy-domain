@@ -99,7 +99,7 @@
 {#if loading}
 	<p>Loading...</p>
 {:else if thisEvent}
-	<div id="article-container">
+	<div id="article-container" class="pt-30">
 		<div id="article-content">
 			<div id="article-title" class="article-title">
 				{thisEvent.title}
@@ -128,6 +128,12 @@
 								>{[location?.name, location?.city].filter(Boolean).join(', ')}</a
 							>
 						{/if}
+					</div>
+				{/if}
+				{#if thisEvent.imageCaption}
+					<div class="article-metadata-item">
+						<Icon icon="fa-solid:camera-retro" />
+						{thisEvent.imageCaption}
 					</div>
 				{/if}
 				{#if thisEvent.joinOnline && onlineReady}

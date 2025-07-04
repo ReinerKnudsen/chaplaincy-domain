@@ -9,7 +9,7 @@
 	import { type DomainEvent, EditMode, EditModeStore } from '$lib/stores/ObjectStore';
 
 	import { validateEventData } from '$lib/services/validateForm';
-	import { eventFormService, uploadEventImage } from '$lib/services/EventFormService';
+	import { eventFormService, uploadEventImage, uploadNewPDF } from '$lib/services/EventFormService';
 
 	import EventForm from '$lib/components/EventForm.svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
@@ -29,6 +29,10 @@
 	let currentDocRef: DocumentReference | null = data.docRef;
 	let showNavigateWarning = $state(false);
 
+	$effect(() => {
+		console.log(data.newEvent);
+	});
+
 	beforeNavigate(({ cancel }: any) => {
 		if (pageHasUnsavedChanges) {
 			cancel();
@@ -43,7 +47,7 @@
 		goto('/admin/eventsadmin');
 	};
 
-	const handleSaveDraft = async (thisEvent: DomainEvent, newImage?: File | null) => {
+	const handleSaveDraft = async (thisEvent: DomainEvent, newImage?: File | null, newPDF?: File | null) => {
 		if (!thisEvent) return;
 		try {
 			if (!data.docRef) {
@@ -51,6 +55,11 @@
 			}
 			if (newImage) {
 				thisEvent = await uploadEventImage(thisEvent, newImage || null);
+			}
+			if (newPDF) {
+				const result = await uploadNewPDF(newPDF, 'documents');
+				console.log(result);
+				if (result) thisEvent = { ...thisEvent, pdfFile: result.url, pdfName: result.ref.name };
 			}
 			const itemData = { ...thisEvent } as DocumentData;
 			await updateDoc(data.docRef, itemData);
@@ -65,8 +74,8 @@
 		}
 	};
 
-	const handleUpdateEvent = async (thisEvent: DomainEvent, newImage?: File | null) => {
-		if (!validateEventData(thisEvent) || !thisEvent) return;
+	const handleUpdateEvent = async (thisEvent: DomainEvent, newImage?: File | null, newPDF?: File | null) => {
+		if (validateEventData(thisEvent) || !thisEvent) return;
 		try {
 			if (!data.docRef) {
 				throw new Error('No document reference provided');
@@ -77,6 +86,11 @@
 
 			if (newImage) {
 				thisEvent = await uploadEventImage(thisEvent, newImage);
+			}
+			if (newPDF) {
+				const result = await uploadNewPDF(newPDF, 'documents');
+				console.log(result);
+				if (result) thisEvent = { ...thisEvent, pdfFile: result.url, pdfName: result.ref.name };
 			}
 			const updatedEvent: DomainEvent = await eventFormService(thisEvent);
 			const eventData = { ...updatedEvent } as DocumentData;

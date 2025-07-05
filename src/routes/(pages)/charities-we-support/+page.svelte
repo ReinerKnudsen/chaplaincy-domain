@@ -22,13 +22,13 @@
 	<li
 		class="hover:border-seablue-100 flex flex-row justify-between gap-4 rounded-md border border-gray-200 p-4 transition-all hover:shadow-sm"
 	>
-		<a href="https://www.foerderkreis-bonn.de/" class="link">Förderkreis Bonn e.V.</a>
+		<a href="https://www.foerderkreis-bonn.de/" class="link" target="_blank">Förderkreis Bonn e.V.</a>
 		<Icon icon="famicons:open-outline" class="h-6 w-6" />
 	</li>
 	<li
 		class="hover:border-seablue-100 flex flex-row justify-between gap-4 rounded-md border border-gray-200 p-4 transition-all hover:shadow-sm"
 	>
-		<a href="https://www.help-ev.de" class="link">Help – Hilfe zur Selbsthilfe</a>
+		<a href="https://www.help-ev.de" class="link" target="_blank">Help – Hilfe zur Selbsthilfe</a>
 		<Icon icon="famicons:open-outline" class="h-6 w-6" />
 	</li>
 </ul>

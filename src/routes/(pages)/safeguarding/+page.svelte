@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 </script>
 
 <div class="fliesstext mx-auto mb-20 text-lg">

@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 import { getDocs, collection } from 'firebase/firestore';
 import { database } from '$lib/firebase/firebaseConfig';
 
@@ -65,4 +65,10 @@ export const fetchLocations = async (): Promise<void> => {
 		return 0;
 	});
 	AllLocations.set(locs);
+};
+
+export const findLocationById = (id: string): Location | undefined => {
+	fetchLocations();
+	const location = get(AllLocations).find((loc) => loc.id === id);
+	return location;
 };

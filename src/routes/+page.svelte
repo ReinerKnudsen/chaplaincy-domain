@@ -1,11 +1,18 @@
 <script lang="ts">
+	import type { ActionData } from './$types';
 	import { onMount } from 'svelte';
+	import { enhance } from '$app/forms';
+
 	import ServiceCard from '$lib/components/ServiceCard.svelte';
 	import ItemCard from '$lib/components/ItemCard.svelte';
 	import { authStore } from '$lib/stores/AuthStore';
 	import mainhero from '$lib/assets/mainhero.webp';
-	import Icon from '$lib/components/Icon.svelte';
+
+	import Icon from '@iconify/svelte';
+	import { Button } from '$lib/components/ui/button';
+
 	import servicesData from '$lib/services.json';
+
 	import {
 		CollectionType,
 		DocumentType,
@@ -16,18 +23,26 @@
 		WeeklySheetStore,
 		NewsletterStore,
 	} from '$lib/stores/ObjectStore';
-	import cross from '$lib/assets/icons/cross.svg?raw';
 
-	// Manually convert the services object into an array
-	const servicesArray = servicesData.services.map((service) => {
-		if (service.place_address) {
-			service.place_address = service.place_address.replace(/\n/g, '<br>');
-		}
-		return service;
-	});
+	import type { Service } from '$lib/types';
 
-	let user;
-	let loading = true;
+	// Manually convert the services object into an array with proper typing
+	const servicesArray = servicesData.services.map(
+		(service): Service => ({
+			...service,
+			place_address: service.place_address?.replace(/\n/g, '<br>') ?? '',
+			mode: service.mode as 'onsite' | 'online',
+		})
+	);
+
+	let user = $state();
+	let loading = $state(true);
+
+	interface Props {
+		form: ActionData;
+	}
+
+	let { form }: Props = $props();
 
 	onMount(async () => {
 		await loadItems(CollectionType.News);
@@ -37,211 +52,228 @@
 		loading = false;
 	});
 
-	$: authStore.subscribe((store) => {
-		user = store.user;
+	$effect(() => {
+		user = $authStore.user;
 	});
-
-	const header = 'text-2xl text-justify w-[80%] text-center px-4 py-4 font-semibold';
-	const headerLg = 'lg:text-4xl lg:px-10 lg:w-full';
-	const headerXl = 'xl:text-6xl xl:px-10 xl:py-6';
-	const subTitle = 'text-md text-justify px-5 py-3 w-full ';
-	const subTitleLg = 'lg:text-2xl lg:px-10 lg:py-2';
-	const subTitleXl = 'xl:text-4xl xl:px-10 xl:py-5';
-	const sectionHeader = 'text-xl text-justify w-full px-5 pt-4 font-semibold';
-	const sectionHeaderMd = 'md:text-3xl md:px-10 md:pt-10 md:py-3';
-	const sectionHeaderXl = 'xl:text-4xl xl:px-10 xl:pt-14 xl:py-5 ';
-	const container = 'mb-5 w-full';
-	const containerLg = 'lg:mb-10';
-	const services = 'px-5 py-5 grid grid-cols-1 gap-5 w-full';
-	const servicesMd = 'md:grid md:grid-cols-2 md:gap-8 md:px-10 ';
-	const servicesXL = 'lg:grid lg:grid-cols-4 lg:gap-8 lg:px-5 ';
-	const itemContainer = 'px-5 grid grid-cols-1';
-	const itemContainerLg = 'lg:px-10 lg:grid lg:grid-cols-2 lg:gap-5';
-	const itemContainerXL = 'xl:px-10 xl:grid xl:grid-cols-2 xl:gap-5';
-	const downloadContainer = 'grid grid-cols-2 justify-items-center px-5';
-	const downloadContainerLg = 'lg:grid lg:grid-cols-4 lg:justify-items-center lg:px-5';
-	const downloadContainerXL = 'xl:flex xl:flex-row xl:justify-center gap-10 xl:px-5';
 </script>
 
-<div class={`page-title ${header} ${headerLg} ${headerXl}`}>
-	Anglican Chaplaincy of Bonn and Cologne
-</div>
-<div class={`sub-title ${subTitle} ${subTitleLg} ${subTitleXl} `}>
-	St. Boniface, Bonn and All Saints, Cologne
-</div>
-<div class="image-container">
-	<img src={mainhero} alt="main hero" />
-</div>
+<section>
+	<main class="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+		<div class="page-title">Anglican Chaplaincy of Bonn and Cologne</div>
+		<div class="page-subtitle">St. Boniface, Bonn and All Saints, Cologne</div>
+		<div class="image-container">
+			<img src={mainhero} alt="main hero" />
+		</div>
+		<div class="flex flex-row items-center justify-center">
+			<img
+				src="https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Flogos%2Fdiocese2025_sm.png?alt=media&token=844f1d21-945a-426f-872d-59c157a2d5dd"
+				alt="diocese in europe logo"
+				class="my-4 w-60"
+			/>
+			<div class="flex flex-col items-start justify-center">
+				<div class="pl-4 text-lg">Our chaplaincy is part of the Diocese of Europe</div>
+				<Button variant="link"><a href="https://www.europe.anglican.org/">Learn more</a></Button>
+			</div>
+		</div>
+	</main>
+</section>
 
 <!-- Section: Service Times -->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
-	Come and worship with us
-</div>
-<div class=" w-full">
-	<div class={`services ${services} ${servicesMd} ${servicesXL}`}>
-		{#each servicesArray as service}
-			<ServiceCard {service} />
-		{/each}
+<section>
+	<div class="content-container">
+		<h2 class="section-header">Come and worship with us</h2>
+		<div class="w-full">
+			<div class="services">
+				{#each servicesArray as service}
+					<ServiceCard {service} />
+				{/each}
+			</div>
+		</div>
 	</div>
-</div>
-<hr class="mx-auto my-10 w-[80%]" />
+</section>
 
 <!-- Section: Mission Statement-->
-<div class="ml-[10%] flex w-[80%] flex-col">
-	<h2 class="text-xl font-bold">Our Mission Statement</h2>
-	<div class="flex flex-row items-center gap-10">
-		<div class="hidden md:block">
-			{@html cross.replace(
-				'<svg',
-				'<svg viewBox="0 0 90 90" preserveAspectRatio="xMidYMid meet" class="h-full w-full lg:h-[75%] lg:w-[75%] fill-current text-primary-100"',
-			)}
-		</div>
-		<div class="font-lg italic">
-			A welcoming, safe, diverse and open congregation, inclusive of all. Our worship tradition is
-			Eucharistic, to which we welcome everyone. We invite people of whatever background, age,
-			ethnicity, gender and sexuality to share our worship and to join our church family, wherever
-			they may be on their spiritual journey. We welcome and enjoy having children of all ages
-			worshipping with us.
-		</div>
-	</div>
-</div>
-
-<hr class="mx-auto mt-10 w-[80%]" />
-<!-- Section: News and Notices -->
-
-{#if !loading}
-	<!-- News section -->
-	{#if $LatestNewsStore.length > 0}
-		<div class={container + ' ' + containerLg}>
-			<h2 class={sectionHeader + ' ' + sectionHeaderMd + ' ' + sectionHeaderXl}>What's up?</h2>
-			<div class={itemContainer + ' ' + itemContainerLg + ' ' + itemContainerXL}>
-				{#each $LatestNewsStore as item}
-					<ItemCard {item} kind="news" />
-				{/each}
-			</div>
-			<div class="more-link">
-				<a href="/news" class="link">See all news</a>
-			</div>
-		</div>
-	{/if}
-	<hr class="mx-auto w-[80%]" />
-
-	<!-- Events section -->
-	{#if $NextEventsStore.length > 0}
-		<div class={container + ' ' + containerLg}>
-			<h2 class={sectionHeader + ' ' + sectionHeaderMd + ' ' + sectionHeaderXl}>Upcoming Events</h2>
-			<div class={itemContainer + ' ' + itemContainerLg + ' ' + itemContainerXL}>
-				{#each $NextEventsStore as item}
-					<ItemCard {item} kind="events" />
-				{/each}
-			</div>
-			<div class="more-link">
-				<a href="/events" class="link">See all events</a>
-			</div>
-		</div>
-	{/if}
-{/if}
-<hr class="mx-auto w-[80%]" />
-
-<!-- About us 
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Who we are</div>
-<div class="single-post">
-	<div class="more-link">
-		<a class="border-b-2 border-b-purple-100 pb-1" href="/about">Learn more</a>
-	</div>
-</div>
-<hr class="mx-auto w-[80%]" /> -->
-
-<!-- Safeguarding -->
-<div class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>
-	Safeguarding
-</div>
-<div class="pl-10 text-lg">
-	<p>
-		Our chaplaincy in Bonn and Cologne is committed to safeguarding children,young people and adults
-		from harm. We follow the House of Bishops guidance and policies and have our own Chaplaincy
-		Safeguarding Officer.
-	</p>
-	<p class="pt-4">
-		Our Diocese of Europe’s safeguarding pages contain vital links and information including
-		contacts for the Diocesan Safeguarding Advisor who advises our Safeguarding Officer. If you are
-		concerned that a child or adult has been harmed or may be at risk of harm, <a
-			href="about/safeguarding"
-			class="link">please contact our Safeguarding Officer Patra Al-Saadi</a
-		> or the Diocesan Safeguarding Advisor.
-	</p>
-	<p class="pt-4 font-semibold">
-		If you have immediate concerns about the safety of someone, please contact the police and your
-		local authority’s children or adult social care services.
-	</p>
-	<div class="more-link">
-		<a class="link" href="/about">Learn more</a>
-	</div>
-</div>
-<hr class="mx-auto w-[80%]" />
-<div class="downloads">
-	<h2 class={`sectionHeader ${sectionHeader} ${sectionHeaderMd} ${sectionHeaderXl}`}>Downloads</h2>
-</div>
-<div class="mb-5 w-full lg:mb-10">
-	<div
-		class={`download-container ${downloadContainer} ${downloadContainerLg} ${downloadContainerXL}`}
-	>
-		{#if $WeeklySheetStore}
-			<a href={$WeeklySheetStore.path} target="_blank">
-				<div class="download-item mt-10">
-					Weekly Sheet
-					<div class="circle">
-						<span class="icon"
-							><Icon class="text-primary-text" name="sheet" width="24px" height="24px" /></span
-						>
-					</div>
-				</div></a
-			>
-		{/if}
-		{#if $NewsletterStore}
-			<div class="download-item mt-10">
-				Newsletter
-				<div class="circle">
-					<span class="icon"
-						><Icon class="text-primary-text" name="sheet" width="24px" height="24px" /></span
-					>
+<section class="bg-white-smoke">
+	<div class="content-container">
+		<div class="ml-[10%] flex w-[80%] flex-col">
+			<h2 class="text-xl font-bold">Our Mission Statement</h2>
+			<div class="flex flex-row items-center gap-10">
+				<div class="hidden md:block">
+					<Icon icon="fa-solid:cross" class="h-12 w-12" />
+				</div>
+				<div class="font-lg italic">
+					A welcoming, safe, diverse and open congregation, inclusive of all. Our worship tradition is Eucharistic, to
+					which we welcome everyone. We invite people of whatever background, age, ethnicity, gender and sexuality to
+					share our worship and to join our church family, wherever they may be on their spiritual journey. We welcome
+					and enjoy having children of all ages worshipping with us.
 				</div>
 			</div>
-		{/if}
+		</div>
 	</div>
-</div>
+</section>
+
+<!-- Section: News and Notices -->
+{#if !loading}
+	<!-- News section -->
+	<section>
+		<div class="content-container">
+			<h2 class="section-header">What's up?</h2>
+			{#if $LatestNewsStore.length > 0}
+				<div class="itemContainer">
+					{#each $LatestNewsStore as item}
+						<ItemCard {item} kind="news" />
+					{/each}
+				</div>
+				<div class="more-link">
+					<a href="/news"><Button variant="calltoaction" size="xl">See all news</Button></a>
+				</div>
+			{:else}
+				<div class="itemContainer">
+					<p>Currently there are no news articles available.</p>
+				</div>
+			{/if}
+		</div>
+	</section>
+
+	<!-- Events section -->
+	<section class="bg-white-smoke">
+		<div class="content-container">
+			<h2 class="section-header">Upcoming Events</h2>
+			{#if $NextEventsStore.length > 0}
+				<div class="itemContainer">
+					{#each $NextEventsStore as item}
+						<ItemCard {item} kind="events" />
+					{/each}
+				</div>
+				<div class="more-link">
+					<a href="/events"><Button variant="calltoaction" size="xl">See all events</Button></a>
+				</div>
+			{:else}
+				<div class="itemContainer">
+					<p>Currently there are no events scheduled.</p>
+				</div>
+			{/if}
+		</div>
+	</section>
+{/if}
+
+<!-- Safeguarding -->
+<section>
+	<div class="content-container">
+		<h2 class="section-header">Safeguarding</h2>
+		<div class="pl-10 text-lg">
+			<p>
+				Our chaplaincy in Bonn and Cologne is committed to safeguarding children, young people and adults from harm. We
+				follow the House of Bishops guidance and policies and have our own Chaplaincy Safeguarding Officer.
+			</p>
+			<p class="pt-4">
+				Our Diocese of Europe’s safeguarding pages contain vital links and information including contacts for the
+				Diocesan Safeguarding Advisor who advises our Safeguarding Officer. If you are concerned that a child or adult
+				has been harmed or may be at risk of harm, <a href="about/safeguarding" class="link"
+					>please contact our Safeguarding Officer Patra Al-Saadi</a
+				> or the Diocesan Safeguarding Advisor.
+			</p>
+			<p class="pt-4 font-semibold">
+				If you have immediate concerns about the safety of someone, please contact the police and your local authority’s
+				children or adult social care services.
+			</p>
+			<div class="more-link">
+				<a href="/about/safeguarding"><Button variant="calltoaction" size="xl">Learn more</Button></a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- signup section-->
+<section class="bg-white-smoke">
+	<div class="content-container">
+		<div class="section-header">Sign up for our news</div>
+		<div class="mt-4 mb-10 pl-10 text-lg">
+			We provide you with the latest news from our chaplaincy and the diocese in our regular email news.
+
+			<form method="POST" action="?/subscribe" use:enhance class="flex w-full flex-col space-y-6">
+				<div class="my-8 flex flex-col gap-4 md:flex-row md:gap-8">
+					<div class="flex flex-1 flex-col space-y-2">
+						<label for="firstName">First Name</label>
+						<input type="text" id="firstName" name="firstName" class="bg-white-primary w-full rounded-lg border p-2" />
+					</div>
+
+					<div class="flex flex-1 flex-col space-y-2">
+						<label for="lastName">Last Name</label>
+						<input type="text" id="lastName" name="lastName" class="bg-white-primary w-full rounded-lg border p-2" />
+					</div>
+
+					<div class="flex flex-1 flex-col space-y-2">
+						<label for="email">Email *</label>
+						<input
+							type="email"
+							id="email"
+							name="email"
+							required
+							class="bg-white-primary w-full rounded-lg border p-2"
+						/>
+					</div>
+				</div>
+				<div class="more-link">
+					<Button variant="calltoaction" size="xl" type="submit">Subscribe to Newsletter</Button>
+				</div>
+				{#if form?.success}
+					<div class="rounded-lg border-2 border-green-500 p-4 text-green-500">
+						{form.message}
+					</div>
+				{/if}
+				{#if form?.error}
+					<div class="rounded-lg border-2 border-red-700 p-4 text-red-800">
+						{form.message}
+					</div>
+				{/if}
+			</form>
+		</div>
+	</div>
+</section>
+
+<!-- Download section-->
+<section id="downloads">
+	<div class="content-container">
+		<h2 class="section-header">Downloads</h2>
+		<div class="pl-10">
+			<div id="download-section" class="mb-5 w-full lg:mb-10">
+				<div class="download-container">
+					{#if $WeeklySheetStore}
+						<a href={$WeeklySheetStore.path} target="_blank">
+							<div class="download-item mt-10">
+								Weekly Sheet
+								<div class="circle">
+									<span class="icon"><Icon class="text-primary-text h-10 w-10" icon="la:file-download" /></span>
+								</div>
+							</div></a
+						>
+					{/if}
+					{#if $NewsletterStore}
+						<div class="download-item mt-10">
+							Newsletter
+							<div class="circle">
+								<span class="icon"><Icon class="text-primary-text h-10 w-10" icon="la:file-download" /></span>
+							</div>
+						</div>
+					{/if}
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
 
 <style>
 	.more-link {
+		display: flex;
+		justify-content: center;
 		text-align: center;
-		margin: 20px;
+		padding: 40px 0 20px 0;
 	}
 
-	.download-item {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 200px;
-		height: 100px;
-		background-color: #a07b9f;
-		color: white;
-		text-align: center;
-		position: relative;
-		cursor: pointer;
-		border-radius: 5px;
-		font-weight: 600;
-	}
-
-	.circle {
-		width: 60px;
-		height: 60px;
-		background-color: whitesmoke;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: absolute;
-		top: -30px;
+	section {
+		width: 100vw;
+		padding: 2.5rem 0;
 	}
 
 	.image-container {
@@ -254,9 +286,8 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		margin: 0px;
+		margin: 0 0 30px 0;
 		width: 100%;
 		pointer-events: none;
-		overflow: scroll;
 	}
 </style>

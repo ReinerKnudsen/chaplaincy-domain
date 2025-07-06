@@ -1,15 +1,14 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { Button } from 'flowbite-svelte';
-	import {
-		getFirestore,
-		getDoc,
-		addDoc,
-		deleteDoc,
-		doc,
-		collection,
-		updateDoc,
-	} from 'firebase/firestore';
+	import { onMount } from 'svelte';
+	import { page } from '$app/state';
+
+	import { database } from '$lib/firebase/firebaseConfig';
+	import { addDoc, deleteDoc, doc, collection, updateDoc } from 'firebase/firestore';
+
+	import Icon from '@iconify/svelte';
+
+	import { notificationStore, TOAST_DURATION } from '$lib/stores/notifications';
+
 	import {
 		CurrentLocation,
 		initialLocationState,
@@ -19,27 +18,33 @@
 		fetchLocations,
 		type Location,
 	} from '$lib/stores/LocationsStore';
+	import { pathName } from '$lib/stores/NavigationStore';
 
-	import { database } from '$lib/firebase/firebaseConfig';
+	import { EditMode, EditModeStore } from '$lib/stores/ObjectStore';
 
 	import NewLocationForm from '$lib/components/NewLocationForm.svelte';
-	import Icon from '$lib/components/Icon.svelte';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
+	import { Button } from '$lib/components/ui/button';
+	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 
-	const dispatch = createEventDispatcher();
+	let currentLocationId = $state(0);
+	let showDeleteDialog = $state(false);
+	let deleteLocation: Location | null = $state(null);
+	let updateItem = $state(true);
 
 	onMount(() => {
+		pathName.set(page.url.pathname);
 		fetchLocations();
 	});
 
-	let updateItem = true;
-	let currentLocationId = 0;
-
 	// Only set CurrentLocation when AllLocations has items
-	$: if ($AllLocations.length > 0) {
-		CurrentLocation.set($AllLocations[currentLocationId]);
-	} else {
-		resetCurrentLocation();
-	}
+	$effect(() => {
+		if ($AllLocations.length > 0) {
+			CurrentLocation.set($AllLocations[currentLocationId]);
+		} else {
+			resetCurrentLocation();
+		}
+	});
 
 	const handleLocationChange = (location: Location, index: number) => {
 		updateItem = true;
@@ -48,69 +53,80 @@
 	};
 
 	const handleCreateNew = () => {
-		// Create a fresh copy of initialLocationState
 		CurrentLocation.set({ ...initialLocationState });
 		updateItem = false;
 	};
 
-	const handleDelete = async (location: Location) => {
-		try {
-			const docRef = doc(database, 'location', location.id);
-			await deleteDoc(docRef);
-			updateAndSortLocations((locations) => locations.filter((loc) => loc.id !== location.id));
-		} catch (e) {
-			console.error('Error deleting document: ', e);
+	const openDeleteModal = (location: Location) => {
+		if (!location) return;
+		deleteLocation = location;
+		showDeleteDialog = true;
+	};
+
+	const handleDelete = async () => {
+		if (deleteLocation) {
+			try {
+				const docRef = doc(database, 'location', deleteLocation.id);
+				await deleteDoc(docRef);
+				updateAndSortLocations((locations) => locations.filter((loc) => loc.id !== deleteLocation!.id));
+				showDeleteDialog = false;
+				deleteLocation = null;
+				notificationStore.addToast('success', 'Location deleted successfully', TOAST_DURATION);
+			} catch (e) {
+				notificationStore.addToast('error', 'Error deleting location. Try again later.', TOAST_DURATION);
+				console.error('Error deleting document: ', e);
+			}
+		} else {
+			return;
 		}
 	};
 
+	const handleCancel = () => {
+		showDeleteDialog = false;
+		deleteLocation = null;
+	};
+
 	const handleSave = async () => {
-		const { id, name, description, street, city, zip, openMapUrl } = $CurrentLocation;
+		// Use destructuring to separate the id from the rest of the data
+		const { id, ...dataToSave } = $CurrentLocation;
 
 		if (updateItem) {
 			// Updating existing location
 			try {
 				const docRef = doc(database, 'location', id);
-				await updateDoc(docRef, {
-					name,
-					description,
-					street,
-					city,
-					zip,
-					openMapUrl,
-				});
+				await updateDoc(docRef, dataToSave);
 
-				updateAndSortLocations((locations) =>
-					locations.map((loc) =>
-						loc.id === id ? { id, name, description, street, city, zip, openMapUrl } : loc,
-					),
-				);
+				// Update the local store with the new data
+				updateAndSortLocations((locations) => locations.map((loc) => (loc.id === id ? { id, ...dataToSave } : loc)));
+				notificationStore.addToast('success', 'Location updated successfully', TOAST_DURATION);
 			} catch (e) {
+				notificationStore.addToast('error', "Couldn't update the location. Please try again.", 0);
 				console.error('Error updating document: ', e);
 			}
 		} else {
 			// Creating new location
 			try {
-				const docRef = await addDoc(collection(database, 'location'), {
-					name,
-					description,
-					street,
-					city,
-					zip,
-					openMapUrl,
-				});
-
-				updateAndSortLocations((locations) => [
-					...locations,
-					{ id: docRef.id, name, description, street, city, zip, openMapUrl },
-				]);
-
-				dispatch('locationAdded', { id: docRef.id, name });
+				const docRef = await addDoc(collection(database, 'location'), dataToSave);
+				updateAndSortLocations((locations) => [...locations, { id: docRef.id, ...dataToSave }]);
+				notificationStore.addToast('success', 'Location added successfully', TOAST_DURATION);
 			} catch (e) {
+				notificationStore.addToast('error', "Couldn't add the new location. Please try again.", 0);
 				console.error('Error adding document: ', e);
 			}
 		}
 	};
 </script>
+
+<ConfirmDialog
+	open={showDeleteDialog}
+	title="Confirm Delete"
+	message="Deleting a location document can not be undone.\nDo you really want to delete this item?"
+	confirmText="Delete"
+	confirmVariant="destructive"
+	cancelText="Cancel"
+	onConfirm={() => handleDelete()}
+	onCancel={() => handleCancel()}
+/>
 
 <div class="w-full gap-2">
 	<h1>Locations</h1>
@@ -120,35 +136,30 @@
 			<ul class="locations-list">
 				{#each $AllLocations as location, index}
 					<div class="flex w-full flex-row items-center gap-2">
-						<button
-							class={$CurrentLocation.id === location.id
-								? 'active list-item flex-1'
-								: 'list-item flex-1'}
-							on:click={() => handleLocationChange(location, index)}>{location.name}</button
+						<Button
+							variant={$CurrentLocation.id === location.id ? 'active' : 'inactive'}
+							class="py-6"
+							onclick={() => handleLocationChange(location, index)}>{location.name}</Button
 						>
-						<button class="icon-button" on:click={() => handleDelete(location)}>
-							<Icon width={'1.5rem'} height={'1.5rem'} name="delete" />
-						</button>
+						<Button variant="destructive" class="min-w-0" onclick={() => openDeleteModal(location)}>
+							<Icon icon="proicons:delete" class="h-8 w-8" />
+						</Button>
 					</div>
 				{/each}
 			</ul>
 			<div class="button-container">
-				<Button
-					class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
-					on:click={handleCreateNew}>Create new</Button
-				>
+				<Button variant="primary" size="wide" onclick={handleCreateNew}>Create new</Button>
 			</div>
 		</div>
+
 		<div class="location-details">
 			<h2>Location Details</h2>
-			<NewLocationForm
-				on:save={handleSave}
-				showClose={false}
-				mode={updateItem ? 'update' : 'create'}
-			/>
+			<NewLocationForm onSave={handleSave} showClose={false} mode={updateItem ? 'update' : 'create'} />
 		</div>
 	</div>
 </div>
+
+<ToastContainer />
 
 <style>
 	.locations-container {
@@ -164,41 +175,9 @@
 		padding: 20px;
 	}
 
-	.list-item {
-		padding: 0.5rem 1rem;
-		border: none;
-		background-color: transparent;
-		border-radius: 5px;
-		width: 100%;
-		text-align: left;
-	}
-
-	.active {
-		background-color: #d3d3d3;
-	}
-	.active:hover {
-		background-color: #a3a3a3;
-		color: white;
-	}
-
-	.icon-button {
-		padding: 0.5rem;
-		border: none;
-		background-color: transparent;
-		border-radius: 5px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		min-width: 2.5rem;
-	}
-
-	.icon-button:hover {
-		background-color: var(--color-primary-40);
-	}
-
 	.location-details {
 		flex: 0.5;
-		background-color: white;
+		background-color: whitesmoke;
 		border-radius: 20px;
 		padding: 20px 30px;
 	}

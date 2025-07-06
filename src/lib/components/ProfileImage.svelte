@@ -4,7 +4,11 @@
 		name: string;
 	};
 
-	export let photo: Photo;
+	interface Props {
+		photo: Photo;
+	}
+
+	let { photo }: Props = $props();
 </script>
 
 <div class="profile-image max-w-20 sm:max-w-40 lg:max-w-60">

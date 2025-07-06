@@ -1,22 +1,29 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { addDoc, collection } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
+	import { notificationStore, TOAST_DURATION } from '$lib/stores/notifications';
 
 	import {
 		CurrentLocation,
 		AllLocations,
 		selectedLocation,
 		fetchLocations,
+		type Location,
 	} from '$lib/stores/LocationsStore';
 
 	import NewLocationForm from './NewLocationForm.svelte';
 
 	const db = database;
-	const dispatch = createEventDispatcher();
+
+	interface Props {
+		onLocationAdded: (location: Location) => void;
+		onClose: () => void;
+	}
+
+	let { onLocationAdded, onClose }: Props = $props();
 
 	const handleSave = async () => {
-		const { name, description, street, city, zip, openMapUrl } = $CurrentLocation;
+		const { name, description, street, city, zip, locationUrl, online } = $CurrentLocation;
 		try {
 			const docRef = await addDoc(collection(db, 'location'), {
 				name,
@@ -24,29 +31,28 @@
 				street,
 				city,
 				zip,
-				openMapUrl,
+				locationUrl,
+				online,
 			});
 			await fetchLocations();
 			const newLocation = $AllLocations.find((loc) => loc.id === docRef.id);
 			if (newLocation) {
 				selectedLocation.set(newLocation);
+				onLocationAdded(newLocation);
+				notificationStore.addToast('success', 'Location added successfully', TOAST_DURATION);
+				onClose();
 			}
-			dispatch('locationAdded', { id: docRef.id, name });
-		} catch (e) {
-			console.error('Error adding document: ', e);
+		} catch (error) {
+			notificationStore.addToast('error', "Couldn't add the new location. Please try again.", 0);
+			console.error('Error adding document: ', error);
 		}
 	};
 </script>
 
 <div class="overlay">
-	<div class="modal">
+	<div class="bg-white-smoke w-1/4 rounded-xl p-10">
 		<h2>Add New Location</h2>
-		<NewLocationForm
-			on:save={handleSave}
-			on:close={() => dispatch('close')}
-			showClose={true}
-			mode="create"
-		/>
+		<NewLocationForm onSave={handleSave} {onClose} showClose={true} mode="create" />
 	</div>
 </div>
 
@@ -62,14 +68,5 @@
 		align-items: center;
 		justify-content: center;
 		z-index: 1000;
-	}
-
-	.modal {
-		background-color: white;
-		padding: 20px;
-		border-radius: 8px;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-		width: 400px;
-		max-width: 90%;
 	}
 </style>

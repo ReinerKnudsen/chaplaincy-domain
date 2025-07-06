@@ -2,10 +2,14 @@
 	import ToastEditor from './ToastEditor.svelte';
 	import { uploadEditorImage } from '$lib/services/editorImageService';
 
-	export let content = '';
+	interface Props {
+		content?: string | null;
+		onBlur?: () => void;
+	}
 
-	async function handleImageUpload(event) {
-		const { blob, callback } = event.detail;
+	let { content = $bindable(''), onBlur }: Props = $props();
+
+	const handleImageUpload = async (blob: Blob, callback: (url: string) => void) => {
 		try {
 			const imageUrl = await uploadEditorImage(blob, blob.type);
 			callback(imageUrl);
@@ -13,12 +17,11 @@
 			console.error('Failed to upload image:', error);
 			// You might want to show an error toast here
 		}
-	}
+	};
 
-	function handleChange(event) {
-		const { markdown } = event.detail;
-		content = markdown;
+	function handleChange(editorContent: { markdown: string; html: string }) {
+		content = editorContent.markdown;
 	}
 </script>
 
-<ToastEditor initialContent={content} on:imageUpload={handleImageUpload} on:change={handleChange} />
+<ToastEditor initialContent={content} onImageUpload={handleImageUpload} onChange={handleChange} {onBlur} />

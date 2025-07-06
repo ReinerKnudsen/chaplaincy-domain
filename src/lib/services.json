@@ -4,46 +4,49 @@
 			"id": "1",
 			"icon": "people",
 			"name": "St. Boniface, Bonn",
-			"time": "Sundays, 09:30 am",
+			"time": "Sundays, 9.30am",
 			"kind": "Eucharist",
-			"subtitle": "Holy Communion",
+			"subtitle": "",
 			"place_church": "St. Paulus Church",
 			"place_address": "Siegburger Str. 75, \nBonn-Beuel",
-			"url": "https://www.openstreetmap.org/?mlat=50.74153&mlon=7.13235#map=19/50.74153/7.13235"
+			"url": "https://www.openstreetmap.org/?mlat=50.74153&mlon=7.13235#map=19/50.74153/7.13235",
+			"mode": "onsite"
 		},
 		{
 			"id": "2",
 			"icon": "people",
 			"name": "All Saints, Cologne",
-			"time": "Sundays, 11:45 am",
+			"time": "Sundays, 11.45am",
 			"kind": "Eucharist",
-			"subtitle": "Holy Communion",
+			"subtitle": "",
 			"place_church": "All Saints Church",
 			"place_address": "Bonner Str./Lindenallee, \nCologne",
-			"url": "https://www.openstreetmap.org/?mlat=50.89432&mlon=6.96776#map=19/50.89432/6.96776"
+			"url": "https://www.openstreetmap.org/?mlat=50.89432&mlon=6.96776#map=19/50.89432/6.96776",
+			"mode": "onsite"
 		},
 		{
 			"id": "3",
 			"icon": "online",
 			"name": "Online Service",
-			"time": "Tuesdays, 07:30 pm",
+			"time": "Tuesdays, 7.30pm",
 			"kind": "Evening Prayer",
 			"subtitle": "",
 			"place_church": "Zoom",
-			"place_address": "Meeting Id: 542 044 8085",
-			"url": "https://us02web.zoom.us/j/5420448085?pwd=MFVnM1QzTzRsODZEaHVEUU9qZHpVdz09"
+			"place_address": "Meeting ID: 542 044 8085",
+			"url": "https://us02web.zoom.us/j/5420448085?pwd=MFVnM1QzTzRsODZEaHVEUU9qZHpVdz09",
+			"mode": "online"
 		},
 		{
 			"id": "4",
 			"icon": "people",
 			"name": "All Saints, Cologne",
-			"time": "Fridays, 06:00 pm",
+			"time": "Fridays, 6.00pm",
 			"kind": "Evening Prayer",
 			"subtitle": "Bible Study",
 			"place_church": "All Saints Church",
 			"place_address": "Bonner Str./Lindenallee, \nCologne",
-			"url": "https://www.openstreetmap.org/?mlat=50.89432&mlon=6.96776#map=19/50.89432/6.96776"
+			"url": "https://www.openstreetmap.org/?mlat=50.89432&mlon=6.96776#map=19/50.89432/6.96776",
+			"mode": "onsite"
 		}
-		
 	]
 }

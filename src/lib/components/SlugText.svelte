@@ -1,57 +1,37 @@
 <script lang="ts">
-	import { Label, Textarea, Button } from 'flowbite-svelte';
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
-	import { marked } from 'marked';
-	import { createEventDispatcher } from 'svelte';
+	import Label from './ui/label/label.svelte';
 
-	export let text: string = '';
-	export let slugText: string = '';
-
-	let editSlug: boolean = false;
-
-	const dispatch = createEventDispatcher<{ slugChange: string }>();
-
-	const handleChangeSlug = async () => {
-		if (!slugText) {
-			const parsedText = await marked.parse(text);
-			slugText = parsedText.replace(/<[^>]*>/g, '').slice(0, MAX_SLUG_TEXT);
-		} else {
-			editSlug = true;
-		}
-	};
-
-	$: if (slugText) {
-		dispatch('slugChange', slugText);
+	interface Props {
+		required?: boolean | null;
+		slugText?: string | null;
+		onBlur: (slugText: string) => void;
 	}
+
+	let { slugText = '', required = false, onBlur }: Props = $props();
 </script>
 
-<div class="my-8 rounded-xl border p-4">
-	<div class="flex flex-row justify-between">
-		<Label class="mb-2 mt-2 self-center text-xl font-semibold">Short text (slug)</Label>
-		<p class="explanation self-end text-right">
-			<strong>{slugText.length} of {MAX_SLUG_TEXT} </strong> characters.
+<div id="component-container" class="my-8 rounded-xl border p-4">
+	<div id="component-label" class="flex flex-row items-center justify-between gap-4">
+		<Label for="slug">Short text (slug) {required ? '*' : ''}</Label>
+		<p class="explanation text-right">
+			<strong>{slugText ? slugText.length : 0} of {MAX_SLUG_TEXT} </strong> characters.
 		</p>
 	</div>
-	<Textarea
-		class="disabled:border-0 disabled:bg-white-primary disabled:text-slate-400"
+	<textarea
+		class="disabled:bg-white-primary w-full p-4 disabled:border-0 disabled:text-slate-400"
 		id="slug"
 		rows="3"
 		name="slug"
 		bind:value={slugText}
-		maxlength="MAX_SLUG_TEXT"
+		maxlength={MAX_SLUG_TEXT}
 		required
-		disabled={!editSlug}
-		on:blur={() => (editSlug = false)}
-	/>
-	<div class="mt-2 flex justify-between">
-		<div class="mx-1 my-2 text-sm">
-			The slug text is a short version of your text to be shown in cards view. <br />The system will
-			suggest a slug text for you which you can change.
+		onblur={() => onBlur(slugText || '')}
+	></textarea>
+	<div id="component-footer" class="mt-2 flex items-center justify-between">
+		<div id="component-explanation" class="mx-1 my-2 text-sm">
+			The slug text is a short version of your text to be shown in cards view. <br />The system will suggest a slug text
+			for you which you can change.
 		</div>
-		<Button
-			class="bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
-			disabled={editSlug}
-			on:click={handleChangeSlug}>{slugText.length === 0 ? 'Create' : 'Change'} slug text</Button
-		>
 	</div>
 </div>

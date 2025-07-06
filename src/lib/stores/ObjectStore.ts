@@ -8,104 +8,149 @@ import {
 	addDoc,
 	query,
 	orderBy,
+	Timestamp,
 	where,
 	limit,
 	type DocumentReference,
+	type StorageReference,
 } from 'firebase/firestore';
 import { database } from '$lib/firebase/firebaseConfig';
+
+export enum ItemState {
+	DRAFT = 'draft',
+	SCHEDULED = 'scheduled',
+	PUBLIC = 'public',
+	UNPUBLISHED = 'unpublished',
+}
 
 export interface CollectionItem {
 	id: string;
 	data: DocumentData;
 }
 
-export interface Event {
-	title: string;
-	subtitle: string;
-	description: string;
-	slug: string;
-	startdate: string;
+export const setItemState = (item: DomainEvent | News, type: 'Event' | 'News') => {
+	if (!item || !type) return;
+	if (item.publishDateTime) {
+		const publishDate = new Date(item.publishDateTime.seconds * 1000);
+		if (publishDate <= new Date()) {
+			item.state = ItemState.PUBLIC;
+		} else {
+			item.state = ItemState.SCHEDULED;
+		}
+	}
+};
+
+export interface DomainEvent {
+	id: string | null;
+	state: ItemState;
+	title: string | null;
+	subtitle?: string | null;
+	description: string | null;
+	slug: string | null;
+	startdate: string | null;
 	starttime: string | null;
 	enddate: string | null;
 	endtime: string | null;
-	location: string;
-	condition?: string;
-	publishdate: string;
-	publishtime: string;
-	publishDateTime: string;
-	unpublishdate: string;
-	unpublishtime: string;
-	unpublishDateTime: string;
-	comments: string;
+	startDateTimeUtc?: string | null;
+	endDateTimeUtc?: string | null;
+	location: string | null;
+	joinOnline?: boolean;
+	condition?: string | null;
+	publishdate: string | null;
+	publishtime: string | null;
+	publishDateTime: Timestamp;
+	unpublishdate: string | null;
+	unpublishtime: string | null;
+	unpublishDateTime: Timestamp;
+	comments?: string | null;
 	image?: string | null;
-	imageAlt?: string;
-	imageCaption?: string;
-	author: string;
-	pdfFile?: string;
-	tags: string[];
+	imageAlt?: string | null;
+	imageCaption?: string | null;
+	imageRef: StorageReference;
+	author: string | null;
+	pdfFile?: string | null;
+	pdfText?: string | null;
+	pdfName?: string | null;
+	tags?: string[];
 }
 
-export const initialEvent: Event = {
-	title: '',
-	subtitle: '',
-	description: '',
-	slug: '',
-	startdate: '',
+export const initialDomainEvent: DomainEvent = {
+	id: null,
+	state: ItemState.DRAFT,
+	title: null,
+	subtitle: null,
+	description: null,
+	slug: null,
+	startdate: null,
 	starttime: null,
+	startDateTimeUtc: null, // Add this for our new field
 	enddate: null,
 	endtime: null,
-	location: '',
-	condition: '',
-	publishdate: '',
-	publishDateTime: '',
-	publishtime: '',
-	unpublishdate: '',
-	unpublishtime: '',
-	unpublishDateTime: '',
-	comments: '',
+	endDateTimeUtc: null, // Add this for our new field
+	location: null,
+	joinOnline: false,
+	condition: null,
+	publishdate: null,
+	publishDateTime: Timestamp.fromDate(new Date()),
+	publishtime: null,
+	unpublishdate: null,
+	unpublishtime: null,
+	unpublishDateTime: Timestamp.fromDate(new Date()),
+	comments: null,
 	image: null,
-	imageAlt: '',
-	imageCaption: '',
-	author: '',
-	pdfFile: '',
+	imageAlt: null,
+	imageCaption: null,
+	imageRef: null,
+	author: null,
+	pdfFile: null,
+	pdfText: null,
+	pdfName: null,
 	tags: [],
 };
 
-export type EventSortableFields = keyof Event;
+export type DomainEventSortableFields = keyof DomainEvent;
 
 // News
 export interface News {
-	title: string;
-	text: string;
-	slug: string;
+	title: string | null;
+	state: ItemState;
+	text: string | null;
+	slug: string | null;
 	publishdate: string | null;
 	publishtime: string | null;
-	publishDateTime: string | null;
-	comments: string;
-	image: string | null;
-	imageAlt?: string;
-	imageCaption?: string;
-	author: string;
-	pdfFile?: string;
+	publishDateTime: Timestamp;
+	comments: string | null;
+	image?: string | null;
+	imageAlt?: string | null;
+	imageCaption?: string | null;
+	imageRef: StorageReference;
+	author: string | null;
+	pdfFile?: string | null;
+	pdfText?: string | null;
+	pdfName?: string | null;
 	tags: string[];
 }
 
 export type NewsSortableFields = keyof News;
 
 export const initialNews: News = {
-	title: '',
-	text: '',
-	slug: '',
+	title: null,
+	author: null,
+	state: ItemState.DRAFT,
+	text: null,
+	slug: null,
 	publishdate: null,
 	publishtime: null,
-	publishDateTime: null,
-	tags: [],
-	comments: '',
+	publishDateTime: Timestamp.fromDate(new Date()),
+	comments: null,
 	image: null,
-	imageAlt: '',
-	author: '',
-	imageCaption: '',
-	pdfFile: '',
+	imageAlt: null,
+	imageRef: null,
+	imageCaption: null,
+	pdfFile: null,
+	pdfText: null,
+	pdfName: null,
+	tags: [],
 };
 
 // WeeklySheet
@@ -140,6 +185,24 @@ export const initialNewsletter: Newsletter = {
 	id: '',
 };
 
+export type User = {
+	firstname: string;
+	lastname: string;
+	email: string;
+	displayName: string;
+	uid: string;
+	role: string;
+};
+
+export const initUser: User = {
+	firstname: '',
+	lastname: '',
+	email: '',
+	displayName: '',
+	uid: '',
+	role: '',
+};
+
 export enum CollectionType {
 	Events = 'events',
 	News = 'news',
@@ -152,7 +215,7 @@ export enum DocumentType {
 }
 
 // Single item stores
-export const EventStore: Writable<Event | null> = writable(initialEvent);
+export const EventStore: Writable<DomainEvent | null> = writable(initialDomainEvent);
 export const NewsStore: Writable<News | null> = writable(initialNews);
 export const WeeklySheetStore: Writable<WeeklySheet | null> = writable(null);
 export const NewsletterStore: Writable<Newsletter | null> = writable(null);
@@ -178,7 +241,7 @@ export const NextEventsStore = derived(FutureEventsStore, ($FutureEventsStore) =
 });
 
 export function resetEventStore() {
-	EventStore.set(initialEvent);
+	EventStore.set(initialDomainEvent);
 }
 
 export function resetNewsStore() {
@@ -186,22 +249,22 @@ export function resetNewsStore() {
 }
 
 // Other collection or dcoument related items
-export enum EditMode {
-	New = 'new',
-	Update = 'update',
-}
+export type EditMode = 'new' | 'update' | '';
 
-export const EditModeStore = writable<'new' | 'update' | ''>('new');
+export const EditMode = {
+	New: 'new' as const,
+	Update: 'update' as const,
+	Empty: '' as const,
+};
+
+export const EditModeStore = writable<EditMode>('');
 export function resetEditModeStore() {
 	EditModeStore.set('');
 }
 
 // Collection and document related functions
 // Load a single item by id and type
-export const loadItem = async (
-	id: string,
-	type: CollectionType,
-): Promise<DocumentReference | null> => {
+export const loadItem = async (id: string, type: CollectionType): Promise<DocumentReference | null> => {
 	try {
 		const docRef = doc(database, type, id);
 		const docSnap = await getDoc(docRef);
@@ -214,7 +277,7 @@ export const loadItem = async (
 
 			// Set the appropriate store based on type
 			if (type === CollectionType.Events) {
-				EventStore.set(item.data as Event);
+				EventStore.set(item.data as DomainEvent);
 			} else if (type === CollectionType.News) {
 				NewsStore.set(item.data as News);
 			}
@@ -262,20 +325,13 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 			const now = new Date();
 			const futureEvents = items
 				.filter((item) => {
-					const eventData = item.data as Event;
-					const eventDate = new Date(eventData.startdate);
-					const publishDate = new Date(eventData.publishdate);
+					const eventData = item.data as DomainEvent;
 					const unpublishDate = new Date(eventData.unpublishdate);
-
-					// Event must be:
-					// 1. In the future or today
-					// 2. Publish date has passed
-					// 3. Unpublish date hasn't passed yet
-					return eventDate >= now && publishDate <= now && unpublishDate > now;
+					return unpublishDate > now;
 				})
 				.sort((a, b) => {
-					const dateA = new Date((a.data as Event).startdate);
-					const dateB = new Date((b.data as Event).startdate);
+					const dateA = new Date((a.data as DomainEvent).startdate);
+					const dateB = new Date((b.data as DomainEvent).startdate);
 					return dateA.getTime() - dateB.getTime();
 				});
 			FutureEventsStore.set(futureEvents);
@@ -303,12 +359,7 @@ export const loadDocument = async (type: DocumentType): Promise<void> => {
 		return;
 	}
 	try {
-		const q = query(
-			collection(database, 'documents'),
-			where('type', '==', type),
-			orderBy('date', 'desc'),
-			limit(1),
-		);
+		const q = query(collection(database, 'documents'), where('type', '==', type), orderBy('date', 'desc'), limit(1));
 		const querySnapshot = await getDocs(q);
 		if (!querySnapshot.empty) {
 			const doc = querySnapshot.docs[0];
@@ -351,11 +402,7 @@ export const loadDocuments = async (type: DocumentType) => {
 		return;
 	}
 	try {
-		const q = query(
-			collection(database, 'documents'),
-			where('type', '==', type),
-			orderBy('date', 'desc'),
-		);
+		const q = query(collection(database, 'documents'), where('type', '==', type), orderBy('date', 'desc'));
 		const querySnapshot = await getDocs(q);
 		if (!querySnapshot.empty) {
 			const documents: CollectionItem[] = [];
@@ -408,10 +455,7 @@ const removeDateFields = (data: DocumentData): DocumentData => {
 	return newData;
 };
 
-export const duplicateItem = async (
-	itemId: string,
-	type: CollectionType,
-): Promise<string | undefined> => {
+export const duplicateItem = async (itemId: string, type: CollectionType): Promise<string | undefined> => {
 	try {
 		const itemRef = doc(database, type, itemId);
 		const item = await getDoc(itemRef);
@@ -425,4 +469,14 @@ export const duplicateItem = async (
 		console.error(error);
 		return undefined;
 	}
+};
+
+export const createHashableString = (obj: any) => {
+	const normalized = { ...obj };
+	Object.keys(normalized).forEach((key) => {
+		if (typeof normalized[key] === 'string') {
+			normalized[key] = normalized[key].trim() || null;
+		}
+	});
+	return JSON.stringify(normalized, Object.keys(normalized).sort());
 };

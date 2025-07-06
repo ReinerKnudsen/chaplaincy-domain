@@ -1,98 +1,153 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { Button, Input, Label } from 'flowbite-svelte';
 	import {
 		CurrentLocation,
 		resetCurrentLocation,
 		type Location,
 		initialLocationState,
 	} from '$lib/stores/LocationsStore';
+	import { createHashableString, EditMode, EditModeStore } from '$lib/stores/ObjectStore';
+
+	import { Button } from '$lib/components/ui/button';
+	import Checkbox from './Checkbox.svelte';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
+	import { onMount } from 'svelte';
 
 	type Mode = 'create' | 'update';
 
-	export let showClose = true;
-	export let mode: Mode = 'create';
-
-	let thisLocation: Location = { ...initialLocationState };
-
-	$: if (mode === 'update') {
-		thisLocation = { ...$CurrentLocation };
-	} else if (mode === 'create' && thisLocation.id !== '') {
-		// Only reset if we're switching to create mode and have existing data
-		thisLocation = { ...initialLocationState };
+	interface Props {
+		showClose?: boolean;
+		mode?: Mode;
+		onSave: () => void;
+		onClose?: () => void;
+		onUnsavedChangesUpdate?: (hasUnsavedChanges: boolean) => void;
 	}
 
-	const dispatch = createEventDispatcher<{
-		save: void;
-		close: void;
-	}>();
+	let { showClose = true, mode = 'create', onSave, onClose, onUnsavedChangesUpdate }: Props = $props();
 
-	function handleSubmit(e: SubmitEvent) {
+	let thisLocation: Location = $state(mode === 'update' ? $CurrentLocation : { ...initialLocationState });
+	let originalHash = $state('');
+	let hasUnsavedChanges = $state(false);
+
+	onMount(() => {
+		if (mode === 'update') {
+			originalHash = createHashableString($CurrentLocation);
+		} else {
+			originalHash = createHashableString(initialLocationState);
+		}
+	});
+
+	$effect(() => {
+		if (mode === 'update') {
+			thisLocation = { ...$CurrentLocation };
+		} else if (mode === 'create' && thisLocation.id !== '') {
+			// Only reset if we're switching to create mode and have existing data
+			thisLocation = { ...initialLocationState };
+		}
+	});
+
+	const checkForChanges = () => {
+		const currentHash = createHashableString(thisLocation);
+		if (currentHash !== originalHash) {
+			hasUnsavedChanges = true;
+		} else {
+			hasUnsavedChanges = false;
+		}
+		if (onUnsavedChangesUpdate) onUnsavedChangesUpdate(hasUnsavedChanges);
+	};
+
+	const handleOnlineChange = (checked: boolean) => {
+		thisLocation.online = checked;
+		if (checked) {
+			thisLocation.street = '';
+			thisLocation.city = '';
+			thisLocation.zip = '';
+		}
+		checkForChanges();
+	};
+
+	const handleSubmit = (e: SubmitEvent) => {
 		e.preventDefault();
 		$CurrentLocation = thisLocation;
-		dispatch('save');
-	}
+		onSave();
+	};
 
-	function resetForm() {
+	const handleCancel = () => {
 		resetCurrentLocation();
-	}
-
-	$: openStreetUrl = `https://www.openstreetmap.org/search?query=${thisLocation.street}+${thisLocation.city}`;
+		onClose && onClose();
+	};
 </script>
 
-<div class="py-2 text-sm">All fields marked with * are required</div>
-<form autocomplete="off" on:submit={handleSubmit}>
-	<div>
-		<Label class="mb-2 mt-4 font-semibold" for="name">Name *</Label>
-		<Input id="name" type="text" placeholder="Name" bind:value={thisLocation.name} required />
-	</div>
-	<div>
-		<Label class="mb-2 mt-4 font-semibold" for="description">Description</Label>
-		<Input
-			id="description"
-			type="text"
-			placeholder="Description"
-			bind:value={thisLocation.description}
-		/>
-	</div>
-	<div>
-		<Label class="mb-2 mt-4 font-semibold" for="street">Street *</Label>
-		<Input id="street" type="text" placeholder="Street" bind:value={thisLocation.street} required />
-	</div>
-	<div>
-		<Label class="mb-2 mt-4 font-semibold" for="city">City *</Label>
-		<Input id="city" type="text" placeholder="City" bind:value={thisLocation.city} required />
-	</div>
-	<div>
-		<Label class="mb-2 mt-4 font-semibold" for="zip">Zip *</Label>
-		<Input id="zip" type="text" placeholder="Zip" bind:value={thisLocation.zip} required />
-	</div>
-	<div>
-		<Label class="mb-2 mt-4 font-semibold" for="url"
-			><a href={openStreetUrl} target="_blank" rel="noopener noreferrer">
-				Open Street Map URL</a
-			>:</Label
-		>
-		<Input
-			id="url"
-			type="url"
-			placeholder="OpenStreetMap URL"
-			bind:value={thisLocation.openMapUrl}
-		/>
-	</div>
-	<div class="mt-8 flex w-full flex-row justify-center gap-10">
-		{#if showClose}
-			<Button
-				class="min-w-32 bg-secondary-100 text-primary-text disabled:bg-primary-40 disabled:text-slate-600"
-				on:click={() => dispatch('close')}>Cancel</Button
-			>
+<div id="newlocationform">
+	<div class="py-2 text-sm">All fields marked with * are required</div>
+	<form autocomplete="off" onsubmit={handleSubmit}>
+		<fieldset>
+			<Label for="name">Name *</Label>
+			<Input
+				id="name"
+				type="text"
+				placeholder="Name"
+				bind:value={thisLocation.name}
+				required
+				onblur={checkForChanges}
+			/>
+		</fieldset>
+		<fieldset>
+			<Label for="description">Description</Label>
+			<Input
+				id="description"
+				type="text"
+				placeholder="Description"
+				bind:value={thisLocation.description}
+				onblur={checkForChanges}
+			/>
+		</fieldset>
+		<fieldset>
+			<Label for="isonline">Location type</Label>
+			<div class="text-sm">Defines this location as a physical location or an online service</div>
+			<Checkbox label="Online" id="isonline" bind:checked={thisLocation.online} onChange={handleOnlineChange} />
+		</fieldset>
+		{#if !thisLocation.online}
+			<fieldset>
+				<Label for="street">Street</Label>
+				<Input id="street" type="text" placeholder="Street" bind:value={thisLocation.street} onblur={checkForChanges} />
+			</fieldset>
+			<fieldset>
+				<Label for="city">City</Label>
+				<Input id="city" type="text" placeholder="City" bind:value={thisLocation.city} onblur={checkForChanges} />
+			</fieldset>
+			<fieldset>
+				<Label for="zip">Zip</Label>
+				<Input id="zip" type="text" placeholder="Zip" bind:value={thisLocation.zip} onblur={checkForChanges} />
+			</fieldset>
 		{/if}
-		<Button
-			class="min-w-32 bg-primary-100 text-white-primary disabled:bg-primary-40 disabled:text-slate-600"
-			type="submit">Save</Button
-		>
-	</div>
-</form>
+		<fieldset>
+			<Label for="url">URL</Label>
+			<Input
+				id="url"
+				type="url"
+				placeholder="OpenStreetMap Url or service Url"
+				bind:value={thisLocation.locationUrl}
+				onblur={checkForChanges}
+			/>
+			{#if thisLocation.locationUrl}
+				<div class="text-md mt-2 flex flex-row justify-end">
+					<Button variant="outline">
+						<a href={thisLocation.locationUrl} class="link no-underline" target="_blank" rel="noopener noreferrer"
+							>Check URL
+						</a>
+					</Button>
+				</div>
+			{/if}
+		</fieldset>
+		<div class="mt-8 flex w-full flex-row justify-center gap-10">
+			{#if showClose}
+				<Button variant="outline" onclick={handleCancel}>Cancel</Button>
+			{/if}
+			<Button variant="primary" type="submit">Save</Button>
+		</div>
+	</form>
+</div>
 
 <style>
 </style>

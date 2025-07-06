@@ -1,33 +1,34 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { Button, Label, Input, Helper, Alert } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
-	import { requestPasswordReset } from '$lib/services/authService';
+	import { goto } from '$app/navigation';
+
 	import { auth } from '$lib/firebase/firebaseConfig';
 	import { confirmPasswordReset } from 'firebase/auth';
+	import { requestPasswordReset } from '$lib/services/authService';
+	import { notificationStore } from '$lib/stores/notifications';
+	import { Button } from '$lib/components/ui/button';
+	import { Label } from '$lib/components/ui/label';
+	import { Input } from '$lib/components/ui/input';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
-	let email = '';
-	let newPassword = '';
-	let checkPassword = '';
-	let oobCode: string | null = null;
-	let isError = false;
-	let errorMessage = '';
-	let isSuccess = false;
+	let email = $state('');
+	let newPassword = $state('');
+	let checkPassword = $state('');
+	let oobCode: string | null = $state(null);
 
 	onMount(() => {
 		const urlParams = new URLSearchParams(window.location.search);
 		oobCode = urlParams.get('oobCode');
 	});
 
-	const requestReset = async (e: Event) => {
-		e.preventDefault();
+	const requestReset = async () => {
 		try {
 			await requestPasswordReset(email);
-			isSuccess = true;
-			errorMessage = '';
+			notificationStore.addToast('success', 'Password reset email sent successfully', 3000);
+			await goto('/login');
 		} catch (error: unknown) {
-			isError = true;
-			errorMessage = 'Failed to send password reset email. Please try again.';
+			notificationStore.addToast('error', 'Could not the password reset email. Please try again later.');
+			console.error('Could not the password reset email. ', error);
 		}
 	};
 
@@ -35,106 +36,49 @@
 		if (!oobCode) return;
 		try {
 			await confirmPasswordReset(auth, oobCode, newPassword);
+			notificationStore.addToast('success', 'Changed your password successfully. You can login now.', 3000);
 			await goto('/login');
 		} catch (error: unknown) {
-			isError = true;
-			errorMessage = 'Could not reset password. The link may have expired.';
+			notificationStore.addToast('error', 'Could not reset password. The link may have expired.');
+			console.error('Could not reset password. The link may have expired.');
 		}
 	};
 
-	const setErrorState = () => {
+	const checkPasswords = () => {
 		if (newPassword && checkPassword && newPassword !== checkPassword) {
-			isError = true;
-			errorMessage = 'Passwords do not match';
-		} else {
-			isError = false;
-			errorMessage = '';
-		}
-	};
-
-	const resetUserPassword = (e: Event) => {
-		e.preventDefault();
-		if (newPassword && checkPassword && newPassword !== checkPassword) {
-			isError = true;
-			errorMessage = 'Passwords do not match';
+			notificationStore.addToast('error', 'Passwords do not match. Please try again.');
 			return;
-		}
-		isError = false;
-		errorMessage = '';
-		resetPassword();
-	};
-
-	const verifyInput = () => {
-		if (isError) {
-			isError = false;
-			errorMessage = '';
+		} else {
+			resetPassword();
 		}
 	};
 </script>
 
 <div class="flex flex-row justify-center">
-	<div class="w-5/12 space-y-4 rounded-xl bg-white-primary p-6 shadow-xl sm:p-8 md:space-y-6">
+	<div class="bg-white-primary w-5/12 space-y-4 rounded-xl p-6 shadow-xl sm:p-8 md:space-y-6">
 		{#if oobCode}
 			<!-- Reset Password Form -->
-			<form class="flex flex-col space-y-6" on:submit={resetUserPassword}>
-				<h3 class="dark:text-white p-0 text-xl font-medium text-gray-900">Reset your password</h3>
-				<Label class="space-y-2" for="new-password">
-					<span>New Password</span>
-					<Input
-						type="password"
-						name="new-password"
-						id="new-password"
-						bind:value={newPassword}
-						on:change={setErrorState}
-						on:input={verifyInput}
-						required
-					/>
-				</Label>
-				<Label class="space-y-2" for="check-password">
-					<span>Confirm Password</span>
-					<Input
-						type="password"
-						name="check-password"
-						id="check-password"
-						bind:value={checkPassword}
-						on:change={setErrorState}
-						on:input={verifyInput}
-						required
-					/>
-				</Label>
-				{#if isError}
-					<Alert color="red" class="mt-2">{errorMessage}</Alert>
-				{/if}
-				<Button type="submit" class="w-full bg-primary-80 text-white-primary">Change password</Button>
+			<form class="flex flex-col" onsubmit={checkPasswords}>
+				<div class="my-6">
+					<Label>New Password</Label>
+					<Input type="password" name="new-password" id="new-password" bind:value={newPassword} required />
+					<Label>Confirm Password</Label>
+					<Input type="password" name="check-password" id="check-password" bind:value={checkPassword} required />
+					<Button type="submit" variant="primary">Change password</Button>
+				</div>
 			</form>
 		{:else}
 			<!-- Request Reset Form -->
-			<form class="flex flex-col space-y-6" on:submit={requestReset}>
-				<h3 class="dark:text-white p-0 text-xl font-medium text-gray-900">Reset your password</h3>
-				<p class="text-sm text-gray-600">
-					Enter your email address and we'll send you a link to reset your password.
-				</p>
-				<Label class="space-y-2" for="email">
-					<span>Email</span>
-					<Input
-						type="email"
-						name="email"
-						id="email"
-						placeholder="name@company.com"
-						bind:value={email}
-						required
-					/>
-				</Label>
-				{#if isSuccess}
-					<Alert color="green" class="mt-2">
-						Check your email for a link to reset your password.
-					</Alert>
-				{/if}
-				{#if isError}
-					<Alert color="red" class="mt-2">{errorMessage}</Alert>
-				{/if}
-				<Button type="submit" class="w-full bg-primary-80 text-white-primary">Send reset link</Button>
+			<form class="flex flex-col" onsubmit={requestReset}>
+				<p class="text-sm text-gray-600">Enter your email address and we'll send you a link to reset your password.</p>
+				<div class="my-6">
+					<Label>Email</Label>
+					<Input type="email" name="email" id="email" placeholder="name@company.com" bind:value={email} required />
+				</div>
+				<Button type="submit" variant="primary">Send reset link</Button>
 			</form>
 		{/if}
 	</div>
 </div>
+
+<ToastContainer />

@@ -1,14 +1,5 @@
 <script lang="ts">
-	import PageHeader from '$lib/components/PageHeader.svelte';
 	import GroupCard from '$lib/components/GroupCard.svelte';
-
-	const headerData = {
-		title: 'Groups',
-		photoName: 'JJ Ying',
-		photoUrl: 'https://unsplash.com/@jjying',
-		imageUrl:
-			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fheaders%2Fgroups.jpg?alt=media&token=94f6da6c-dad6-40c1-bb82-69db5a5eedc1',
-	};
 
 	const groups = [
 		{
@@ -41,11 +32,10 @@
 	];
 </script>
 
-<PageHeader {headerData} textStyle="dark" />
-<div class="mx-auto w-[80%] text-lg">
+<div class="text-lg">
 	<div class="intro pb-4">
-		Groups are organized by members of the congregation. They are open to everybody. Below you can
-		find all information required about the groups of the church.
+		Groups are organized by members of the congregation. They are open to everybody. Below you can find all information
+		required about the groups of the church.
 	</div>
 	<div class="border-b-2 pb-4">
 		If you want to find out more or would like to join one of the groups, please <a

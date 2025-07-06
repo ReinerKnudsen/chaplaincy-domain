@@ -1,14 +1,21 @@
 <script lang="ts">
-	import Editor from '@toast-ui/editor';
+	import { onMount } from 'svelte';
+
+	//import Editor from '@toast-ui/editor';
 	import '@toast-ui/editor/dist/toastui-editor.css';
 	import '$lib/styles/markdown.css';
-	import { onMount, createEventDispatcher } from 'svelte';
+	import { browser } from '$app/environment';
 
-	const dispatch = createEventDispatcher();
+	interface Props {
+		initialContent?: string | null;
+		onImageUpload: (blob: Blob, callback: (imageUrl: string) => void) => void;
+		onChange: (content: { markdown: string; html: string }) => void;
+		onBlur?: () => void;
+	}
 
-	export let initialContent = '';
-	let editorElement;
-	let editor;
+	let { initialContent = '', onImageUpload, onChange, onBlur }: Props = $props();
+	let editorElement: HTMLDivElement;
+	let editor: any = null;
 
 	// Function to get markdown content
 	export function getMarkdown() {
@@ -16,37 +23,41 @@
 	}
 
 	// Function to set markdown content
-	export function setMarkdown(content) {
+	export function setMarkdown(content: string) {
 		if (editor) {
 			editor.setMarkdown(content);
 		}
 	}
 
-	onMount(() => {
-		editor = new Editor({
-			el: editorElement,
-			height: '500px',
-			initialEditType: 'markdown',
-			previewStyle: 'vertical',
-			initialValue: initialContent,
-			hooks: {
-				addImageBlobHook: (blob, callback) => {
-					dispatch('imageUpload', {
-						blob,
-						callback: (imageUrl) => callback(imageUrl),
-					});
-					return false;
+	onMount(async () => {
+		if (browser) {
+			// Dynamic import - only runs in browser
+			const { Editor } = await import('@toast-ui/editor');
+			editor = new Editor({
+				el: editorElement,
+				height: '500px',
+				initialEditType: 'markdown',
+				previewStyle: 'vertical',
+				initialValue: initialContent || '',
+				hooks: {
+					addImageBlobHook: (blob, callback) => {
+						onImageUpload(blob, callback);
+						return false;
+					},
 				},
-			},
-		});
-
-		editor.on('change', () => {
-			dispatch('change', {
-				markdown: editor.getMarkdown(),
-				html: editor.getHTML(),
 			});
-		});
-
+			editor.on('change', () => {
+				onChange({
+					markdown: editor.getMarkdown(),
+					html: editor.getHTML(),
+				});
+			});
+			editor.on('blur', () => {
+				if (onBlur) {
+					onBlur();
+				}
+			});
+		}
 		return () => {
 			if (editor) {
 				editor.destroy();

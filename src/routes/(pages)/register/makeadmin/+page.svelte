@@ -22,7 +22,6 @@
 	const checkNoOfAdmins = async () => {
 		const numberOfAdmins = await countAdmins();
 		if (numberOfAdmins && numberOfAdmins === 0) {
-			console.log(numberOfAdmins);
 			return false; // we have no admin
 		} else {
 			return true; // we have an admin

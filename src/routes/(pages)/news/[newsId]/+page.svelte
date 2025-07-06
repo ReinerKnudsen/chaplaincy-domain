@@ -27,8 +27,6 @@
 		}
 		loading = false;
 	});
-
-	$effect(() => console.log(thisNews));
 </script>
 
 {#if loading}

@@ -97,10 +97,6 @@
 		}
 	});
 
-	const handleSearchInput = (event: Event) => {
-		//console.log(event.target.value);
-	};
-
 	const handleCreateNew = () => {
 		resetNewsStore();
 		EditModeStore.set(EditMode.New);

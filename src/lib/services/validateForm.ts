@@ -43,7 +43,6 @@ export function validateEventData(event: DomainEvent): boolean {
 		notificationStore.addToast('error', 'Mandatory start time is empty');
 		hasError = true;
 	}
-	console.log('Has error 1: ', hasError);
 
 	if (!enddate) {
 		notificationStore.addToast('error', 'Mandatory end date is empty');
@@ -52,13 +51,11 @@ export function validateEventData(event: DomainEvent): boolean {
 		notificationStore.addToast('error', 'Mandatory end time is empty');
 		hasError = true;
 	}
-	console.log('Has error 2: ', hasError);
 
 	if (new Date(startdate) < new Date()) {
 		notificationStore.addToast('error', 'The start date cannot be in the past');
 		hasError = true;
 	}
-	console.log('Has error 3: ', hasError);
 	if (startDateTime && endDateTime) {
 		if (endDateTime < startDateTime) {
 			notificationStore.addToast('error', 'The event end cannot be before the event start');
@@ -68,12 +65,10 @@ export function validateEventData(event: DomainEvent): boolean {
 			hasError = true;
 		}
 	}
-	console.log('Has error 4: ', hasError);
 	if (startDateTime && publishDateTime && startDateTime < publishDateTime) {
 		notificationStore.addToast('error', 'The publish date cannot be later than the start date');
 		hasError = true;
 	}
-	console.log('Has error 5: ', hasError);
 	if (unpublishDateTime && publishDateTime) {
 		if (unpublishDateTime < publishDateTime) {
 			notificationStore.addToast('error', 'The unpublish date cannot be earlier than the publish date');
@@ -83,6 +78,5 @@ export function validateEventData(event: DomainEvent): boolean {
 			hasError = true;
 		}
 	}
-	console.log('Has error 6: ', hasError);
 	return hasError;
 }

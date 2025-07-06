@@ -69,9 +69,7 @@
 				thisEvent = await uploadEventImage(thisEvent, newImage);
 			}
 			if (newPDF) {
-				console.log('I have a new PDF');
 				const result = await uploadNewPDF(newPDF, 'documents');
-				console.log(result);
 				if (result) thisEvent = { ...thisEvent, pdfFile: result.url };
 			}
 			const updatedEvent = await eventFormService(thisEvent);

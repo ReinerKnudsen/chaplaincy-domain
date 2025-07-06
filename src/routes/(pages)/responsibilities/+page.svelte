@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ProfileCard from '$lib/components/ProfileCard.svelte';
-	import { profiles } from '$lib/data/data.json';
+	import { profiles, churchCouncil } from '$lib/data/data.json';
 
 	const imageAlternate: boolean = true;
 
@@ -24,3 +24,19 @@
 		<ProfileCard {profile} imagePosition={positionImage(index)} />
 	{/each}
 </div>
+<div class="mx-auto w-full sm:w-3/4">
+	<h2 class="pt-20">Additional members of the church council</h2>
+	<table>
+		<tbody>
+			{#each churchCouncil as member}
+				<tr><td>{member.name}</td><td>{member.location}</td><td>{member.description}</td></tr>
+			{/each}
+		</tbody>
+	</table>
+</div>
+
+<style>
+	td {
+		padding: 10px 20px;
+	}
+</style>

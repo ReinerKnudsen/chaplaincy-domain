@@ -12,7 +12,8 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- add page "Who's who"
+- add additional council members
 
 ### Changed
 

@@ -14,7 +14,6 @@
 
 	const toggleDropdown = () => {
 		showDropdown = !showDropdown;
-		console.log(showDropdown);
 	};
 
 	const handleClickOutside = (event: MouseEvent) => {

@@ -1,38 +1,22 @@
-<script>
-	import { onMount } from 'svelte';
-	import { page } from '$app/state';
-
-	import { doc, getDoc } from 'firebase/firestore';
-	import { database } from '$lib/firebase/firebaseConfig';
-
+<script lang="ts">
 	import Icon from '@iconify/svelte';
+	import { type News } from '$lib/stores/ObjectStore';
+	import SimpleMarkdownViewer from '$lib/components/SimpleMarkdownViewer.svelte';
 
-	import MarkdownViewer from '$lib/components/MarkdownViewer.svelte';
+	interface Props {
+		data: { news: News };
+	}
 
-	let thisNews = $state({});
-	let loading = $state(true); // Initialize loading state
+	let { data }: Props = $props();
 
-	onMount(async () => {
-		const newsId = page.params.newsId;
-		try {
-			const docRef = doc(database, 'news', newsId);
-			const docSnapshot = await getDoc(docRef);
-			if (docSnapshot.exists()) {
-				thisNews = docSnapshot.data();
-			} else {
-				console.error('Could not load news document!');
-			}
-		} catch (err) {
-			console.error('Error while loading news:', err);
-		}
-		loading = false;
-	});
+	let thisNews: News = $state(data.news);
+	let loading = $state(false); // Initialize loading state
 </script>
 
 {#if loading}
 	Loading...
 {:else if thisNews}
-	<div id="article-container" class="pt-30">
+	<div id="article-container" class="mx-auto w-[80%] pt-30">
 		<div id="article-content">
 			<div id="article-title" class="article-title">
 				{thisNews.title}
@@ -53,7 +37,7 @@
 				</div>
 				{#if thisNews.tags}
 					<div class="article-metadata-item">
-						<Icon name="tags" />
+						<Icon icon="gravity-ui:tag" />
 						{thisNews.tags}
 					</div>
 				{/if}
@@ -67,7 +51,9 @@
 			<div id="news-iamge" class="article-image-container">
 				<img class="article-image" src={thisNews.image} alt={thisNews.imageAlt} />
 			</div>
-			<MarkdownViewer content={thisNews.text} />
+			<div class="my-8">
+				<SimpleMarkdownViewer content={thisNews.text} />
+			</div>
 		</div>
 		<div id="pdfFile">
 			{#if thisNews.pdfFile}

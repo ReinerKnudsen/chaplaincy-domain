@@ -21,6 +21,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
+- fixed issue with markdown viewer not working on news and events
 - ItemFavCard header adjusted to full width
 - removed all logs
 - fixed an issue where teasertext was always reset when user clicked in the text input

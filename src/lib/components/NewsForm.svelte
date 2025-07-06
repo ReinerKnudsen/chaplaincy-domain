@@ -187,10 +187,24 @@
 				/>
 			</fieldset>
 
+			<fieldset>
+				<Label for="subtitle">Sub Title</Label>
+				<Input
+					type="text"
+					id="subtitle"
+					placeholder="Sub Title"
+					onblur={() => {
+						thisNews = { ...thisNews, subtitle: thisNews.subtitle?.trim() || null };
+						checkForChanges();
+					}}
+					bind:value={thisNews.subtitle}
+				/>
+			</fieldset>
+
 			<!-- Author -->
-			<fieldset disabled>
+			<fieldset>
 				<Label for="author">Author</Label>
-				<Input type="text" id="author" bind:value={thisNews.author} disabled />
+				<Input type="text" id="author" bind:value={thisNews.author} />
 			</fieldset>
 
 			<!-- News text -->

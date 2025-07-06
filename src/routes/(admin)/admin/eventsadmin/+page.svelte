@@ -102,8 +102,6 @@
 		}
 	});
 
-	const handleSearchInput = (event: CustomEvent) => {};
-
 	const handleCreateNew = () => {
 		resetEventStore();
 		EditModeStore.set(EditMode.New);

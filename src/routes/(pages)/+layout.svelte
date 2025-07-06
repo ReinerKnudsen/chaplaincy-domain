@@ -28,7 +28,6 @@
 			const imageRef = ref(headerStorageRef, `${pageName}.jpg`);
 			return await getDownloadURL(imageRef);
 		} catch (error) {
-			console.log(`Header image not found for ${pageName}, using fallback`);
 			// Fallback to default header
 			const fallbackRef = ref(headerStorageRef, 'fallback.jpg');
 			return await getDownloadURL(fallbackRef);

@@ -16,11 +16,14 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- renamed "slug" field to "teaser" in Event and News creation forms
+- optimized the look and feel of the teaser input
 
 ### Fixed
 
--
+- ItemFavCard header adjusted to full width
+- removed all logs
+- fixed an issue where teasertext was always reset when user clicked in the text input
 
 ## [2.5.0] - 2025-07-06
 
@@ -65,7 +68,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 - add path highlighting in menu on admin pages
 - add floating buttons for both events and news form
-- add function to clean text for slugtext
+- add function to clean text for teasertext
 - add notifications for new location and update location in both form and modal
 - add confirmation modal for delete location
 - add verification if an item open in the editor has changes
@@ -77,14 +80,14 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 - "save" button is only available on change && all mandatory fields provided
 - "save as draft" is only available on changes
-- the slug text field is filled automatically when a description is available
+- the teaser text field is filled automatically when a description is available
 - all notification messages are defined centrally
 
 ### Fixed
 
 - location will now be properly reset when canceling an event form with a location selected in it
 - the flag "online" was not correctly saved when a new location was created in the event form
-- slugText is now trimmed and cleaned before being entered into the slugtext field
+- teaserText is now trimmed and cleaned before being entered into the teasertext field
 
 ## [2.0.5] 2025-06-27
 

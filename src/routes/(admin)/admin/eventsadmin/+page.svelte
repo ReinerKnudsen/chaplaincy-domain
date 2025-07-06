@@ -102,9 +102,7 @@
 		}
 	});
 
-	const handleSearchInput = (event: CustomEvent) => {
-		//console.log(event.target.value);
-	};
+	const handleSearchInput = (event: CustomEvent) => {};
 
 	const handleCreateNew = () => {
 		resetEventStore();

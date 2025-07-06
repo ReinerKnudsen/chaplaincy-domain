@@ -87,7 +87,6 @@ export const uploadPDF = async (newPdf: File, type: PDFType): Promise<ReturnType
 		const pdfUrl = await getDownloadURL(newPDF.ref);
 		const pdfRef = newPDF.ref;
 		result = { url: pdfUrl, ref: pdfRef };
-		console.log(result);
 	} catch (error) {
 		console.error(error);
 	}

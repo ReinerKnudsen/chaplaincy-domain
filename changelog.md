@@ -18,6 +18,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 - renamed "slug" field to "teaser" in Event and News creation forms
 - optimized the look and feel of the teaser input
+- app now loads the weekly sheet for the next Sunday
 
 ### Fixed
 

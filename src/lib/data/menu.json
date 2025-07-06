@@ -112,6 +112,11 @@
 					"active": true
 				},
 				{
+					"title": "Who's who",
+					"url": "responsibilities/",
+					"active": true
+				},
+				{
 					"title": "Safeguarding",
 					"url": "safeguarding",
 					"active": true
@@ -120,11 +125,6 @@
 					"title": "Life events",
 					"url": "life-events/",
 					"active": true
-				},
-				{
-					"title": "Responsibilities",
-					"url": "responsibilities/",
-					"active": false
 				},
 				{
 					"title": "The FACBC e.V.",

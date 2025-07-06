@@ -77,7 +77,6 @@
 	});
 
 	const checkForChanges = () => {
-		//console.log('🔍 checkForChanges called from:', new Error().stack?.split('\n')[2]);
 		const currentHash = createHashableString(thisEvent);
 		if (currentHash !== originalHash) {
 			hasUnsavedChanges = true;
@@ -219,7 +218,6 @@
 		if ($EditModeStore === EditMode.New && onCreateNew) {
 			await onCreateNew(thisEvent, newImage, newPDF);
 		} else if ($EditModeStore === EditMode.Update && onUpdate) {
-			console.log('Upadte');
 			await onUpdate(thisEvent, newImage, newPDF);
 		}
 	};

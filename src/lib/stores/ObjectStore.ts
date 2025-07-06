@@ -113,6 +113,7 @@ export type DomainEventSortableFields = keyof DomainEvent;
 // News
 export interface News {
 	title: string | null;
+	subtitle?: string | null;
 	state: ItemState;
 	text: string | null;
 	slug: string | null;
@@ -135,6 +136,7 @@ export type NewsSortableFields = keyof News;
 
 export const initialNews: News = {
 	title: null,
+	subtitle: null,
 	author: null,
 	state: ItemState.DRAFT,
 	text: null,

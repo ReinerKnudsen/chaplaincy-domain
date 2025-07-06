@@ -1,37 +1,27 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
 	import Icon from '@iconify/svelte';
 
-	import { loadItem, CollectionType, type DomainEvent } from '$lib/stores/ObjectStore';
-	import { getDoc } from 'firebase/firestore';
-	import { fetchLocations, type Location, AllLocations } from '$lib/stores/LocationsStore';
+	import { type Location, AllLocations } from '$lib/stores/LocationsStore';
+	import { type DomainEvent } from '$lib/stores/ObjectStore';
 	import { MINUTES_BEFORE_EVENT_START } from '$lib/utils/constants';
 
-	import MarkdownViewer from '$lib/components/MarkdownViewer.svelte';
+	import SimpleMarkdownViewer from '$lib/components/SimpleMarkdownViewer.svelte';
 
-	let thisEvent: DomainEvent | null = $state(null);
-	let loading = $state(true);
+	interface Props {
+		data: { event: DomainEvent };
+	}
+
+	let { data }: Props = $props();
+
+	let thisEvent: DomainEvent | null = $state(data.event);
+	let loading = $state(false);
 	let location: Location | undefined = $state();
 	let onlineReady = $state(false);
 	let descriptionText: string | null = $state('');
 
 	onMount(() => {
-		const initialEvent = async () => {
-			const eventId = page.params.eventId;
-			const docRef = await loadItem(eventId, CollectionType.Events);
-			if (docRef) {
-				const docSnap = await getDoc(docRef);
-				if (docSnap.exists()) {
-					thisEvent = { id: docSnap.id, ...docSnap.data() } as DomainEvent;
-				}
-			}
-			await fetchLocations();
-			loading = false;
-		};
-
-		initialEvent();
 		calculateOnlineReady();
 		const timer = setInterval(() => {
 			calculateOnlineReady();
@@ -99,7 +89,7 @@
 {#if loading}
 	<p>Loading...</p>
 {:else if thisEvent}
-	<div id="article-container" class="pt-30">
+	<div id="article-container" class="mx-auto w-[80%] pt-30">
 		<div id="article-content">
 			<div id="article-title" class="article-title">
 				{thisEvent.title}
@@ -154,7 +144,9 @@
 				</div>
 			{/if}
 			{#if descriptionText && typeof descriptionText === 'string'}
-				<MarkdownViewer content={descriptionText} />
+				<div class="my-8">
+					<SimpleMarkdownViewer content={descriptionText} />
+				</div>
 			{/if}
 		</div>
 		<div id="pdfFile">

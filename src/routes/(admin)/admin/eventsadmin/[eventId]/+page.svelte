@@ -29,10 +29,6 @@
 	let currentDocRef: DocumentReference | null = data.docRef;
 	let showNavigateWarning = $state(false);
 
-	$effect(() => {
-		console.log(data.newEvent);
-	});
-
 	beforeNavigate(({ cancel }: any) => {
 		if (pageHasUnsavedChanges) {
 			cancel();
@@ -58,7 +54,6 @@
 			}
 			if (newPDF) {
 				const result = await uploadNewPDF(newPDF, 'documents');
-				console.log(result);
 				if (result) thisEvent = { ...thisEvent, pdfFile: result.url, pdfName: result.ref.name };
 			}
 			const itemData = { ...thisEvent } as DocumentData;
@@ -89,7 +84,6 @@
 			}
 			if (newPDF) {
 				const result = await uploadNewPDF(newPDF, 'documents');
-				console.log(result);
 				if (result) thisEvent = { ...thisEvent, pdfFile: result.url, pdfName: result.ref.name };
 			}
 			const updatedEvent: DomainEvent = await eventFormService(thisEvent);

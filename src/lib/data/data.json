@@ -29,19 +29,19 @@
 		{
 			"name": "Richard Gardiner",
 			"role": "Chaplain",
-			"description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fplaceholderman_sm.jpeg?alt=media&token=254eec4a-8b00-46c7-83cf-675febf975a8"
+			"description": "",
+			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Frichardgardiner_xs.jpg?alt=media&token=9601c70a-ff9b-48d5-b1f6-266bb5da858e"
 		},
 		{
 			"name": "Jenny Knudsen",
 			"role": "Reader & Communications",
-			"description": "Jenny is licenced to the chaplaincy as a Reader (also known as Licenced Lay Minister). She also co-leads the St Boniface Sunday School and is the chaplaincy's social media admin. ",
+			"description": "Jenny is licenced to the chaplaincy as a Reader (also known as Licenced Lay Minister). She also co-leads the St Boniface Sunday School and is the chaplaincy's social media admin. ",
 			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fjennyknudsen.jpeg?alt=media&token=da524693-d014-4362-b308-1993f8df767e"
 		},
 		{
 			"name": "Hamish Cooper",
 			"role": "Churchwarden in Bonn",
-			"description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ",
+			"description": "",
 			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fhamishcooper.JPG?alt=media&token=f70cfcfd-73f1-4299-a65a-f9b135f85387"
 		},
 		{
@@ -59,14 +59,56 @@
 		{
 			"name": "Markus Müller",
 			"role": "Churchwarden in Cologne",
-			"description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ",
+			"description": "",
 			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fplaceholderman_sm.jpeg?alt=media&token=254eec4a-8b00-46c7-83cf-675febf975a8"
 		},
 		{
 			"name": "Patra Al-Saadi",
-			"role": "Safegurading Officer",
-			"description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. ",
+			"role": "Safeguarding Officer",
+			"description": "",
 			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fplaceholderman_sm.jpeg?alt=media&token=254eec4a-8b00-46c7-83cf-675febf975a8"
+		}
+	],
+	"churchCouncil": [
+		{
+			"name": "Claudia Butzkueben",
+			"location": "Cologne",
+			"description": ""
+		},
+		{
+			"name": "Yvonne Cockcroft",
+			"location": "Cologne",
+			"description": "Delegate to the Council of Anglican Episcopal Churches in Germany (CAECG)"
+		},
+		{
+			"name": "Hilary Griffith",
+			"location": "Cologne",
+			"description": "Lay chair person and delegate to the Diocesan Synod"
+		},
+		{
+			"name": "Stephan Meyer",
+			"location": "Cologne",
+			"description": ""
+		},
+		{
+			"name": "Rosie Chen",
+			"location": "Bonn",
+			"description": "Vize-chair person of the FACBC e.V."
+		},
+		{
+			"name": "Imke Lichterfeld",
+			"location": "Bonn",
+			"description": "Secretary of the FACBC e.V. and the church council (PCC)"
+		},
+		{
+			"name": "Carol Pereira",
+			"location": "Bonn",
+			"description": ""
+		},
+		{
+			"name": "Patric Pochardt",
+			"location": "Bonn",
+			"description": ""
 		}
 	]
 }

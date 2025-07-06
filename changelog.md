@@ -20,8 +20,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
-- fixed issue with markdown viewer not working on news and events
+-
 
+## [2.6.0] - 2025-07-06
+
+### Fixed
+
+- fixed issue with markdown viewer not working on news and events
 ## [2.5.0] - 2025-07-06
 
 ### Added

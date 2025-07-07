@@ -12,6 +12,20 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
+-
+
+### Changed
+
+-
+
+### Fixed
+
+-
+
+## [3.0.0] - 2025-07-07
+
+### Added
+
 - add "contact safeguarding" button on home page
 - add text of the niceen creed on "what we believe"
 - add "add to calendar" button to event page
@@ -27,7 +41,6 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - ItemFavCard header adjusted to full width
 - removed all logs
 - fixed an issue where teasertext was always reset when user clicked in the text input
-
 ## [2.6.0] - 2025-07-06
 
 ### Fixed

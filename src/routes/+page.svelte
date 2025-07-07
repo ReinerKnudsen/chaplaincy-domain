@@ -22,6 +22,7 @@
 		loadDocument,
 		WeeklySheetStore,
 		NewsletterStore,
+		loadWeeklySheet,
 	} from '$lib/stores/ObjectStore';
 
 	import type { Service } from '$lib/types';
@@ -47,7 +48,7 @@
 	onMount(async () => {
 		await loadItems(CollectionType.News);
 		await loadItems(CollectionType.FutureEvents);
-		await loadDocument(DocumentType.WeeklySheet);
+		await loadWeeklySheet();
 		await loadDocument(DocumentType.Newsletter);
 		loading = false;
 	});

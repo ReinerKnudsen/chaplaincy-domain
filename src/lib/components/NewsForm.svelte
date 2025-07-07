@@ -146,9 +146,11 @@
 			thisNews = { ...thisNews, slug: '' };
 			return;
 		}
-		const parsedText = await marked.parse(thisNews.text);
-		const slugText = cleanText(parsedText).slice(0, MAX_SLUG_TEXT);
-		thisNews = { ...thisNews, slug: slugText };
+		if (thisNews.slug?.trim().length === 0) {
+			const parsedText = await marked.parse(thisNews.text);
+			const slugText = cleanText(parsedText).slice(0, MAX_SLUG_TEXT);
+			thisNews = { ...thisNews, slug: slugText };
+		}
 		checkForChanges();
 	};
 </script>

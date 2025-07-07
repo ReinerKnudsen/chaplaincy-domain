@@ -169,16 +169,22 @@
 			<p class="pt-4">
 				Our Diocese of Europe’s safeguarding pages contain vital links and information including contacts for the
 				Diocesan Safeguarding Advisor who advises our Safeguarding Officer. If you are concerned that a child or adult
-				has been harmed or may be at risk of harm, <a href="about/safeguarding" class="link"
-					>please contact our Safeguarding Officer Patra Al-Saadi</a
-				> or the Diocesan Safeguarding Advisor.
+				has been harmed or may be at risk of harm, please contact our Safeguarding Officer Patra Al-Saadi or the
+				Diocesan Safeguarding Advisor.
 			</p>
 			<p class="pt-4 font-semibold">
 				If you have immediate concerns about the safety of someone, please contact the police and your local authority’s
 				children or adult social care services.
 			</p>
-			<div class="more-link">
-				<a href="/about/safeguarding"><Button variant="calltoaction" size="xl">Learn more</Button></a>
+			<div class="more-links-container">
+				<div class="more-link">
+					<a href="/about/safeguarding"><Button variant="calltoaction" size="xl">Learn more</Button></a>
+				</div>
+				<div class="more-link">
+					<a href="mailto:safeguarding@anglicanbonncologne.de"
+						><Button variant="calltoaction" size="xl">Contact Safeguarding</Button></a
+					>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -264,6 +270,13 @@
 </section>
 
 <style>
+	.more-links-container {
+		display: flex;
+		justify-content: center;
+		text-align: center;
+		gap: 40px;
+		padding: 40px 0 20px 0;
+	}
 	.more-link {
 		display: flex;
 		justify-content: center;

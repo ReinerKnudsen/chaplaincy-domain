@@ -8,6 +8,7 @@
 	import { MINUTES_BEFORE_EVENT_START } from '$lib/utils/constants';
 
 	import SimpleMarkdownViewer from '$lib/components/SimpleMarkdownViewer.svelte';
+	import 'add-to-calendar-button';
 
 	interface Props {
 		data: { event: DomainEvent };
@@ -159,6 +160,23 @@
 					</a>
 				</div>
 			{/if}
+		</div>
+		<div id="calendar-button" class="flex items-center justify-end gap-4 py-8">
+			Add to calendar ->
+			<add-to-calendar-button
+				styleLight="--date-btn-cal-background: rgba(16, 11, 116, 1)"
+				name={thisEvent?.title}
+				startDate={thisEvent?.startdate}
+				startTime={thisEvent?.starttime}
+				endDate={thisEvent?.enddate}
+				endTime={thisEvent?.endtime}
+				timeZone="Europe/Berlin"
+				location={location?.name}
+				options="'Apple','Google','iCal','Microsoft365','Outlook.com'"
+				buttonStyle="date"
+				inline
+				label="Add to my calendar"
+			></add-to-calendar-button>
 		</div>
 	</div>
 	<div class="back-link">

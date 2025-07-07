@@ -229,8 +229,10 @@
 			thisEvent = { ...thisEvent, slug: '' };
 			return;
 		}
-		const parsedText = await marked.parse(thisEvent.description);
-		thisEvent = { ...thisEvent, slug: cleanText(parsedText).slice(0, MAX_SLUG_TEXT) };
+		if (thisEvent.slug?.trim().length === 0) {
+			const parsedText = await marked.parse(thisEvent.description);
+			thisEvent = { ...thisEvent, slug: cleanText(parsedText).slice(0, MAX_SLUG_TEXT) };
+		}
 		checkForChanges();
 	};
 </script>

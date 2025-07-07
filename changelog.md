@@ -26,6 +26,11 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - removed all logs
 - fixed an issue where teasertext was always reset when user clicked in the text input
 
+## [2.6.0] - 2025-07-06
+
+### Fixed
+
+- fixed issue with markdown viewer not working on news and events
 ## [2.5.0] - 2025-07-06
 
 ### Added

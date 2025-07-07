@@ -14,6 +14,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 - add "contact safeguarding" button on home page
 - add text of the niceen creed on "what we believe"
+- add "add to calendar" button to event page
 
 ### Changed
 
@@ -32,12 +33,14 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - fixed issue with markdown viewer not working on news and events
+
 ## [2.5.0] - 2025-07-06
 
 ### Added
 
 - add page "Who's who"
 - add additional council members
+
 ## [2.4.0] - 2025-07-03
 
 ### Added
@@ -55,6 +58,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - issues with text handling in event texts
+
 ## [2.3.0] - 2025-07-03
 
 ### Added

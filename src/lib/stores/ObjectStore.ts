@@ -393,6 +393,48 @@ export const loadDocument = async (type: DocumentType): Promise<void> => {
 	}
 };
 
+const getNextSunday = () => {
+	const today = new Date();
+	const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+	if (dayOfWeek === 0) {
+		return today;
+	} else {
+		const daysUntilSunday = 7 - dayOfWeek;
+		const nextSunday = new Date(today);
+		nextSunday.setDate(today.getDate() + daysUntilSunday);
+		return nextSunday;
+	}
+};
+
+export const loadWeeklySheet = async () => {
+	// find weeklysheet
+	const nextSunday = getNextSunday();
+	// weekly sheet date = string as 2025-07-01
+	try {
+		const q = query(
+			collection(database, 'documents'),
+			where('type', '==', 'weeklysheet'),
+			where('date', '==', nextSunday.toISOString().split('T')[0]),
+			orderBy('date', 'desc'),
+			limit(1)
+		);
+		const querySnapshot = await getDocs(q); // execute the query
+		if (!querySnapshot.empty) {
+			// querySnapshot contains all documents matching the query
+			const doc = querySnapshot.docs[0];
+			WeeklySheetStore.set({
+				...(doc.data() as WeeklySheet),
+				id: doc.id,
+			});
+		} else {
+			WeeklySheetStore.set(null);
+		}
+	} catch (error) {
+		console.error('Error loading weekly sheet:', error);
+		WeeklySheetStore.set(null);
+	}
+};
+
 // load all documents of a DocumentType
 export const loadDocuments = async (type: DocumentType) => {
 	if (!collection(database, 'documents')) {

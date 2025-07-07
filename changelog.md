@@ -12,7 +12,8 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- add "contact safeguarding" button on home page
+- add text of the niceen creed on "what we believe"
 
 ### Changed
 

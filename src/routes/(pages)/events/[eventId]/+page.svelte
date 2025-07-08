@@ -161,7 +161,7 @@
 				</div>
 			{/if}
 		</div>
-		<div id="calendar-button" class="flex items-center justify-end gap-4 py-8">
+		<div id="calendar-button" class="flex flex-col items-center justify-end gap-4 py-8 md:flex-row">
 			Add to calendar ->
 			<add-to-calendar-button
 				styleLight="--date-btn-cal-background: rgba(16, 11, 116, 1)"

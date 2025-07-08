@@ -13,11 +13,7 @@
 
 <div class="favItemContainer">
 	<div id="image-container">
-		<img
-			class="max-h-[200px] items-stretch rounded-xl lg:max-h-[400px]"
-			src={item.data.image}
-			alt={item.data.imageAlt}
-		/>
+		<img class="w-full items-stretch rounded-xl lg:max-h-[400px]" src={item.data.image} alt={item.data.imageAlt} />
 	</div>
 	<div id="text-container" class="flex w-full flex-col justify-between gap-2 rounded-2xl bg-white">
 		<div id="headline">
@@ -36,15 +32,27 @@
 
 <style>
 	.favItemContainer {
+		flex-direction: column;
+		gap: 20px;
 		margin-bottom: 40px;
-		display: flex;
-		flex-direction: row;
-		justify-content: space-start;
-		align-items: stretch;
-		gap: 60px;
 		border-radius: 20px;
 		background-color: white-smoke;
-		padding: 40px;
+		padding: 24px;
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	}
+
+	@media (min-width: 1024px) {
+		.favItemContainer {
+			margin-bottom: 40px;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-start;
+			align-items: stretch;
+			gap: 60px;
+			border-radius: 20px;
+			background-color: white-smoke;
+			padding: 40px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
 	}
 </style>

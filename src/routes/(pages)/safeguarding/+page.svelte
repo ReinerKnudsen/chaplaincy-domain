@@ -23,7 +23,7 @@
 		are handled with sensitivity and in confidence, following Church of England safeguarding protocols.
 	</p>
 	<h2>Get in touch</h2>
-	<div class="mb-8 flex flex-row items-stretch gap-8">
+	<div class="mb-8 flex flex-col items-stretch gap-8 lg:flex-row">
 		<div class="flex-1">
 			<h3>The Chaplaincy's Safeguarding Team</h3>
 			<p>Please send an email to</p>

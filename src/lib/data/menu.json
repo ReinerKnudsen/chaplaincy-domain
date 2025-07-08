@@ -88,11 +88,13 @@
 			"subMenu": [
 				{
 					"title": "Donations",
-					"url": "/donations/"
+					"url": "/donations/",
+					"active": "false"
 				},
 				{
 					"title": "Get involved",
-					"url": "/get-involved/"
+					"url": "/get-involved/",
+					"active": "false"
 				}
 			]
 		},

@@ -16,12 +16,14 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
-- Admin: list of weekly sheets is sorted by date descending by default
+- adjusted font sizes for page title and subtitle
+- optimized responsive look and feel (esp. for smaller screens)
 - new favicon for the app 
 
 ### fixed
 
--
+- different image height on event and news cards
+- de-activated menu items are visible in mobile menu
 
 ## [3.0.0] - 2025-07-07
 

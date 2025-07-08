@@ -2,11 +2,11 @@
 	import { Button } from '$lib/components/ui/button';
 </script>
 
-<div class="flex flex-col gap-10">
+<div class="flex w-full flex-col gap-10">
 	<div>
 		<h2>St Boniface in Bonn</h2>
-		<div class="flex flex-row items-center justify-start gap-10">
-			<div class="w-1/2">
+		<div class="flex w-full flex-col items-center justify-start gap-10 md:flex-row">
+			<div class="w-full md:w-1/2">
 				St. Paulus Church, <br /> Siegburger Strasse 75 <br />53229 Bonn-Beuel
 				<h4 class="mt-6">What3Words</h4>
 				<p>
@@ -23,10 +23,9 @@
 				<p>Busses 529 (Hennef Hbf), 603 (Pützchen), 608 (Gielgen) and 609 (Gielgen)</p>
 				<p>exit at Pantheon Beuel</p>
 			</div>
-			<div class="flex flex-col items-end">
+			<div class="flex w-full flex-col items-end md:w-1/2">
 				<iframe
-					width="425"
-					height="300"
+					class="aspect-[425/300] w-full"
 					src="https://www.openstreetmap.org/export/embed.html?bbox=7.12953418493271%2C50.740712371109275%2C7.135040760040283%2C50.74267620392082&amp;layer=mapnik&amp;marker=50.741695146484574%2C7.132288813591003"
 					style="border: 1px solid black"
 					title="St Boniface in Bonn"
@@ -41,8 +40,8 @@
 
 	<div>
 		<h2>All Saints in Cologne</h2>
-		<div class="flex flex-row items-center justify-start gap-10">
-			<div class="w-1/2">
+		<div class="flex flex-col items-center justify-start gap-10 md:flex-row">
+			<div class="w-full md:w-1/2">
 				All Saints Church, <br /> Bonner Straße/Lindenallee <br />50968 Cologne
 				<h4 class="mt-6">What3Words</h4>
 				<p>
@@ -58,10 +57,9 @@
 				<p>Bus 132 (Meschenich)</p>
 				<p>exit at Arnoldshöhe</p>
 			</div>
-			<div class="flex flex-col items-end">
+			<div class="flex w-full flex-col items-end md:w-1/2">
 				<iframe
-					width="425"
-					height="300"
+					class="aspect-[425/300] w-full"
 					src="https://www.openstreetmap.org/export/embed.html?bbox=6.965007483959199%2C50.89334632812794%2C6.970514059066773%2C50.895303752870824&amp;layer=mapnik&amp;marker=50.89432420487786%2C6.967759430408478"
 					style="border: 1px solid black"
 					title="All Saints in Cologne"

@@ -17,8 +17,9 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Changed
 
 - Admin: list of weekly sheets is sorted by date descending by default
+- new favicon for the app 
 
-### Fixed
+### fixed
 
 -
 

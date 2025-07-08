@@ -21,7 +21,7 @@
 
 	// Sort table items
 	const sortKey = writable<string>('date'); // default sort key
-	const sortDirection = writable<number>(1); // default sort direction (ascending)
+	const sortDirection = writable<number>(-1); // default sort direction (ascending)
 	const sortItems = writable(data.documents);
 
 	// Define a function to sort the items

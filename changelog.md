@@ -12,7 +12,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- reCaptcha v3 integration for contact form
 
 ### Changed
 

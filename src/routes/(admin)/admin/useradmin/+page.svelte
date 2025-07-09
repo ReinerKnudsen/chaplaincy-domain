@@ -106,13 +106,13 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-		@apply text-slate-600;
+		color: #45556c;
 	}
 
 	td {
 		padding-top: 1.2rem;
 		padding-bottom: 1.2rem;
 		padding-left: 0.5rem;
-		@apply border-b border-slate-300;
+		border-bottom: 1 solid #cad5e2;
 	}
 </style>

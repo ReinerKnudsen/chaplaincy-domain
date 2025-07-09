@@ -83,7 +83,12 @@
 		{
 			"name": "Hilary Griffith",
 			"location": "Cologne",
-			"description": "Lay chair person and delegate to the Diocesan Synod"
+			"description": "Lay chairperson and delegate to the Diocesan Synod"
+		},
+		{
+			"name": "Ranti Hendricks",
+			"location": "Cologne",
+			"description": "Chairperson of the FACBC e.V. "
 		},
 		{
 			"name": "Stephan Meyer",
@@ -93,7 +98,7 @@
 		{
 			"name": "Rosie Chen",
 			"location": "Bonn",
-			"description": "Vize-chair person of the FACBC e.V."
+			"description": "Vice chairperson of the FACBC e.V."
 		},
 		{
 			"name": "Imke Lichterfeld",
@@ -103,7 +108,7 @@
 		{
 			"name": "Carol Pereira",
 			"location": "Bonn",
-			"description": ""
+			"description": "Treasurer of the FACBC e.V."
 		},
 		{
 			"name": "Patric Pochardt",

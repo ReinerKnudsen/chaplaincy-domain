@@ -65,14 +65,14 @@
 		<div class="image-container">
 			<img src={mainhero} alt="main hero" />
 		</div>
-		<div class="flex flex-row items-center justify-center">
+		<div class="flex flex-col items-center justify-center sm:flex-row">
 			<img
 				src="https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Flogos%2Fdiocese2025_sm.png?alt=media&token=844f1d21-945a-426f-872d-59c157a2d5dd"
 				alt="diocese in europe logo"
 				class="my-4 w-60"
 			/>
 			<div class="flex flex-col items-start justify-center">
-				<div class="pl-4 text-lg">Our chaplaincy is part of the Diocese of Europe</div>
+				<div class="pl-4 text-sm md:text-lg">Our chaplaincy is part of the Diocese of Europe</div>
 				<Button variant="link"><a href="https://www.europe.anglican.org/">Learn more</a></Button>
 			</div>
 		</div>
@@ -193,13 +193,13 @@
 
 <!-- signup section-->
 <section class="bg-white-smoke">
-	<div class="content-container">
+	<div class="content-container mx-auto w-[90%]">
 		<div class="section-header">Sign up for our news</div>
 		<div class="mt-4 mb-10 pl-10 text-lg">
 			We provide you with the latest news from our chaplaincy and the diocese in our regular email news.
 
 			<form method="POST" action="?/subscribe" use:enhance class="flex w-full flex-col space-y-6">
-				<div class="my-8 flex flex-col gap-4 md:flex-row md:gap-8">
+				<div class="my-8 flex flex-col gap-4 md:gap-8 lg:flex-row">
 					<div class="flex flex-1 flex-col space-y-2">
 						<label for="firstName">First Name</label>
 						<input type="text" id="firstName" name="firstName" class="bg-white-primary w-full rounded-lg border p-2" />

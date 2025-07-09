@@ -51,7 +51,7 @@
 <div class="mx-auto mb-20 max-w-[1400px] px-4 sm:px-6 lg:px-8">
 	{#if pageStatic}
 		<!-- Header Image -->
-		<div class="flex h-[250px] w-full items-center justify-center bg-gray-200">
+		<div class="flex h-[100px] w-full items-center justify-center bg-gray-200 lg:h-[250px]">
 			{#if imageLoading}
 				<div class="text-gray-500">Loading header...</div>
 			{:else}

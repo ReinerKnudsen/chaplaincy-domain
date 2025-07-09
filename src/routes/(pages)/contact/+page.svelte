@@ -1,27 +1,66 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { enhance } from '$app/forms';
+
 	import type { ActionData } from './$types';
 
 	import Icon from '@iconify/svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
+	import Spinner from '$lib/components/Spinner.svelte';
 
 	interface Props {
 		form: ActionData;
 	}
 
 	let { form }: Props = $props();
+	let isLoading = $state(false);
+	let SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
+	const loadRecaptcha = () => {
+		if (typeof window !== 'undefined' && !window['grecaptcha']) {
+			const script = document.createElement('script');
+			script.src = `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`;
+			document.head.appendChild(script);
+		}
+	};
+
+	onMount(() => {
+		loadRecaptcha();
+	});
 </script>
 
-<div class="mx-auto mt-10 max-w-[80%] px-10">
+<div class="mx-auto mt-10 w-full lg:max-w-[80%] lg:px-10">
 	<h3>We would like to hear from you!</h3>
 	<p>Please leave us a message. We will reply to you as soon as possible.</p>
 </div>
 
-<div class="mx-auto mb-20 max-w-[80%] rounded-xl p-10">
+<div class="mx-auto mb-20 rounded-xl lg:max-w-[80%] lg:p-10">
 	<div class="pb-10">All fields marked with * are required.</div>
-	<form method="POST" class="flex flex-col space-y-6" use:enhance>
+	<form
+		method="POST"
+		class="flex flex-col space-y-6"
+		use:enhance={async ({ formData, cancel }) => {
+			isLoading = true;
+			// Get reCaptcha token before submitting
+			try {
+				const token = await window['grecaptcha'].execute(SITE_KEY, {
+					action: 'contact_form',
+				});
+				// Add token to form data
+				formData.append('recaptcha_token', token);
+				// Let form submit normally
+				isLoading = false;
+				return;
+			} catch (error) {
+				console.error('reCaptcha failed:', error);
+				isLoading = false;
+				cancel(); // Stop form submission
+				return;
+			}
+		}}
+	>
 		<!-- Name -->
 		<fieldset>
 			<Label for="name">Name</Label>
@@ -72,7 +111,14 @@
 			</div>
 		{/if}
 		<div class="flex justify-center pt-10">
-			<Button variant="primary">Send Message</Button>
+			<Button variant="primary" type="submit" disabled={isLoading}>
+				{#if isLoading}
+					<Spinner size="w-4 h-4" color="text-secondary-text" />
+					<span class="ml-2">Sending...</span>
+				{:else}
+					Send Message
+				{/if}
+			</Button>
 		</div>
 	</form>
 </div>

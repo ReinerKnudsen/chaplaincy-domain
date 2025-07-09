@@ -22,6 +22,20 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [3.1.0] - 2025-07-09
+
+### Added
+
+- reCaptcha v3 integration for contact form
+
+### Changed
+
+- adjusted font sizes for page title and subtitle
+- optimized responsive look and feel (esp. for smaller screens)
+- new favicon for the app 
+- different image height on event and news cards
+- de-activated menu items are visible in mobile menu
+- several issues on the "Who's who" page - Ranti Hendricks
 ## [3.0.0] - 2025-07-07
 
 ### Added
@@ -42,6 +56,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - ItemFavCard header adjusted to full width
 - removed all logs
 - fixed an issue where teasertext was always reset when user clicked in the text input
+
 ## [2.6.0] - 2025-07-06
 
 ### Fixed

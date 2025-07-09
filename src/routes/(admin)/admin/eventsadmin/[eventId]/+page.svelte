@@ -2,7 +2,7 @@
 	import { beforeNavigate, goto } from '$app/navigation';
 
 	import { updateDoc } from 'firebase/firestore';
-	import { DocumentReference, type DocumentData } from 'firebase/firestore';
+	import { type DocumentReference, type DocumentData } from 'firebase/firestore';
 
 	import { resetSelectedLocation } from '$lib/stores/LocationsStore';
 	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';

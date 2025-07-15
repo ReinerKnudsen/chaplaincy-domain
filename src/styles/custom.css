@@ -360,6 +360,10 @@
 		color: var(--color-black-100);
 	}
 
+	.grecaptcha-badge {
+		bottom: 80px !important;
+	}
+
 	.more-links-container {
 		display: flex;
 		flex-direction: column;

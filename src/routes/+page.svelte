@@ -271,20 +271,6 @@
 </section>
 
 <style>
-	.more-links-container {
-		display: flex;
-		justify-content: center;
-		text-align: center;
-		gap: 40px;
-		padding: 40px 0 20px 0;
-	}
-	.more-link {
-		display: flex;
-		justify-content: center;
-		text-align: center;
-		padding: 40px 0 20px 0;
-	}
-
 	section {
 		width: 100vw;
 		padding: 2.5rem 0;

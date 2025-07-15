@@ -360,6 +360,26 @@
 		color: var(--color-black-100);
 	}
 
+	.more-links-container {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		text-align: center;
+		gap: 10px;
+		padding: 10px 0 10px 0;
+	}
+
+	.more-link {
+		display: flex;
+		justify-content: center;
+		text-align: center;
+		padding: 40px 0 20px 0;
+	}
+
+	.more-links-container .more-link {
+		padding: 10px 0 10px 0;
+	}
+
 	/* # Page */
 
 	.page-title {
@@ -479,6 +499,12 @@
 
 		.article-metadata-item {
 			font-size: var(--text-lg);
+		}
+
+		.more-links-container {
+			flex-direction: row;
+			gap: 40px;
+			padding: 40px 0 20px 0;
 		}
 
 		.section-header {

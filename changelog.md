@@ -24,7 +24,8 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
--
+- Diocese of Europe => Diocese in Europe
+- Mobile menu now scrolls properly on small screens
 
 ## [3.1.0] - 2025-07-09
 

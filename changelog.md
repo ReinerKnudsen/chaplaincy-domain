@@ -18,6 +18,9 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 - all item cards (events and news) are now full-size links; not only the headline links to the actual item, but a click anywhere on the card will lead to the item page
 - the item card has a hover effect: better interaction feedback for user
+- "more link" buttons now stack vertically on small screens
+- services are now displayed in a two-column grid on small screens
+- images in event and service cards are now displayed full width on small screens
 
 ### Fixed
 

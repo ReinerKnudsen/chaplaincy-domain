@@ -17,7 +17,7 @@
 	}
 
 	let user = $state<any>(null);
-	let mobileMenuOpen = $state(true);
+	let mobileMenuOpen = $state(false);
 
 	$effect(() => {
 		user = $authStore.user;

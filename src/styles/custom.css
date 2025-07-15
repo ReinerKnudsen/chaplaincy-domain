@@ -102,6 +102,10 @@
 		text-decoration: none !important;
 	}
 
+	.card {
+		color: var(--color-primary-text);	
+	}
+
 	.link {
 		position: relative;
 		text-decoration: none;

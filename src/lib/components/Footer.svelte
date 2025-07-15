@@ -26,21 +26,21 @@
 
 <footer class="w-screen">
 	<div
-		class="bg-white-primary px-4´ mx-auto w-[calc(99%-2rem)] rounded-t-3xl border border-slate-300 pb-4 sm:px-6 lg:px-8"
+		class="bg-white-primary mx-auto w-[calc(99%-2rem)] rounded-t-3xl border border-slate-300 px-4 pb-4 sm:px-6 lg:px-8"
 	>
-		<div class="grid grid-cols-1 gap-6 pt-8 sm:grid-cols-4">
+		<div class="footer">
 			<!-- Resources -->
 			<div>
-				<h2 class="mb-4 text-lg font-semibold tracking-wide text-gray-800 uppercase">Resources</h2>
-				<nav class="flex flex-col space-y-2">
+				<h2>Resources</h2>
+				<nav class="footer-nav-container">
 					<!--<a href="#" class="text-gray-600 hover:text-gray-900">Newsletter Archive</a>-->
 				</nav>
 			</div>
 
 			<!-- Follow us -->
 			<div>
-				<h2 class="mb-4 text-lg font-semibold tracking-wide text-gray-800 uppercase">Follow us</h2>
-				<nav class="flex flex-col space-y-2">
+				<h2>Follow us</h2>
+				<nav class="footer-nav-container">
 					<a
 						href="https://www.facebook.com/AnglicanBonnCologne"
 						target="_blank"
@@ -51,8 +51,8 @@
 
 			<!-- Legal -->
 			<div>
-				<h2 class="mb-4 text-lg font-semibold tracking-wide text-gray-800 uppercase">Legal</h2>
-				<nav class="flex flex-col space-y-2">
+				<h2>Legal</h2>
+				<nav class="footer-nav-container">
 					<a href="/legal" class="text-gray-600 hover:text-gray-900">Privacy Policy</a>
 					<a href="/impressum" class="text-gray-600 hover:text-gray-900">Impressum</a>
 				</nav>
@@ -60,7 +60,7 @@
 
 			<!-- User -->
 			<div>
-				<h2 class="mb-4 text-lg font-extrabold tracking-wide text-gray-800 uppercase">User</h2>
+				<h2>User</h2>
 				<nav class="flex flex-col space-y-2">
 					{#if !$authStore.isLoggedIn}
 						<Button variant="inactive" class="border-0" onclick={handleLogin}>Login</Button>

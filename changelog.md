@@ -26,6 +26,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 - Diocese of Europe => Diocese in Europe
 - Mobile menu now scrolls properly on small screens
+- The reCaptcha logo on /about/contact covered part of the footer
 
 ## [3.1.0] - 2025-07-09
 

@@ -71,8 +71,8 @@
 				alt="diocese in europe logo"
 				class="my-4 w-60"
 			/>
-			<div class="flex flex-col items-start justify-center">
-				<div class="pl-4 text-sm md:text-lg">Our chaplaincy is part of the Diocese of Europe</div>
+			<div class="flex flex-col items-center justify-center sm:items-start">
+				<div class="pl-4 text-sm md:text-lg">Our chaplaincy is part of the Diocese in Europe</div>
 				<Button variant="link"><a href="https://www.europe.anglican.org/">Learn more</a></Button>
 			</div>
 		</div>

@@ -16,11 +16,19 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- all item cards (events and news) are now full-size links; not only the headline links to the actual item, but a click anywhere on the card will lead to the item page
+- the item card has a hover effect: better interaction feedback for user
+- "more link" buttons now stack vertically on small screens
+- services are now displayed in a two-column grid on small screens
+- images in event and service cards are now displayed full width on small screens
+- made the weekly sheet upload more accessibe on small screens
 
 ### Fixed
 
--
+- Diocese of Europe => Diocese in Europe
+- Mobile menu now scrolls properly on small screens
+- The reCaptcha logo on /about/contact covered part of the footer
+- Footer appearance on small screens
 
 ## [3.1.0] - 2025-07-09
 

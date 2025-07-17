@@ -71,8 +71,8 @@
 				alt="diocese in europe logo"
 				class="my-4 w-60"
 			/>
-			<div class="flex flex-col items-start justify-center">
-				<div class="pl-4 text-sm md:text-lg">Our chaplaincy is part of the Diocese of Europe</div>
+			<div class="flex flex-col items-center justify-center sm:items-start">
+				<div class="pl-4 text-sm md:text-lg">Our chaplaincy is part of the Diocese in Europe</div>
 				<Button variant="link"><a href="https://www.europe.anglican.org/">Learn more</a></Button>
 			</div>
 		</div>
@@ -162,7 +162,7 @@
 <section>
 	<div class="content-container">
 		<h2 class="section-header">Safeguarding</h2>
-		<div class="pl-10 text-lg">
+		<div class="px-10 text-lg">
 			<p>
 				Our chaplaincy in Bonn and Cologne is committed to safeguarding children, young people and adults from harm. We
 				follow the House of Bishops guidance and policies and have our own Chaplaincy Safeguarding Officer.
@@ -195,7 +195,7 @@
 <section class="bg-white-smoke">
 	<div class="content-container mx-auto w-[90%]">
 		<div class="section-header">Sign up for our news</div>
-		<div class="mt-4 mb-10 pl-10 text-lg">
+		<div class="mt-4 mb-10 px-10 text-lg">
 			We provide you with the latest news from our chaplaincy and the diocese in our regular email news.
 
 			<form method="POST" action="?/subscribe" use:enhance class="flex w-full flex-col space-y-6">
@@ -271,20 +271,6 @@
 </section>
 
 <style>
-	.more-links-container {
-		display: flex;
-		justify-content: center;
-		text-align: center;
-		gap: 40px;
-		padding: 40px 0 20px 0;
-	}
-	.more-link {
-		display: flex;
-		justify-content: center;
-		text-align: center;
-		padding: 40px 0 20px 0;
-	}
-
 	section {
 		width: 100vw;
 		padding: 2.5rem 0;

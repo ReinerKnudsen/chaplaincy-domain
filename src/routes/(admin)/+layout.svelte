@@ -71,7 +71,7 @@
 		<nav>
 			<div
 				id="subNav"
-				class="p2- flex h-[60px] w-full flex-row flex-wrap items-center rounded-lg bg-white shadow-xl md:p-5"
+				class="flex h-[60px] w-full flex-row flex-wrap items-center rounded-lg bg-white px-2 shadow-xl md:flex-nowrap md:p-5"
 			>
 				{#each adminMenu as item, i}
 					<div class="px-2 md:px-8 md:py-4">

@@ -81,7 +81,7 @@
 			<Input type="date" class="md:w-[200px]" id="date" bind:value={newItem.date} required />
 		</div>
 
-		<div class="mt-4 mr-auto ml-10 w-[80%]">
+		<div class="mt-4 mr-auto ml-10 w-[80%] md:w-[400px]">
 			<Label>PDF Document</Label>
 			<div class="flex flex-col">
 				<UploadPDF pdftype="weeklysheet" onNewFileSelected={saveDocRef} />

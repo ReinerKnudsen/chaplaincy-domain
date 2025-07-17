@@ -23,27 +23,11 @@
 		user = $authStore.user;
 	});
 
-	const handleLogout = async () => {
-		try {
-			await signOut(auth);
-			goto('/');
-			unloadUser();
-		} catch (error) {
-			console.error('Error signing out:', error);
-		}
-		mobileMenuOpen = false;
-	};
-
 	const toggleMobileMenu = () => {
 		mobileMenuOpen = !mobileMenuOpen;
 	};
 
 	const closeMobileMenu = () => {
-		mobileMenuOpen = false;
-	};
-
-	const handleLogin = () => {
-		goto('/login');
 		mobileMenuOpen = false;
 	};
 </script>
@@ -121,13 +105,16 @@
 
 	<!-- Mobile Menu -->
 	{#if mobileMenuOpen}
-		<div class="absolute top-full left-0 z-40 w-full bg-white shadow-lg lg:hidden">
-			<div class="px-4 py-2">
+		<div
+			id="mobileMenuContainer"
+			class="absolute top-full left-0 z-40 max-h-[80vh] w-full overflow-y-auto bg-white shadow-lg lg:hidden"
+		>
+			<div id="mobileMenu" class="px-10 py-2">
 				{#each menu as menuItem}
 					{#if menuItem.active}
 						{#if menuItem.subMenu && menuItem.subMenu.length > 0}
-							<div class="py-2">
-								<div class="py-2 font-medium text-gray-900">{menuItem.title}</div>
+							<div id="mobileMenuSubMenu" class="py-2">
+								<div id="mobileMenuSubTitle" class="font-medium text-gray-900">{menuItem.title}</div>
 								<div class="pl-4">
 									{#each menuItem.subMenu as subItem}
 										{#if subItem.active}

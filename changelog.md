@@ -16,6 +16,16 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
+-
+
+### Fixed
+
+-
+
+## [3.2.0] - 2025-07-17
+
+### Changed
+
 - all item cards (events and news) are now full-size links; not only the headline links to the actual item, but a click anywhere on the card will lead to the item page
 - the item card has a hover effect: better interaction feedback for user
 - "more link" buttons now stack vertically on small screens
@@ -29,7 +39,6 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - Mobile menu now scrolls properly on small screens
 - The reCaptcha logo on /about/contact covered part of the footer
 - Footer appearance on small screens
-
 ## [3.1.0] - 2025-07-09
 
 ### Added

@@ -72,23 +72,23 @@
 	};
 </script>
 
-<div class="form bg-white-primary mx-auto">
+<div id="content-container" class="form bg-white-primary mx-auto box-border">
 	<h1 class="mx-10">Upload weekly sheet</h1>
-	<form class="mx-10 flex flex-col items-center" enctype="multipart/form-data" onsubmit={handleSubmit}>
+	<form class="flex w-full flex-col items-center md:mx-10" enctype="multipart/form-data" onsubmit={handleSubmit}>
 		<!-- Date -->
-		<div class="w-1/2">
+		<div class="mr-auto ml-10 w-[200px]">
 			<Label>Date *</Label>
-			<Input type="date" class="w-[400px]" id="date" bind:value={newItem.date} required />
+			<Input type="date" class="md:w-[200px]" id="date" bind:value={newItem.date} required />
 		</div>
 
-		<div class="mt-4 w-1/2">
+		<div class="mt-4 mr-auto ml-10 w-[80%]">
 			<Label>PDF Document</Label>
 			<div class="flex flex-col">
 				<UploadPDF pdftype="weeklysheet" onNewFileSelected={saveDocRef} />
 			</div>
 		</div>
 		<!-- Buttons -->
-		<div class="mt-10 mb-20 flex w-1/2 flex-row justify-start gap-32">
+		<div class="mt-10 mb-20 flex w-[80%] flex-row justify-center gap-10 md:w-1/2 md:gap-32">
 			<Button variant="outline" type="reset" color="light" onclick={() => goto('/admin/weeklysheet')}>Cancel</Button>
 			<Button variant="primary" type="submit">Complete</Button>
 		</div>
@@ -99,8 +99,12 @@
 
 <style>
 	.form {
-		max-width: 90%;
 		border: 1px solid #eaeaea;
 		border-radius: 20px;
+	}
+	@media (win-width: 640px) {
+		.form {
+			max-width: 90%;
+		}
 	}
 </style>

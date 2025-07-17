@@ -19,7 +19,7 @@
 
 	let selectedFile: File | null = $state(null);
 	let fileUrl: string = $state('');
-	let moduleWidth = 'w-[400px]';
+	let moduleWidth = 'md:w-[400px]';
 	let fileError: string = $state('');
 	let fileName: string = $state('');
 	let uploadProgress = $state(false);
@@ -76,10 +76,10 @@
 </script>
 
 {#if !fileUrl}
-	<form class={moduleWidth}>
+	<form class={moduleWidth + 'box-border'}>
 		<label
 			class={moduleWidth +
-				'group flex h-[200px] cursor-pointer flex-col rounded-lg border bg-slate-100 p-10 text-center transition-colors hover:bg-slate-200'}
+				'group flex h-[200px] cursor-pointer flex-col rounded-lg border bg-slate-100 text-center transition-colors hover:bg-slate-200 md:p-10'}
 		>
 			<div class="flex h-full w-full flex-col items-center justify-center text-center">
 				<p class="pointer-none font-semibold text-gray-600">

@@ -67,17 +67,14 @@
 		<h1 class="text-3xl font-bold text-gray-900">Loading...</h1>
 	</div>
 {:else}
-	<div
-		id="content-container"
-		class="mx-auto mb-20 flex max-w-[1400px] flex-col px-4 sm:px-6 lg:px-8"
-	>
+	<div id="content-container" class="mx-auto mb-20 flex flex-col px-4 sm:px-6 md:max-w-[1400px] lg:px-8">
 		<nav>
 			<div
 				id="subNav"
-				class="flex h-[60px] w-full flex-row items-center rounded-lg bg-white p-5 shadow-xl"
+				class="p2- flex h-[60px] w-full flex-row flex-wrap items-center rounded-lg bg-white shadow-xl md:p-5"
 			>
 				{#each adminMenu as item, i}
-					<div class=" px-8 py-4">
+					<div class="px-2 md:px-8 md:py-4">
 						<a
 							href={item.url}
 							class="hover:text-primary-600

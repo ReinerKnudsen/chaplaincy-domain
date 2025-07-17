@@ -21,6 +21,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - "more link" buttons now stack vertically on small screens
 - services are now displayed in a two-column grid on small screens
 - images in event and service cards are now displayed full width on small screens
+- made the weekly sheet upload more accessibe on small screens
 
 ### Fixed
 

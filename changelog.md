@@ -22,6 +22,11 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [3.2.1] - 2025-07-18
+
+### Fixed
+
+- HTML tags in profile text on iOS
 ## [3.2.0] - 2025-07-17
 
 ### Changed

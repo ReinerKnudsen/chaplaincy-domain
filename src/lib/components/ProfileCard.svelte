@@ -52,8 +52,6 @@
 				<div class="text-md mb-1 font-semibold sm:mb-2 sm:text-xl">{profile.role}</div>
 			</div>
 		</div>
-		<quote class="sm:text-md mb-2 px-2 py-2 text-sm font-medium lg:block lg:text-lg"
-			>{decodeHtml(profile.description)}</quote
-		>
+		<quote class="sm:text-md mb-2 px-2 py-2 text-sm font-medium lg:block lg:text-lg">{@html profile.description}</quote>
 	</div>
 {/if}

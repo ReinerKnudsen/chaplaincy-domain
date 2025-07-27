@@ -16,9 +16,9 @@
 					"active": true
 				},
 				{
-					"title": "How we worship",
-					"url": "/how-we-worship/",
-					"active": false
+					"title": "Worship",
+					"url": "/worship/",
+					"active": true
 				},
 				{
 					"title": "Church of England",

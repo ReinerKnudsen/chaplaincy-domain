@@ -22,6 +22,17 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [3.3.0] - 2025-07-27
+
+### Added
+
+- Text regarding receiving communion in "I'm new"
+- Activated the "Worship" page
+
+### Fixed
+
+- the news admin page didn't show the list of available news
+- the news page showed news items with a future publish date
 ## [3.2.1] - 2025-07-18
 
 ### Fixed

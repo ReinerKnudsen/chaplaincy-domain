@@ -4,10 +4,11 @@
 <div class="py-4 text-lg">You are very welcome to join us at any of our services.</div>
 <h3>What happens at the Sunday service?</h3>
 <div class="pt-4 pb-2 text-lg">
-	We celebrate the Eucharist (also called Holy Communion) in Bonn and Cologne every Sunday. We invite all believing
-	Christians to receive Holy Communion. If you do not wish to do so, you are invited to come forward with everyone else
-	to receive a blessing in the name of Jesus. In Bonn we stand in a semi-circle around the altar for Holy Communion. In
-	Cologne we kneel or stand in a row in front of the altar.
+	We celebrate the Eucharist (also called Holy Communion) in Bonn and Cologne every Sunday. All those who belong to a
+	church that believes in the Holy Trinity and have been confirmed or who have been admitted to, and normally receive
+	communion in their own church are welcome to receive with us. If you do not wish to do so, you are invited to come
+	forward with everyone else to receive a blessing in the name of Jesus. In Bonn we stand in a semi-circle around the
+	altar for Holy Communion. In Cologne we kneel or stand in a row in front of the altar.
 </div>
 <div class="py-2 text-lg">
 	During the service, we exchange a sign of peace with other people in the congregation. This is usually a handshake,

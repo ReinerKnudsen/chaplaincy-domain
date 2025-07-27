@@ -1,5 +1,7 @@
 import { type News } from '$lib/stores/ObjectStore';
 import { uploadImage, type ReturnType } from '$lib/services/fileService';
+import { buildTimeStamp } from '$lib/services/validateForm';
+import { Timestamp } from 'firebase/firestore';
 
 export const newsFormService = async (newNews: News) => {
 	if (!newNews.publishdate) {
@@ -17,6 +19,11 @@ export const newsFormService = async (newNews: News) => {
 	}
 
 	if (!newNews.publishtime) newNews.publishtime = '09:00';
+
+	if (newNews.publishdate && newNews.publishtime) {
+		const publishDateTime = buildTimeStamp(newNews.publishdate, newNews.publishtime);
+		newNews.publishDateTime = Timestamp.fromDate(publishDateTime);
+	}
 	return newNews;
 };
 

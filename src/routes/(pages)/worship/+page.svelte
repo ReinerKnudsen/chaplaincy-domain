@@ -1,31 +1,21 @@
 <script lang="ts">
 	import PageHeader from '$lib/components/PageHeader.svelte';
-
-	const headerData = {
-		title: 'Worship',
-		photoName: 'Milada Vigerova',
-		photoUrl: 'https://unsplash.com/@milada_vigerova',
-		imageUrl:
-			'https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fheaders%2Fprayer.jpg?alt=media&token=3f242a9a-0ade-40d7-952b-a514eb2ccb14',
-	};
 </script>
 
-<PageHeader {headerData} textStyle="white" />
-
-<div class="mx-auto w-[80%] text-lg">
+<div class="border-b-2 border-slate-300 pb-8">
 	<h2 class="my-4 text-2xl font-semibold">Sunday Eucharist</h2>
 	<div class="flex flex-col space-y-8">
 		<p>
-			Worshipping God together is at the heart of the chaplaincy’s life. We celebrate the Eucharist (also called Holy
+			Worshipping God together is at the heart of the chaplaincy's life. We celebrate the Eucharist (also called Holy
 			Communion) every Sunday.
 		</p>
 		<p>
-			At this service, we attend to God’s words in Scripture. We offer prayers for our own needs and the needs of the
+			At this service, we attend to God's words in Scripture. We offer prayers for our own needs and the needs of the
 			world. And we gather around the table of the Lord in the Holy Communion. Before bringing our gifts to the table,
 			we offer one another a sign of peace (demonstrated through the shaking of hands) in response to the words of
 			Jesus:
 		</p>
-		<blockquote class="my-4 border-l-4 border-gray-300 bg-gray-50 p-4">
+		<blockquote class="mx-auto mb-8 w-[80%] border-l-4 border-gray-300 bg-gray-50 p-8">
 			<p class="text-xl leading-relaxed font-medium text-gray-900 italic">
 				When you are offering your gift at the altar, first be reconciled to your brother and sister, and then come to
 				offer your gift.
@@ -43,6 +33,9 @@
 			<a href="mailto:bonnsundayschool@anglicanbonncologne.de">Sunday School team here.</a>
 		</p>
 	</div>
+</div>
+
+<div class="border-b-2 border-slate-300 pb-8">
 	<h2 class="my-8 text-2xl font-semibold">Morning Prayer</h2>
 	<div class="flex flex-col space-y-8">
 		<p>
@@ -51,7 +44,7 @@
 			the start of the new day.
 		</p>
 		<p>
-			On the (very rare) Sundays when we don’t have a Eucharist service at church, Morning Prayer is offered. Some
+			On the (very rare) Sundays when we don't have a Eucharist service at church, Morning Prayer is offered. Some
 			people also say Morning Prayer as part of their regular personal devotions. The short service has the same basic
 			structure every day, but the readings, psalms and prayers vary. You can find the order of service for any day <a
 				href="https://www.churchofengland.org/prayer-and-worship/join-us-service-daily-prayer"
@@ -59,6 +52,9 @@
 			>.
 		</p>
 	</div>
+</div>
+
+<div class="border-b-2 border-slate-300 pb-8">
 	<h2 class="my-8 text-2xl font-semibold">Evening Prayer</h2>
 	<div class="flex flex-col space-y-8">
 		<p>
@@ -77,14 +73,17 @@
 			>.
 		</p>
 	</div>
+</div>
+
+<div class="border-b-2 border-slate-300 pb-8">
+	<h2 class="my-8 text-2xl font-semibold">Seasonal services</h2>
 	<div class="flex flex-col space-y-8">
-		<h2 class="my-8 text-2xl font-semibold">Seasonal services</h2>
 		<p>
 			During <strong>Holy Week</strong> we commemorate the passion, death and resurrection of Jesus by observing the
 			three-part liturgy of the Triduum. On <strong>Maundy Thursday</strong> we remember the Last Supper which Jesus
 			shared with his disciples, and we keep watch and pray in a vigil. On <strong>Good Friday</strong> we remember the
 			crucifixion and death of Jesus, and we thank him for the unconditional forgiveness of humanity declared on the
-			cross. On <strong>Holy Saturday</strong> we experience the joy of Christ’s resurrection from the dead, celebrate his
+			cross. On <strong>Holy Saturday</strong> we experience the joy of Christ's resurrection from the dead, celebrate his
 			victory and remember that we are one with him by renewing the vows of our baptism.
 		</p>
 		<p>
@@ -100,16 +99,20 @@
 			<strong>Midnight Mass</strong> on Christmas Eve.
 		</p>
 	</div>
+</div>
 
+<div class="border-b-2 border-slate-300 pb-8">
 	<h2 class="my-8 text-2xl font-semibold">Songs of Praise</h2>
-
 	<div class="flex flex-col space-y-8">
 		<p>
 			Our annual Songs of Praise service in Bonn features a selection of hymns and readings around a particular theme.
-			It’s a great opportunity to raise our voices to God together. Many of the hymns are well-known, but you might also
+			It's a great opportunity to raise our voices to God together. Many of the hymns are well-known, but you might also
 			find a surprise or two!
 		</p>
 	</div>
+</div>
+
+<div class="border-b-2 border-slate-300 pb-8">
 	<h2 class="my-8 text-2xl font-semibold">Pilgrimage</h2>
 	<div class="flex flex-col space-y-8">
 		<p>
@@ -117,7 +120,7 @@
 			from <a
 				class="link"
 				href="https://www.alt-katholisch.de/unsere-gemeinden/gemeinde-bonn-startseite/"
-				target="_blank">St. Cyprian’s church</a
+				target="_blank">St. Cyprian's church</a
 			> in Bonn), and a weekend pilgrimage within Germany. Previous destinations have included Fulda, Kevelaer and Rüdesheim.
 			We walk, pray, eat and worship together, sharing the journey and growing in faith as we travel.
 		</p>

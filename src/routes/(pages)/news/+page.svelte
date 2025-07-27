@@ -7,7 +7,7 @@
 	import PageHeader from '$lib/components/PageHeader.svelte';
 
 	import {
-		NewsItemsStore,
+		CurrentNewsItemsStore,
 		loadItems,
 		type NewsSortableFields,
 		CollectionType,
@@ -38,9 +38,9 @@
 
 	// Handle sorting and data updates in a single effect
 	$effect(() => {
-		if ($NewsItemsStore?.length) {
+		if ($CurrentNewsItemsStore?.length) {
 			// Create a new array to avoid mutations
-			const sorted = [...$NewsItemsStore].sort((a, b) => {
+			const sorted = [...$CurrentNewsItemsStore].sort((a, b) => {
 				const aValue = String(a.data[$sortKey]);
 				const bValue = String(b.data[$sortKey]);
 				return $sortDirection === 1 ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
@@ -55,7 +55,7 @@
 
 {#if loading}
 	loading...
-{:else if $NewsItemsStore.length > 0}
+{:else if $CurrentNewsItemsStore.length > 0}
 	<div class="flex flex-col">
 		{#if favNews}
 			<ItemCardFav item={favNews} kind="news" />

@@ -226,6 +226,7 @@ export const NewsletterStore: Writable<Newsletter | null> = writable(null);
 export const EventsStore: Writable<CollectionItem[] | null> = writable([]);
 export const FutureEventsStore: Writable<CollectionItem[]> = writable([]);
 export const NewsItemsStore: Writable<CollectionItem[]> = writable([]);
+export const CurrentNewsItemsStore: Writable<CollectionItem[]> = writable([]);
 export const WeeklySheetsStore: Writable<CollectionItem[] | null> = writable([]);
 export const NewslettersStore: Writable<CollectionItem[] | null> = writable([]);
 
@@ -323,6 +324,15 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 			EventsStore.set(items);
 		} else if (type === CollectionType.News) {
 			NewsItemsStore.set(items);
+			const now = new Date().getTime(); // Gets milliseconds since epoch
+			const filteredItems = items.filter((item) => {
+				const publishTime =
+					item.data.publishDateTime?.seconds * 1000 ||
+					new Date(`${item.data.publishDate} ${item.data.publishTime}`).getTime();
+
+				return publishTime && publishTime < now;
+			});
+			CurrentNewsItemsStore.set(filteredItems);
 		} else if (type === CollectionType.FutureEvents) {
 			const now = new Date();
 			const futureEvents = items

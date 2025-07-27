@@ -123,6 +123,10 @@
 		deleteID = '';
 	};
 
+	const handleSearchInput = () => {
+		return;
+	};
+
 	const openModal = (id: string) => {
 		deleteID = id;
 		showDeleteDialog = true;

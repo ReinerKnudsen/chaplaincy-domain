@@ -232,8 +232,8 @@ export const NewslettersStore: Writable<CollectionItem[] | null> = writable([]);
 
 // Derived stores for homepage previews
 // The three latest news
-export const LatestNewsStore = derived(NewsItemsStore, ($NewsItemsStore) => {
-	return [...$NewsItemsStore] // Create a copy to avoid mutating the original
+export const LatestNewsStore = derived(CurrentNewsItemsStore, ($CurrentNewsItemsStore) => {
+	return [...$CurrentNewsItemsStore] // Create a copy to avoid mutating the original
 		.sort((a, b) => new Date(b.data.publishdate).getTime() - new Date(a.data.publishdate).getTime())
 		.slice(0, 4);
 });

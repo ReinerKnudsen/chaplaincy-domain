@@ -20,7 +20,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
--
+- auto request not opening in current IDE session
 
 ## [3.2.1] - 2025-07-18
 

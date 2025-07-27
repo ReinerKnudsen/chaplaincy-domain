@@ -5,8 +5,9 @@ if ! git diff --cached --name-only | grep -q "^changelog.md$"; then
     echo "🚨 Changelog not updated!"
     echo "📝 Opening changelog.md in Windsurf for you to edit..."
     
-    # Open changelog in Windsurf
-    windsurf changelog.md
+    # Open changelog in current Windsurf workspace
+    # Use windsurf command with current directory to avoid new workspace
+    windsurf . changelog.md
     
     echo ""
     echo "✏️  Please update the changelog, save it, then run:"

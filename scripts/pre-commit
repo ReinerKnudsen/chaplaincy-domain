@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Check if changelog.md is staged for commit
+if ! git diff --cached --name-only | grep -q "^changelog.md$"; then
+    echo "🚨 Changelog not updated!"
+    echo "📝 Opening changelog.md in Windsurf for you to edit..."
+    
+    # Open changelog in Windsurf
+    windsurf changelog.md
+    
+    echo ""
+    echo "✏️  Please update the changelog, save it, then run:"
+    echo "   git add changelog.md"
+    echo "   git commit"
+    echo ""
+    echo "🛑 Commit blocked until changelog is updated."
+    exit 1
+fi
+
+echo "✅ Changelog updated - proceeding with commit"
+exit 0

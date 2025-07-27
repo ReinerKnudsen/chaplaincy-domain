@@ -22,6 +22,11 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [3.4.0] - 2025-07-27
+
+### Fixed
+
+- main page would show news items before publish date
 ## [3.3.0] - 2025-07-27
 
 ### Added

@@ -32,9 +32,9 @@
 	let deleteLocation: Location | null = $state(null);
 	let updateItem = $state(true);
 
-	onMount(() => {
+	onMount(async () => {
 		pathName.set(page.url.pathname);
-		fetchLocations();
+		await fetchLocations();
 	});
 
 	// Only set CurrentLocation when AllLocations has items

@@ -67,6 +67,7 @@
 		if ($EditModeStore === EditMode.Update) {
 			const cloneEvent = JSON.parse(JSON.stringify(thisEvent));
 			originalHash = createHashableString(cloneEvent);
+			if (!$AllLocations) await fetchLocations();
 			const location = $AllLocations.find((loc) => loc.id === thisEvent.location);
 			selectedLocation.set(location || initialLocationState);
 		} else {

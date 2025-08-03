@@ -22,6 +22,11 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [3.4.1] - 2025-08-03
+
+### Fixed
+
+- locations did show properly in events
 ## [3.4.0] - 2025-07-27
 
 ### Fixed

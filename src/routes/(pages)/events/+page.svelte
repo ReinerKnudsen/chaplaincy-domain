@@ -1,15 +1,16 @@
 <script lang="ts">
 	import ItemCard from '$lib/components/ItemCard.svelte';
-	import PageHeader from '$lib/components/PageHeader.svelte';
 	import { FutureEventsStore, CollectionType, loadItems } from '$lib/stores/ObjectStore';
 	import { onMount } from 'svelte';
 	import Spinner from '$lib/components/Spinner.svelte';
+	import { AllLocations, type Location, fetchLocations } from '$lib/stores/LocationsStore';
 
 	let loading = $state(true);
 	let events = $derived($FutureEventsStore);
 
 	onMount(async () => {
 		await loadItems(CollectionType.FutureEvents);
+		await fetchLocations();
 		loading = false;
 	});
 </script>

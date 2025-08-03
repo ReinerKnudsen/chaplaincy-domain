@@ -4,7 +4,7 @@
 	const groups = [
 		{
 			name: 'Bible study group in Bonn',
-			text: '<p>The bible study group in Bonn has a very long tradition and currently takes place on a Monday once a month in Bonn Bad Godesberg. During Lent the group meets once a week and at other times of year once a month. There is an opportunity for a chat over tea, coffee and biscuits before we settle down to the serious business!</p>',
+			text: '<p>The Bible study group in Bonn has a very long tradition and currently takes place on a Monday once a month in Bonn Bad Godesberg. During Lent the group meets once a week and at other times of year once a month. There is an opportunity for a chat over tea, coffee and biscuits before we settle down to the serious business!</p>',
 			eventsLink: false,
 		},
 		{

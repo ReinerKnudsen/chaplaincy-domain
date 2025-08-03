@@ -3,7 +3,7 @@
 	import { marked } from 'marked';
 	import Icon from '@iconify/svelte';
 
-	import { type Location, AllLocations } from '$lib/stores/LocationsStore';
+	import { type Location, AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
 	import { type DomainEvent } from '$lib/stores/ObjectStore';
 	import { MINUTES_BEFORE_EVENT_START } from '$lib/utils/constants';
 
@@ -23,6 +23,7 @@
 	let descriptionText: string | null = $state('');
 
 	onMount(() => {
+		if (!$AllLocations) fetchLocations();
 		calculateOnlineReady();
 		const timer = setInterval(() => {
 			calculateOnlineReady();
@@ -84,6 +85,8 @@
 		thisEvent?.location
 			? (location = $AllLocations.find((location) => location.id === thisEvent?.location))
 			: (location = undefined);
+		console.log($AllLocations);
+		console.log(thisEvent?.location);
 	});
 </script>
 

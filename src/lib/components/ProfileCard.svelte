@@ -30,7 +30,8 @@
 
 {#if screenWidth > 1024}
 	<div
-		class="profile-card my-10 flex w-full {imagePosition === 'left'
+		id="profile-card"
+		class="my-10 flex w-full p-6 {imagePosition === 'left'
 			? 'flex-row'
 			: 'flex-row-reverse'}  rounded-xl border border-slate-200 shadow-xl"
 	>
@@ -42,7 +43,7 @@
 		</div>
 	</div>
 {:else}
-	<div class="profile-card-mobile my-6 flex w-full flex-col rounded-xl border border-slate-200 shadow-xl sm:my-10">
+	<div id="profile-card-mobile" class="my-6 flex w-full flex-col rounded-xl border border-slate-200 shadow-xl sm:my-10">
 		<div class="flwx-row flex w-full">
 			<div class="profile-image-and-name">
 				<ProfileImage {photo} />

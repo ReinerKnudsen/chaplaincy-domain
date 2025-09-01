@@ -22,6 +22,16 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [3.5.0] - 2025-09-01
+
+### Added
+
+- contact details for the chaplain
+- added chaplaincy emails for all churchwardens and reader
+
+### Changed
+
+- minor adjustments to the padding of the profile cards
 ## [3.4.1] - 2025-08-03
 
 ### Fixed

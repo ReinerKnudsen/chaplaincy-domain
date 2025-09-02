@@ -86,7 +86,8 @@
 					<tr class="table-row">
 						<td class="table-data table-cell">{item.date}</td>
 						<td class="table-data table-cell"
-							><Button variant="link"><a href={item.path} target="_blank">Open in browser</a></Button></td
+							><Button variant="listItem" class="pl-0"><a href={item.path} target="_blank">Open in browser</a></Button
+							></td
 						>
 					</tr>
 				{/each}

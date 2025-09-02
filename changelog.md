@@ -16,12 +16,17 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
-- The items in the list of documents in the admin center are now aligned to the left 
+-
 
 ### Fixed
 
 -
 
+## [3.5.1] - 2025-09-02
+
+### Changed
+
+- The items in the list of documents in the admin center are now aligned to the left
 ## [3.5.0] - 2025-09-01
 
 ### Added

@@ -17,6 +17,8 @@
 				menu: 'justify-center hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 text-xl font-semibold min-w-0 gap-0',
 				ghost: 'justify-center hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
 				link: 'justify-center text-primary underline underline-offset-4 hover:font-semibold hover:text-lg',
+				listItem:
+					'justify-left pl-2 w-full text-primary underline underline-offset-6 hover:font-semibold hover:text-lg hover:text-bold',
 				active: 'bg-secondary-40 w-full rounded-md py-4 px-2 text-left border-b hover:bg-secondary-60',
 				inactive: 'hover:bg-secondary-40 w-full rounded-md border-b bg-white px-2 py-4',
 				calltoaction:

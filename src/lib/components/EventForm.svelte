@@ -159,6 +159,7 @@
 	};
 
 	const handleLocationAddedModal = async (newLocation: Location) => {
+		console.log(newLocation);
 		// First close the modal to prevent any component refresh issues
 		showModal = false;
 		// Then fetch updated locations
@@ -235,6 +236,17 @@
 			thisEvent = { ...thisEvent, slug: cleanText(parsedText).slice(0, MAX_SLUG_TEXT) };
 		}
 		checkForChanges();
+	};
+
+	const newLocationClose = () => {};
+
+	const handleModalClose = () => {
+		if (!$selectedLocation?.id) {
+			selectedLocation.set(initialLocationState);
+		} else {
+			selectedLocation.set($selectedLocation);
+		}
+		showModal = false;
 	};
 </script>
 
@@ -317,11 +329,15 @@
 			<div class="form-area">
 				<fieldset>
 					<Label for="Location">Location *</Label>
-					<LocationDropdown onLocationChange={handleLocationChange} onNewLocation={createNewLocation} />
+					<LocationDropdown
+						onLocationChange={handleLocationChange}
+						onNewLocation={createNewLocation}
+						onModalClosed={handleModalClose}
+					/>
 
 					<!-- Modal for new location -->
 					{#if showModal}
-						<NewLocationModal onLocationAdded={handleLocationAddedModal} onClose={() => (showModal = false)} />
+						<NewLocationModal onLocationAdded={handleLocationAddedModal} onClose={handleModalClose} />
 					{/if}
 					{#if $selectedLocation.online}
 						<fieldset>
@@ -552,7 +568,7 @@
 		</div>
 
 		<!-- Buttons block -->
-		<div class="form fixed right-0 bottom-10 left-0 z-50 mx-auto w-2/3 gap-4 bg-slate-100 p-10 shadow-2xl">
+		<div class="form fixed right-0 bottom-4 left-0 z-50 mx-auto w-2/3 gap-4 bg-slate-100 p-10 shadow-2xl">
 			<!-- Buttons -->
 			<div class="buttons col-span-2">
 				<Button variant="outline" type="reset" color="light" onclick={onCancel}>Cancel</Button>
@@ -587,6 +603,5 @@
 		gap: 50px;
 		padding: 0 50px;
 		justify-content: space-between;
-		padding: 0 50px;
 	}
 </style>

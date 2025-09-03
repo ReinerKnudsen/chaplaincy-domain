@@ -173,7 +173,7 @@
 					{#each $sortItems as item}
 						<tr class="table-row">
 							<td class="table-data table-cell">
-								<Button variant="link" onclick={() => handleOpenItem(item.id)}>{item.data.title}</Button>
+								<Button variant="listItem" onclick={() => handleOpenItem(item.id)}>{item.data.title}</Button>
 							</td>
 							<td class="table-data table-cell">{decodeHtml(item.data.text)}</td>
 							<td class="table-data table-cell">{item.data.publishdate}</td>

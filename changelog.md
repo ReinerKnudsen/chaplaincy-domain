@@ -22,6 +22,22 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [3.7.0] - 2025-09-03
+
+### Fixed
+
+- routing issue when routing from event or news detail to another page
+## [3.6.0] - 2025-09-03
+
+### Fixed
+
+- The new loction form triggered from event or news creation didn't scroll
+- The location dropdown didn't reset to null or a previously selected location if the location modal was closed without changes
+## [3.5.1] - 2025-09-02
+
+### Changed
+
+- The items in the list of documents in the admin center are now aligned to the left
 ## [3.5.0] - 2025-09-01
 
 ### Added

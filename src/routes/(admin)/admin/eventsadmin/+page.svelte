@@ -213,7 +213,7 @@
 					{#each $sortItems as item}
 						<tr class="table-row">
 							<td class="table-data table-cell">
-								<Button variant="link" onclick={() => handleOpenItem(item.id)}>
+								<Button variant="listItem" onclick={() => handleOpenItem(item.id)}>
 									{item.data.title}
 								</Button>
 							</td>

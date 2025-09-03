@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { authStore, unloadUser } from '$lib/stores/AuthStore';
-	import { auth } from '$lib/firebase/firebaseConfig';
-	import { signOut } from 'firebase/auth';
 
 	import caplogo from '$lib/assets/chaplaincy_logo.png';
 	import { menu } from '$lib/data/menu.json';

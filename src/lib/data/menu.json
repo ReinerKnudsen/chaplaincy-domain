@@ -110,32 +110,32 @@
 				},
 				{
 					"title": "Where we are",
-					"url": "where-we-are/",
+					"url": "/where-we-are/",
 					"active": true
 				},
 				{
 					"title": "Who's who",
-					"url": "responsibilities/",
+					"url": "/responsibilities/",
 					"active": true
 				},
 				{
 					"title": "Safeguarding",
-					"url": "safeguarding",
+					"url": "/safeguarding",
 					"active": true
 				},
 				{
 					"title": "Life events",
-					"url": "life-events/",
+					"url": "/life-events/",
 					"active": true
 				},
 				{
 					"title": "The FACBC e.V.",
-					"url": "facbc",
+					"url": "/facbc/",
 					"active": true
 				},
 				{
 					"title": "Get in touch",
-					"url": "contact",
+					"url": "/contact/",
 					"active": true
 				}
 			]

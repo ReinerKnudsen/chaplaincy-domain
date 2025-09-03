@@ -4,7 +4,6 @@
 	import { writable } from 'svelte/store';
 	import ItemCard from '$lib/components/ItemCard.svelte';
 	import ItemCardFav from '$lib/components/ItemCardFav.svelte';
-	import PageHeader from '$lib/components/PageHeader.svelte';
 
 	import {
 		CurrentNewsItemsStore,
@@ -38,18 +37,8 @@
 
 	// Handle sorting and data updates in a single effect
 	$effect(() => {
-		if ($CurrentNewsItemsStore?.length) {
-			// Create a new array to avoid mutations
-			const sorted = [...$CurrentNewsItemsStore].sort((a, b) => {
-				const aValue = String(a.data[$sortKey]);
-				const bValue = String(b.data[$sortKey]);
-				return $sortDirection === 1 ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
-			});
-
-			// Update the featured news and remaining items
-			favNews = sorted[0];
-			newsItems = sorted.slice(1);
-		}
+		favNews = $CurrentNewsItemsStore[0];
+		newsItems = $CurrentNewsItemsStore.slice(1);
 	});
 </script>
 

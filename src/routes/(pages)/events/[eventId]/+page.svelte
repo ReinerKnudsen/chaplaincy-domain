@@ -2,25 +2,30 @@
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
 	import Icon from '@iconify/svelte';
+	import NavigationButton from '$lib/components/NavigationButton.svelte';
 
 	import { type Location, AllLocations, fetchLocations } from '$lib/stores/LocationsStore';
-	import { type DomainEvent } from '$lib/stores/ObjectStore';
+	import { FutureEventsStore, type DomainEvent, type CollectionItem } from '$lib/stores/ObjectStore';
 	import { MINUTES_BEFORE_EVENT_START } from '$lib/utils/constants';
 
 	import SimpleMarkdownViewer from '$lib/components/SimpleMarkdownViewer.svelte';
 	import 'add-to-calendar-button';
 
 	interface Props {
-		data: { event: DomainEvent };
+		data: { event: DomainEvent; eventId: string };
 	}
 
 	let { data }: Props = $props();
-
-	let thisEvent: DomainEvent | null = $state(data.event);
+	let thisEvent: DomainEvent | null = $derived(data.event);
 	let loading = $state(false);
 	let location: Location | undefined = $state();
 	let onlineReady = $state(false);
 	let descriptionText: string | null = $state('');
+	let thisIndex = $derived($FutureEventsStore.findIndex((event) => event.id === data.eventId));
+	let prevItem: CollectionItem | null = $derived(thisIndex === 0 ? null : $FutureEventsStore[thisIndex - 1]);
+	let nextItem: CollectionItem | null = $derived(
+		thisIndex === $FutureEventsStore.length - 1 ? null : $FutureEventsStore[thisIndex + 1]
+	);
 
 	onMount(() => {
 		if (!$AllLocations) fetchLocations();
@@ -85,8 +90,6 @@
 		thisEvent?.location
 			? (location = $AllLocations.find((location) => location.id === thisEvent?.location))
 			: (location = undefined);
-		console.log($AllLocations);
-		console.log(thisEvent?.location);
 	});
 </script>
 
@@ -182,9 +185,19 @@
 			></add-to-calendar-button>
 		</div>
 	</div>
-	<div class="back-link">
-		<Icon icon="fa6-regular:circle-left" class="h-6 w-6" />
-		<a class="link" href="/events">Take me back to overview</a>
+	<div id="links" class="flex flex-row items-center justify-between">
+		<div class="back-link">
+			<Icon icon="fa6-regular:circle-left" class="h-6 w-6" />
+			<a class="link" href="/events">Take me back to overview</a>
+		</div>
+		<div id="navigation-buttons" class="flex flex-row gap-8">
+			{#if prevItem}
+				<NavigationButton id={prevItem.id} type="events" direction="prev" />
+			{/if}
+			{#if nextItem}
+				<NavigationButton id={nextItem.id} type="events" direction="next" />
+			{/if}
+		</div>
 	</div>
 {:else}
 	<p>Event not found</p>

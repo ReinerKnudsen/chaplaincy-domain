@@ -12,7 +12,8 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- Navigation option in events detail to navigate between events
+- Navigation option in news detail to navigate between news
 
 ### Changed
 

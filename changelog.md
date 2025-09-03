@@ -20,9 +20,14 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
+-
+
+## [3.6.0] - 2025-09-03
+
+### Fixed
+
 - The new loction form triggered from event or news creation didn't scroll
 - The location dropdown didn't reset to null or a previously selected location if the location modal was closed without changes
-
 ## [3.5.1] - 2025-09-02
 
 ### Changed

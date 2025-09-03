@@ -20,8 +20,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
-- routing issue when routing from event or news detail to another page
+-
 
+## [3.7.0] - 2025-09-03
+
+### Fixed
+
+- routing issue when routing from event or news detail to another page
 ## [3.6.0] - 2025-09-03
 
 ### Fixed

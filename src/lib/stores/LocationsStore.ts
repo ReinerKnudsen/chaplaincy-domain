@@ -33,6 +33,11 @@ export const AllLocations = writable<Location[]>(initialLocationsState);
 export const CurrentLocation = writable<Location>(initialLocationState);
 export const selectedLocation = writable<Location>(initialLocationState);
 
+// Subscribe to all location changes
+selectedLocation.subscribe((location) => {
+	console.log('🏢 selectedLocation changed:', location);
+});
+
 // Reset functions
 export function resetAllLocations() {
 	AllLocations.set(initialLocationsState);

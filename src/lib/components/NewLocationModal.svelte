@@ -2,6 +2,7 @@
 	import { addDoc, collection } from 'firebase/firestore';
 	import { database } from '$lib/firebase/firebaseConfig';
 	import { notificationStore, TOAST_DURATION } from '$lib/stores/notifications';
+	import Icon from '@iconify/svelte';
 
 	import {
 		CurrentLocation,
@@ -50,8 +51,13 @@
 </script>
 
 <div class="overlay">
-	<div class="bg-white-smoke w-1/4 rounded-xl p-10">
-		<h2>Add New Location</h2>
+	<div class="bg-white-smoke h-[90%] w-1/3 overflow-scroll rounded-xl p-6">
+		<div class="flex flex-row items-center justify-between">
+			<h2>Add New Location</h2>
+			<button type="button" onclick={onClose} title="Close" class="cursor-pointer"
+				><Icon icon="fa7-regular:xmark-circle" class="text-primary-100 h-8 w-8" />
+			</button>
+		</div>
 		<NewLocationForm onSave={handleSave} {onClose} showClose={true} mode="create" />
 	</div>
 </div>

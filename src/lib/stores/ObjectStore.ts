@@ -332,18 +332,26 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 
 				return publishTime && publishTime < now;
 			});
-			CurrentNewsItemsStore.set(filteredItems);
+			const currentItems = filteredItems.sort((a, b) => {
+				const dateA = new Date(a.data.publishDateTime?.seconds * 1000 || `${a.data.publishDate} ${a.data.publishTime}`);
+				const dateB = new Date(b.data.publishDateTime?.seconds * 1000 || `${b.data.publishDate} ${b.data.publishTime}`);
+				return dateB.getTime() - dateA.getTime();
+			});
+			CurrentNewsItemsStore.set(currentItems);
 		} else if (type === CollectionType.FutureEvents) {
 			const now = new Date();
 			const futureEvents = items
 				.filter((item) => {
 					const eventData = item.data as DomainEvent;
+					if (!eventData.unpublishdate) {
+						return false;
+					}
 					const unpublishDate = new Date(eventData.unpublishdate);
 					return unpublishDate > now;
 				})
 				.sort((a, b) => {
-					const dateA = new Date((a.data as DomainEvent).startdate);
-					const dateB = new Date((b.data as DomainEvent).startdate);
+					const dateA = new Date((a.data as DomainEvent).startdate!);
+					const dateB = new Date((b.data as DomainEvent).startdate!);
 					return dateA.getTime() - dateB.getTime();
 				});
 			FutureEventsStore.set(futureEvents);

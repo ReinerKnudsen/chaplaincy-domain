@@ -133,12 +133,12 @@
 	<div class="locations-container">
 		<div class="locations-list-container">
 			<h2>Locations List</h2>
-			<ul class="locations-list">
+			<ul id="locations-list">
 				{#each $AllLocations as location, index}
-					<div class="flex w-full flex-row items-center gap-2">
+					<div class="flex flex-row items-center gap-2">
 						<Button
 							variant={$CurrentLocation.id === location.id ? 'active' : 'inactive'}
-							class="py-6"
+							class="flex-1 py-6"
 							onclick={() => handleLocationChange(location, index)}>{location.name}</Button
 						>
 						<Button variant="destructive" class="min-w-0" onclick={() => openDeleteModal(location)}>
@@ -165,9 +165,10 @@
 	.locations-container {
 		display: flex;
 		flex-direction: row;
-		flex-wrap: nowrap;
+		flex-wrap: wrap;
 		gap: 50px;
 	}
+
 	.locations-list-container {
 		flex: 0.3;
 		background-color: white;
@@ -187,5 +188,21 @@
 		width: 100%;
 		display: flex;
 		justify-content: center;
+	}
+
+	@media (max-width: 1024px) {
+		.locations-container {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+		}
+		.locations-list-container {
+			background-color: white;
+			border-radius: 30px;
+		}
+		.location-details {
+			background-color: whitesmoke;
+			border-radius: 30px;
+		}
 	}
 </style>

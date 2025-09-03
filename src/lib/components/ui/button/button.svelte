@@ -19,8 +19,8 @@
 				link: 'justify-center text-primary underline underline-offset-4 hover:font-semibold hover:text-lg',
 				listItem:
 					'justify-left pl-2 w-full text-primary underline underline-offset-6 hover:font-semibold hover:text-lg hover:text-bold',
-				active: 'bg-secondary-40 w-full rounded-md py-4 px-2 text-left border-b hover:bg-secondary-60',
-				inactive: 'hover:bg-secondary-40 w-full rounded-md border-b bg-white px-2 py-4',
+				active: 'bg-secondary-40  rounded-md py-4 px-2 text-left border-b hover:bg-secondary-60',
+				inactive: 'hover:bg-secondary-40 rounded-md border-b bg-white px-2 py-4',
 				calltoaction:
 					'justify-center bg-seablue-100 text-primary-foreground shadow-xs hover:bg-seablue-60 hover:text-primary-text h-12 w-60',
 			},

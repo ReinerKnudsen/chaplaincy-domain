@@ -7,9 +7,10 @@
 	interface Props {
 		onLocationChange: (value: string) => void;
 		onNewLocation: () => void;
+		onModalClosed: () => void;
 	}
 
-	let { onLocationChange, onNewLocation }: Props = $props();
+	let { onLocationChange, onNewLocation, onModalClosed }: Props = $props();
 
 	onMount(async () => {
 		await fetchLocations();
@@ -19,12 +20,16 @@
 	$effect(() => {
 		if ($selectedLocation && $selectedLocation.id) {
 			selectedId = $selectedLocation.id;
+		} else {
+			selectedId = '';
 		}
 	});
 
 	const handleChange = async (event: Event) => {
 		const value = (event.target as HTMLSelectElement).value;
 		if (value === 'new') {
+			selectedId = 'new';
+			//selectedLocation.set($AllLocations[0]);
 			onNewLocation();
 		} else {
 			const location = $AllLocations.find((loc) => loc.id === value);

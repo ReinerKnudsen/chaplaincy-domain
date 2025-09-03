@@ -12,8 +12,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
-- Navigation option in events detail to navigate between events
-- Navigation option in news detail to navigate between news
+-
 
 ### Changed
 
@@ -23,6 +22,12 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [3.8.0] - 2025-09-03
+
+### Added
+
+- Navigation option in events detail to navigate between events
+- Navigation option in news detail to navigate between news
 ## [3.7.0] - 2025-09-03
 
 ### Fixed

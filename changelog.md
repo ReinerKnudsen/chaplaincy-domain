@@ -16,12 +16,17 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
-- removed person meyer fro council list
+-
 
 ### Fixed
 
 -
 
+## [4.0.0] - 2025-09-16
+
+### Changed
+
+- removed person meyer fro council list
 ## [3.8.0] - 2025-09-03
 
 ### Added

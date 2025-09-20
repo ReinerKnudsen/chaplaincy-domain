@@ -12,7 +12,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
-- Page "Five marks of mission"
+-
 
 ### Changed
 
@@ -22,6 +22,11 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [4.0.1] - 2025-09-20
+
+### Added
+
+- Page "Five marks of mission"
 ## [4.0.0] - 2025-09-16
 
 ### Changed

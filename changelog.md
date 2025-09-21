@@ -12,7 +12,9 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- New option for news: "Preview"
+- Created new route for preview of individual items
+- Created new component for preview of individual items
 
 ### Changed
 

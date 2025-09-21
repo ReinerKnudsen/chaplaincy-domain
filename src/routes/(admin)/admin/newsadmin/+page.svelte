@@ -12,7 +12,9 @@
 	import { decodeHtml } from '$lib/utils/HTMLfunctions';
 
 	import { Button } from '$lib/components/ui/button';
+	import Icon from '@iconify/svelte';
 	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
+	import NewsItem from '$lib/components/NewsItem.svelte';
 
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
@@ -131,6 +133,10 @@
 		deleteID = id;
 		showDeleteDialog = true;
 	};
+
+	const openPreview = (id: string) => {
+		goto('/admin/newsadmin/preview/' + id);
+	};
 </script>
 
 <ConfirmDialog
@@ -163,6 +169,7 @@
 				<thead class="table-row">
 					<tr class="table-row">
 						<th class="table-header table-cell" onclick={() => sortTable('title')}>Title</th>
+
 						<th class="table-header table-cell" onclick={() => sortTable('text')}>News Text</th>
 						<th class="table-header table-cell" onclick={() => sortTable('publishdate')}>Publish date</th>
 						<th class="table-header table-cell" onclick={() => sortTable('author')}>Author</th>
@@ -179,8 +186,13 @@
 							<td class="table-data table-cell">{item.data.publishdate}</td>
 							<td class="table-data table-cell">{item.data.author}</td>
 							<td class="table-data table-cell">
-								<div class="flex flex-row justify-between">
-									<Button variant="destructive" onclick={() => openModal(item.id)}>Delete</Button>
+								<div class="flex flex-row justify-stretch gap-2">
+									<Button variant="destructive" title="Delete Item" class="min-w-0 " onclick={() => openModal(item.id)}
+										><Icon icon="mdi-light:delete" class="size-6" /></Button
+									>
+									<Button variant="primary" title="Preview Item" class="min-w-0" onclick={() => openPreview(item.id)}>
+										<Icon icon="mdi-light:eye" class="size-6" />
+									</Button>
 								</div>
 							</td>
 						</tr>

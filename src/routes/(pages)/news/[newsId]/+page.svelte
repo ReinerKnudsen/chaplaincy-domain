@@ -3,7 +3,7 @@
 	import { type News, CurrentNewsItemsStore } from '$lib/stores/ObjectStore';
 	import SimpleMarkdownViewer from '$lib/components/SimpleMarkdownViewer.svelte';
 	import NavigationButton from '$lib/components/NavigationButton.svelte';
-
+	import NewsItem from '$lib/components/NewsItem.svelte';
 	interface Props {
 		data: { news: News; newsId: string };
 	}
@@ -22,7 +22,11 @@
 {#if loading}
 	Loading...
 {:else if thisNews}
-	<div id="article-container" class="mx-auto w-[80%] pt-30">
+	<div class="pt-30">
+		<NewsItem {thisNews} />
+	</div>
+
+	<!-- <div id="article-container" class="mx-auto w-[80%] pt-30">
 		<div id="article-content">
 			<div id="article-title" class="article-title">
 				{thisNews.title}
@@ -72,7 +76,7 @@
 				</div>
 			{/if}
 		</div>
-	</div>
+	</div> -->
 
 	<div id="links" class="flex flex-row items-center justify-between">
 		<div class="back-link">

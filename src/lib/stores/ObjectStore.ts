@@ -322,6 +322,7 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 		// Filter and store based on type
 		if (type === CollectionType.Events) {
 			EventsStore.set(items);
+			// Load and filter News
 		} else if (type === CollectionType.News) {
 			NewsItemsStore.set(items);
 			const now = new Date().getTime(); // Gets milliseconds since epoch
@@ -338,16 +339,19 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 				return dateB.getTime() - dateA.getTime();
 			});
 			CurrentNewsItemsStore.set(currentItems);
+
+			// Load and filter FutureEvents
 		} else if (type === CollectionType.FutureEvents) {
-			const now = new Date();
 			const futureEvents = items
 				.filter((item) => {
 					const eventData = item.data as DomainEvent;
 					if (!eventData.unpublishdate) {
 						return false;
 					}
-					const unpublishDate = new Date(eventData.unpublishdate);
-					return unpublishDate > now;
+					const nowTs = Timestamp.now();
+					const unpublish = eventData.unpublishDateTime;
+					if (!unpublish) return false;
+					return unpublish.toMillis() > nowTs.toMillis(); // convert Timestamps to Milliseconds
 				})
 				.sort((a, b) => {
 					const dateA = new Date((a.data as DomainEvent).startdate!);

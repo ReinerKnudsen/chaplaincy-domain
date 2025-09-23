@@ -52,6 +52,10 @@
 			url: '/admin/newsadmin',
 		},
 		{
+			name: 'Notices',
+			url: '/admin/noticesadmin',
+		},
+		{
 			name: 'Locations',
 			url: '/admin/locationsadmin',
 		},

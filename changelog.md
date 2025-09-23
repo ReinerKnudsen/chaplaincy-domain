@@ -12,15 +12,17 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
-- Area for notices below the "Come worship with us" section for short term updates
-- Notices can be stored in and loaded from database
-- Notices are filtered for the most current notice
-- Admin page for notices (admin/noticesadmin)
-- Edit form for notices and loading existing notices into form
+- Add Area for notices below the "Come worship with us" section for short term updates
+- Add Notices can be stored in and loaded from database
+- Add Notices are filtered for the most current notice
+- Add Admin page for notices (admin/noticesadmin)
+- Add Edit form for notices and loading existing notices into form
+- Add Delete Button for notices in list
+- Add "Notices Management" to both dashboard and menue
 
 ### Changed
 
--
+- 
 
 ### Fixed
 

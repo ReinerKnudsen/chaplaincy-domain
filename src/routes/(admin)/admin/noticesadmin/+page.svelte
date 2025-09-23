@@ -111,9 +111,14 @@
 								<td class="table-data table-cell">{item.data.due.toDate().toLocaleString('de-DE')}</td>
 								<td class="table-data table-cell">{@html item.data.text}</td>
 								<td class="table-data table-cell">
-									<Button variant="primary" onclick={() => handleEdit(item)}>
-										<Icon icon="fluent-mdl2:edit" class="size-6" />
-									</Button>
+									<div class="flex justify-between gap-2">
+										<Button variant="primary" class="min-w-0" onclick={() => handleEdit(item)}>
+											<Icon icon="fluent-mdl2:edit" class="size-6" />
+										</Button>
+										<Button variant="destructive" title="Delete Item" class="min-w-0"
+											><Icon icon="mdi-light:delete" class="size-6" /></Button
+										>
+									</div>
 								</td>
 							</tr>
 						{/each}

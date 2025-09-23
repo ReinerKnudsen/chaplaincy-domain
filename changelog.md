@@ -12,7 +12,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
-- Area for notices below the "Come worship with us" section for short term updates
+-
 
 ### Changed
 
@@ -20,8 +20,17 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
-- the filter logic to decide if an event should be displayed or not used unpublishDate and not DateTime
+-
 
+## [4.1.1] - 2025-09-23
+
+### Added
+
+- Area for notices below the "Come worship with us" section for short term updates
+
+### Fixed
+
+- the filter logic to decide if an event should be displayed or not used unpublishDate and not DateTime
 ## [4.1.0] - 2025-09-21
 
 ### Added

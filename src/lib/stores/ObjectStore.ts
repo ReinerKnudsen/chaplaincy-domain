@@ -205,10 +205,16 @@ export const initUser: User = {
 	role: '',
 };
 
+export interface Notice {
+	due: Timestamp;
+	text: string;
+}
+
 export enum CollectionType {
 	Events = 'events',
 	News = 'news',
 	FutureEvents = 'futureEvents', // Virtual collection type
+	Notices = 'notices',
 }
 
 export enum DocumentType {
@@ -221,6 +227,7 @@ export const EventStore: Writable<DomainEvent | null> = writable(initialDomainEv
 export const NewsStore: Writable<News | null> = writable(initialNews);
 export const WeeklySheetStore: Writable<WeeklySheet | null> = writable(null);
 export const NewsletterStore: Writable<Newsletter | null> = writable(null);
+export const NoticeStore: Writable<Notice | null> = writable(null);
 
 // Collection and document stores
 export const EventsStore: Writable<CollectionItem[] | null> = writable([]);
@@ -359,6 +366,18 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 					return dateA.getTime() - dateB.getTime();
 				});
 			FutureEventsStore.set(futureEvents);
+		} else if (type === CollectionType.Notices) {
+			const currentNotices = items
+				.filter((item) => {
+					const noticeData = item.data as Notice;
+					return noticeData.due.toMillis() > Timestamp.now().toMillis();
+				})
+				.sort((a, b) => {
+					const dateA = new Date((a.data as Notice).due.toMillis());
+					const dateB = new Date((b.data as Notice).due.toMillis());
+					return dateA.getTime() - dateB.getTime();
+				});
+			NoticeStore.set((currentNotices[0]?.data as Notice) ?? null);
 		}
 	} catch (error) {
 		console.error(`Error loading ${type} items:`, error);

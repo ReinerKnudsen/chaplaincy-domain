@@ -16,6 +16,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - Notices can be stored in and loaded from database
 - Notices are filtered for the most current notice
 - Admin page for notices (admin/noticesadmin)
+- Edit form for notices and loading existing notices into form
 
 ### Changed
 

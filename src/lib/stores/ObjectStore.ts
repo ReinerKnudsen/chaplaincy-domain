@@ -210,6 +210,11 @@ export interface Notice {
 	text: string;
 }
 
+export interface NoticeForm {
+	due: string;
+	text: string;
+}
+
 export enum CollectionType {
 	Events = 'events',
 	News = 'news',

@@ -236,6 +236,7 @@ export const NewsItemsStore: Writable<CollectionItem[]> = writable([]);
 export const CurrentNewsItemsStore: Writable<CollectionItem[]> = writable([]);
 export const WeeklySheetsStore: Writable<CollectionItem[] | null> = writable([]);
 export const NewslettersStore: Writable<CollectionItem[] | null> = writable([]);
+export const NoticesStore: Writable<CollectionItem[]> = writable([]);
 
 // Derived stores for homepage previews
 // The three latest news
@@ -377,6 +378,7 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 					const dateB = new Date((b.data as Notice).due.toMillis());
 					return dateA.getTime() - dateB.getTime();
 				});
+			NoticesStore.set(currentNotices);
 			NoticeStore.set((currentNotices[0]?.data as Notice) ?? null);
 		}
 	} catch (error) {

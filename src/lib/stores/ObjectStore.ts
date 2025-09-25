@@ -206,11 +206,6 @@ export const initUser: User = {
 };
 
 export interface Notice {
-	due: Timestamp;
-	text: string;
-}
-
-export interface NoticeForm {
 	due: string;
 	text: string;
 }
@@ -376,11 +371,11 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 			const currentNotices = items
 				.filter((item) => {
 					const noticeData = item.data as Notice;
-					return noticeData.due.toMillis() > Timestamp.now().toMillis();
+					return new Date(noticeData.due) > new Date();
 				})
 				.sort((a, b) => {
-					const dateA = new Date((a.data as Notice).due.toMillis());
-					const dateB = new Date((b.data as Notice).due.toMillis());
+					const dateA = new Date((a.data as Notice).due);
+					const dateB = new Date((b.data as Notice).due);
 					return dateA.getTime() - dateB.getTime();
 				});
 			NoticesStore.set(currentNotices);

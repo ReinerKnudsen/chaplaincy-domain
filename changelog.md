@@ -19,6 +19,8 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - Add Edit form for notices and loading existing notices into form
 - Add Delete Button for notices in list
 - Add "Notices Management" to both dashboard and menue
+- Add Complete Notice handling in admin area
+- major
 
 ### Changed
 

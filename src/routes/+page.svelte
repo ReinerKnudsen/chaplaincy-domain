@@ -22,6 +22,7 @@
 		loadDocument,
 		WeeklySheetStore,
 		NewsletterStore,
+		NoticeStore,
 		loadWeeklySheet,
 	} from '$lib/stores/ObjectStore';
 
@@ -48,6 +49,7 @@
 	onMount(async () => {
 		await loadItems(CollectionType.News);
 		await loadItems(CollectionType.FutureEvents);
+		await loadItems(CollectionType.Notices);
 		await loadWeeklySheet();
 		await loadDocument(DocumentType.Newsletter);
 		loading = false;
@@ -90,20 +92,20 @@
 				{/each}
 			</div>
 		</div>
+		{#if $NoticeStore}
+			<div id="change of plan" class="pt-10">
+				<div class="flex justify-center">
+					<div class="flex flex-row items-center gap-4">
+						<Icon icon="mdi:information-outline" class="h-10 w-10" />
+						<div>
+							{@html $NoticeStore.text}
+						</div>
+					</div>
+				</div>
+			</div>
+		{/if}
 	</div>
 </section>
-
-<div id="change of plan" class="pt-0 pb-10">
-	<div class="px-40">
-		<div class="flex flex-row items-center gap-4">
-			<Icon icon="mdi:information-outline" class="h-10 w-10" />
-			<div>
-				Please note that there will be <strong>no Evening Prayer and Bible Study</strong> at All Saints on Friday, 26 September
-				2025.
-			</div>
-		</div>
-	</div>
-</div>
 
 <!-- Section: Mission Statement-->
 <section class="bg-white-smoke">

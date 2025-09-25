@@ -205,10 +205,16 @@ export const initUser: User = {
 	role: '',
 };
 
+export interface Notice {
+	due: string;
+	text: string;
+}
+
 export enum CollectionType {
 	Events = 'events',
 	News = 'news',
 	FutureEvents = 'futureEvents', // Virtual collection type
+	Notices = 'notices',
 }
 
 export enum DocumentType {
@@ -221,6 +227,7 @@ export const EventStore: Writable<DomainEvent | null> = writable(initialDomainEv
 export const NewsStore: Writable<News | null> = writable(initialNews);
 export const WeeklySheetStore: Writable<WeeklySheet | null> = writable(null);
 export const NewsletterStore: Writable<Newsletter | null> = writable(null);
+export const NoticeStore: Writable<Notice | null> = writable(null);
 
 // Collection and document stores
 export const EventsStore: Writable<CollectionItem[] | null> = writable([]);
@@ -229,6 +236,7 @@ export const NewsItemsStore: Writable<CollectionItem[]> = writable([]);
 export const CurrentNewsItemsStore: Writable<CollectionItem[]> = writable([]);
 export const WeeklySheetsStore: Writable<CollectionItem[] | null> = writable([]);
 export const NewslettersStore: Writable<CollectionItem[] | null> = writable([]);
+export const NoticesStore: Writable<CollectionItem[]> = writable([]);
 
 // Derived stores for homepage previews
 // The three latest news
@@ -322,6 +330,7 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 		// Filter and store based on type
 		if (type === CollectionType.Events) {
 			EventsStore.set(items);
+			// Load and filter News
 		} else if (type === CollectionType.News) {
 			NewsItemsStore.set(items);
 			const now = new Date().getTime(); // Gets milliseconds since epoch
@@ -338,16 +347,19 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 				return dateB.getTime() - dateA.getTime();
 			});
 			CurrentNewsItemsStore.set(currentItems);
+
+			// Load and filter FutureEvents
 		} else if (type === CollectionType.FutureEvents) {
-			const now = new Date();
 			const futureEvents = items
 				.filter((item) => {
 					const eventData = item.data as DomainEvent;
 					if (!eventData.unpublishdate) {
 						return false;
 					}
-					const unpublishDate = new Date(eventData.unpublishdate);
-					return unpublishDate > now;
+					const nowTs = Timestamp.now();
+					const unpublish = eventData.unpublishDateTime;
+					if (!unpublish) return false;
+					return unpublish.toMillis() > nowTs.toMillis(); // convert Timestamps to Milliseconds
 				})
 				.sort((a, b) => {
 					const dateA = new Date((a.data as DomainEvent).startdate!);
@@ -355,6 +367,19 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 					return dateA.getTime() - dateB.getTime();
 				});
 			FutureEventsStore.set(futureEvents);
+		} else if (type === CollectionType.Notices) {
+			const currentNotices = items
+				.filter((item) => {
+					const noticeData = item.data as Notice;
+					return new Date(noticeData.due) > new Date();
+				})
+				.sort((a, b) => {
+					const dateA = new Date((a.data as Notice).due);
+					const dateB = new Date((b.data as Notice).due);
+					return dateA.getTime() - dateB.getTime();
+				});
+			NoticesStore.set(currentNotices);
+			NoticeStore.set((currentNotices[0]?.data as Notice) ?? null);
 		}
 	} catch (error) {
 		console.error(`Error loading ${type} items:`, error);

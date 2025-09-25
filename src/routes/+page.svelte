@@ -22,6 +22,7 @@
 		loadDocument,
 		WeeklySheetStore,
 		NewsletterStore,
+		NoticeStore,
 		loadWeeklySheet,
 	} from '$lib/stores/ObjectStore';
 
@@ -48,6 +49,7 @@
 	onMount(async () => {
 		await loadItems(CollectionType.News);
 		await loadItems(CollectionType.FutureEvents);
+		await loadItems(CollectionType.Notices);
 		await loadWeeklySheet();
 		await loadDocument(DocumentType.Newsletter);
 		loading = false;
@@ -90,6 +92,18 @@
 				{/each}
 			</div>
 		</div>
+		{#if $NoticeStore}
+			<div id="change of plan" class="pt-10">
+				<div class="flex justify-center">
+					<div class="flex flex-row items-center gap-4">
+						<Icon icon="mdi:information-outline" class="h-10 w-10" />
+						<div>
+							{@html $NoticeStore.text}
+						</div>
+					</div>
+				</div>
+			</div>
+		{/if}
 	</div>
 </section>
 

@@ -16,12 +16,51 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
-- removed person meyer fro council list
+-
 
 ### Fixed
 
 -
 
+## [5.0.0] - 2025-09-25
+
+### Added
+
+- Add Area for notices below the "Come worship with us" section for short term updates
+- Add Notices can be stored in and loaded from database
+- Add Notices are filtered for the most current notice
+- Add Admin page for notices (admin/noticesadmin)
+- Add Edit form for notices and loading existing notices into form
+- Add Delete Button for notices in list
+- Add "Notices Management" to both dashboard and menue
+- Add Complete Notice handling in admin area
+- major
+## [4.1.1] - 2025-09-23
+
+### Added
+
+- Area for notices below the "Come worship with us" section for short term updates
+
+### Fixed
+
+- the filter logic to decide if an event should be displayed or not used unpublishDate and not DateTime
+## [4.1.0] - 2025-09-21
+
+### Added
+
+- New option for news: "Preview"
+- Created new route for preview of individual items
+- Created new component for preview of individual items
+## [4.0.1] - 2025-09-20
+
+### Added
+
+- Page "Five marks of mission"
+## [4.0.0] - 2025-09-16
+
+### Changed
+
+- removed person meyer fro council list
 ## [3.8.0] - 2025-09-03
 
 ### Added

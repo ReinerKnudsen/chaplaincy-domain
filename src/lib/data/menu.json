@@ -20,7 +20,7 @@
 					"url": "/worship/",
 					"active": true
 				},
-				{ "title": "Five marks of mission", "url": "/mission/", "active": true },
+				{ "title": "Five marks of mission", "url": "/mission/", "active": false },
 				{
 					"title": "Church of England",
 					"url": "/church-of-england/",

@@ -20,8 +20,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
-- Hidden emtpy page "Five marks"
+-
 
+## [5.0.1] - 2025-09-26
+
+### Fixed
+
+- Hidden emtpy page "Five marks"
 ## [5.0.0] - 2025-09-25
 
 ### Added

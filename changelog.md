@@ -20,7 +20,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
--
+- Hidden emtpy page "Five marks"
 
 ## [5.0.0] - 2025-09-25
 
@@ -35,6 +35,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - Add "Notices Management" to both dashboard and menue
 - Add Complete Notice handling in admin area
 - major
+
 ## [4.1.1] - 2025-09-23
 
 ### Added
@@ -44,6 +45,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - the filter logic to decide if an event should be displayed or not used unpublishDate and not DateTime
+
 ## [4.1.0] - 2025-09-21
 
 ### Added
@@ -51,38 +53,45 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - New option for news: "Preview"
 - Created new route for preview of individual items
 - Created new component for preview of individual items
+
 ## [4.0.1] - 2025-09-20
 
 ### Added
 
 - Page "Five marks of mission"
+
 ## [4.0.0] - 2025-09-16
 
 ### Changed
 
 - removed person meyer fro council list
+
 ## [3.8.0] - 2025-09-03
 
 ### Added
 
 - Navigation option in events detail to navigate between events
 - Navigation option in news detail to navigate between news
+
 ## [3.7.0] - 2025-09-03
 
 ### Fixed
 
 - routing issue when routing from event or news detail to another page
+
 ## [3.6.0] - 2025-09-03
 
 ### Fixed
 
 - The new loction form triggered from event or news creation didn't scroll
 - The location dropdown didn't reset to null or a previously selected location if the location modal was closed without changes
+
 ## [3.5.1] - 2025-09-02
 
 ### Changed
 
 - The items in the list of documents in the admin center are now aligned to the left
+
 ## [3.5.0] - 2025-09-01
 
 ### Added
@@ -93,16 +102,19 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Changed
 
 - minor adjustments to the padding of the profile cards
+
 ## [3.4.1] - 2025-08-03
 
 ### Fixed
 
 - locations did show properly in events
+
 ## [3.4.0] - 2025-07-27
 
 ### Fixed
 
 - main page would show news items before publish date
+
 ## [3.3.0] - 2025-07-27
 
 ### Added
@@ -114,11 +126,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 - the news admin page didn't show the list of available news
 - the news page showed news items with a future publish date
+
 ## [3.2.1] - 2025-07-18
 
 ### Fixed
 
 - HTML tags in profile text on iOS
+
 ## [3.2.0] - 2025-07-17
 
 ### Changed
@@ -136,6 +150,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 - Mobile menu now scrolls properly on small screens
 - The reCaptcha logo on /about/contact covered part of the footer
 - Footer appearance on small screens
+
 ## [3.1.0] - 2025-07-09
 
 ### Added
@@ -146,10 +161,11 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 - adjusted font sizes for page title and subtitle
 - optimized responsive look and feel (esp. for smaller screens)
-- new favicon for the app 
+- new favicon for the app
 - different image height on event and news cards
 - de-activated menu items are visible in mobile menu
 - several issues on the "Who's who" page - Ranti Hendricks
+
 ## [3.0.0] - 2025-07-07
 
 ### Added

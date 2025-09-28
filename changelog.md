@@ -12,6 +12,20 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
+-
+
+### Changed
+
+-
+
+### Fixed
+
+-
+
+## [5.1.0] - 2025-09-28
+
+### Added
+
 - Add Media Admin
 - Add Media Admin Page in admin
 - Add List and delete images in Storage and open containing documents (events or news)
@@ -21,11 +35,6 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Changed
 
 - Metadata management for event and news editor: read from database not from metadata
-
-### Fixed
-
--
-
 ## [5.0.1] - 2025-09-26
 
 ### Fixed

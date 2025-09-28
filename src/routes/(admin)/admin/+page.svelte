@@ -38,6 +38,15 @@
 		</div>
 		<div class="item">
 			<h2 class="w-60 text-xl font-bold">
+				<a
+					href="admin/mediaadmin
+				">Media Management</a
+				>
+			</h2>
+			<div>Create, edit, list and delete locations</div>
+		</div>
+		<div class="item">
+			<h2 class="w-60 text-xl font-bold">
 				<a href="admin/locationsadmin">Locations Management</a>
 			</h2>
 			<div>Create, edit, list and delete locations</div>

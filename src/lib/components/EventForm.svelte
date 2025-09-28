@@ -2,6 +2,10 @@
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
 
+	import { getDoc, doc } from 'firebase/firestore';
+	import { getDownloadURL, getMetadata, type StorageReference } from 'firebase/storage';
+	import { imageColRef } from '$lib/firebase/firebaseConfig';
+
 	import {
 		EditMode,
 		EditModeStore,
@@ -10,6 +14,7 @@
 		ItemState,
 		createHashableString,
 	} from '$lib/stores/ObjectStore';
+
 	import {
 		selectedLocation,
 		AllLocations,
@@ -18,6 +23,7 @@
 		resetSelectedLocation,
 		type Location,
 	} from '$lib/stores/LocationsStore';
+
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
 	import { cleanText } from '$lib/utils/HTMLfunctions';
 
@@ -33,7 +39,6 @@
 	import StateLabel from './StateLabel.svelte';
 	import UploadImage from '$lib/components/UploadImage.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
-	import { getDownloadURL, getMetadata, type StorageReference } from 'firebase/storage';
 
 	interface Props {
 		thisEvent?: DomainEvent;
@@ -120,13 +125,27 @@
 		checkForChanges();
 	};
 
-	const handleExistingFileSelected = async (imageRef: StorageReference) => {
+	const handleExistingImageSelected = async (imageRef: StorageReference) => {
 		newImage = null;
-		const altText = await getMetadata(imageRef).then((metadata) => metadata.customMetadata?.imageAlt);
-		const captionText = await getMetadata(imageRef).then((metadata) => metadata.customMetadata?.imageCaption);
-		const imagePath = await getDownloadURL(imageRef);
-		thisEvent = { ...thisEvent, image: imagePath, imageAlt: altText || '', imageCaption: captionText || '' };
-		checkForChanges();
+		try {
+			const imageDoc = await getDoc(doc(imageColRef, imageRef.name));
+			const imageData = imageDoc.data();
+			const altText = imageData?.altText || '';
+			const captionText = imageData?.caption || '';
+			const imagePath = await getDownloadURL(imageRef);
+
+			thisEvent = { ...thisEvent, image: imagePath, imageAlt: altText, imageCaption: captionText };
+			checkForChanges();
+		} catch (error) {
+			// Try catching image without metadata
+			try {
+				const imagePath = await getDownloadURL(imageRef);
+				thisEvent = { ...thisEvent, image: imagePath, imageAlt: '', imageCaption: '' };
+				checkForChanges();
+			} catch (urlError) {
+				console.error('Error getting image URL:', urlError);
+			}
+		}
 	};
 
 	const handleNewFileSelected = (image: File) => {
@@ -491,7 +510,7 @@
 					<UploadImage
 						imageUrl={thisEvent.image}
 						onNewFileSelected={handleNewFileSelected}
-						onExistingFileSelected={handleExistingFileSelected}
+						onExistingFileSelected={handleExistingImageSelected}
 					/>
 				</div>
 			</fieldset>

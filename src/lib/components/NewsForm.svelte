@@ -2,6 +2,10 @@
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
 
+	import { getDoc, doc } from 'firebase/firestore';
+	import { getDownloadURL, getMetadata, type StorageReference } from 'firebase/storage';
+	import { imageColRef } from '$lib/firebase/firebaseConfig';
+
 	import { authStore } from '$lib/stores/AuthStore';
 	import {
 		EditModeStore,
@@ -26,7 +30,6 @@
 	import ToastContainer from './ToastContainer.svelte';
 	import UploadImage from './UploadImage.svelte';
 	import UploadPDF from './UploadPDF.svelte';
-	import { getDownloadURL, getMetadata, type StorageReference } from 'firebase/storage';
 
 	const author = $authStore.name;
 
@@ -88,16 +91,30 @@
 		thisNews = { ...initialNews };
 	};
 
-	const handleExistingFileSelected = async (imageRef: StorageReference) => {
+	const handleExistingImageSelected = async (imageRef: StorageReference) => {
 		newImage = null;
-		const altText = await getMetadata(imageRef).then((metadata) => metadata.customMetadata?.imageAlt);
-		const captionText = await getMetadata(imageRef).then((metadata) => metadata.customMetadata?.imageCaption);
-		const imagePath = await getDownloadURL(imageRef);
-		thisNews = { ...thisNews, image: imagePath, imageAlt: altText || '', imageCaption: captionText || '' };
-		checkForChanges();
+		try {
+			const imageDoc = await getDoc(doc(imageColRef, imageRef.name));
+			const imageData = imageDoc.data();
+			const altText = imageData?.altText || '';
+			const captionText = imageData?.caption || '';
+			const imagePath = await getDownloadURL(imageRef);
+
+			thisNews = { ...thisNews, image: imagePath, imageAlt: altText, imageCaption: captionText };
+			checkForChanges();
+		} catch (error) {
+			// Try catching image without metadata
+			try {
+				const imagePath = await getDownloadURL(imageRef);
+				thisNews = { ...thisNews, image: imagePath, imageAlt: '', imageCaption: '' };
+				checkForChanges();
+			} catch (urlError) {
+				console.error('Error getting image URL:', urlError);
+			}
+		}
 	};
 
-	const handleNewFileSelected = (image: File) => {
+	const handleNewImageSelected = (image: File) => {
 		newImage = image;
 		thisNews = { ...thisNews, image: image.name, imageAlt: '', imageCaption: '' };
 		checkForChanges();
@@ -250,8 +267,8 @@
 					<div class="flex flex-col items-center justify-center">
 						<UploadImage
 							imageUrl={thisNews.image}
-							onExistingFileSelected={handleExistingFileSelected}
-							onNewFileSelected={handleNewFileSelected}
+							onExistingFileSelected={handleExistingImageSelected}
+							onNewFileSelected={handleNewImageSelected}
 						/>
 					</div>
 				</fieldset>

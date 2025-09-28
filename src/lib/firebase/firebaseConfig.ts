@@ -49,6 +49,7 @@ export const newsColRef = collection(database, 'news');
 export const userCollectionReference = collection(database, 'users');
 export const settingsColRef = collection(database, 'settings');
 export const imageColRef = collection(database, 'images');
+export const imageUsageColRef = collection(database, 'imageUsage');
 export const pdfColRef = collection(database, 'pdfs');
 export const documentsColRef = collection(database, 'documents');
 export const locationColRef = collection(database, 'location');

@@ -52,6 +52,10 @@
 			url: '/admin/newsadmin',
 		},
 		{
+			name: 'Media',
+			url: '/admin/mediaadmin',
+		},
+		{
 			name: 'Notices',
 			url: '/admin/noticesadmin',
 		},

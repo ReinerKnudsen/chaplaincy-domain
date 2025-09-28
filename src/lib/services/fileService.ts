@@ -1,7 +1,15 @@
 // fileService.ts provides file related services
-import { database, storage } from '../firebase/firebaseConfig';
-import { ref, uploadBytes, getDownloadURL, updateMetadata, type StorageReference, getMetadata } from 'firebase/storage';
-import { setDoc, doc } from 'firebase/firestore';
+import { database, imageColRef, storage } from '../firebase/firebaseConfig';
+import {
+	ref,
+	uploadBytes,
+	getDownloadURL,
+	type StorageReference,
+	getMetadata,
+	listAll,
+	deleteObject,
+} from 'firebase/storage';
+import { setDoc, doc, Timestamp, getDoc, deleteDoc } from 'firebase/firestore';
 
 interface ImageDocument {
 	name: string;
@@ -9,6 +17,14 @@ interface ImageDocument {
 	createdAt: Date;
 	altText: string | null;
 	caption?: string | null;
+}
+
+export interface ImageUsage {
+	id: string; // auto-generated
+	imageId: string; // filename (from imageRef field)
+	documentType: 'news' | 'events';
+	documentId: string; // the document that uses this image
+	createdAt: Timestamp;
 }
 
 export type PDFType = 'documents' | 'weeklysheet' | 'newsletter';
@@ -28,26 +44,31 @@ export const uploadImage = async (selectedImage: File, altText: string, caption:
 	if (selectedImage) {
 		const storageRef = ref(storage, 'images/' + selectedImage.name);
 		try {
-			const metadata = {
-				customMetadata: {
-					imageAlt: altText,
-					imageCaption: caption,
-				},
-			};
 			await uploadBytes(storageRef, selectedImage);
-			await updateMetadata(storageRef, metadata);
 			const imageUrl = await getDownloadURL(storageRef);
 			const imageRef = storageRef;
 			await setDoc(doc(database, FileType.Image, selectedImage.name), {
 				name: selectedImage.name,
 				url: imageUrl,
 				createdAt: new Date(),
+				altText: altText,
+				imageCaption: caption,
 			} as ImageDocument);
 			return { url: imageUrl, ref: imageRef };
 		} catch (error) {
 			console.error(error);
 		}
 	}
+};
+
+// Delete an image from storage
+// all images live in the 'images' directory
+export const deleteImageFromStorage = async (imageName: string) => {
+	const storageRef = ref(storage, 'images/' + imageName);
+	await deleteObject(storageRef);
+
+	const docRef = doc(imageColRef, imageName);
+	await deleteDoc(docRef);
 };
 
 // Check if a file exists
@@ -60,6 +81,7 @@ export const checkIfFileExists = async (imageFileName: string): Promise<StorageR
 		await getMetadata(storageRef);
 		return storageRef;
 	} catch (error) {
+		console.error(error);
 		return null;
 	}
 };
@@ -91,4 +113,25 @@ export const uploadPDF = async (newPdf: File, type: PDFType): Promise<ReturnType
 		console.error(error);
 	}
 	return result;
+};
+
+export const listAllImages = async () => {
+	try {
+		const imagesRef = ref(storage, 'images');
+		const result = await listAll(imagesRef);
+		return result.items;
+	} catch (error) {
+		console.error('Error listing images', error);
+		return [];
+	}
+};
+
+export const getStorageFileSize = async (item: StorageReference) => {
+	try {
+		const metadata = await getMetadata(item);
+		return metadata.size;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
 };

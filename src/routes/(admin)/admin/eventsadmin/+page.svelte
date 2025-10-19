@@ -26,6 +26,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
+	import Icon from '@iconify/svelte';
 
 	let showDeleteDialog = $state(false);
 	let showDuplicateDialog = $state(false);
@@ -153,6 +154,8 @@
 		showDuplicateDialog = true;
 	};
 
+	const openPreview = (id: string) => {};
+
 	const printLocation = (id: string) => {
 		const location = $AllLocations.find((location) => location.id === id);
 		if (!location) {
@@ -223,13 +226,24 @@
 							<td class="table-data table-cell">{item.data.publishdate}</td>
 							<td class="table-data table-cell">
 								<div class="flex flex-row gap-2">
-									<Button variant="destructive" class="min-w-0" onclick={() => openDeleteModal(item.id)}>Delete</Button>
+									<Button
+										variant="destructive"
+										title="Delete Item"
+										class="min-w-0 "
+										onclick={() => openDeleteModal(item.id)}><Icon icon="mdi-light:delete" class="size-6" /></Button
+									>
 									<Button
 										variant="default"
 										class="min-w-0"
+										title="Duplidate Item"
 										color="alternative"
-										onclick={() => openDuplicateModal(item.id)}>Duplicate</Button
+										onclick={() => openDuplicateModal(item.id)}
 									>
+										<Icon icon="famicons:duplicate-outline" class="size-6" /></Button
+									>
+									<Button variant="primary" title="Preview Item" class="min-w-0" onclick={() => openPreview(item.id)}>
+										<Icon icon="mdi-light:eye" class="size-6" />
+									</Button>
 								</div>
 							</td>
 						</tr>

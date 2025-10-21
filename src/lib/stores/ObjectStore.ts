@@ -455,20 +455,19 @@ export const getNextSunday = (): Date => {
 };
 
 export const loadWeeklySheet = async () => {
-	// find weeklysheet
-	const nextSunday = getNextSunday();
-	// weekly sheet date = string as 2025-07-01
+	const now = Timestamp.now();
+
 	try {
 		const q = query(
 			collection(database, 'documents'),
 			where('type', '==', 'weeklysheet'),
-			where('date', '==', nextSunday.toISOString().split('T')[0]),
-			orderBy('date', 'desc'),
+			where('publishdate', '<=', now), // ✅ Published
+			where('unpublishdate', '>=', now), // ✅ Not yet unpublished
+			orderBy('date', 'asc'), // ✅ Earliest Sunday first (next Sunday)
 			limit(1)
 		);
-		const querySnapshot = await getDocs(q); // execute the query
+		const querySnapshot = await getDocs(q);
 		if (!querySnapshot.empty) {
-			// querySnapshot contains all documents matching the query
 			const doc = querySnapshot.docs[0];
 			WeeklySheetStore.set({
 				...(doc.data() as WeeklySheet),

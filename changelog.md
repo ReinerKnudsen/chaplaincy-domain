@@ -22,6 +22,21 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [5.1.2] - 2025-10-21
+
+### Fixed
+
+- the filter preferred the wrong weekly sheet in a situation where two weekly sheets were "published"
+## [5.1.1] - 2025-10-21
+
+### Changed
+
+- Weekly Sheets now have a publish and unpublish date so they can be available beyond their Sunday
+- The weekly sheets are now loaded correctly by publish and unpublishdate (and Sunday date)
+
+### Fixed
+
+- Fixed the overall management of PDFs throughout the app
 ## [5.1.0] - 2025-09-28
 
 ### Added

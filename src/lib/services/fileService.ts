@@ -91,11 +91,19 @@ export const checkIfPDFExists = async (pdfFileName: string, type: PDFType) => {
 		return null;
 	}
 	const storageRef = ref(storage, `${type === 'documents' ? '' : 'documents'}/${type}/${pdfFileName}`);
+
 	try {
 		await getMetadata(storageRef);
+		// If we get here, file exists
 		return storageRef;
-	} catch (error) {
-		console.error(error);
+	} catch (error: any) {
+		// Check if it's specifically a "not found" error
+		if (error.code === 'storage/object-not-found') {
+			// This is expected for new files - not an error
+			return null;
+		}
+		// Only log actual errors (permissions, network, etc.)
+		console.error('Unexpected error checking PDF:', error);
 		return null;
 	}
 };

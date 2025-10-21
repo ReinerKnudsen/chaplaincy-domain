@@ -8,12 +8,15 @@
 
 	import { Button } from '$lib/components/ui/button';
 
+	import { makeDate } from '$lib/utils/dateUtils';
+
 	// Get the data from the server
 	interface Props {
 		data: { documents: Array<Record<string, any>> };
 	}
 
 	let { data }: Props = $props();
+	console.log(data.documents);
 
 	onMount(() => {
 		pathName.set(page.url.pathname);
@@ -78,17 +81,26 @@
 					<th class="table-header table-cell" onclick={() => sortTable('date')}>
 						<div>Date</div>
 					</th>
+					<th class="table-header table-cell" onclick={() => sortTable('publishdate')}>
+						<div>Publish</div>
+					</th>
+					<th class="table-header table-cell" onclick={() => sortTable('unpublishdate')}>
+						<div>Unpublish</div>
+					</th>
 					<th class="table-header table-cell">Link</th>
 				</tr>
 			</thead>
 			<tbody class="table-row">
 				{#each $sortItems as item}
 					<tr class="table-row">
-						<td class="table-data table-cell">{item.date}</td>
-						<td class="table-data table-cell"
-							><Button variant="listItem" class="pl-0"><a href={item.path} target="_blank">Open in browser</a></Button
-							></td
-						>
+						<td class="table-data table-cell"><a href={`/admin/weeklysheet/${item.id}`}>{makeDate(item.date)}</a></td>
+						<td class="table-data table-cell">{makeDate(item.publishdate)}</td>
+						<td class="table-data table-cell">{makeDate(item.unpublishdate)}</td>
+						<td class="table-data table-cell">
+							<Button variant="listItem">
+								<a href={item.pdfFile} target="_blank">View PDF</a>
+							</Button>
+						</td>
 					</tr>
 				{/each}
 			</tbody>
@@ -101,6 +113,8 @@
 		display: grid;
 		grid-template-columns:
 			minmax(150px, 1fr)
+			minmax(130px, 1fr)
+			minmax(130px, 1fr)
 			minmax(130px, 1fr);
 	}
 </style>

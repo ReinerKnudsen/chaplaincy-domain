@@ -23,12 +23,14 @@
 	let fileError: string = $state('');
 	let fileName: string = $state('');
 	let uploadProgress = $state(false);
+	let loading = $state(true);
 
-	onMount(async () => {
+	$effect(() => {
 		if (existingPdf) {
 			fileUrl = existingPdf;
 			fileName = existingPdf.split('/').pop() || '';
 		}
+		loading = false;
 	});
 
 	const handleFileChange = async (event: any) => {

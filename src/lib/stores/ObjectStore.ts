@@ -157,19 +157,27 @@ export const initialNews: News = {
 
 // WeeklySheet
 export interface WeeklySheet {
-	date: string;
-	name: string;
-	path: string;
+	date: Timestamp;
+	publishdate: Timestamp;
+	unpublishdate: Timestamp;
+	pdfFile?: string | null; // ✅ URL (align with Event/News)
+	pdfName?: string | null; // ✅ Filename (align with Event/News)
 	id: string;
+	type: string;
+	// Remove pdfPath and pdfSize
 }
 
 export type WeeklySheetSortableFields = keyof WeeklySheet;
 
 export const initialWeeklySheet: WeeklySheet = {
-	date: '',
-	name: '',
-	path: '',
+	date: Timestamp.fromDate(new Date()),
+	publishdate: Timestamp.fromDate(new Date()),
+	unpublishdate: Timestamp.fromDate(new Date()),
+	pdfName: '',
+	pdfPath: '',
+	pdfSize: 0,
 	id: '',
+	type: 'weeklysheet',
 };
 
 // Newsletter
@@ -436,7 +444,7 @@ export const loadDocument = async (type: DocumentType): Promise<void> => {
 	}
 };
 
-const getNextSunday = () => {
+export const getNextSunday = (): Date => {
 	const today = new Date();
 	const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
 	if (dayOfWeek === 0) {

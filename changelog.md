@@ -16,7 +16,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- Weekly Sheets now have a publish and unpublish date so they can be available beyond their Sunday
 
 ### Fixed
 

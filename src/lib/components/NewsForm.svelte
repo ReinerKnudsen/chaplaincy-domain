@@ -319,7 +319,9 @@
 						<div class="flex flex-col items-center justify-center">
 							<UploadPDF
 								pdftype="documents"
-								existingPdf={thisNews.pdfName}
+								existingPdf={thisNews.pdfName && thisNews.pdfFile
+									? { name: thisNews.pdfName, path: thisNews.pdfFile }
+									: null}
 								onExistingFileSelected={handleExistingPDFSelected}
 								onNewFileSelected={handleNewPDFSelected}
 							/>

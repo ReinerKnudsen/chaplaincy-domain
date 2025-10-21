@@ -261,9 +261,10 @@
 			<div id="download-section" class="mb-5 w-full lg:mb-10">
 				<div class="download-container">
 					{#if $WeeklySheetStore}
-						<a href={$WeeklySheetStore.path} target="_blank">
-							<div class="download-item mt-10">
-								Weekly Sheet
+						<a href={$WeeklySheetStore.pdfFile} target="_blank">
+							<div class="download-item pt-6">
+								Weekly Sheet <br />
+								{$WeeklySheetStore.date.toDate().toISOString().split('T')[0]}
 								<div class="circle">
 									<span class="icon"><Icon class="text-primary-text h-10 w-10" icon="la:file-download" /></span>
 								</div>

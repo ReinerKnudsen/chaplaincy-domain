@@ -157,19 +157,24 @@ export const initialNews: News = {
 
 // WeeklySheet
 export interface WeeklySheet {
-	date: string;
-	name: string;
-	path: string;
-	id: string;
+	date: Timestamp;
+	publishdate: Timestamp;
+	unpublishdate: Timestamp;
+	pdfFile?: string | null; // ✅ URL (align with Event/News)
+	pdfName?: string | null; // ✅ Filename (align with Event/News)
+	type: string;
+	// Remove pdfPath and pdfSize
 }
 
 export type WeeklySheetSortableFields = keyof WeeklySheet;
 
 export const initialWeeklySheet: WeeklySheet = {
-	date: '',
-	name: '',
-	path: '',
-	id: '',
+	date: Timestamp.fromDate(new Date()),
+	publishdate: Timestamp.fromDate(new Date()),
+	unpublishdate: Timestamp.fromDate(new Date()),
+	pdfFile: '',
+	pdfName: '',
+	type: 'weeklysheet',
 };
 
 // Newsletter
@@ -436,7 +441,7 @@ export const loadDocument = async (type: DocumentType): Promise<void> => {
 	}
 };
 
-const getNextSunday = () => {
+export const getNextSunday = (): Date => {
 	const today = new Date();
 	const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
 	if (dayOfWeek === 0) {
@@ -450,20 +455,19 @@ const getNextSunday = () => {
 };
 
 export const loadWeeklySheet = async () => {
-	// find weeklysheet
-	const nextSunday = getNextSunday();
-	// weekly sheet date = string as 2025-07-01
+	const now = Timestamp.now();
+
 	try {
 		const q = query(
 			collection(database, 'documents'),
 			where('type', '==', 'weeklysheet'),
-			where('date', '==', nextSunday.toISOString().split('T')[0]),
-			orderBy('date', 'desc'),
+			where('publishdate', '<=', now), // ✅ Published
+			where('unpublishdate', '>=', now), // ✅ Not yet unpublished
+			orderBy('date', 'asc'), // ✅ Earliest Sunday first (next Sunday)
 			limit(1)
 		);
-		const querySnapshot = await getDocs(q); // execute the query
+		const querySnapshot = await getDocs(q);
 		if (!querySnapshot.empty) {
-			// querySnapshot contains all documents matching the query
 			const doc = querySnapshot.docs[0];
 			WeeklySheetStore.set({
 				...(doc.data() as WeeklySheet),

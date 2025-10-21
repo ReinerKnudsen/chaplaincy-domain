@@ -178,7 +178,6 @@
 	};
 
 	const handleLocationAddedModal = async (newLocation: Location) => {
-		console.log(newLocation);
 		// First close the modal to prevent any component refresh issues
 		showModal = false;
 		// Then fetch updated locations

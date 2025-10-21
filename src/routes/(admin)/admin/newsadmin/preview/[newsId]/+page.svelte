@@ -9,7 +9,6 @@
 	}
 
 	let { data }: Props = $props();
-	console.log(data);
 
 	let thisNews: News = $derived(data.newsItem);
 	let loading = $state(false); // Initialize loading state

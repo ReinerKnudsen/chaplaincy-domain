@@ -456,6 +456,7 @@ export const getNextSunday = (): Date => {
 
 export const loadWeeklySheet = async () => {
 	const now = Timestamp.now();
+	const today = Timestamp.fromDate(new Date());
 
 	try {
 		const q = query(
@@ -463,7 +464,8 @@ export const loadWeeklySheet = async () => {
 			where('type', '==', 'weeklysheet'),
 			where('publishdate', '<=', now), // ✅ Published
 			where('unpublishdate', '>=', now), // ✅ Not yet unpublished
-			orderBy('date', 'asc'), // ✅ Earliest Sunday first (next Sunday)
+			where('date', '>=', today), // ✅ Sunday date is today or future
+			orderBy('date', 'asc'), // ✅ Earliest upcoming Sunday first
 			limit(1)
 		);
 		const querySnapshot = await getDocs(q);

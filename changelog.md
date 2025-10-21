@@ -20,7 +20,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
--
+- the filter preferred the wrong weekly sheet in a situation where two weekly sheets were "published"
 
 ## [5.1.1] - 2025-10-21
 

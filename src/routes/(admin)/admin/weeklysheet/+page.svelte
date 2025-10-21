@@ -16,7 +16,6 @@
 	}
 
 	let { data }: Props = $props();
-	console.log(data);
 
 	onMount(() => {
 		pathName.set(page.url.pathname);

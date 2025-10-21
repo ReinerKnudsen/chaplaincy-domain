@@ -23,7 +23,6 @@
 	import ToastEditor from '$lib/components/ToastEditor.svelte';
 	const loadData = async () => {
 		await loadItems(CollectionType.Notices);
-		console.log($NoticesStore);
 	};
 
 	let loading = $state(true);
@@ -86,7 +85,7 @@
 				notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 				handleReset();
 			} catch (error) {
-				console.log(error);
+				console.error(error);
 				notificationStore.addToast('error', Messages.UPDATEERROR, TOAST_DURATION);
 			}
 		}

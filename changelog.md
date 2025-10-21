@@ -20,8 +20,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
-- REMOVED OVERLIQUID CONSOLE.LOGS	
+-
 
+## [6.0.0] - 2025-10-21
+
+### Fixed
+
+- REMOVED OVERLIQUID CONSOLE.LOGS
 ## [5.1.2] - 2025-10-21
 
 ### Fixed

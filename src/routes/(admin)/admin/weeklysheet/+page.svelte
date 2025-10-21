@@ -16,7 +16,7 @@
 	}
 
 	let { data }: Props = $props();
-	console.log(data.documents);
+	console.log(data);
 
 	onMount(() => {
 		pathName.set(page.url.pathname);
@@ -62,6 +62,11 @@
 	const handleClick = () => {
 		goto('/admin/weeklysheet/upload');
 	};
+
+	const handleOpenItem = (id: string) => {
+		if (!id) return;
+		goto(`/admin/weeklysheet/${id}`);
+	};
 </script>
 
 <div class="px-4">
@@ -93,7 +98,9 @@
 			<tbody class="table-row">
 				{#each $sortItems as item}
 					<tr class="table-row">
-						<td class="table-data table-cell"><a href={`/admin/weeklysheet/${item.id}`}>{makeDate(item.date)}</a></td>
+						<td class="table-data table-cell">
+							<Button variant="listItem" onclick={() => handleOpenItem(item.id)}>{makeDate(item.date)}</Button>
+						</td>
 						<td class="table-data table-cell">{makeDate(item.publishdate)}</td>
 						<td class="table-data table-cell">{makeDate(item.unpublishdate)}</td>
 						<td class="table-data table-cell">

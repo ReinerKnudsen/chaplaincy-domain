@@ -20,7 +20,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
--
+- Fixed the overall management of PDFs throughout the app
 
 ## [5.1.0] - 2025-09-28
 

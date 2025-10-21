@@ -557,7 +557,9 @@
 				<Label for="pdfFile">PDF Document</Label>
 				<div class="flex flex-col items-center justify-center">
 					<UploadPDF
-						existingPdf={thisEvent.pdfName}
+						existingPdf={thisEvent.pdfName && thisEvent.pdfFile
+							? { name: thisEvent.pdfName, path: thisEvent.pdfFile }
+							: null}
 						pdftype="documents"
 						onExistingFileSelected={handleExistingPDFSelected}
 						onNewFileSelected={handleNewPDFSelected}

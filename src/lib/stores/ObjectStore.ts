@@ -162,7 +162,6 @@ export interface WeeklySheet {
 	unpublishdate: Timestamp;
 	pdfFile?: string | null; // ✅ URL (align with Event/News)
 	pdfName?: string | null; // ✅ Filename (align with Event/News)
-	id: string;
 	type: string;
 	// Remove pdfPath and pdfSize
 }
@@ -173,10 +172,8 @@ export const initialWeeklySheet: WeeklySheet = {
 	date: Timestamp.fromDate(new Date()),
 	publishdate: Timestamp.fromDate(new Date()),
 	unpublishdate: Timestamp.fromDate(new Date()),
+	pdfFile: '',
 	pdfName: '',
-	pdfPath: '',
-	pdfSize: 0,
-	id: '',
 	type: 'weeklysheet',
 };
 

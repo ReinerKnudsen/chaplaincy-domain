@@ -6,7 +6,7 @@
 	import { Button } from '$lib/components/ui/button';
 
 	interface Props {
-		existingPdf?: string | null;
+		existingPdf?: { name: string; path: string } | null;
 		pdftype?: 'documents' | 'weeklysheet' | 'newsletter';
 		onNewFileSelected?: (newDcoument: File) => void;
 		onExistingFileSelected?: (docRef: StorageReference) => void;
@@ -26,9 +26,18 @@
 	let loading = $state(true);
 
 	$effect(() => {
-		if (existingPdf) {
-			fileUrl = existingPdf;
-			fileName = existingPdf.split('/').pop() || '';
+		if (selectedFile) {
+			// New file selected - prioritize this
+			fileName = selectedFile.name;
+			fileUrl = URL.createObjectURL(selectedFile);
+		} else if (existingPdf) {
+			// No new file, show existing PDF
+			fileUrl = existingPdf.path;
+			fileName = existingPdf.name;
+		} else {
+			// No file at all
+			fileName = '';
+			fileUrl = '';
 		}
 		loading = false;
 	});
@@ -53,11 +62,10 @@
 				resetInput();
 				return;
 			}
-
 			fileError = '';
 			try {
-				fileName = selectedFile.name;
-				fileUrl = URL.createObjectURL(selectedFile);
+				// fileName = selectedFile.name;
+				// fileUrl = URL.createObjectURL(selectedFile);
 				onNewFileSelected && onNewFileSelected(selectedFile);
 			} catch (error) {
 				console.error('Error creating file:', error);
@@ -77,7 +85,7 @@
 	});
 </script>
 
-{#if !fileUrl}
+{#if !fileName}
 	<form class={moduleWidth + 'box-border'}>
 		<label
 			class={moduleWidth +
@@ -108,7 +116,7 @@
 				/>
 			</svg>
 			<span class="ml-2 text-sm font-medium text-gray-900">{fileName}</span>
-			<a href={fileUrl} type="_blank" rel="noopener noreferrer" class="ml-2 text-sm text-blue-600 hover:text-blue-800"
+			<a href={fileUrl} target="_blank" rel="noopener noreferrer" class="ml-2 text-sm text-blue-600 hover:text-blue-800"
 				>View PDF</a
 			>
 		</div>

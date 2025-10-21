@@ -93,7 +93,11 @@
 		<div class="mt-4 mr-auto ml-10 w-[80%] md:w-[400px]">
 			<Label>PDF Document</Label>
 			<div class="flex flex-col">
-				<UploadPDF existingPdf={newItem.pdfName} pdftype="weeklysheet" onNewFileSelected={handleNewPDFSelected} />
+				<UploadPDF
+					existingPdf={newItem.pdfName && newItem.pdfFile ? { name: newItem.pdfName, path: newItem.pdfFile } : null}
+					pdftype="weeklysheet"
+					onNewFileSelected={handleNewPDFSelected}
+				/>
 			</div>
 		</div>
 		<!-- Buttons -->

@@ -35,11 +35,6 @@
 			console.error('Error uploading document:', error);
 		}
 
-		/* Convert dates to Timestamp */
-		// newItem.date = makeTimestamp(newItem.date, '09:30');
-		// newItem.publishdate = makeTimestamp(newItem.publishdate, '00:00');
-		// newItem.unpublishdate = makeTimestamp(newItem.unpublishdate, '23:59');
-
 		try {
 			await addDoc(collection(database, 'documents'), newItem);
 			notificationStore.addToast('success', Messages.SAVESUCCESS);

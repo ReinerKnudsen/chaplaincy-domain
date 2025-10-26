@@ -12,7 +12,7 @@
 	import { makeDate, makeTimestamp } from '$lib/utils/dateUtils';
 
 	interface Props {
-		onSubmit: (selectedPDF: File, newItem: WeeklySheet) => void;
+		onSubmit: (selectedPDF: File | null, newItem: WeeklySheet) => void;
 		onCancel: () => void;
 		item?: WeeklySheet;
 	}
@@ -71,7 +71,7 @@
 		enctype="multipart/form-data"
 		onsubmit={(e) => {
 			e.preventDefault();
-			onSubmit(selectedPDF!, newItem);
+			onSubmit(selectedPDF, newItem);
 		}}
 	>
 		<!-- Date -->
@@ -101,7 +101,7 @@
 		<!-- Buttons -->
 		<div class="mt-10 mb-20 flex w-[80%] flex-row justify-center gap-10 md:w-1/2 md:gap-32">
 			<Button variant="outline" type="reset" color="light" onclick={onCancel}>Cancel</Button>
-			<Button variant="primary" type="submit" disabled={!selectedPDF}>Complete</Button>
+			<Button variant="primary" type="submit" disabled={!selectedPDF && !newItem.pdfFile}>Complete</Button>
 		</div>
 	</form>
 </div>

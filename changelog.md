@@ -20,8 +20,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
-- The logic to identify the current weekly sheet was not correct	
+-
 
+## [7.0.0] - 2025-10-26
+
+### Fixed
+
+- The logic to identify the current weekly sheet was not correct	
 - REMOVED OVERLIQUID CONSOLE.LOGS
 ## [5.1.2] - 2025-10-21
 

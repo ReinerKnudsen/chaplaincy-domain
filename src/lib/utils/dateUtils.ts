@@ -45,7 +45,8 @@ export const makeTimestamp = (date: string, time: string): Timestamp => {
 	if (!validateTimeString(time)) {
 		throw new Error('Invalid time string');
 	}
-	const timestamp = Timestamp.fromDate(new Date(`${date}T${time}`));
+	// Force UTC interpretation by appending 'Z'
+	const timestamp = Timestamp.fromDate(new Date(`${date}T${time}:00.000Z`));
 	return timestamp;
 };
 

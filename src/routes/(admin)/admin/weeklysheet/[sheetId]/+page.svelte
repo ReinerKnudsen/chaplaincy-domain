@@ -12,7 +12,6 @@
 	}
 
 	let { data }: Props = $props();
-	console.log(data);
 	const thisSheet = data.sheetItem;
 
 	const handleSaveItem = (selectedPDF, newItem) => {

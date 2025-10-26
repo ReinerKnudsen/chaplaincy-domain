@@ -29,13 +29,11 @@
 
 	onMount(() => {
 		if (item) {
-			console.log(item);
 			newItem = item;
 			// Convert existing timestamps to strings for display
 			dateString = makeDate(newItem.date);
 			publishDateString = makeDate(newItem.publishdate);
 			unpublishDateString = makeDate(newItem.unpublishdate);
-			console.log(dateString, publishDateString, unpublishDateString);
 		} else {
 			// Set defaults
 			newItem.date = Timestamp.fromDate(getNextSunday());

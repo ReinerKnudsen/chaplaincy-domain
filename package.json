@@ -1,20 +1,25 @@
 {
 	"name": "chaplaincy-domain",
-	"version": "7.0.0",
+	"version": "7.0.1",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "vitest",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
+		"test:e2e:debug": "playwright test --debug",
 		"lint": "eslint .",
 		"format": "prettier --write .",
-		"serve-json": "json-server --watch db.json --port 4000"
+		"serve-json": "json-server --watch db.json --port 4000",
+		"audit": "npm audit --audit-level=moderate"
 	},
 	"devDependencies": {
 		"@iconify/svelte": "^5.0.0",
 		"@internationalized/date": "^3.8.2",
 		"@lucide/svelte": "^0.515.0",
+		"@playwright/test": "^1.57.0",
 		"@steeze-ui/font-awesome": "^1.0.1",
 		"@steeze-ui/heroicons": "^2.4.2",
 		"@steeze-ui/lucide-icons": "^1.4.1",
@@ -25,6 +30,7 @@
 		"@tailwindcss/postcss": "^4.1.8",
 		"@tailwindcss/typography": "^0.5.10",
 		"@types/eslint": "8.56.0",
+		"@types/node": "^24.10.1",
 		"@typescript-eslint/eslint-plugin": "^8.28.0",
 		"@typescript-eslint/parser": "^8.28.0",
 		"autoprefixer": "^10.4.16",
@@ -49,6 +55,9 @@
 		"vite": "^6.4.1"
 	},
 	"type": "module",
+	"overrides": {
+		"dompurify": "^3.2.4"
+	},
 	"dependencies": {
 		"@fontsource-variable/raleway": "^5.0.18",
 		"@fontsource/inter": "^5.1.0",
@@ -57,7 +66,7 @@
 		"@popperjs/core": "^2.11.8",
 		"@toast-ui/editor": "^3.2.2",
 		"add-to-calendar-button": "^2.9.1",
-		"firebase": "^10.8.0",
+		"firebase": "^12.6.0",
 		"firebase-functions": "^6.0.1",
 		"json-server": "^1.0.0-alpha.21",
 		"marked": "^13.0.0",
@@ -65,7 +74,6 @@
 		"resend": "^4.5.2",
 		"smtp-client": "^0.4.0",
 		"svelte-fa": "^4.0.2",
-		"svelte-quill": "^1.2.0",
 		"uuid": "^11.1.0",
 		"vitest": "^3.2.4"
 	}

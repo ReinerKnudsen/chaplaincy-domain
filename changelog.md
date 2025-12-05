@@ -16,11 +16,11 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- installed e2e testing via Playwright
 
 ### Fixed
 
--
+- updated lots of packages 
 
 ## [7.0.0] - 2025-10-26
 

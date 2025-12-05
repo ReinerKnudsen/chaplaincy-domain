@@ -1,0 +1,12 @@
+{
+	"decisions": {
+		"GHSA-pxg6-pf52-xh8x": {
+			"decision": "ignore",
+			"madeAt": "2025-12-05T08:35:00.000Z",
+			"expiresAt": "2026-06-05T08:35:00.000Z",
+			"reason": "SvelteKit bundles its own secure cookie parser. This is a false positive - the vulnerable 'cookie' package is not actually used at runtime. Waiting for SvelteKit team to update their dependency tree."
+		}
+	},
+	"rules": {},
+	"version": 2
+}

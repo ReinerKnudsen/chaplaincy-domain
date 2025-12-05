@@ -55,6 +55,9 @@
 		"vite": "^6.4.1"
 	},
 	"type": "module",
+	"engines": {
+		"node": "20.18.0"
+	},
 	"overrides": {
 		"dompurify": "^3.2.4"
 	},

@@ -20,7 +20,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
-- fixed build issue with Netlify
+- fixed build issue with Netlify 
 
 ## [7.0.1] - 2025-12-05
 

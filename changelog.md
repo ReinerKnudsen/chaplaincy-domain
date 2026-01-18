@@ -16,13 +16,18 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
-- Replaced text buttons with icon buttons in events manager
-- Truncated the notice text in the notices manager
+-
 
 ### Fixed
 
 -
 
+## [7.0.4] - 2026-01-18
+
+### Changed
+
+- Replaced text buttons with icon buttons in events manager
+- Truncated the notice text in the notices manager
 ## [7.0.3] - 2026-01-18
 
 ### Changed

@@ -1,26 +1,40 @@
 # Custom Svelte Store Patterns & Notification System
 
 ## Overview
+
 Summary of patterns learned while implementing a global notification system for admin feedback in SvelteKit with Svelte 5.
 
 ## Custom Svelte Store Pattern
 
 ### Core Concept
+
 Create a custom store by wrapping Svelte's `writable` store with additional methods while keeping data encapsulated.
 
 ```typescript
 function createNotificationStore() {
-    const { subscribe, set, update } = writable<Notification[]>([]);
-    
-    return {
-        subscribe,                    // Built-in method from writable
-        addToast: (type, message) => { /* custom logic */ },
-        addAlert: (type, message) => { /* custom logic */ },
-        remove: (id) => { /* custom logic */ },
-        clear: () => { /* custom logic */ },
-        clearToasts: () => { /* custom logic */ },
-        clearAlerts: () => { /* custom logic */ }
-    };
+	const { subscribe, set, update } = writable<Notification[]>([]);
+
+	return {
+		subscribe, // Built-in method from writable
+		addToast: (type, message) => {
+			/* custom logic */
+		},
+		addAlert: (type, message) => {
+			/* custom logic */
+		},
+		remove: (id) => {
+			/* custom logic */
+		},
+		clear: () => {
+			/* custom logic */
+		},
+		clearToasts: () => {
+			/* custom logic */
+		},
+		clearAlerts: () => {
+			/* custom logic */
+		},
+	};
 }
 
 export const notificationStore = createNotificationStore();
@@ -34,6 +48,7 @@ export const notificationStore = createNotificationStore();
 4. **Reactive**: Components get updates via the `subscribe` method
 
 ### Benefits
+
 - ✅ **Safe**: Can't accidentally corrupt the data
 - ✅ **Controlled**: All changes go through validation/business logic
 - ✅ **Reactive**: Svelte's reactivity system works automatically
@@ -42,17 +57,19 @@ export const notificationStore = createNotificationStore();
 ## Notification System Architecture
 
 ### Store Structure
+
 ```typescript
 interface Notification {
-    id: string;              // crypto.randomUUID()
-    type: NotificationType;  // 'success' | 'error' | 'warning' | 'info'
-    message: string;
-    isToast: boolean;        // true = floating toast, false = inline alert
-    duration?: number | null; // null = manual dismiss, number = auto-dismiss
+	id: string; // crypto.randomUUID()
+	type: NotificationType; // 'success' | 'error' | 'warning' | 'info'
+	message: string;
+	isToast: boolean; // true = floating toast, false = inline alert
+	duration?: number | null; // null = manual dismiss, number = auto-dismiss
 }
 ```
 
 ### Component Hierarchy
+
 ```
 ToastContainer (fixed positioning at 75vh)
 ├── Toast (individual notification with animations)
@@ -61,6 +78,7 @@ ToastContainer (fixed positioning at 75vh)
 ```
 
 ### Animation Pattern
+
 - **Slide-in**: `transform: translateX(100%)` → `translateX(0)`
 - **Slide-out**: `transform: translateX(0)` → `translateX(100%)`
 - **Timing**: 300ms duration with ease-out
@@ -69,9 +87,11 @@ ToastContainer (fixed positioning at 75vh)
 ## Cross-Route Messaging Pattern
 
 ### Problem
+
 How to show notifications that persist across page navigation (e.g., success message after redirect)?
 
 ### Solution
+
 1. **Add notification to store** before navigation
 2. **Navigate to target page**
 3. **Target page displays** the notification via ToastContainer
@@ -94,27 +114,32 @@ try {
 ## Error Handling Patterns
 
 ### Success Flow
+
 - Add success toast → Navigate to overview page → Show toast → Auto-dismiss
 
-### Error Flow  
+### Error Flow
+
 - Add error toast → Stay on current page → Show toast → Manual dismiss → Preserve form data
 
 ### Key Insight
+
 Navigation timing matters! The `goto()` call interrupts toast rendering, so cross-route messaging is essential for success notifications.
 
 ## Svelte 5 Syntax Patterns
 
 ### Reactive State
+
 ```typescript
 // Svelte 5 (preferred)
 const notifications = $derived($notificationStore);
-const toasts = $derived($notificationStore.filter(n => n.isToast));
+const toasts = $derived($notificationStore.filter((n) => n.isToast));
 
 // Svelte 4 (legacy)
 $: notifications = $notificationStore;
 ```
 
 ### State Management
+
 ```typescript
 // Svelte 5
 let isVisible = $state(false);
@@ -126,6 +151,7 @@ let isVisible = false;
 ## CSS Animation Techniques
 
 ### Transform-based Animations
+
 ```css
 .toast {
     transform-gpu transition-transform duration-300 ease-out;
@@ -138,6 +164,7 @@ let isVisible = false;
 ```
 
 ### Benefits of Transform over Position
+
 - ✅ GPU accelerated (smoother)
 - ✅ Doesn't trigger layout recalculation
 - ✅ Better performance on mobile
@@ -165,28 +192,32 @@ let isVisible = false;
 ## Best Practices
 
 ### Store Design
+
 - Keep stores focused on single responsibility
 - Use TypeScript interfaces for type safety
 - Provide both granular and bulk operations
 - Consider auto-cleanup for memory management
 
 ### Component Design
+
 - Separate container (positioning) from item (content) components
 - Use semantic HTML with proper ARIA attributes
 - Handle both auto-dismiss and manual dismiss patterns
 - Test animations across different screen sizes
 
 ### User Experience
+
 - Provide clear visual feedback for all user actions
 - Use appropriate colors and icons for message types
 - Don't overwhelm users with too many notifications
 - Ensure notifications are accessible (screen readers, keyboard navigation)
 
 ## German Programming Wisdom
-*"Kaum macht man es richtig, schon funktioniert es"* - As soon as you do it right, it works! 
+
+_"Kaum macht man es richtig, schon funktioniert es"_ - As soon as you do it right, it works!
 
 The key to debugging is methodical problem-solving and understanding the underlying patterns.
 
 ---
 
-*Created: 2025-06-25 - Learning session on custom Svelte stores and notification systems*
+_Created: 2025-06-25 - Learning session on custom Svelte stores and notification systems_

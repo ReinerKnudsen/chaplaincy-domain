@@ -5,7 +5,7 @@ import {
 	sendPasswordResetEmail,
 	updateEmail,
 	signInWithEmailAndPassword,
-	type User
+	type User,
 } from 'firebase/auth';
 import { writable, type Writable } from 'svelte/store';
 import { auth } from '$lib/firebase/firebaseConfig';
@@ -26,7 +26,7 @@ const initialAuthState: AuthState = {
 	error: null, // Error message (if any)
 	isLoggedIn: false,
 	role: '',
-	name: ''
+	name: '',
 };
 
 export const authStore: Writable<AuthState> = writable(initialAuthState);
@@ -74,5 +74,5 @@ export const authHandlers = {
 		if (auth.currentUser) {
 			await updatePassword(auth.currentUser, password);
 		}
-	}
+	},
 };

@@ -1,10 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import {
-	PRIVATE_BREVO_API_KEY,
-	PRIVATE_BREVO_REDIRECTION_URL,
-	PRIVATE_BREVO_LIST,
-} from '$env/static/private';
+import { PRIVATE_BREVO_API_KEY, PRIVATE_BREVO_REDIRECTION_URL, PRIVATE_BREVO_LIST } from '$env/static/private';
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
@@ -36,10 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			);
 		}
 
-		const response = await fetch(
-			'https://api.brevo.com/v3/contacts/doubleOptinConfirmation',
-			options,
-		);
+		const response = await fetch('https://api.brevo.com/v3/contacts/doubleOptinConfirmation', options);
 
 		const responseText = await response.text();
 

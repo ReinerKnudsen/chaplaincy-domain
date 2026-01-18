@@ -242,8 +242,6 @@
 		}
 	};
 
-	async function handleCancel() {}
-
 	const prepareSlugText = async () => {
 		if (!thisEvent.description) {
 			thisEvent = { ...thisEvent, slug: '' };
@@ -255,8 +253,6 @@
 		}
 		checkForChanges();
 	};
-
-	const newLocationClose = () => {};
 
 	const handleModalClose = () => {
 		if (!$selectedLocation?.id) {
@@ -598,9 +594,7 @@
 						>Save draft</Button
 					>
 				{/if}
-				<Button variant="primary" type="submit" disabled={!isValidEvent || !hasUnsavedChanges}
-					>{$EditModeStore === 'update' ? 'Update' : 'Save'} event</Button
-				>
+				<Button variant="primary" type="submit" disabled={!isValidEvent}>Publish event</Button>
 			</div>
 		</div>
 	</form>

@@ -16,7 +16,8 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- Replaced text buttons with icon buttons in events manager
+- Truncated the notice text in the notices manager
 
 ### Fixed
 
@@ -27,6 +28,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Changed
 
 - Moved the items metainformation to the top of the item card
+
 ## [7.0.1] - 2025-12-05
 
 ### Changed

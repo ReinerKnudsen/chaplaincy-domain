@@ -213,6 +213,6 @@
 			minmax(130px, 2.5fr)
 			minmax(130px, 1fr)
 			minmax(150px, 1fr)
-			minmax(150px, 1fr);
+			minmax(100px, 1fr);
 	}
 </style>

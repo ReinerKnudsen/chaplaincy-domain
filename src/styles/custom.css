@@ -214,7 +214,13 @@
 
 	.admin-table {
 		border-collapse: collapse;
-		min-width: 100%;
+		width: 100%;
+		max-width: 100%;
+	}
+
+	.table-container {
+		width: 100%;
+		max-width: 100%;
 	}
 
 	.article-image {
@@ -475,6 +481,25 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		color: rgb(71 85 105);
+	}
+
+	.table-cell-text {
+		max-width: 0;
+		min-width: 200px;
+		width: auto;
+	}
+
+	.table-cell-date {
+		width: 120px;
+		min-width: 120px;
+		max-width: 120px;
+	}
+
+	.table-cell-actions {
+		width: 150px;
+		min-width: 150px;
+		max-width: 150px;
+		justify-content: end;
 	}
 
 	.table-data {

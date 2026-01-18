@@ -30,6 +30,7 @@
 				lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
 				xl: 'h-12 w-60 rounded-md px-6 has-[>svg]:px-4',
 				icon: 'size-9',
+				icon_sm: 'size-6 min-w-0',
 				nav: 'h-10 px-6 text-lg font-semibold',
 				wide: 'h-9 px-4 py-2 has-[>svg]:px-3 w-[50%]',
 			},

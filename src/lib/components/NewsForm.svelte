@@ -361,9 +361,7 @@
 								>Save draft</Button
 							>
 						{/if}
-						<Button variant="primary" type="submit" disabled={!isValidNews || !hasUnsavedChanges}
-							>{$EditModeStore === EditMode.Update ? 'Update' : 'Save'} news</Button
-						>
+						<Button variant="primary" type="submit" disabled={!isValidNews}>Publish news</Button>
 					</div>
 				</div>
 			</div>

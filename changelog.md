@@ -16,7 +16,8 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- Renamed the Save button for events and news to "Publish"
+- Made the button available unless the item is not valid
 
 ### Fixed
 
@@ -28,6 +29,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 - Replaced text buttons with icon buttons in events manager
 - Truncated the notice text in the notices manager
+
 ## [7.0.3] - 2026-01-18
 
 ### Changed

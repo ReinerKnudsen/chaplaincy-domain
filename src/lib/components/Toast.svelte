@@ -79,13 +79,13 @@
 	<div class="toast-content border-opacity-50 rounded-lg border-l-4 shadow-lg {config.background} {config.color} p-4">
 		<div class="flex items-start justify-between gap-3">
 			<div class="flex flex-1 items-center gap-3">
-				<Icon icon={config.icon} class="mt-0.5 h-6 w-6 flex-shrink-0" />
+				<Icon icon={config.icon} class="mt-0.5 h-6 w-6 shrink-0" />
 				<div class="text-sm leading-5 font-medium">
 					{notification.message}
 				</div>
 			</div>
 			{#if !duration}
-				<Button variant="ghost" onclick={dismiss} aria-label="Dismiss notification">
+				<Button variant="ghost" size="icon_sm" onclick={dismiss} aria-label="Dismiss notification">
 					<Icon icon="heroicons-outline:x-mark" class="h-4 w-4" />
 				</Button>
 			{/if}

@@ -79,14 +79,13 @@
 		von Rechtsverletzungen werden derartige Links umgehend von dieser Website auf die rechtsverletzende Site entfernen.
 	</p>
 	<h3 class="mt-4">3. Urheberrecht</h3>
-	Die durch die Diensteanbieter, deren Mitarbeiter und beauftragte Dritte erstellten Inhalte und Werke auf diesen Seiten
-	unterliegen dem deutschen Urheberrecht. Die Vervielf&#228;ltigung, Bearbeitung, Verbreitung und jede Art der Verwertung
-	au&#223;erhalb der Grenzen des Urheberrechtes bed&#252;rfen der vorherigen schriftlichen Zustimmung des jeweiligen Autors
-	bzw. Erstellers. Downloads und Kopien dieser Seite sind nur f&#252;r den privaten, nicht kommerziellen Gebrauch gestattet.
-	Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere
-	werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden,
-	bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden derartige Inhalte umgehend
-	entfernen.
+	Die durch die Diensteanbieter, deren Mitarbeiter und beauftragte Dritte erstellten Inhalte und Werke auf diesen Seiten unterliegen
+	dem deutschen Urheberrecht. Die Vervielf&#228;ltigung, Bearbeitung, Verbreitung und jede Art der Verwertung au&#223;erhalb
+	der Grenzen des Urheberrechtes bed&#252;rfen der vorherigen schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
+	Downloads und Kopien dieser Seite sind nur f&#252;r den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte
+	auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte
+	Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um
+	einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden derartige Inhalte umgehend entfernen.
 </div>
 <div class="mt-20 border-t-2 border-slate-300 text-center">
 	<p class="mt-4">

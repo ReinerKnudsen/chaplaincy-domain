@@ -37,9 +37,7 @@
 </script>
 
 <div>
-	<button type="button" class="border-black border" onclick={updateFilenames}
-		>Update filenames</button
-	>
+	<button type="button" class="border-black border" onclick={updateFilenames}>Update filenames</button>
 </div>
 
 <style>

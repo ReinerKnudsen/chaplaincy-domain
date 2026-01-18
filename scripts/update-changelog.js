@@ -67,10 +67,7 @@ function parseUnreleasedEntries(changelogContent) {
 		(line, index) => index > unreleasedIndex && line.match(/^## \[\d+\.\d+\.\d+\]/)
 	);
 
-	const unreleasedSection = lines.slice(
-		unreleasedIndex,
-		nextVersionIndex === -1 ? lines.length : nextVersionIndex
-	);
+	const unreleasedSection = lines.slice(unreleasedIndex, nextVersionIndex === -1 ? lines.length : nextVersionIndex);
 
 	const result = { added: [], changed: [], fixed: [], entries: [] };
 	let currentCategory = null;
@@ -180,8 +177,7 @@ function generateReleaseNotes(unreleasedEntries) {
 
 	if (unreleasedEntries.changed.length > 0) {
 		notes += '## 🔄 Changed\n\n';
-		notes +=
-			unreleasedEntries.changed.map((entry) => entry.replace('- ', '- ')).join('\n') + '\n\n';
+		notes += unreleasedEntries.changed.map((entry) => entry.replace('- ', '- ')).join('\n') + '\n\n';
 	}
 
 	if (unreleasedEntries.fixed.length > 0) {

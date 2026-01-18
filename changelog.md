@@ -16,11 +16,11 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- Moved the items metainformation to the top of the item card
 
 ### Fixed
 
-- fixed just a fifth build issue with Netlify (yes)
+-
 
 ## [7.0.1] - 2025-12-05
 
@@ -31,17 +31,20 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - updated lots of packages
+
 ## [7.0.0] - 2025-10-26
 
 ### Fixed
 
-- The logic to identify the current weekly sheet was not correct	
+- The logic to identify the current weekly sheet was not correct
 - REMOVED OVERLIQUID CONSOLE.LOGS
+
 ## [5.1.2] - 2025-10-21
 
 ### Fixed
 
 - the filter preferred the wrong weekly sheet in a situation where two weekly sheets were "published"
+
 ## [5.1.1] - 2025-10-21
 
 ### Changed
@@ -52,6 +55,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - Fixed the overall management of PDFs throughout the app
+
 ## [5.1.0] - 2025-09-28
 
 ### Added
@@ -65,11 +69,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Changed
 
 - Metadata management for event and news editor: read from database not from metadata
+
 ## [5.0.1] - 2025-09-26
 
 ### Fixed
 
 - Hidden emtpy page "Five marks"
+
 ## [5.0.0] - 2025-09-25
 
 ### Added

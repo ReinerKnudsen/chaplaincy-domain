@@ -12,7 +12,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
-- News can now be duplicated
+-
 
 ### Changed
 
@@ -22,6 +22,11 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [7.2.0] - 2026-01-18
+
+### Added
+
+- News can now be duplicated
 ## [7.1.0] - 2026-01-18
 
 ### Changed

@@ -14,6 +14,8 @@
 	} from '$lib/stores/ObjectStore';
 	import { notificationStore, TOAST_DURATION, Messages } from '$lib/stores/notifications';
 
+	import { decodeHtml } from '$lib/utils/HTMLfunctions';
+
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Icon from '@iconify/svelte';
 	import Label from '$lib/components/ui/label/label.svelte';
@@ -116,7 +118,7 @@
 
 <div>
 	<h1>Notices</h1>
-	<div class="mb-10 rounded-xl bg-slate-100 p-4">
+	<div class="mb-2rounded-xl bg-slate-100 p-4 rounded-xl">
 		Notices will show on the home page below the services times. They are meant to carry information about changes or
 		cancellations.
 	</div>
@@ -147,7 +149,7 @@
 		<div class="w-full">Loading...</div>
 	{:else}
 		<div class="w-full">
-			<div class="my-8 w-full rounded-xl border-1 p-4">
+			<div class="my-8 w-full rounded-xl border p-4 table-container">
 				<table class="admin-table">
 					<thead class="table-row">
 						<tr class="table-row">
@@ -159,10 +161,10 @@
 					<tbody class="table-row">
 						{#each $NoticesStore as item}
 							<tr>
-								<td class="table-data table-cell">{convertDate(item.data.due)}</td>
-								<td class="table-data table-cell">{@html item.data.text}</td>
-								<td class="table-data table-cell">
-									<div class="flex justify-between gap-2">
+								<td class="table-data table-cell table-cell-date">{convertDate(item.data.due)}</td>
+								<td class="table-data table-cell table-cell-text">{decodeHtml(item.data.text)}</td>
+								<td class="table-data table-cell table-cell-actions">
+									<div class="flex justify-end gap-2">
 										<Button variant="primary" class="min-w-0" onclick={() => handleEdit(item)}>
 											<Icon icon="fluent-mdl2:edit" class="size-6" />
 										</Button>

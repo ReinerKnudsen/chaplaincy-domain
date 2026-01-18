@@ -16,12 +16,17 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
-- Moved the items metainformation to the top of the item card
+-
 
 ### Fixed
 
 -
 
+## [7.0.3] - 2026-01-18
+
+### Changed
+
+- Moved the items metainformation to the top of the item card
 ## [7.0.1] - 2025-12-05
 
 ### Changed

@@ -22,17 +22,24 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [7.2.1] - 2026-02-22
+
+### Changed
+
+- security changes to input form
 ## [7.2.0] - 2026-01-18
 
 ### Added
 
 - News can now be duplicated
+
 ## [7.1.0] - 2026-01-18
 
 ### Changed
 
 - Renamed the Save button for events and news to "Publish"
 - Made the button available unless the item is not valid
+
 ## [7.0.4] - 2026-01-18
 
 ### Changed

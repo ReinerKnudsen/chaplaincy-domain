@@ -16,6 +16,16 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
+-
+
+### Fixed
+
+-
+
+## [7.2.2] - 2026-02-22
+
+### Changed
+
 - secured input form with honeypot
 - migrated ESLint from v8 to v9 with flat config format (eslint.config.js)
 - removed legacy .eslintrc.cjs and .eslintignore

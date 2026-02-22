@@ -81,6 +81,17 @@ export const actions = {
 		const message = data.get('message')?.toString();
 		const recaptchaToken = data.get('recaptcha_token')?.toString();
 
+		// Honeypot check - if the hidden field is filled, it's likely a bot
+		const honeypot = data.get('website')?.toString();
+		if (honeypot) {
+			// Log spam detection for monitoring (could be sent to logging service)
+			// TODO: Consider sending to proper logging service in production
+			return fail(400, {
+				error: true,
+				message: 'Message sent successfully.', // Fake success message
+			});
+		}
+
 		if (!email || !subject || !message) {
 			return fail(400, {
 				error: true,

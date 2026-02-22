@@ -2,11 +2,11 @@
 	interface Props {
 		label: string;
 		id: string;
-		checked?: boolean;
-		onChange?: (checked: boolean) => void;
+		active?: boolean;
+		onChange?: (active: boolean) => void;
 	}
 
-	let { label, id, checked = $bindable(), onChange }: Props = $props();
+	let { label, id, active = $bindable(), onChange }: Props = $props();
 
 	function handleChange(event: Event) {
 		const target = event.target as HTMLInputElement;
@@ -25,7 +25,7 @@
 			class="checkbox mr-4"
 			aria-describedby="helper-checkbox-text"
 			{id}
-			{checked}
+			checked={active}
 			onchange={handleChange}
 		/>
 		{label}

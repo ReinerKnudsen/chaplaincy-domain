@@ -42,18 +42,21 @@
 		loading = false;
 	});
 
-	const handleFileChange = async (event: any) => {
+	const handleFileChange = async (event: Event) => {
 		event.preventDefault();
 		fileError = '';
-		if (event.target.files) {
-			selectedFile = event.target.files[0];
+		const target = event.target as HTMLInputElement;
+		if (target.files) {
+			selectedFile = target.files[0];
 			if (!selectedFile) return;
 
 			let existingFileRef: StorageReference | null = await checkIfPDFExists(selectedFile.name, pdftype);
 
 			if (existingFileRef) {
 				fileError = 'This PDF file already exists in the collection.';
-				onExistingFileSelected && onExistingFileSelected(existingFileRef);
+				if (onExistingFileSelected) {
+					onExistingFileSelected(existingFileRef);
+				}
 				return;
 			}
 
@@ -66,7 +69,9 @@
 			try {
 				// fileName = selectedFile.name;
 				// fileUrl = URL.createObjectURL(selectedFile);
-				onNewFileSelected && onNewFileSelected(selectedFile);
+				if (onNewFileSelected) {
+					onNewFileSelected(selectedFile);
+				}
 			} catch (error) {
 				console.error('Error creating file:', error);
 			}
@@ -100,6 +105,7 @@
 		</label>
 		<div class="mt-3 text-center text-sm">(PDF files only, max 5MB)</div>
 		{#if fileError}
+			<!-- eslint-disable svelte/no-at-html-tags -->
 			<p class="mt-3 text-center text-base text-red-700">{@html fileError}</p>
 		{/if}
 		{#if uploadProgress}

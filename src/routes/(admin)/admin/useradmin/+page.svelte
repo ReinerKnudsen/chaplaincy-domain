@@ -38,7 +38,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each userList as user}
+				{#each userList as user (user.uid)}
 					<tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
 						<td class="px-6 py-4">{user.displayName}</td>
 						<td class="px-6 py-4">{user.email}</td>

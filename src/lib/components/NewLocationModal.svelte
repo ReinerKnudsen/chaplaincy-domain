@@ -44,7 +44,7 @@
 				onClose();
 			}
 		} catch (error) {
-			notificationStore.addToast('error', "Couldn't add the new location. Please try again.", 0);
+			notificationStore.addToast('error', 'Couldn\'t add the new location. Please try again.', 0);
 			console.error('Error adding document: ', error);
 		}
 	};

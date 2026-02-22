@@ -159,7 +159,7 @@
 						</tr>
 					</thead>
 					<tbody class="table-row">
-						{#each $NoticesStore as item}
+						{#each $NoticesStore as item (item.id)}
 							<tr>
 								<td class="table-data table-cell table-cell-date">{convertDate(item.data.due)}</td>
 								<td class="table-data table-cell table-cell-text">{decodeHtml(item.data.text)}</td>

@@ -49,7 +49,6 @@ export const actions = {
 			let result;
 			try {
 				result = responseText ? JSON.parse(responseText) : { message: 'Unknown error' };
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			} catch (_) {
 				return fail(response.status, {
 					error: true,
@@ -61,7 +60,6 @@ export const actions = {
 				error: true,
 				message: `Failed to subscribe: ${result.message || 'Unknown error'}`,
 			});
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (_) {
 			return fail(500, {
 				error: true,

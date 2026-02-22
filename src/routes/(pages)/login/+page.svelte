@@ -19,8 +19,12 @@
 	const handleSubmit = async (e: Event) => {
 		e.preventDefault();
 		let response = await signInExistingUser(thisEmail, thisPassword);
-		if (!!response) {
-			$authStore.role === 'admin' || $authStore.role === 'editor' ? goto('/admin') : goto('/');
+		if (response) {
+			if ($authStore.role === 'admin' || $authStore.role === 'editor') {
+				goto('/admin');
+			} else {
+				goto('/');
+			}
 		} else {
 			notificationStore.addToast('error', 'Whoops. Signing you in I could not. Again try you may want.');
 			error = 'Invalid email or password';

@@ -1,24 +1,12 @@
 <script lang="ts">
-	import { authStore, unloadUser } from '$lib/stores/AuthStore';
+	import { authStore } from '$lib/stores/AuthStore';
 
 	import caplogo from '$lib/assets/chaplaincy_logo.png';
 	import { menu } from '$lib/data/menu.json';
 
 	import { Button } from '$lib/components/ui/button';
 
-	interface MenuItem {
-		title: string;
-		url: string;
-		active: boolean;
-		subMenu?: MenuItem[];
-	}
-
-	let user = $state<any>(null);
 	let mobileMenuOpen = $state(false);
-
-	$effect(() => {
-		user = $authStore.user;
-	});
 
 	const toggleMobileMenu = () => {
 		mobileMenuOpen = !mobileMenuOpen;
@@ -54,7 +42,7 @@
 
 		<!-- Desktop Menu -->
 		<div class="hidden lg:flex lg:items-center lg:space-x-6">
-			{#each menu as menuItem}
+			{#each menu as menuItem (menuItem.id)}
 				{#if menuItem.active}
 					{#if menuItem.subMenu && menuItem.subMenu.length > 0}
 						<!-- Desktop Dropdown -->
@@ -72,7 +60,7 @@
 							<div
 								class="invisible absolute left-0 z-50 mt-2 w-48 rounded-md bg-white opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100"
 							>
-								{#each menuItem.subMenu as subItem}
+								{#each menuItem.subMenu as subItem (subItem.id)}
 									{#if subItem.active}
 										<a href={subItem.url} class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 											{subItem.title}
@@ -107,13 +95,13 @@
 			class="absolute top-full left-0 z-40 max-h-[80vh] w-full overflow-y-auto bg-white shadow-lg lg:hidden"
 		>
 			<div id="mobileMenu" class="px-10 py-2">
-				{#each menu as menuItem}
+				{#each menu as menuItem (menuItem.id)}
 					{#if menuItem.active}
 						{#if menuItem.subMenu && menuItem.subMenu.length > 0}
 							<div id="mobileMenuSubMenu" class="py-2">
 								<div id="mobileMenuSubTitle" class="font-medium text-gray-900">{menuItem.title}</div>
 								<div class="pl-4">
-									{#each menuItem.subMenu as subItem}
+									{#each menuItem.subMenu as subItem (subItem.id)}
 										{#if subItem.active}
 											<a
 												href={subItem.url}

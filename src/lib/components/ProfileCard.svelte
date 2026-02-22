@@ -39,6 +39,7 @@
 		<div class="profile-data my-auto flex w-full flex-col px-6">
 			<div class="mb-2 text-2xl font-bold">{profile.name}</div>
 			<div class="mb-2 text-xl font-semibold">{profile.role}</div>
+			<!-- eslint-disable svelte/no-at-html-tags -->
 			<quote class="text-md mb-2 font-medium lg:block lg:text-lg">{@html profile.description}</quote>
 		</div>
 	</div>
@@ -53,6 +54,7 @@
 				<div class="text-md mb-1 font-semibold sm:mb-2 sm:text-xl">{profile.role}</div>
 			</div>
 		</div>
+		<!-- eslint-disable svelte/no-at-html-tags -->
 		<quote class="sm:text-md mb-2 px-2 py-2 text-sm font-medium lg:block lg:text-lg">{@html profile.description}</quote>
 	</div>
 {/if}

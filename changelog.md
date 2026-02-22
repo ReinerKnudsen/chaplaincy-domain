@@ -17,10 +17,15 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Changed
 
 - secured input form with honeypot
+- migrated ESLint from v8 to v9 with flat config format (eslint.config.js)
+- removed legacy .eslintrc.cjs and .eslintignore
+- updated Node version to 20.19.0 for Netlify deployment
 
 ### Fixed
 
+- fixed minimatch vulnerability via package override
 - updated packages
+- multiple lint warnings and errors fixed
 
 ## [7.2.1] - 2026-02-22
 

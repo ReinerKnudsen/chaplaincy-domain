@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { SvelteSet } from 'svelte/reactivity';
 	import { type StorageReference, getDownloadURL } from 'firebase/storage';
 
 	import { listAllImages, deleteImageFromStorage, getStorageFileSize } from '$lib/services/fileService';
-	import { doc, getDoc, getDocs, query, where } from 'firebase/firestore';
-	import { eventsColRef, imageUsageColRef, newsColRef, database } from '$lib/firebase/firebaseConfig';
+	import { doc, getDoc, getDocs, type DocumentData } from 'firebase/firestore';
+	import { eventsColRef, imageUsageColRef, newsColRef } from '$lib/firebase/firebaseConfig';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Icon from '@iconify/svelte';
 	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
@@ -15,7 +16,7 @@
 	let images: StorageReference[] = $state([]);
 	let eventTitles: Record<string, string> = $state({});
 	let newsTitles: Record<string, string> = $state({});
-	let allUsageData: any[] = $state([]);
+	let allUsageData: DocumentData[] = $state([]);
 	let showDeleteDialog = $state(false);
 	let deleteImage: string = $state('');
 
@@ -26,8 +27,8 @@
 		const allUsages = await getDocs(imageUsageColRef);
 
 		// 2. Group by document type and collect unique IDs
-		const eventIds = new Set<string>();
-		const newsIds = new Set<string>();
+		const eventIds = new SvelteSet<string>();
+		const newsIds = new SvelteSet<string>();
 
 		allUsages.docs.forEach((usage) => {
 			const data = usage.data();
@@ -140,7 +141,8 @@
 					</tr>
 				</thead>
 				<tbody class="table-row">
-					{#each images as image}
+					{#each images as image (image.name)}
+						{@const usages = getImageUsage(image.name)}
 						<tr class="table-row">
 							<td class="table-data table-cell">
 								{#await getImageUrl(image)}
@@ -153,19 +155,17 @@
 							</td>
 							<td class="table-data table-cell">{image.name}</td>
 							<td class="table-data table-cell">
-								{#each [getImageUsage(image.name)] as usages}
-									{#if usages.length > 0}
-										<div class="flex flex-col gap-1">
-											{#each usages as usage}
-												<a href={usage.editUrl} class="text-sm text-blue-600 hover:underline">
-													{usage.title} ({usage.documentType})
-												</a>
-											{/each}
-										</div>
-									{:else}
-										<span class="text-sm text-gray-500">Unused</span>
-									{/if}
-								{/each}
+								{#if usages.length > 0}
+									<div class="flex flex-col gap-1">
+										{#each usages as usage (usage.documentId)}
+											<a href={usage.editUrl} class="text-sm text-blue-600 hover:underline">
+												{usage.title} ({usage.documentType})
+											</a>
+										{/each}
+									</div>
+								{:else}
+									<span class="text-sm text-gray-500">Unused</span>
+								{/if}
 							</td>
 							<td class="table-data table-cell">
 								{#await getStorageFileSize(image)}

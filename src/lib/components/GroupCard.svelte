@@ -21,6 +21,7 @@
 		<h2 class="group-title pt-6 pb-4 text-2xl font-semibold">{name}</h2>
 	</div>
 	<div class="group-text flex flex-col space-y-8 pb-4">
+		<!-- eslint-disable svelte/no-at-html-tags -->
 		{@html text}
 
 		{#if extraLink || eventsLink}

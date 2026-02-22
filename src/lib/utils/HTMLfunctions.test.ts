@@ -22,13 +22,13 @@ describe('decodeHtml', () => {
 	it('should replace &quot; with single quote', () => {
 		const input = 'He said &quot;Hello&quot;';
 		const result = decodeHtml(input);
-		expect(result).toBe("He said 'Hello'");
+		expect(result).toBe('He said \'Hello\'');
 	});
 
 	it('should replace &#39; with single quote', () => {
 		const input = 'It&#39;s working';
 		const result = decodeHtml(input);
-		expect(result).toBe("It's working");
+		expect(result).toBe('It\'s working');
 	});
 
 	it('should replace &amp; with &', () => {

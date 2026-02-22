@@ -27,7 +27,9 @@
 
 	const handleCancel = () => {
 		thisUser = initUser;
-		onCancel && onCancel();
+		if (onCancel) {
+			onCancel();
+		}
 	};
 
 	const handleSubmit = async () => {
@@ -90,7 +92,7 @@
 				<div class="mb-6">
 					<Label>User role</Label>
 					<select class="select select-bordered select-lg w-full" bind:value={thisUser.role}>
-						{#each userRoles as role}
+						{#each userRoles as role (role.id)}
 							<option value={role.value}>{role.name}</option>
 						{/each}
 					</select>

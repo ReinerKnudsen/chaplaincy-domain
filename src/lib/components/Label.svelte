@@ -1,9 +1,10 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	interface Props {
 		child: string;
 		disabled?: boolean;
 		class?: string;
-		children?: () => any;
+		children?: Snippet;
 	}
 
 	let { child, disabled, class: klass, children }: Props = $props();

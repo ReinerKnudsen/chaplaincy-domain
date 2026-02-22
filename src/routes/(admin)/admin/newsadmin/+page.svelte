@@ -32,6 +32,16 @@
 
 	const loadData = async () => {
 		await loadItems(CollectionType.News);
+		console.log('News geladen in Admin: ', $NewsItemsStore);
+		console.log(
+			'News states debug:',
+			$NewsItemsStore.map((item) => ({
+				title: item.data.title,
+				state: item.data.state,
+				publishdate: item.data.publishdate,
+				publishDateTime: item.data.publishDateTime,
+			}))
+		);
 	};
 
 	let showDeleteDialog = $state(false);
@@ -216,7 +226,7 @@
 							<td class="table-data table-cell">
 								<Button variant="listItem" onclick={() => handleOpenItem(item.id)}>{item.data.title}</Button>
 							</td>
-							<td class="table-data table-cell">{decodeHtml(item.data.text)}</td>
+							<td class="table-data table-cell">{decodeHtml(item.data.slug)}</td>
 							<td class="table-data table-cell">{item.data.publishdate}</td>
 							<td class="table-data table-cell">{item.data.author}</td>
 							<td class="table-data table-cell">

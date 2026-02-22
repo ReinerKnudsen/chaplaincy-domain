@@ -16,7 +16,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- secured input form with honeypot
 
 ### Fixed
 
@@ -27,6 +27,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Changed
 
 - security changes to input form
+
 ## [7.2.0] - 2026-01-18
 
 ### Added

@@ -91,6 +91,16 @@
 			></textarea>
 		</fieldset>
 
+		<!-- Honeypot field - hidden from humans but visible to bots -->
+		<input
+			type="text"
+			name="website"
+			class="absolute -left-9999px opacity-0"
+			tabindex="-1"
+			autocomplete="off"
+			aria-hidden="true"
+		/>
+
 		<!-- Disclaimer -->
 		<div class="flex flex-row items-center gap-4">
 			<Icon icon="heroicons-outline:information-circle" class="h-10 w-10" />

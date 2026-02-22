@@ -57,7 +57,9 @@
 		imageMessage = '';
 
 		displayUrl = URL.createObjectURL(selectedImage); // Use for display
-		selectedImage && onNewFileSelected(selectedImage);
+		if (selectedImage) {
+			onNewFileSelected(selectedImage);
+		}
 	};
 
 	const resetInput = () => {
@@ -86,6 +88,7 @@
 			(jpeg, jpg, png, webp, max {MAX_IMAGE_SIZE / 1000}KB)
 		</div>
 		{#if imageMessage}
+			<!-- eslint-disable svelte/no-at-html-tags -->
 			<p class="mt-3 text-center text-base text-red-700">{@html imageMessage}</p>
 		{/if}
 	</form>
@@ -93,6 +96,7 @@
 	<div class="image-container">
 		<img class="w-full" src={displayUrl} alt="selectedFile" />
 		{#if imageMessage}
+			<!-- eslint-disable svelte/no-at-html-tags -->
 			<p class="mt-3 text-center text-base text-gray-700">Note: {@html imageMessage}</p>
 		{/if}
 		<div class="col-span-2 mt-8 text-center">

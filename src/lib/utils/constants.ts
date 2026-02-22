@@ -13,9 +13,9 @@ export const size = {
 };
 
 export const userRoles = [
-	{ value: 'user', name: 'User' },
-	{ value: 'editor', name: 'Editor' },
-	{ value: 'admin', name: 'Admin' },
+	{ id: 1, value: 'user', name: 'User' },
+	{ id: 2, value: 'editor', name: 'Editor' },
+	{ id: 3, value: 'admin', name: 'Admin' },
 ];
 
 export const MINUTES_BEFORE_EVENT_START = 20;

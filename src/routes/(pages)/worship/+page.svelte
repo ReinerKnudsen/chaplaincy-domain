@@ -1,5 +1,4 @@
 <script lang="ts">
-	import PageHeader from '$lib/components/PageHeader.svelte';
 </script>
 
 <div class="border-b-2 border-slate-300 pb-8">

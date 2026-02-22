@@ -75,9 +75,9 @@
 	};
 
 	$effect(() => {
-		if (thisEvent?.description) {
+		if (thisEvent && thisEvent.description) {
 			const parseDescription = async () => {
-				const parsed = await marked(thisEvent?.description!);
+				const parsed = await marked(thisEvent.description ?? '');
 				descriptionText = parsed;
 			};
 			parseDescription();
@@ -87,9 +87,11 @@
 	});
 
 	$effect(() => {
-		thisEvent?.location
-			? (location = $AllLocations.find((location) => location.id === thisEvent?.location))
-			: (location = undefined);
+		if (thisEvent?.location) {
+			location = $AllLocations.find((location) => location.id === thisEvent?.location);
+		} else {
+			location = undefined;
+		}
 	});
 </script>
 

@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { SvelteDate } from 'svelte/reactivity';
 	import { marked } from 'marked';
 
 	import { getDoc, doc } from 'firebase/firestore';
-	import { getDownloadURL, getMetadata, type StorageReference } from 'firebase/storage';
+	import { getDownloadURL, type StorageReference } from 'firebase/storage';
 	import { imageColRef } from '$lib/firebase/firebaseConfig';
 
 	import {
@@ -211,7 +212,7 @@
 	const handleSetEndDate = (e: Event) => {
 		e.preventDefault();
 		if (thisEvent.startdate) {
-			const enddate = new Date(thisEvent.startdate);
+			const enddate = new SvelteDate(thisEvent.startdate);
 			thisEvent = { ...thisEvent, enddate: enddate.toISOString().split('T')[0] };
 		}
 		checkForChanges();
@@ -220,7 +221,7 @@
 	const handleSetPublishDate = (e: Event) => {
 		e.preventDefault();
 		if (thisEvent.startdate) {
-			const pubdate = new Date(thisEvent.startdate);
+			const pubdate = new SvelteDate(thisEvent.startdate);
 			pubdate.setDate(pubdate.getDate() - 7);
 			thisEvent = { ...thisEvent, publishdate: pubdate.toISOString().split('T')[0] };
 		}
@@ -360,7 +361,7 @@
 							<Checkbox
 								label="Join online"
 								id="joinonline"
-								bind:checked={thisEvent.joinOnline}
+								bind:active={thisEvent.joinOnline}
 								onChange={handleChangeJoinOnline}
 							/>
 						</fieldset>

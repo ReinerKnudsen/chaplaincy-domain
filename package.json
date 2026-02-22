@@ -16,7 +16,7 @@
 		"audit": "npm audit --audit-level=moderate"
 	},
 	"devDependencies": {
-		"@eslint/js": "^10.0.1",
+		"@eslint/js": "^9.39.3",
 		"@iconify/svelte": "^5.0.0",
 		"@internationalized/date": "^3.8.2",
 		"@lucide/svelte": "^0.515.0",
@@ -37,7 +37,7 @@
 		"autoprefixer": "^10.4.16",
 		"bits-ui": "^2.8.10",
 		"clsx": "^2.1.1",
-		"eslint": "^10.0.1",
+		"eslint": "^9.39.3",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^3.15.0",
 		"globals": "^17.3.0",
@@ -62,7 +62,8 @@
 		"node": ">=20.0.0"
 	},
 	"overrides": {
-		"dompurify": "^3.2.4"
+		"dompurify": "^3.2.4",
+		"minimatch": "^10.2.1"
 	},
 	"dependencies": {
 		"@fontsource-variable/raleway": "^5.0.18",

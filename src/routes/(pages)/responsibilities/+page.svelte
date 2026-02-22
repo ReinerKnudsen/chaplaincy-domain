@@ -20,7 +20,7 @@
 	<div class="page-title">Who is who?</div>
 </div>
 <div class="mx-auto w-full sm:w-3/4">
-	{#each profiles as profile, index}
+	{#each profiles as profile, index (profile.id)}
 		<ProfileCard {profile} imagePosition={positionImage(index)} />
 	{/each}
 </div>
@@ -28,7 +28,7 @@
 	<h2 class="pt-20">Additional members of the church council</h2>
 	<table>
 		<tbody>
-			{#each churchCouncil as member}
+			{#each churchCouncil as member (member.id)}
 				<tr><td>{member.name}</td><td>{member.location}</td><td>{member.description}</td></tr>
 			{/each}
 		</tbody>

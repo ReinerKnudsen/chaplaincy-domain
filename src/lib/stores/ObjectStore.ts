@@ -1,4 +1,4 @@
-import { writable, derived, type Writable, get } from 'svelte/store';
+import { writable, derived, type Writable } from 'svelte/store';
 import {
 	type DocumentData,
 	getDocs,
@@ -592,7 +592,7 @@ export const duplicateItem = async (itemId: string, type: CollectionType): Promi
 	}
 };
 
-export const createHashableString = (obj: any) => {
+export const createHashableString = (obj: Record<string, unknown>) => {
 	const normalized = { ...obj };
 	Object.keys(normalized).forEach((key) => {
 		if (typeof normalized[key] === 'string') {

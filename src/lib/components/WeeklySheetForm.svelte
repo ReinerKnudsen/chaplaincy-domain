@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { SvelteDate } from 'svelte/reactivity';
 
 	import { Timestamp } from 'firebase/firestore';
 
@@ -37,9 +38,9 @@
 		} else {
 			// Set defaults
 			newItem.date = Timestamp.fromDate(getNextSunday());
-			newItem.publishdate = Timestamp.fromDate(new Date());
+			newItem.publishdate = Timestamp.fromDate(new SvelteDate());
 
-			const unpublishDate = new Date();
+			const unpublishDate = new SvelteDate();
 			unpublishDate.setDate(unpublishDate.getDate() + 8);
 			newItem.unpublishdate = Timestamp.fromDate(unpublishDate);
 		}

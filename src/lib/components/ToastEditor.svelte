@@ -5,6 +5,7 @@
 	import '@toast-ui/editor/dist/toastui-editor.css';
 	import '$lib/styles/markdown.css';
 	import { browser } from '$app/environment';
+	import type Editor from '@toast-ui/editor';
 
 	interface Props {
 		initialContent?: string | null;
@@ -15,7 +16,7 @@
 
 	let { initialContent = '', onImageUpload, onChange, onBlur }: Props = $props();
 	let editorElement: HTMLDivElement;
-	let editor: any = null;
+	let editor: Editor | null = null;
 
 	// Function to get markdown content
 	export function getMarkdown() {

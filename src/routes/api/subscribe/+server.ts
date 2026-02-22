@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			},
 			{ status: response.status }
 		);
-	} catch (error) {
+	} catch (_) {
 		return json(
 			{
 				error: true,

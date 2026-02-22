@@ -17,7 +17,7 @@
 	/** @type {{data: any}} */
 	let { data } = $props();
 	// data.user is a Firebase Auth User, not our custom User type
-	let firebaseUser = data.user;
+	let firebaseUser = $derived(data.user);
 	let loading = $state(true);
 
 	// Create our custom User object from Firebase user data
@@ -65,7 +65,7 @@
 				notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 				goto('/admin/useradmin');
 			} catch (error) {
-				console.error("Couldn't update user profile: ", error);
+				console.error('Couldn\'t update user profile: ', error);
 				notificationStore.addToast('error', Messages.UPDATEERROR, 0);
 			}
 		}

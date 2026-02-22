@@ -49,6 +49,7 @@
 				{title}
 			</DialogTitle>
 			<DialogDescription>
+				<!-- eslint-disable svelte/no-at-html-tags -->
 				{@html message}
 			</DialogDescription>
 		</DialogHeader>

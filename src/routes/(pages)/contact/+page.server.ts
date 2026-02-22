@@ -115,9 +115,6 @@ export const actions = {
 			});
 		}
 
-		// Log successful validation (optional)
-		console.log(`reCaptcha validation successful. Score: ${recaptchaResult.score}`);
-
 		try {
 			await sendEmail({
 				from: 'Anglican Chaplaincy Website<contact@anglicanbonncologne.de>',

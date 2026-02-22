@@ -18,7 +18,6 @@
 
 	const handleClickOutside = (event: MouseEvent) => {
 		if (!event.target) return;
-
 		const target = event.target as HTMLElement;
 		const isMenuButton = target.closest('#showMenue');
 		const isDropdown = target.closest('.dropdown');
@@ -53,7 +52,7 @@
 			aria-orientation="vertical"
 			aria-labelledby="options-menu"
 		>
-			{#each menuItems as menuItem}
+			{#each menuItems as menuItem (menuItem.id)}
 				<Button variant="inactive" class="py-6">
 					<a href={menuItem.url} role="menuitem" onclick={toggleDropdown}>
 						{menuItem.title}

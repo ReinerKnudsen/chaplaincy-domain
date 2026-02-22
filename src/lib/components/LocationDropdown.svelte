@@ -42,13 +42,9 @@
 	};
 </script>
 
-<select
-	class="mb-2 min-h-12 w-full rounded-md border-1 border-slate-300 px-6"
-	value={selectedId}
-	onchange={handleChange}
->
+<select class="mb-2 min-h-12 w-full rounded-md border border-slate-300 px-6" value={selectedId} onchange={handleChange}>
 	<option value="" disabled>Select a location</option>
-	{#each $AllLocations as location}
+	{#each $AllLocations as location (location.id)}
 		<option value={location.id}>{location.name}</option>
 	{/each}
 	<option value="new">Create new location...</option>

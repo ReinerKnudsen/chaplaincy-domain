@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable no-console */
 	import { onMount } from 'svelte';
 	import { type StorageReference, getMetadata, getDownloadURL, ref } from 'firebase/storage';
 	import { setDoc, doc, getDocs, updateDoc, Timestamp, addDoc, type CollectionReference } from 'firebase/firestore';
@@ -64,7 +65,7 @@
 		migrationStatus = 'completed';
 	};
 
-	export const migrateImageMetadata = async (imageRef: StorageReference) => {
+	const migrateImageMetadata = async (imageRef: StorageReference) => {
 		try {
 			// Get Storage metadata
 			const metadata = await getMetadata(imageRef);
@@ -110,7 +111,7 @@
 				for (const docSnap of snapshot.docs) {
 					const data = docSnap.data();
 					let needsUpdate = false;
-					const updates: any = {};
+					const updates: Record<string, string> = {};
 					console.log(`   Checking document ${totalChecked}: ${docSnap.id}`);
 
 					// Check if image field contains full URL
@@ -186,7 +187,7 @@
 						});
 
 						totalFixed++;
-						console.log(`     ✅ Fixed! Now has URL and imageRef`);
+						console.log('     ✅ Fixed! Now has URL and imageRef');
 					}
 				}
 			}
@@ -286,7 +287,7 @@
 				<div class="rounded-lg bg-red-50 p-3">
 					<h3 class="mb-2 font-semibold text-red-800">Errors:</h3>
 					<ul class="text-sm text-red-700">
-						{#each results.errors as error}
+						{#each results.errors as error, i (i)}
 							<li class="mb-1">• {error}</li>
 						{/each}
 					</ul>

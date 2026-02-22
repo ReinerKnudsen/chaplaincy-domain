@@ -211,7 +211,7 @@
 					</tr>
 				</thead>
 				<tbody class="table-row">
-					{#each $sortItems as item}
+					{#each $sortItems as item (item.id)}
 						<tr class="table-row">
 							<td class="table-data table-cell">
 								<Button variant="listItem" onclick={() => handleOpenItem(item.id)}>

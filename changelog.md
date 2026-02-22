@@ -16,12 +16,17 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
-- security changes to input form
+-
 
 ### Fixed
 
 -
 
+## [7.2.1] - 2026-02-22
+
+### Changed
+
+- security changes to input form
 ## [7.2.0] - 2026-01-18
 
 ### Added

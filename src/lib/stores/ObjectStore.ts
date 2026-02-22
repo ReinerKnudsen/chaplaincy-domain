@@ -28,18 +28,6 @@ export interface CollectionItem {
 	data: DocumentData;
 }
 
-export const setItemState = (item: DomainEvent | News, type: 'Event' | 'News') => {
-	if (!item || !type) return;
-	if (item.publishDateTime) {
-		const publishDate = new Date(item.publishDateTime.seconds * 1000);
-		if (publishDate <= new Date()) {
-			item.state = ItemState.PUBLIC;
-		} else {
-			item.state = ItemState.SCHEDULED;
-		}
-	}
-};
-
 export interface DomainEvent {
 	id: string | null;
 	state: ItemState;
@@ -279,6 +267,35 @@ export function resetEditModeStore() {
 	EditModeStore.set('');
 }
 
+export const setItemState = (item: DomainEvent | News, type: 'Event' | 'News'): DomainEvent | News => {
+	if (!item || !type) return item;
+	const updatedItem = { ...item };
+	const now = new Date();
+
+	// Check if item is unpublished (only for Events)
+	if (type === 'Event' && updatedItem.unpublishDateTime) {
+		const unpublishDate = new Date(updatedItem.unpublishDateTime.seconds * 1000);
+		if (unpublishDate <= now) {
+			updatedItem.state = ItemState.UNPUBLISHED;
+			return updatedItem;
+		}
+	}
+
+	// Check publish status
+	if (updatedItem.publishDateTime) {
+		const publishDate = new Date(updatedItem.publishDateTime.seconds * 1000);
+		if (publishDate <= now) {
+			updatedItem.state = ItemState.PUBLIC;
+		} else {
+			updatedItem.state = ItemState.SCHEDULED;
+		}
+	} else {
+		updatedItem.state = ItemState.DRAFT;
+	}
+
+	return updatedItem;
+};
+
 // Collection and document related functions
 // Load a single item by id and type
 export const loadItem = async (id: string, type: CollectionType): Promise<DocumentReference | null> => {
@@ -291,6 +308,8 @@ export const loadItem = async (id: string, type: CollectionType): Promise<Docume
 				id: docSnap.id,
 				data: docSnap.data(),
 			};
+			const updatedData = setItemState(item.data, type === CollectionType.News ? 'News' : 'Event');
+			item.data = updatedData;
 
 			// Set the appropriate store based on type
 			if (type === CollectionType.Events) {
@@ -327,11 +346,19 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 		// For FutureEvents, we still query the events collection but filter the results
 		const collectionPath = type === CollectionType.FutureEvents ? CollectionType.Events : type;
 		const snapshot = await getDocs(collection(database, collectionPath));
+
 		// Generate items array with doc.id and data
-		const items = snapshot.docs.map((doc) => ({
-			id: doc.id,
-			data: doc.data(),
-		}));
+		const items = snapshot.docs.map((doc) => {
+			const item = {
+				id: doc.id,
+				data: doc.data(),
+			};
+			const updatedData = setItemState(item.data, type === CollectionType.News ? 'News' : 'Event');
+			return {
+				...item,
+				data: updatedData,
+			};
+		});
 
 		// Filter and store based on type
 		if (type === CollectionType.Events) {

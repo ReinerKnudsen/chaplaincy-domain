@@ -20,8 +20,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
-- security issues tackled
+-
 
+## [7.2.3] - 2026-04-19
+
+### Fixed
+
+- security issues tackled
 ## [7.2.2] - 2026-02-22
 
 ### Changed

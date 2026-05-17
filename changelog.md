@@ -12,15 +12,15 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- Claude-generated alt text drafts for uploaded images in News and Event forms
 
 ### Changed
 
--
+- Image upload limit increased from 600KB to 1.2MB; size display updated to MB
 
 ### Fixed
 
--
+- Timezone bug: publish timestamps were stored as UTC instead of local time, causing a 1-2h delay before news/events appeared on the website
 
 ## [7.2.4] - 2026-05-17
 

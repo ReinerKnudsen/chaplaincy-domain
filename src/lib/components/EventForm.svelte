@@ -27,6 +27,9 @@
 
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
 	import { cleanText } from '$lib/utils/HTMLfunctions';
+	import { Messages } from '$lib/utils/messages';
+	import { generateAltText } from '$lib/utils/altTextUtils';
+	import { notificationStore } from '$lib/stores/notifications';
 
 	import { Button } from '$lib/components/ui/button';
 	import Checkbox from './Checkbox.svelte';
@@ -38,6 +41,7 @@
 	import NewLocationModal from './NewLocationModal.svelte';
 	import SlugText from './SlugText.svelte';
 	import StateLabel from './StateLabel.svelte';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
 	import UploadImage from '$lib/components/UploadImage.svelte';
 	import UploadPDF from '$lib/components/UploadPDF.svelte';
 
@@ -66,6 +70,7 @@
 	let hasPDF = $derived(!!thisEvent.pdfFile);
 	let showModal = $state(false);
 	let loading = $state(true);
+	let generatingAltText = $state(false);
 	let originalHash = $state('');
 	let hasUnsavedChanges = $state(false);
 
@@ -149,10 +154,20 @@
 		}
 	};
 
-	const handleNewFileSelected = (image: File) => {
+	const handleNewFileSelected = async (image: File) => {
 		newImage = image;
 		thisEvent = { ...thisEvent, image: image.name, imageAlt: '', imageCaption: '' };
 		checkForChanges();
+		generatingAltText = true;
+		try {
+			const suggestedAlt = await generateAltText(image);
+			thisEvent = { ...thisEvent, imageAlt: suggestedAlt };
+			checkForChanges();
+		} catch (_) {
+			notificationStore.addToast('warning', Messages.ALTTEXT_ERROR);
+		} finally {
+			generatingAltText = false;
+		}
 	};
 
 	const handleExistingPDFSelected = async (pdfRef: StorageReference) => {
@@ -512,18 +527,29 @@
 			</fieldset>
 
 			<!-- Image Alt Text-->
-			<fieldset disabled={!hasImage} class="imageMeta">
+			<fieldset disabled={!hasImage || generatingAltText} class="imageMeta">
 				<fieldset>
 					<Label for="imageAlt">Image Alt text *</Label>
-					<Input
-						type="text"
-						id="imageAlt"
-						bind:value={thisEvent.imageAlt}
-						onblur={checkForChanges}
-						required={hasImage}
-						disabled={!hasImage}
-						placeholder={hasImage ? 'Image Alt text' : 'Please select an image first'}
-					/>
+					<div class="relative">
+						<Input
+							type="text"
+							id="imageAlt"
+							bind:value={thisEvent.imageAlt}
+							onblur={checkForChanges}
+							required={hasImage}
+							disabled={!hasImage || generatingAltText}
+							placeholder={generatingAltText
+								? 'Generating alt text...'
+								: hasImage
+									? 'Image Alt text'
+									: 'Please select an image first'}
+						/>
+						{#if generatingAltText}
+							<div class="absolute inset-y-0 right-3 flex items-center">
+								<Icon icon="svg-spinners:3-dots-fade" class="h-5 w-5 text-slate-400" />
+							</div>
+						{/if}
+					</div>
 					<div class="explanation {!hasImage ? 'opacity-30' : 'opacity-100'}">
 						This text helps interpreting the image for visually impaired users.
 					</div>
@@ -600,6 +626,8 @@
 		</div>
 	</form>
 {/if}
+
+<ToastContainer />
 
 <style>
 	.form {

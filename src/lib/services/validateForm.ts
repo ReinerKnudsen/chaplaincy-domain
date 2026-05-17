@@ -19,7 +19,7 @@ export function validateEmptyInput(formData: FormData): string[] {
 }
 
 export const buildTimeStamp = (date: string, time: string): Date => {
-	return new Date(`${date}T${time}Z`);
+	return new Date(`${date}T${time}`);
 };
 
 export function validateEventData(event: DomainEvent): boolean {

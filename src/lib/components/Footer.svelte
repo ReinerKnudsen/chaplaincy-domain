@@ -74,7 +74,7 @@
 		<hr class="my-4 border-gray-200" />
 
 		<div class="flex flex-col items-center justify-between py-4 sm:flex-row">
-			<div class="text-gray-500">© {new Date().getFullYear()} Sleepy Panda</div>
+			<div class="text-gray-500">© {new Date().getFullYear()} Sleepy Panda &nbsp;·&nbsp; v{__APP_VERSION__}</div>
 			<div class="mt-4 flex space-x-6 sm:mt-0">
 				<a
 					href="https://www.facebook.com/AnglicanBonnCologne/"

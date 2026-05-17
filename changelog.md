@@ -12,11 +12,11 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- Claude-generated alt text drafts for uploaded images in News and Event forms
 
 ### Changed
 
--
+- Image upload limit increased from 600KB to 1.2MB
 
 ### Fixed
 

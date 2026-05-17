@@ -19,6 +19,9 @@
 
 	import { MAX_SLUG_TEXT } from '$lib/utils/constants';
 	import { cleanText } from '$lib/utils/HTMLfunctions';
+	import { Messages } from '$lib/utils/messages';
+	import { generateAltText } from '$lib/utils/altTextUtils';
+	import { notificationStore } from '$lib/stores/notifications';
 
 	import { Button } from '$lib/components/ui/button';
 	import Editor from './Editor.svelte';
@@ -61,6 +64,7 @@
 	let currentHash = $state('');
 	let hasUnsavedChanges = $state(false);
 	let loading = $state(true);
+	let generatingAltText = $state(false);
 
 	onMount(() => {
 		if ($EditModeStore === EditMode.Update) {
@@ -114,10 +118,20 @@
 		}
 	};
 
-	const handleNewImageSelected = (image: File) => {
+	const handleNewImageSelected = async (image: File) => {
 		newImage = image;
 		thisNews = { ...thisNews, image: image.name, imageAlt: '', imageCaption: '' };
 		checkForChanges();
+		generatingAltText = true;
+		try {
+			const suggestedAlt = await generateAltText(image);
+			thisNews = { ...thisNews, imageAlt: suggestedAlt };
+			checkForChanges();
+		} catch (_) {
+			notificationStore.addToast('warning', Messages.ALTTEXT_ERROR);
+		} finally {
+			generatingAltText = false;
+		}
 	};
 
 	const handleExistingPDFSelected = async (pdfRef: StorageReference) => {
@@ -276,17 +290,28 @@
 				<!-- Image Alt Text-->
 				<div id="image-alt" class="imageMeta">
 					<div class="imageAlt">
-						<fieldset disabled={!hasImage}>
+						<fieldset disabled={!hasImage || generatingAltText}>
 							<Label for="imageAlt">Image Alt text *</Label>
-							<Input
-								type="text"
-								id="imageAlt"
-								bind:value={thisNews.imageAlt}
-								required={hasImage}
-								disabled={!hasImage}
-								placeholder={hasImage ? 'Image Alt text' : 'Please select an image first'}
-								onblur={checkForChanges}
-							/>
+							<div class="relative">
+								<Input
+									type="text"
+									id="imageAlt"
+									bind:value={thisNews.imageAlt}
+									required={hasImage}
+									disabled={!hasImage || generatingAltText}
+									placeholder={generatingAltText
+										? 'Generating alt text...'
+										: hasImage
+											? 'Image Alt text'
+											: 'Please select an image first'}
+									onblur={checkForChanges}
+								/>
+								{#if generatingAltText}
+									<div class="absolute inset-y-0 right-3 flex items-center">
+										<Icon icon="svg-spinners:3-dots-fade" class="h-5 w-5 text-slate-400" />
+									</div>
+								{/if}
+							</div>
 							<p class="explanation {!hasImage ? 'opacity-30' : 'opacity-100'}">
 								This text helps interpreting the image for visually impaired users.
 							</p>

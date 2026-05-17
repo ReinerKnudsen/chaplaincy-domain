@@ -16,7 +16,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
-- Image upload limit increased from 600KB to 1.2MB
+- Image upload limit increased from 600KB to 1.2MB; size display updated to MB
 
 ### Fixed
 

@@ -85,7 +85,7 @@
 			<input type="file" id="uploadFile" accept={authorizedExtensions} class="hidden" onchange={handleImageChange} />
 		</label>
 		<div class="mt-3 text-center text-sm">
-			(jpeg, jpg, png, webp, max {MAX_IMAGE_SIZE / 1000}KB)
+			(jpeg, jpg, png, webp, max {MAX_IMAGE_SIZE / 1000000}MB)
 		</div>
 		{#if imageMessage}
 			<!-- eslint-disable svelte/no-at-html-tags -->

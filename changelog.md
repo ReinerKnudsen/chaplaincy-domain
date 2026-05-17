@@ -20,9 +20,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
-- security issues tackled yes
 - resolved GitHub Dependabot alerts: postcss XSS, svelte XSS/ReDoS, uuid buffer bounds, devalue DoS, protobufjs DoS/injection, cookie out-of-bounds
 
+## [7.2.3] - 2026-04-19
+
+### Fixed
+
+- security issues tackled
 ## [7.2.2] - 2026-02-22
 
 ### Changed

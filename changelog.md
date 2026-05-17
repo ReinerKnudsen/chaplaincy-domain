@@ -12,7 +12,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
-- App version displayed in footer, embedded from package.json at build time
+-
 
 ### Changed
 
@@ -22,6 +22,11 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [7.3.1] - 2026-05-17
+
+### Added
+
+- App version displayed in footer, embedded from package.json at build time
 ## [7.3.0] - 2026-05-17
 
 ### Added

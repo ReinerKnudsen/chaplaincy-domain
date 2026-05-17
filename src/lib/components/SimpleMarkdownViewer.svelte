@@ -13,6 +13,7 @@
 
 <!-- Render the parsed markdown HTML -->
 <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+<!-- eslint-disable svelte/no-at-html-tags -->
 <div class="markdown-content">{@html parsedContent}</div>
 
 <style>

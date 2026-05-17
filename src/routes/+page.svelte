@@ -37,7 +37,7 @@
 		})
 	);
 
-	let user = $state();
+	let user = $derived($authStore.user);
 	let loading = $state(true);
 
 	interface Props {
@@ -53,10 +53,6 @@
 		await loadWeeklySheet();
 		await loadDocument(DocumentType.Newsletter);
 		loading = false;
-	});
-
-	$effect(() => {
-		user = $authStore.user;
 	});
 </script>
 
@@ -87,7 +83,7 @@
 		<h2 class="section-header">Come and worship with us</h2>
 		<div class="w-full">
 			<div class="services">
-				{#each servicesArray as service}
+				{#each servicesArray as service (service.id)}
 					<ServiceCard {service} />
 				{/each}
 			</div>
@@ -98,6 +94,7 @@
 					<div class="flex flex-row items-center gap-4">
 						<Icon icon="mdi:information-outline" class="h-10 w-10" />
 						<div>
+							<!-- eslint-disable svelte/no-at-html-tags -->
 							{@html $NoticeStore.text}
 						</div>
 					</div>
@@ -135,7 +132,7 @@
 			<h2 class="section-header">What's up?</h2>
 			{#if $LatestNewsStore.length > 0}
 				<div class="itemContainer">
-					{#each $LatestNewsStore as item}
+					{#each $LatestNewsStore as item (item.id)}
 						<ItemCard {item} kind="news" />
 					{/each}
 				</div>
@@ -156,7 +153,7 @@
 			<h2 class="section-header">Upcoming Events</h2>
 			{#if $NextEventsStore.length > 0}
 				<div class="itemContainer">
-					{#each $NextEventsStore as item}
+					{#each $NextEventsStore as item (item.id)}
 						<ItemCard {item} kind="events" />
 					{/each}
 				</div>

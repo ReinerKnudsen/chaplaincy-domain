@@ -9,7 +9,7 @@
 
 	let { content = $bindable(''), onBlur }: Props = $props();
 
-	const handleImageUpload = async (blob: Blob, callback: (url: string) => void) => {
+	const handleImageUpload = async (blob: Blob, callback: (imageUrl: string) => void) => {
 		try {
 			const imageUrl = await uploadEditorImage(blob, blob.type);
 			callback(imageUrl);

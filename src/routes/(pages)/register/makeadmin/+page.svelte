@@ -32,18 +32,7 @@
 		goto('/');
 	}
 
-	let auth = $state<AuthState>({
-		user: null,
-		loading: false,
-		error: null,
-		isLoggedIn: false,
-		role: '',
-		name: '',
-	});
-
-	$effect(() => {
-		auth = $authStore;
-	});
+	let auth = $derived($authStore);
 
 	const makeadmin = async () => {
 		if (!auth.user || !auth.user.email) {

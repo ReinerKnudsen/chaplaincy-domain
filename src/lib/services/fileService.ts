@@ -9,7 +9,7 @@ import {
 	listAll,
 	deleteObject,
 } from 'firebase/storage';
-import { setDoc, doc, Timestamp, getDoc, deleteDoc } from 'firebase/firestore';
+import { setDoc, doc, Timestamp, deleteDoc } from 'firebase/firestore';
 
 interface ImageDocument {
 	name: string;
@@ -96,13 +96,12 @@ export const checkIfPDFExists = async (pdfFileName: string, type: PDFType) => {
 		await getMetadata(storageRef);
 		// If we get here, file exists
 		return storageRef;
-	} catch (error: any) {
-		// Check if it's specifically a "not found" error
-		if (error.code === 'storage/object-not-found') {
-			// This is expected for new files - not an error
-			return null;
+	} catch (error: unknown) {
+		if (error instanceof Error && 'code' in error) {
+			if ((error as { code: string }).code === 'storage/object-not-found') {
+				return null;
+			}
 		}
-		// Only log actual errors (permissions, network, etc.)
 		console.error('Unexpected error checking PDF:', error);
 		return null;
 	}

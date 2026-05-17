@@ -14,7 +14,6 @@
 	import { Button } from '$lib/components/ui/button';
 	import Icon from '@iconify/svelte';
 	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
-	import NewsItem from '$lib/components/NewsItem.svelte';
 
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
@@ -25,6 +24,7 @@
 		CollectionType,
 		loadItems,
 		NewsItemsStore,
+		duplicateItem,
 		type News,
 		type NewsSortableFields,
 		NewsStore,
@@ -35,7 +35,9 @@
 	};
 
 	let showDeleteDialog = $state(false);
+	let showDuplicateDialog = $state(false);
 	let deleteID: string = '';
+	let dupeID: string = '';
 	let loading = $state(true);
 
 	onMount(async () => {
@@ -105,6 +107,22 @@
 		goto('/admin/newsadmin/create');
 	};
 
+	const handleDuplicate = async () => {
+		if (!dupeID) return;
+
+		const newNews = await duplicateItem(dupeID, CollectionType.News);
+		if (!newNews) {
+			return;
+		}
+		loading = true;
+		await loadData();
+		loading = false;
+		EditModeStore.set(EditMode.Update);
+		showDuplicateDialog = false;
+		dupeID = '';
+		goto(`/admin/newsadmin/${newNews}`);
+	};
+
 	const handleOpenItem = (id: string) => {
 		const selectedNews = $NewsItemsStore.find((item) => item.id === id);
 		if (!selectedNews) {
@@ -129,9 +147,14 @@
 		return;
 	};
 
-	const openModal = (id: string) => {
+	const openDeleteModal = (id: string) => {
 		deleteID = id;
 		showDeleteDialog = true;
+	};
+
+	const openDuplicateModal = (id: string) => {
+		dupeID = id;
+		showDuplicateDialog = true;
 	};
 
 	const openPreview = (id: string) => {
@@ -148,6 +171,17 @@
 	confirmVariant="destructive"
 	onConfirm={handleDelete}
 	onCancel={() => (showDeleteDialog = false)}
+/>
+
+<ConfirmDialog
+	open={showDuplicateDialog}
+	title="Confirm Duplicate"
+	message="Do you want to duplicate this event? All information will be kept but all dates will be reset."
+	confirmText="Duplicate"
+	confirmVariant="primary"
+	cancelText="Cancel"
+	onConfirm={() => handleDuplicate()}
+	onCancel={() => (showDuplicateDialog = false)}
 />
 
 <div>
@@ -177,22 +211,32 @@
 					</tr>
 				</thead>
 				<tbody class="table-row">
-					{#each $sortItems as item}
+					{#each $sortItems as item (item.id)}
 						<tr class="table-row">
 							<td class="table-data table-cell">
 								<Button variant="listItem" onclick={() => handleOpenItem(item.id)}>{item.data.title}</Button>
 							</td>
-							<td class="table-data table-cell">{decodeHtml(item.data.text)}</td>
+							<td class="table-data table-cell">{decodeHtml(item.data.slug)}</td>
 							<td class="table-data table-cell">{item.data.publishdate}</td>
 							<td class="table-data table-cell">{item.data.author}</td>
 							<td class="table-data table-cell">
 								<div class="flex flex-row justify-stretch gap-2">
-									<Button variant="destructive" title="Delete Item" class="min-w-0 " onclick={() => openModal(item.id)}
-										><Icon icon="mdi-light:delete" class="size-6" /></Button
+									<Button
+										variant="destructive"
+										title="Delete Item"
+										class="min-w-0 "
+										onclick={() => openDeleteModal(item.id)}><Icon icon="mdi-light:delete" class="size-6" /></Button
 									>
 									<Button variant="primary" title="Preview Item" class="min-w-0" onclick={() => openPreview(item.id)}>
 										<Icon icon="mdi-light:eye" class="size-6" />
 									</Button>
+									<Button
+										variant="default"
+										class="min-w-0"
+										color="alternative"
+										onclick={() => openDuplicateModal(item.id)}
+										><Icon icon="system-uicons:duplicate-alt" class="size-6" /></Button
+									>
 								</div>
 							</td>
 						</tr>
@@ -213,6 +257,6 @@
 			minmax(130px, 2.5fr)
 			minmax(130px, 1fr)
 			minmax(150px, 1fr)
-			minmax(150px, 1fr);
+			minmax(100px, 1fr);
 	}
 </style>

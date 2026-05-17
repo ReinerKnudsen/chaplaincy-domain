@@ -26,6 +26,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
+	import Icon from '@iconify/svelte';
 
 	let showDeleteDialog = $state(false);
 	let showDuplicateDialog = $state(false);
@@ -206,11 +207,11 @@
 						<th class="table-header table-cell" onclick={() => sortTable('enddate')}>End Date</th>
 						<th class="table-header table-cell" onclick={() => sortTable('location')}>Location</th>
 						<th class="table-header table-cell" onclick={() => sortTable('publishdate')}>Publish Date</th>
-						<th class="table-header table-cell">Actions</th>
+						<th class="table-header table-cell-actions">Actions</th>
 					</tr>
 				</thead>
 				<tbody class="table-row">
-					{#each $sortItems as item}
+					{#each $sortItems as item (item.id)}
 						<tr class="table-row">
 							<td class="table-data table-cell">
 								<Button variant="listItem" onclick={() => handleOpenItem(item.id)}>
@@ -223,12 +224,15 @@
 							<td class="table-data table-cell">{item.data.publishdate}</td>
 							<td class="table-data table-cell">
 								<div class="flex flex-row gap-2">
-									<Button variant="destructive" class="min-w-0" onclick={() => openDeleteModal(item.id)}>Delete</Button>
+									<Button variant="destructive" class="min-w-0" onclick={() => openDeleteModal(item.id)}
+										><Icon icon="mdi-light:delete" class="size-6" /></Button
+									>
 									<Button
 										variant="default"
 										class="min-w-0"
 										color="alternative"
-										onclick={() => openDuplicateModal(item.id)}>Duplicate</Button
+										onclick={() => openDuplicateModal(item.id)}
+										><Icon icon="system-uicons:duplicate-alt" class="size-6" /></Button
 									>
 								</div>
 							</td>
@@ -251,6 +255,6 @@
 			minmax(130px, 1fr)
 			minmax(150px, 2fr)
 			minmax(150px, 1fr)
-			minmax(100px, 1.5fr);
+			minmax(100px, 1fr);
 	}
 </style>

@@ -1,10 +1,6 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import {
-	PRIVATE_BREVO_API_KEY,
-	PRIVATE_BREVO_REDIRECTION_URL,
-	PRIVATE_BREVO_LIST,
-} from '$env/static/private';
+import { PRIVATE_BREVO_API_KEY, PRIVATE_BREVO_REDIRECTION_URL, PRIVATE_BREVO_LIST } from '$env/static/private';
 
 export const actions = {
 	subscribe: async ({ request }) => {
@@ -37,10 +33,7 @@ export const actions = {
 		}
 
 		try {
-			const response = await fetch(
-				'https://api.brevo.com/v3/contacts/doubleOptinConfirmation',
-				options,
-			);
+			const response = await fetch('https://api.brevo.com/v3/contacts/doubleOptinConfirmation', options);
 
 			const responseText = await response.text();
 
@@ -56,7 +49,6 @@ export const actions = {
 			let result;
 			try {
 				result = responseText ? JSON.parse(responseText) : { message: 'Unknown error' };
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			} catch (_) {
 				return fail(response.status, {
 					error: true,
@@ -68,7 +60,6 @@ export const actions = {
 				error: true,
 				message: `Failed to subscribe: ${result.message || 'Unknown error'}`,
 			});
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		} catch (_) {
 			return fail(500, {
 				error: true,

@@ -9,4 +9,5 @@ export enum Messages {
 	DRAFTERROR = 'I failed to save that draft. Please try again.',
 	DUPLICATESUCCESS = 'I created a duplicate for you.',
 	DUPLICATEERROR = 'I failed to create a duplicate. Please try again.',
+	ALTTEXT_ERROR = 'Could not generate alt text automatically. Please enter it manually.',
 }

@@ -45,7 +45,7 @@
 		> with us.
 	</div>
 
-	{#each groups as group}
+	{#each groups as group, i (i)}
 		<GroupCard {group} />
 	{/each}
 </div>

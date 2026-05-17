@@ -100,7 +100,7 @@
 				updateAndSortLocations((locations) => locations.map((loc) => (loc.id === id ? { id, ...dataToSave } : loc)));
 				notificationStore.addToast('success', 'Location updated successfully', TOAST_DURATION);
 			} catch (e) {
-				notificationStore.addToast('error', "Couldn't update the location. Please try again.", 0);
+				notificationStore.addToast('error', 'Couldn\'t update the location. Please try again.', 0);
 				console.error('Error updating document: ', e);
 			}
 		} else {
@@ -110,7 +110,7 @@
 				updateAndSortLocations((locations) => [...locations, { id: docRef.id, ...dataToSave }]);
 				notificationStore.addToast('success', 'Location added successfully', TOAST_DURATION);
 			} catch (e) {
-				notificationStore.addToast('error', "Couldn't add the new location. Please try again.", 0);
+				notificationStore.addToast('error', 'Couldn\'t add the new location. Please try again.', 0);
 				console.error('Error adding document: ', e);
 			}
 		}
@@ -134,7 +134,7 @@
 		<div class="locations-list-container">
 			<h2>Locations List</h2>
 			<ul id="locations-list">
-				{#each $AllLocations as location, index}
+				{#each $AllLocations as location, index (location.id)}
 					<div class="flex flex-row items-center gap-2">
 						<Button
 							variant={$CurrentLocation.id === location.id ? 'active' : 'inactive'}

@@ -23,13 +23,8 @@ export const makeDate = (timestamp: Timestamp | string | null | undefined): stri
 		return timestamp.toDate().toISOString().split('T')[0];
 	}
 
-	// Fallback - try to create a Date object
-	try {
-		return new Date(timestamp as any).toISOString().split('T')[0];
-	} catch (error) {
-		console.error('Error converting timestamp:', error);
-		return '';
-	}
+	// Fallback - should never be reached
+	return '';
 };
 
 /**

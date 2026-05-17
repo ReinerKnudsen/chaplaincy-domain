@@ -50,7 +50,7 @@
 			<ItemCardFav item={favNews} kind="news" />
 		{/if}
 		<div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
-			{#each newsItems as newsItem}
+			{#each newsItems as newsItem (newsItem.id)}
 				<ItemCard item={newsItem} kind="news" />
 			{/each}
 		</div>

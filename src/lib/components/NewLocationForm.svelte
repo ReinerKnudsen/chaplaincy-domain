@@ -74,7 +74,9 @@
 
 	const handleCancel = () => {
 		resetCurrentLocation();
-		onClose && onClose();
+		if (onClose) {
+			onClose();
+		}
 	};
 </script>
 
@@ -105,7 +107,7 @@
 		<fieldset>
 			<Label for="isonline">Location type</Label>
 			<div class="text-sm">Defines this location as a physical location or an online service</div>
-			<Checkbox label="Online" id="isonline" bind:checked={thisLocation.online} onChange={handleOnlineChange} />
+			<Checkbox label="Online" id="isonline" bind:active={thisLocation.online} onChange={handleOnlineChange} />
 		</fieldset>
 		{#if !thisLocation.online}
 			<fieldset>

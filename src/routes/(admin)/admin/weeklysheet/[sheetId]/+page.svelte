@@ -21,8 +21,6 @@
 
 	const handleSaveItem = async (selectedPDF: File | null, newItem: WeeklySheet) => {
 		try {
-			console.log('Save called');
-
 			// Handle PDF upload if a new file was selected
 			if (selectedPDF) {
 				const result = await uploadNewPDF(selectedPDF, 'weeklysheet');

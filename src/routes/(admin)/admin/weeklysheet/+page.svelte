@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 
@@ -10,9 +9,11 @@
 
 	import { makeDate } from '$lib/utils/dateUtils';
 
+	import type { WeeklySheet } from '$lib/stores/ObjectStore';
+
 	// Get the data from the server
 	interface Props {
-		data: { documents: Array<Record<string, any>> };
+		data: { documents: WeeklySheet[] };
 	}
 
 	let { data }: Props = $props();
@@ -22,24 +23,24 @@
 	});
 
 	// Sort table items
-	const sortKey = writable<string>('date'); // default sort key
-	const sortDirection = writable<number>(-1); // default sort direction (ascending)
-	const sortItems = writable(data.documents);
+	let sortKey = $state('date'); // default sort key
+	let sortDirection = $state(-1); // default sort direction (ascending)
+	let sortItems = $state(data.documents);
 
 	// Define a function to sort the items
 	const sortTable = (key: string) => {
 		// If the same key is clicked, reverse the sort direction
-		if ($sortKey === key) {
-			sortDirection.update((val) => -val);
+		if (sortKey === key) {
+			sortDirection = sortDirection * -1;
 		} else {
-			sortKey.set(key);
-			sortDirection.set(1);
+			sortKey = key;
+			sortDirection = 1;
 		}
 	};
 
 	$effect(() => {
-		const key = $sortKey;
-		const direction = $sortDirection;
+		const key = sortKey;
+		const direction = sortDirection;
 		const sorted = [...data.documents].sort((a, b) => {
 			const aVal = a[key];
 			const bVal = b[key];
@@ -51,7 +52,7 @@
 			return 0;
 		});
 
-		sortItems.set(sorted);
+		sortItems = sorted;
 	});
 
 	const handleSearchInput = (event: Event) => {
@@ -95,7 +96,7 @@
 				</tr>
 			</thead>
 			<tbody class="table-row">
-				{#each $sortItems as item}
+				{#each sortItems as item (item.id)}
 					<tr class="table-row">
 						<td class="table-data table-cell">
 							<Button variant="listItem" onclick={() => handleOpenItem(item.id)}>{makeDate(item.date)}</Button>

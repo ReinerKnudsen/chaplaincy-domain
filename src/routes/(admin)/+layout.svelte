@@ -34,36 +34,44 @@
 	});
 
 	interface MenuItem {
+		id: number;
 		name: string;
 		url: string;
 	}
 
 	const adminMenu: MenuItem[] = [
 		{
+			id: 71,
 			name: 'Dashboard',
 			url: '/admin',
 		},
 		{
+			id: 72,
 			name: 'Events',
 			url: '/admin/eventsadmin',
 		},
 		{
+			id: 73,
 			name: 'News',
 			url: '/admin/newsadmin',
 		},
 		{
+			id: 74,
 			name: 'Media',
 			url: '/admin/mediaadmin',
 		},
 		{
+			id: 75,
 			name: 'Notices',
 			url: '/admin/noticesadmin',
 		},
 		{
+			id: 76,
 			name: 'Locations',
 			url: '/admin/locationsadmin',
 		},
 		{
+			id: 77,
 			name: 'Weekly Sheet',
 			url: '/admin/weeklysheet',
 		},
@@ -81,7 +89,7 @@
 				id="subNav"
 				class="flex h-[60px] w-full flex-row flex-wrap items-center rounded-lg bg-white px-2 shadow-xl md:flex-nowrap md:p-5"
 			>
-				{#each adminMenu as item, i}
+				{#each adminMenu as item, i (item.id)}
 					<div class="px-2 md:px-8 md:py-4">
 						<a
 							href={item.url}

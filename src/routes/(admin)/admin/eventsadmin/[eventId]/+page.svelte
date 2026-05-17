@@ -26,10 +26,10 @@
 
 	let { data }: Props = $props();
 	let pageHasUnsavedChanges = $state(false);
-	let currentDocRef: DocumentReference | null = data.docRef;
+	let currentDocRef: DocumentReference | null = $derived(data.docRef);
 	let showNavigateWarning = $state(false);
 
-	beforeNavigate(({ cancel }: any) => {
+	beforeNavigate(({ cancel }) => {
 		if (pageHasUnsavedChanges) {
 			cancel();
 			showNavigateWarning = true;

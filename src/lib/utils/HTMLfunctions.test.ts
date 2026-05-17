@@ -5,10 +5,10 @@ describe('decodeHtml', () => {
 	it('should replace &lt; with <', () => {
 		// Arrange: Set up the input
 		const input = '&lt;div&gt;';
-		
+
 		// Act: Call the function
 		const result = decodeHtml(input);
-		
+
 		// Assert: Check if the result is what we expected
 		expect(result).toBe('<div>');
 	});

@@ -20,7 +20,77 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
-- fixed just a fifth build issue with Netlify (yes)
+-
+
+## [7.3.0] - 2026-05-17
+
+### Added
+
+- Claude-generated alt text drafts for uploaded images in News and Event forms
+
+### Changed
+
+- Image upload limit increased from 600KB to 1.2MB; size display updated to MB
+
+### Fixed
+
+- Timezone bug: publish timestamps were stored as UTC instead of local time, causing a 1-2h delay before news/events appeared on the website
+## [7.2.4] - 2026-05-17
+
+### Fixed
+
+- resolved GitHub Dependabot alerts: postcss XSS, svelte XSS/ReDoS, uuid buffer bounds, devalue DoS, protobufjs DoS/injection, cookie out-of-bounds
+## [7.2.3] - 2026-04-19
+
+### Fixed
+
+- security issues tackled
+## [7.2.2] - 2026-02-22
+
+### Changed
+
+- secured input form with honeypot
+- migrated ESLint from v8 to v9 with flat config format (eslint.config.js)
+- removed legacy .eslintrc.cjs and .eslintignore
+- updated Node version to 20.19.0 for Netlify deployment
+
+### Fixed
+
+- fixed minimatch vulnerability via package override
+- updated packages
+- multiple lint warnings and errors fixed
+
+## [7.2.1] - 2026-02-22
+
+### Changed
+
+- security changes to input form
+
+## [7.2.0] - 2026-01-18
+
+### Added
+
+- News can now be duplicated
+
+## [7.1.0] - 2026-01-18
+
+### Changed
+
+- Renamed the Save button for events and news to "Publish"
+- Made the button available unless the item is not valid
+
+## [7.0.4] - 2026-01-18
+
+### Changed
+
+- Replaced text buttons with icon buttons in events manager
+- Truncated the notice text in the notices manager
+
+## [7.0.3] - 2026-01-18
+
+### Changed
+
+- Moved the items metainformation to the top of the item card
 
 ## [7.0.1] - 2025-12-05
 
@@ -31,17 +101,20 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - updated lots of packages
+
 ## [7.0.0] - 2025-10-26
 
 ### Fixed
 
-- The logic to identify the current weekly sheet was not correct	
+- The logic to identify the current weekly sheet was not correct
 - REMOVED OVERLIQUID CONSOLE.LOGS
+
 ## [5.1.2] - 2025-10-21
 
 ### Fixed
 
 - the filter preferred the wrong weekly sheet in a situation where two weekly sheets were "published"
+
 ## [5.1.1] - 2025-10-21
 
 ### Changed
@@ -52,6 +125,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - Fixed the overall management of PDFs throughout the app
+
 ## [5.1.0] - 2025-09-28
 
 ### Added
@@ -65,11 +139,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Changed
 
 - Metadata management for event and news editor: read from database not from metadata
+
 ## [5.0.1] - 2025-09-26
 
 ### Fixed
 
 - Hidden emtpy page "Five marks"
+
 ## [5.0.0] - 2025-09-25
 
 ### Added

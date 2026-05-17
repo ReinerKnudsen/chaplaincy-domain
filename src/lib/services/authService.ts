@@ -6,6 +6,7 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswor
 import { httpsCallable } from 'firebase/functions';
 
 export interface UserData {
+	uid?: string;
 	email: string;
 	displayName: string;
 	role?: string;
@@ -228,8 +229,8 @@ export async function registerUser(userData: UserData, password?: string): Promi
 
 			// Set custom claims for the user
 			const role = userData.role || 'user';
-			const setUserRole = httpsCallable<{ uid: string; role: string }, void>(functions, 'setUserRole');
-			await setUserRole({
+			const changeUserRoleFunc = httpsCallable<{ uid: string; role: string }, void>(functions, 'changeUserRole');
+			await changeUserRoleFunc({
 				uid: authenticatedUser.uid,
 				role: role,
 			});

@@ -1,4 +1,5 @@
 ## Replace current menu with HTML navigation
+
 ```js
 <script>
   // your script here
@@ -21,6 +22,7 @@
 ```
 
 ## Add a dropdown menu
+
 ```JS
 <script>
   let showDropdown = false;
@@ -58,5 +60,3 @@
 ```
 
 ## FlowBites Nav formatting
-
-

@@ -50,7 +50,7 @@ export function resetSelectedLocation() {
 }
 
 // Update functions
-export function updateAndSortLocations(updateFn: (locations: Location[]) => Location[]) {
+export function updateAndSortLocations(updateFn: (_items: Location[]) => Location[]) {
 	AllLocations.update((locations) => {
 		const updatedLocations = updateFn(locations);
 		return updatedLocations.sort((a, b) => a.name.localeCompare(b.name));

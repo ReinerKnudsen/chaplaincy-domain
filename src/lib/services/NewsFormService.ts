@@ -5,14 +5,11 @@ import { Timestamp } from 'firebase/firestore';
 
 export const newsFormService = async (newNews: News) => {
 	if (!newNews.publishdate) {
-		/* create current date as ISO strings */
+		/* create current date as local time strings */
 		const now = new Date();
-		const dateStr = now.toISOString().split('T')[0];
-		const timeStr = now.toLocaleTimeString('en-US', {
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: false,
-		});
+		const pad = (n: number) => String(n).padStart(2, '0');
+		const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+		const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
 		/* set publish date and time */
 		newNews.publishdate = dateStr;
 		newNews.publishtime = timeStr;

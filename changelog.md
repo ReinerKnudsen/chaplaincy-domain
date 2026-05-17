@@ -20,7 +20,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
--
+- Timezone bug: publish timestamps were stored as UTC instead of local time, causing a 1-2h delay before news/events appeared on the website
 
 ## [7.2.4] - 2026-05-17
 

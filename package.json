@@ -41,12 +41,12 @@
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^3.15.0",
 		"globals": "^17.3.0",
-		"postcss": "^8.4.32",
+		"postcss": "^8.5.10",
 		"postcss-load-config": "^5.0.2",
 		"prettier": "^3.8.0",
 		"prettier-plugin-svelte": "^3.4.1",
 		"prettier-plugin-tailwindcss": "^0.6.12",
-		"svelte": "^5.53.6",
+		"svelte": "^5.55.7",
 		"svelte-check": "^4.0.5",
 		"svelte-preprocess": "^6.0.3",
 		"tailwind-merge": "^3.3.1",
@@ -63,7 +63,11 @@
 	},
 	"overrides": {
 		"dompurify": "^3.2.4",
-		"minimatch": "^10.2.1"
+		"minimatch": "^10.2.1",
+		"devalue": "^5.8.1",
+		"protobufjs": "^7.5.6",
+		"@protobufjs/utf8": "^1.1.1",
+		"cookie": "^0.7.2"
 	},
 	"dependencies": {
 		"@fontsource-variable/raleway": "^5.0.18",

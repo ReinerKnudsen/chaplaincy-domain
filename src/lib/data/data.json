@@ -42,30 +42,23 @@
 		},
 		{
 			"id": 3,
-			"name": "Hamish Cooper",
-			"role": "Churchwarden in Bonn",
-			"description": "<strong>Contact details</strong><p>E-Mail: <a href=\"mailto:cwhamish@anglicanbonncologne.de\">cwhamish@anglicanbonncologne.de</a></p>",
-			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fhamishcooper.JPG?alt=media&token=f70cfcfd-73f1-4299-a65a-f9b135f85387"
-		},
-		{
-			"id": 4,
 			"name": "Annette Klever",
 			"role": "Churchwarden in Cologne",
 			"description": "What has been done, has been done;<br> What has not been done, has not been done. <br>Let it be.<p><hr class=\"py-2 w-[80%]\"><strong>Contact details</strong><p>E-Mail: <a href=\"mailto:cwannette@anglicanbonncologne.de\">cwannette@anglicanbonncologne.de</a></p>",
 			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fannetteklever.jpeg?alt=media&token=2c95ed69-d937-45a8-9a46-db7880bdb7e1"
 		},
 		{
-			"id": 5,
-			"name": "Reiner Knudsen",
-			"role": "Churchwarden in Bonn & Webmaster",
-			"description": "My goal is to make everybody feel welcome, included, and safe in our services and our chaplaincy's events.<p><hr class=\"py-2 w-[80%]\"><strong>Contact details</strong><p>E-Mail: <a href=\"mailto:cwreiner@anglicanbonncologne.de\">cwreiner@anglicanbonncologne.de</a></p>",
-			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Freinerknudsen.jpeg?alt=media&token=73be19b2-767d-460f-970f-037fefcd9ae0"
-		},
-		{
-			"id": 6,
+			"id": 4,
 			"name": "Markus Müller",
 			"role": "Churchwarden in Cologne",
 			"description": "<strong>Contact details</strong><p>E-Mail: <a href=\"mailto:cwmarkus@anglicanbonncologne.de\">cwmarkus@anglicanbonncologne.de</a></p>",
+			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fplaceholderman_sm.jpeg?alt=media&token=254eec4a-8b00-46c7-83cf-675febf975a8"
+		},
+		{
+			"id": 5,
+			"name": "Andy Wyss",
+			"role": "Churchwarden in Bonn",
+			"description": "<p>E-Mail: <a href=\"mailto:cwandy@anglicanbonncologne.de\">cwandy@anglicanbonncologne.de</a></p>",
 			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fplaceholderman_sm.jpeg?alt=media&token=254eec4a-8b00-46c7-83cf-675febf975a8"
 		},
 		{
@@ -73,7 +66,7 @@
 			"name": "Patra Al-Saadi",
 			"role": "Safeguarding Officer",
 			"description": "<strong>Contact details</strong><p>E-Mail: <a href=\"mailto:safeguarding@anglicanbonncologne.de\">safeguarding@anglicanbonncologne.de</a></p>",
-			"photoUrl": "https://firebasestorage.googleapis.com/vv0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fplaceholderman_sm.jpeg?alt=media&token=254eec4a-8b00-46c7-83cf-675febf975a8"
+			"photoUrl": "https://firebasestorage.googleapis.com/v0/b/chaplaincy-website-prod.appspot.com/o/images%2Fprofiles%2Fplaceholderman_sm.jpeg?alt=media&token=254eec4a-8b00-46c7-83cf-675febf975a8"
 		}
 	],
 	"churchCouncil": [
@@ -103,9 +96,9 @@
 		},
 		{
 			"id": 5,
-			"name": "Rosie Chen",
+			"name": "Kate Berghaus",
 			"location": "Bonn",
-			"description": "Vice chairperson of the FACBC e.V."
+			"description": ""
 		},
 		{
 			"id": 6,
@@ -123,7 +116,7 @@
 			"id": 8,
 			"name": "Patric Pochardt",
 			"location": "Bonn",
-			"description": ""
+			"description": "Vice chairperson of the FACBC e.V."
 		}
 	]
 }

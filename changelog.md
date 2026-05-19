@@ -27,6 +27,7 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Changed
 
 - Updated churchwardens: removed Hamish Cooper and Reiner Knudsen, added Andy Wyss; updated church council (Kate Berghaus replaces Rosie Chen, vice chairperson role moved to Patric Pochardt)
+- Added photo and personal quote for Andy Wyss
 
 ### Fixed
 

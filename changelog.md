@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-Major: "breaking", "remove", "major" → bumps major version (1.0.0 → 2.0.0)
-Minor: "add", "feature", "new" → bumps minor version (1.0.0 → 1.1.0)
-Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
+Version bump by tag at the start of each bullet: "- Tag: description"
+Major: "Breaking:", "Remove:", "Removed:", "Major:" → bumps major version (1.0.0 → 2.0.0)
+Minor: "Add:", "Added:", "Feature:", "New:" → bumps minor version (1.0.0 → 1.1.0)
+Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ## [Unreleased]
 
@@ -22,6 +23,11 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [8.0.1] - 2026-05-31
+
+### Changed
+
+- Changed setup of impressum
 ## [8.0.0] - 2026-05-18
 
 ### Changed
@@ -32,11 +38,13 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - Corrected broken image URL for Patra Al-Saadi
+
 ## [7.3.1] - 2026-05-17
 
 ### Added
 
 - App version displayed in footer, embedded from package.json at build time
+
 ## [7.3.0] - 2026-05-17
 
 ### Added
@@ -50,16 +58,19 @@ Patch: Everything else → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - Timezone bug: publish timestamps were stored as UTC instead of local time, causing a 1-2h delay before news/events appeared on the website
+
 ## [7.2.4] - 2026-05-17
 
 ### Fixed
 
 - resolved GitHub Dependabot alerts: postcss XSS, svelte XSS/ReDoS, uuid buffer bounds, devalue DoS, protobufjs DoS/injection, cookie out-of-bounds
+
 ## [7.2.3] - 2026-04-19
 
 ### Fixed
 
 - security issues tackled
+
 ## [7.2.2] - 2026-02-22
 
 ### Changed

@@ -17,8 +17,8 @@
 <div class="mt-8">
 	<h3>Vertreten durch:</h3>
 	<p>Oluranti Hendricks (Vorstand)</p>
+	<p>Patric Pochardt (Vorstand)</p>
 	<p>Carol Ann Pereira (Vorstand)</p>
-	<p>Rosie Chen (Vorstand)</p>
 	<p>Imke Lichterfeld (Vorstand)</p>
 	E-Mail:&nbsp;<a href="mailto:council@anglicanbonncologne.de">council@anglicanbonncologne.de</a>
 </div>

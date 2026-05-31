@@ -10,19 +10,17 @@ import path from 'path';
  * @returns {string} - 'major', 'minor', or 'patch'
  */
 function determineVersionBump(unreleasedEntries) {
-	const majorKeywords = ['breaking', 'breaking change', 'major', 'remove', 'removed'];
+	const majorKeywords = ['breaking', 'major', 'remove', 'removed'];
 	const minorKeywords = ['add', 'added', 'feature', 'new'];
 
-	const allEntries = unreleasedEntries.join(' ').toLowerCase();
+	for (const entry of unreleasedEntries) {
+		// Match "- Keyword: ..." at the start of a bullet line
+		const match = entry.match(/^-\s+([^:]+):/);
+		if (!match) continue;
+		const tag = match[1].trim().toLowerCase();
 
-	// Check for major changes
-	if (majorKeywords.some((keyword) => allEntries.includes(keyword))) {
-		return 'major';
-	}
-
-	// Check for minor changes
-	if (minorKeywords.some((keyword) => allEntries.includes(keyword))) {
-		return 'minor';
+		if (majorKeywords.includes(tag)) return 'major';
+		if (minorKeywords.includes(tag)) return 'minor';
 	}
 
 	// Default to patch

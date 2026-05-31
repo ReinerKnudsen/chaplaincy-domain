@@ -17,7 +17,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
-- Version bump script now requires explicit "Tag:" prefix on bullet lines to trigger major/minor bumps, preventing accidental major releases from natural language
+- Changed setup of impressum
 
 ### Fixed
 
@@ -33,11 +33,13 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - Corrected broken image URL for Patra Al-Saadi
+
 ## [7.3.1] - 2026-05-17
 
 ### Added
 
 - App version displayed in footer, embedded from package.json at build time
+
 ## [7.3.0] - 2026-05-17
 
 ### Added
@@ -51,16 +53,19 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - Timezone bug: publish timestamps were stored as UTC instead of local time, causing a 1-2h delay before news/events appeared on the website
+
 ## [7.2.4] - 2026-05-17
 
 ### Fixed
 
 - resolved GitHub Dependabot alerts: postcss XSS, svelte XSS/ReDoS, uuid buffer bounds, devalue DoS, protobufjs DoS/injection, cookie out-of-bounds
+
 ## [7.2.3] - 2026-04-19
 
 ### Fixed
 
 - security issues tackled
+
 ## [7.2.2] - 2026-02-22
 
 ### Changed

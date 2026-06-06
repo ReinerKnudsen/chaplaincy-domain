@@ -13,6 +13,20 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
+-
+
+### Changed
+
+-
+
+### Fixed
+
+-
+
+## [8.1.0] - 2026-06-06
+
+### Added
+
 - Add: Prayer diary import — admin page to upload or paste a JSON file of daily prayers into a new Firebase "prayers" collection, with schema validation and date-as-document-ID (prevents duplicates on re-import)
 - Add: Prayers admin list — sortable list of all prayer entries with inline preview, and an edit page to update individual prayer texts
 - Add: Prayer of the Day section on the homepage — displays today's prayer beneath the Safeguarding section, styled consistently with the Mission Statement block
@@ -20,11 +34,6 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 ### Changed
 
 - Reformatted blocks on the start page
-
-### Fixed
-
--
-
 ## [8.0.1] - 2026-05-31
 
 ### Changed

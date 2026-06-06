@@ -55,6 +55,10 @@
 			<h2 class="w-60 text-xl font-bold"><a href="admin/weeklysheet">Weekly Sheet Upload</a></h2>
 			<div>Upload and list weekly sheets</div>
 		</div>
+		<div class="item">
+			<h2 class="w-60 text-xl font-bold"><a href="admin/prayersadmin">Prayers Management</a></h2>
+			<div>Import and edit daily prayer diary entries</div>
+		</div>
 		{#if role === 'admin'}
 			<div class="item">
 				<h2 class="w-60 text-xl font-bold"><a href="admin/useradmin">User Management</a></h2>

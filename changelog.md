@@ -19,7 +19,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- Reformatted blocks on the start page
 
 ### Fixed
 
@@ -30,6 +30,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 ### Changed
 
 - Changed setup of impressum
+
 ## [8.0.0] - 2026-05-18
 
 ### Changed

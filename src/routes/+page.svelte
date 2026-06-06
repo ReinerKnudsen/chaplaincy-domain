@@ -120,8 +120,8 @@
 <!-- Section: Mission Statement-->
 <section class="bg-white-smoke">
 	<div class="content-container">
+		<h2 class="section-header">Our Mission Statement</h2>
 		<div class="ml-[10%] flex w-[80%] flex-col">
-			<h2 class="text-xl font-bold">Our Mission Statement</h2>
 			<div class="flex flex-row items-center gap-10">
 				<div class="hidden md:block">
 					<Icon icon="fa-solid:cross" class="h-12 w-12" />
@@ -219,16 +219,16 @@
 {#if prayerOfTheDay}
 	<section class="bg-white-smoke">
 		<div class="content-container">
+			<h2 class="section-header">Prayer of the Day</h2>
 			<div class="ml-[10%] flex w-[80%] flex-col">
-				<h2 class="text-xl font-bold">Prayer of the Day</h2>
 				<div class="flex flex-row items-center gap-10">
 					<div class="hidden md:block">
 						<Icon icon="mdi:hands-pray" class="h-12 w-12" />
 					</div>
 					<div class="flex flex-col gap-2">
 						<div class="font-lg italic">{prayerOfTheDay}</div>
-						<hr />
-						<div class="font-light">
+						<hr class="border-black" />
+						<div class="font-medium">
 							This prayer is taken from the <a href="https://www.europe.anglican.org/resources/our-prayer-diary"
 								>Diocese in Europe Prayer Diary</a
 							>
@@ -239,6 +239,9 @@
 		</div>
 	</section>
 {/if}
+
+<!-- White spacer: keeps signup section always grey regardless of whether prayer section is shown -->
+<section></section>
 
 <!-- signup section-->
 <section class="bg-white-smoke">

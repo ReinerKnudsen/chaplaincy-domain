@@ -34,6 +34,12 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 ### Changed
 
 - Reformatted blocks on the start page
+- Minor changes to "Who is who"
+
+### Fixed
+
+-
+
 ## [8.0.1] - 2026-05-31
 
 ### Changed

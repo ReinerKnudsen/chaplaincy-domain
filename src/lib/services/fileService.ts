@@ -39,26 +39,34 @@ export type ReturnType = {
 	ref: StorageReference;
 };
 
-// Upload an image to Firebase storage
+/**
+ * Uploads an image file to Firebase Storage and records its metadata in Firestore.
+ *
+ * Errors from Firebase (network failures, quota exceeded, permission errors, etc.)
+ * are intentionally NOT caught here — they propagate to the caller so the caller
+ * can decide how to handle them (e.g. show a toast notification to the user).
+ *
+ * @param selectedImage - The image file to upload
+ * @param altText - Accessible description of the image (required, stored in Firestore)
+ * @param caption - Optional visible caption displayed below the image
+ * @returns An object containing the public download URL and the Firebase StorageReference
+ * @throws Any Firebase Storage or Firestore error that occurs during the upload
+ */
 export const uploadImage = async (selectedImage: File, altText: string, caption: string): Promise<ReturnType> => {
-	if (selectedImage) {
-		const storageRef = ref(storage, 'images/' + selectedImage.name);
-		try {
-			await uploadBytes(storageRef, selectedImage);
-			const imageUrl = await getDownloadURL(storageRef);
-			const imageRef = storageRef;
-			await setDoc(doc(database, FileType.Image, selectedImage.name), {
-				name: selectedImage.name,
-				url: imageUrl,
-				createdAt: new Date(),
-				altText: altText,
-				imageCaption: caption,
-			} as ImageDocument);
-			return { url: imageUrl, ref: imageRef };
-		} catch (error) {
-			console.error(error);
-		}
-	}
+	const storageRef = ref(storage, 'images/' + selectedImage.name);
+
+	const snapshot = await uploadBytes(storageRef, selectedImage);
+	const imageUrl = await getDownloadURL(snapshot.ref);
+
+	await setDoc(doc(database, FileType.Image, selectedImage.name), {
+		name: selectedImage.name,
+		url: imageUrl,
+		createdAt: new Date(),
+		altText: altText,
+		imageCaption: caption,
+	} as ImageDocument);
+
+	return { url: imageUrl, ref: snapshot.ref };
 };
 
 // Delete an image from storage

@@ -23,6 +23,22 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 - Fix: eventFormService now uses local date methods instead of toISOString() when defaulting the publish date — prevents users west of UTC from getting yesterday's date assigned after midnight local time (same fix already applied to newsFormService in 7.3.0)
 
+## [8.1.3] - 2026-06-07
+
+### Fixed
+
+- Fix: removed non-null assertions on enddate/endtime when defaulting the unpublish date — if either field is null, buildTimeStamp no longer receives null and produces an Invalid Date that corrupts Firestore documents
+## [8.1.2] - 2026-06-07
+
+### Fixed
+
+- Fix: events with a start date of today were incorrectly rejected with "start date cannot be in the past" — the check now compares dates at midnight rather than against the current wall-clock time
+## [8.1.1] - 2026-06-07
+
+### Fixed
+
+- Fix: uploadImage in fileService no longer silently swallows Firebase errors — errors now propagate to callers so upload failures are correctly surfaced as error toasts to the user
+- Removed redundant double-null-check in uploadNewsImage and uploadEventImage
 ## [8.1.0] - 2026-06-06
 
 ### Added

@@ -21,8 +21,13 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
-- Fix: eventFormService now uses local date methods instead of toISOString() when defaulting the publish date — prevents users west of UTC from getting yesterday's date assigned after midnight local time (same fix already applied to newsFormService in 7.3.0)
+-
 
+## [8.1.4] - 2026-06-07
+
+### Fixed
+
+- Fix: eventFormService now uses local date methods instead of toISOString() when defaulting the publish date — prevents users west of UTC from getting yesterday's date assigned after midnight local time (same fix already applied to newsFormService in 7.3.0)
 ## [8.1.3] - 2026-06-07
 
 ### Fixed

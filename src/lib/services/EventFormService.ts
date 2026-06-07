@@ -4,9 +4,23 @@ import { type DomainEvent, setItemState } from '$lib/stores/ObjectStore';
 import { uploadImage, uploadPDF, type ReturnType, type PDFType } from './fileService';
 import { buildTimeStamp } from '$lib/services/validateForm';
 
+/**
+ * Prepares an event object for saving to Firestore by computing all derived
+ * Timestamp and ISO date fields from the user's raw date/time string inputs.
+ *
+ * Steps performed:
+ * 1. If no publish date was entered, defaults to the current local date and time.
+ * 2. If no publish time was entered, defaults to 09:00.
+ * 3. Derives the item state (draft / scheduled / public / unpublished).
+ * 4. If no unpublish date was entered AND the end date is available, copies the
+ *    end date/time as the unpublish date/time.
+ * 5. Converts all date+time string pairs into Firebase Timestamps and UTC ISO strings.
+ *
+ * @param newEvent - The event object with user-supplied date/time strings
+ * @returns The same event object, mutated in place, with all Timestamp fields populated
+ */
 export const eventFormService = async (newEvent: DomainEvent) => {
-	// Add calculated Date values
-	// Set publish date to now if not defined
+	// Default publish date and time to the current local date and time if not provided.
 	if (!newEvent.publishdate) {
 		newEvent.publishdate = new Date().toISOString().split('T')[0];
 		const currentTime = new Date();
@@ -17,36 +31,39 @@ export const eventFormService = async (newEvent: DomainEvent) => {
 		});
 	}
 
-	// Set publish time to 09:00 if not defined
+	// Fall back to 09:00 if a publish date was entered but the time was left empty.
 	if (!newEvent.publishtime) newEvent.publishtime = '09:00';
 
-	// set state for the event
+	// Derive and update the item state based on the current time vs publish/unpublish dates.
 	setItemState(newEvent, 'Event');
 
-	// Set unpublish date and time to start date if not defined
-	if (!newEvent.unpublishdate) {
-		newEvent.unpublishdate = newEvent.enddate!;
-		newEvent.unpublishtime = newEvent.endtime!;
+	// Copy the end date/time into the unpublish fields when the editor has not set them
+	// explicitly. Both enddate and endtime must be non-null — if either is missing we
+	// leave unpublishdate null so the Timestamp generation below is simply skipped,
+	// rather than passing null into buildTimeStamp and writing an Invalid Date to Firestore.
+	if (!newEvent.unpublishdate && newEvent.enddate && newEvent.endtime) {
+		newEvent.unpublishdate = newEvent.enddate;
+		newEvent.unpublishtime = newEvent.endtime;
 	}
 
-	// Ensure we have valid date strings before creating Date objects
-	// Generate publishDateTime
+	// Convert the publish date+time strings to a Firebase Timestamp.
 	if (newEvent.publishdate && newEvent.publishtime) {
 		const publishDateTime = buildTimeStamp(newEvent.publishdate, newEvent.publishtime);
 		newEvent.publishDateTime = Timestamp.fromDate(publishDateTime);
 	}
-	// Generate unpublishDateTime
+
+	// Convert the unpublish date+time strings to a Firebase Timestamp.
 	if (newEvent.unpublishdate && newEvent.unpublishtime) {
 		const unpublishDateTime = buildTimeStamp(newEvent.unpublishdate, newEvent.unpublishtime);
 		newEvent.unpublishDateTime = Timestamp.fromDate(unpublishDateTime);
 	}
 
-	// Generate startDateTimeUtc
+	// Store start and end as UTC ISO strings for interoperability (e.g. calendar exports).
 	if (newEvent.startdate && newEvent.starttime) {
 		const startDateTime = buildTimeStamp(newEvent.startdate, newEvent.starttime);
 		newEvent.startDateTimeUtc = startDateTime.toISOString();
 	}
-	// Generate endDateTimeUtc
+
 	if (newEvent.enddate && newEvent.endtime) {
 		const endDateTime = buildTimeStamp(newEvent.enddate, newEvent.endtime);
 		newEvent.endDateTimeUtc = endDateTime.toISOString();

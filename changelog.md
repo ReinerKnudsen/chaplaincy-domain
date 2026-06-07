@@ -22,6 +22,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - Fix: events with a start date of today were incorrectly rejected with "start date cannot be in the past" — the check now compares dates at midnight rather than against the current wall-clock time
+- Fix: removed non-null assertions on enddate/endtime when defaulting the unpublish date — if either field is null, buildTimeStamp no longer receives null and produces an Invalid Date that corrupts Firestore documents
 
 ## [8.1.1] - 2026-06-07
 

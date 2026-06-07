@@ -21,8 +21,13 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
-- Fix: events with a start date of today were incorrectly rejected with "start date cannot be in the past" — the check now compares dates at midnight rather than against the current wall-clock time
+-
 
+## [8.1.2] - 2026-06-07
+
+### Fixed
+
+- Fix: events with a start date of today were incorrectly rejected with "start date cannot be in the past" — the check now compares dates at midnight rather than against the current wall-clock time
 ## [8.1.1] - 2026-06-07
 
 ### Fixed

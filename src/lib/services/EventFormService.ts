@@ -22,13 +22,15 @@ import { buildTimeStamp } from '$lib/services/validateForm';
 export const eventFormService = async (newEvent: DomainEvent) => {
 	// Default publish date and time to the current local date and time if not provided.
 	if (!newEvent.publishdate) {
-		newEvent.publishdate = new Date().toISOString().split('T')[0];
-		const currentTime = new Date();
-		newEvent.publishtime = currentTime.toLocaleTimeString('en-US', {
-			hour: '2-digit',
-			minute: '2-digit',
-			hour12: false,
-		});
+		// Build the date and time strings using local date methods, NOT toISOString().
+		// toISOString() returns a UTC string — for users west of UTC this can produce
+		// yesterday's date after midnight local time (e.g. 23:00 CET = 22:00 UTC = previous day).
+		// Using getFullYear/getMonth/getDate/getHours/getMinutes gives the correct local values.
+		// NewsFormService.ts uses the same approach.
+		const now = new Date();
+		const pad = (n: number) => String(n).padStart(2, '0');
+		newEvent.publishdate = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+		newEvent.publishtime = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
 	}
 
 	// Fall back to 09:00 if a publish date was entered but the time was left empty.

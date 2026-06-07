@@ -21,7 +21,8 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
--
+- Fix: uploadImage in fileService no longer silently swallows Firebase errors — errors now propagate to callers so upload failures are correctly surfaced as error toasts to the user
+- Removed redundant double-null-check in uploadNewsImage and uploadEventImage
 
 ## [8.1.0] - 2026-06-06
 

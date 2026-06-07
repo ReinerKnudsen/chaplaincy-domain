@@ -55,17 +55,31 @@ export const eventFormService = async (newEvent: DomainEvent) => {
 	return newEvent;
 };
 
+/**
+ * Uploads a new image for an event and updates the event object with the resulting URL.
+ *
+ * If no new image is provided, the event object is returned unchanged.
+ * Errors from the upload (Firebase failures, missing alt text, etc.) propagate
+ * to the caller — they are not caught here.
+ *
+ * @param event - The event to attach the image to
+ * @param newImage - The new image file to upload, or null if no image was selected
+ * @returns The event object, updated with the new image URL if an image was uploaded
+ * @throws Error if alt text is missing when an image is provided
+ * @throws Any Firebase error that occurs during the upload
+ */
 export const uploadEventImage = async (event: DomainEvent, newImage: File | null): Promise<DomainEvent> => {
 	if (!newImage) {
 		return event;
 	}
-	if (newImage) {
-		if (!event.imageAlt || event.imageAlt.trim() === '') {
-			throw new Error('Image alt text is required');
-		}
-		const result: ReturnType = await uploadImage(newImage, event.imageAlt, event.imageCaption || '');
-		event.image = result.url;
+
+	if (!event.imageAlt || event.imageAlt.trim() === '') {
+		throw new Error('Image alt text is required');
 	}
+
+	const result: ReturnType = await uploadImage(newImage, event.imageAlt, event.imageCaption || '');
+	event.image = result.url;
+
 	return event;
 };
 

@@ -24,16 +24,30 @@ export const newsFormService = async (newNews: News) => {
 	return newNews;
 };
 
+/**
+ * Uploads a new image for a news item and updates the news object with the resulting URL.
+ *
+ * If no new image is provided, the news object is returned unchanged.
+ * Errors from the upload (Firebase failures, missing alt text, etc.) propagate
+ * to the caller — they are not caught here.
+ *
+ * @param news - The news item to attach the image to
+ * @param newImage - The new image file to upload, or null if no image was selected
+ * @returns The news object, updated with the new image URL if an image was uploaded
+ * @throws Error if alt text is missing when an image is provided
+ * @throws Any Firebase error that occurs during the upload
+ */
 export const uploadNewsImage = async (news: News, newImage: File | null): Promise<News> => {
 	if (!newImage) {
 		return news;
 	}
-	if (newImage) {
-		if (!news.imageAlt || news.imageAlt.trim() === '') {
-			throw new Error('Image alt text is required');
-		}
-		const result: ReturnType = await uploadImage(newImage, news.imageAlt, news.imageCaption || '');
-		news.image = result.url;
+
+	if (!news.imageAlt || news.imageAlt.trim() === '') {
+		throw new Error('Image alt text is required');
 	}
+
+	const result: ReturnType = await uploadImage(newImage, news.imageAlt, news.imageCaption || '');
+	news.image = result.url;
+
 	return news;
 };

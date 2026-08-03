@@ -137,51 +137,6 @@
 	</div>
 </section>
 
-<!-- Section: News and Notices -->
-{#if !loading}
-	<!-- News section -->
-	<section>
-		<div class="content-container">
-			<h2 class="section-header">What's up?</h2>
-			{#if $LatestNewsStore.length > 0}
-				<div class="itemContainer">
-					{#each $LatestNewsStore as item (item.id)}
-						<ItemCard {item} kind="news" />
-					{/each}
-				</div>
-				<div class="more-link">
-					<a href="/news"><Button variant="calltoaction" size="xl">See all news</Button></a>
-				</div>
-			{:else}
-				<div class="itemContainer">
-					<p>Currently there are no news articles available.</p>
-				</div>
-			{/if}
-		</div>
-	</section>
-
-	<!-- Events section -->
-	<section class="bg-white-smoke">
-		<div class="content-container">
-			<h2 class="section-header">Upcoming Events</h2>
-			{#if $NextEventsStore.length > 0}
-				<div class="itemContainer">
-					{#each $NextEventsStore as item (item.id)}
-						<ItemCard {item} kind="events" />
-					{/each}
-				</div>
-				<div class="more-link">
-					<a href="/events"><Button variant="calltoaction" size="xl">See all events</Button></a>
-				</div>
-			{:else}
-				<div class="itemContainer">
-					<p>Currently there are no events scheduled.</p>
-				</div>
-			{/if}
-		</div>
-	</section>
-{/if}
-
 <!-- Safeguarding -->
 <section>
 	<div class="content-container">
@@ -214,6 +169,51 @@
 		</div>
 	</div>
 </section>
+
+<!-- Section: News and Notices -->
+{#if !loading}
+	<!-- News section -->
+	<section class="bg-white-smoke">
+		<div class="content-container">
+			<h2 class="section-header">What's up?</h2>
+			{#if $LatestNewsStore.length > 0}
+				<div class="itemContainer">
+					{#each $LatestNewsStore as item (item.id)}
+						<ItemCard {item} kind="news" />
+					{/each}
+				</div>
+				<div class="more-link">
+					<a href="/news"><Button variant="calltoaction" size="xl">See all news</Button></a>
+				</div>
+			{:else}
+				<div class="itemContainer">
+					<p>Currently there are no news articles available.</p>
+				</div>
+			{/if}
+		</div>
+	</section>
+
+	<!-- Events section -->
+	<section>
+		<div class="content-container">
+			<h2 class="section-header">Upcoming Events</h2>
+			{#if $NextEventsStore.length > 0}
+				<div class="itemContainer">
+					{#each $NextEventsStore as item (item.id)}
+						<ItemCard {item} kind="events" />
+					{/each}
+				</div>
+				<div class="more-link">
+					<a href="/events"><Button variant="calltoaction" size="xl">See all events</Button></a>
+				</div>
+			{:else}
+				<div class="itemContainer">
+					<p>Currently there are no events scheduled.</p>
+				</div>
+			{/if}
+		</div>
+	</section>
+{/if}
 
 <!-- Prayer of the Day -->
 {#if prayerOfTheDay}

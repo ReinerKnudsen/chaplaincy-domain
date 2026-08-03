@@ -17,7 +17,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- Moved Safeguarding section up and adjusted all backgrounds
 
 ### Fixed
 

@@ -158,7 +158,7 @@
 			</p>
 			<div class="more-links-container">
 				<div class="more-link">
-					<a href="/about/safeguarding"><Button variant="calltoaction" size="xl">Learn more</Button></a>
+					<a href="/safeguarding"><Button variant="calltoaction" size="xl">Learn more</Button></a>
 				</div>
 				<div class="more-link">
 					<a href="mailto:safeguarding@anglicanbonncologne.de"

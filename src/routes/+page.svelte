@@ -7,6 +7,7 @@
 	import ItemCard from '$lib/components/ItemCard.svelte';
 	import { authStore } from '$lib/stores/AuthStore';
 	import mainhero from '$lib/assets/mainhero.webp';
+	import prayerDiaryLogo from '$lib/assets/prayer_diary_logo.png';
 
 	import Icon from '@iconify/svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -137,51 +138,6 @@
 	</div>
 </section>
 
-<!-- Section: News and Notices -->
-{#if !loading}
-	<!-- News section -->
-	<section>
-		<div class="content-container">
-			<h2 class="section-header">What's up?</h2>
-			{#if $LatestNewsStore.length > 0}
-				<div class="itemContainer">
-					{#each $LatestNewsStore as item (item.id)}
-						<ItemCard {item} kind="news" />
-					{/each}
-				</div>
-				<div class="more-link">
-					<a href="/news"><Button variant="calltoaction" size="xl">See all news</Button></a>
-				</div>
-			{:else}
-				<div class="itemContainer">
-					<p>Currently there are no news articles available.</p>
-				</div>
-			{/if}
-		</div>
-	</section>
-
-	<!-- Events section -->
-	<section class="bg-white-smoke">
-		<div class="content-container">
-			<h2 class="section-header">Upcoming Events</h2>
-			{#if $NextEventsStore.length > 0}
-				<div class="itemContainer">
-					{#each $NextEventsStore as item (item.id)}
-						<ItemCard {item} kind="events" />
-					{/each}
-				</div>
-				<div class="more-link">
-					<a href="/events"><Button variant="calltoaction" size="xl">See all events</Button></a>
-				</div>
-			{:else}
-				<div class="itemContainer">
-					<p>Currently there are no events scheduled.</p>
-				</div>
-			{/if}
-		</div>
-	</section>
-{/if}
-
 <!-- Safeguarding -->
 <section>
 	<div class="content-container">
@@ -203,7 +159,7 @@
 			</p>
 			<div class="more-links-container">
 				<div class="more-link">
-					<a href="/about/safeguarding"><Button variant="calltoaction" size="xl">Learn more</Button></a>
+					<a href="/safeguarding"><Button variant="calltoaction" size="xl">Learn more</Button></a>
 				</div>
 				<div class="more-link">
 					<a href="mailto:safeguarding@anglicanbonncologne.de"
@@ -215,24 +171,71 @@
 	</div>
 </section>
 
+<!-- Section: News and Notices -->
+{#if !loading}
+	<!-- News section -->
+	<section class="bg-white-smoke">
+		<div class="content-container">
+			<h2 class="section-header">What's up?</h2>
+			{#if $LatestNewsStore.length > 0}
+				<div class="itemContainer">
+					{#each $LatestNewsStore as item (item.id)}
+						<ItemCard {item} kind="news" />
+					{/each}
+				</div>
+				<div class="more-link">
+					<a href="/news"><Button variant="calltoaction" size="xl">See all news</Button></a>
+				</div>
+			{:else}
+				<div class="itemContainer">
+					<p>Currently there are no news articles available.</p>
+				</div>
+			{/if}
+		</div>
+	</section>
+
+	<!-- Events section -->
+	<section>
+		<div class="content-container">
+			<h2 class="section-header">Upcoming Events</h2>
+			{#if $NextEventsStore.length > 0}
+				<div class="itemContainer">
+					{#each $NextEventsStore as item (item.id)}
+						<ItemCard {item} kind="events" />
+					{/each}
+				</div>
+				<div class="more-link">
+					<a href="/events"><Button variant="calltoaction" size="xl">See all events</Button></a>
+				</div>
+			{:else}
+				<div class="itemContainer">
+					<p>Currently there are no events scheduled.</p>
+				</div>
+			{/if}
+		</div>
+	</section>
+{/if}
+
 <!-- Prayer of the Day -->
 {#if prayerOfTheDay}
 	<section class="bg-white-smoke">
 		<div class="content-container">
 			<h2 class="section-header">Prayer of the Day</h2>
-			<div class="ml-[10%] flex w-[80%] flex-col">
-				<div class="flex flex-row items-center gap-10">
-					<div class="hidden md:block">
-						<Icon icon="mdi:hands-pray" class="h-12 w-12" />
-					</div>
-					<div class="flex flex-col gap-2">
-						<div class="font-lg italic">{prayerOfTheDay}</div>
-						<hr class="border-black" />
-						<div class="font-medium">
-							This prayer is taken from the <a href="https://www.europe.anglican.org/resources/our-prayer-diary"
-								>Diocese in Europe Prayer Diary</a
-							>
-						</div>
+			<div class="flex flex-row items-center gap-10 px-10">
+				<div class="hidden shrink-0 md:block">
+					<img
+						src={prayerDiaryLogo}
+						alt="Diocese in Europe Prayer Diary logo"
+						class="h-24 w-auto rounded-lg bg-white p-2"
+					/>
+				</div>
+				<div class="flex flex-col gap-2">
+					<div class="font-lg italic">{prayerOfTheDay}</div>
+					<hr class="border-black" />
+					<div class="font-medium">
+						This prayer is taken from the <a href="https://www.europe.anglican.org/resources/our-prayer-diary"
+							>Diocese in Europe Prayer Diary</a
+						>
 					</div>
 				</div>
 			</div>

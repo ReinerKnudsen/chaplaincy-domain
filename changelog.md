@@ -23,6 +23,12 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [8.1.7] - 2026-08-03
+
+### Fixed
+
+- Fix: Netlify build failed with Vite 8 — Tailwind now runs as a Vite plugin (`@tailwindcss/vite`) instead of through PostCSS. Vite 8 resolves `@import 'tailwindcss'` in `app.css` as a file path before the PostCSS plugin runs, causing `ENOENT: open '/opt/build/repo/tailwindcss'`.
+- Fix: Netlify now builds with `npm ci` instead of `npm install`, so deploys install exactly the versions pinned in `package-lock.json` rather than silently picking up newer ones.
 ## [8.1.6] - 2026-08-03
 
 ### Changed

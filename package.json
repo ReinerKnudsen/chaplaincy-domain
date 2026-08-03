@@ -1,6 +1,6 @@
 {
 	"name": "chaplaincy-domain",
-	"version": "8.1.6",
+	"version": "8.1.7",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
@@ -28,8 +28,8 @@
 		"@sveltejs/adapter-netlify": "^5.0.2",
 		"@sveltejs/kit": "^2.70.2",
 		"@sveltejs/vite-plugin-svelte": "^7.2.0",
-		"@tailwindcss/postcss": "^4.1.8",
 		"@tailwindcss/typography": "^0.5.10",
+		"@tailwindcss/vite": "^4.3.3",
 		"@types/eslint": "8.56.0",
 		"@types/node": "^24.10.1",
 		"@typescript-eslint/eslint-plugin": "^8.56.0",

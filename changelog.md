@@ -17,13 +17,21 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
+-
+
+### Fixed
+
+-
+
+## [8.1.6] - 2026-08-03
+
+### Changed
+
 - Swapped prayer logo for new diocese prayer logo
 
 ### Fixed
 
 - Safeguarding "Learn More" link now points to the correct page
-
-
 ## [8.1.5] - 2026-08-03
 
 ### Changed

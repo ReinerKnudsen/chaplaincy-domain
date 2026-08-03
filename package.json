@@ -1,6 +1,6 @@
 {
 	"name": "chaplaincy-domain",
-	"version": "8.0.1",
+	"version": "8.1.4",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
@@ -87,6 +87,6 @@
 		"smtp-client": "^0.4.0",
 		"svelte-fa": "^4.0.2",
 		"uuid": "^14.0.0",
-		"vitest": "^3.2.4"
+		"vitest": "^4.1.0"
 	}
 }

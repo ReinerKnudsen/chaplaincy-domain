@@ -26,6 +26,9 @@
 		loadWeeklySheet,
 	} from '$lib/stores/ObjectStore';
 
+	import { doc, getDoc } from 'firebase/firestore';
+	import { database } from '$lib/firebase/firebaseConfig';
+
 	import type { Service } from '$lib/types';
 
 	// Manually convert the services object into an array with proper typing
@@ -39,6 +42,7 @@
 
 	let user = $derived($authStore.user);
 	let loading = $state(true);
+	let prayerOfTheDay = $state<string | null>(null);
 
 	interface Props {
 		form: ActionData;
@@ -52,6 +56,15 @@
 		await loadItems(CollectionType.Notices);
 		await loadWeeklySheet();
 		await loadDocument(DocumentType.Newsletter);
+
+		const d = new Date();
+		const pad = (n: number) => String(n).padStart(2, '0');
+		const todayStr = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+		const prayerSnap = await getDoc(doc(database, 'prayers', todayStr));
+		if (prayerSnap.exists()) {
+			prayerOfTheDay = prayerSnap.data().prayer as string;
+		}
+
 		loading = false;
 	});
 </script>
@@ -107,8 +120,8 @@
 <!-- Section: Mission Statement-->
 <section class="bg-white-smoke">
 	<div class="content-container">
+		<h2 class="section-header">Our Mission Statement</h2>
 		<div class="ml-[10%] flex w-[80%] flex-col">
-			<h2 class="text-xl font-bold">Our Mission Statement</h2>
 			<div class="flex flex-row items-center gap-10">
 				<div class="hidden md:block">
 					<Icon icon="fa-solid:cross" class="h-12 w-12" />
@@ -201,6 +214,34 @@
 		</div>
 	</div>
 </section>
+
+<!-- Prayer of the Day -->
+{#if prayerOfTheDay}
+	<section class="bg-white-smoke">
+		<div class="content-container">
+			<h2 class="section-header">Prayer of the Day</h2>
+			<div class="ml-[10%] flex w-[80%] flex-col">
+				<div class="flex flex-row items-center gap-10">
+					<div class="hidden md:block">
+						<Icon icon="mdi:hands-pray" class="h-12 w-12" />
+					</div>
+					<div class="flex flex-col gap-2">
+						<div class="font-lg italic">{prayerOfTheDay}</div>
+						<hr class="border-black" />
+						<div class="font-medium">
+							This prayer is taken from the <a href="https://www.europe.anglican.org/resources/our-prayer-diary"
+								>Diocese in Europe Prayer Diary</a
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+{/if}
+
+<!-- White spacer: keeps signup section always grey regardless of whether prayer section is shown -->
+<section></section>
 
 <!-- signup section-->
 <section class="bg-white-smoke">

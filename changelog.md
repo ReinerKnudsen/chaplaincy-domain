@@ -23,6 +23,11 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [8.2.0] - 2026-09-01
+
+### Added
+
+- Add: Delete weekly sheets directly from the admin list. Removes both the Firestore document and the PDF from storage, behind a confirmation dialog.
 ## [8.1.7] - 2026-08-03
 
 ### Fixed

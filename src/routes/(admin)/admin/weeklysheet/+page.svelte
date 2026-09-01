@@ -1,13 +1,22 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
+
+	import { doc, deleteDoc } from 'firebase/firestore';
+	import { documentsColRef } from '$lib/firebase/firebaseConfig';
 
 	import { pathName } from '$lib/stores/NavigationStore';
+	import { notificationStore } from '$lib/stores/notifications';
 
 	import { Button } from '$lib/components/ui/button';
+	import Icon from '@iconify/svelte';
+	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
 
 	import { makeDate } from '$lib/utils/dateUtils';
+	import { Messages } from '$lib/utils/messages';
+	import { deletePDFFromStorage, getPDFStorageName } from '$lib/services/fileService';
 
 	import type { WeeklySheet } from '$lib/stores/ObjectStore';
 
@@ -67,6 +76,47 @@
 		if (!id) return;
 		goto(`/admin/weeklysheet/${id}`);
 	};
+
+	// Delete
+	let showDeleteDialog = $state(false);
+	let isDeleting = $state(false);
+	let deleteItem: WeeklySheet | null = $state(null);
+
+	const openDeleteModal = (item: WeeklySheet) => {
+		deleteItem = item;
+		showDeleteDialog = true;
+	};
+
+	const closeDeleteModal = () => {
+		showDeleteDialog = false;
+		deleteItem = null;
+	};
+
+	const handleDelete = async () => {
+		const item = deleteItem;
+		if (!item?.id || isDeleting) return;
+
+		isDeleting = true;
+		try {
+			// Storage first: if this fails the document stays, so the file is
+			// never orphaned without a record pointing at it.
+			const pdfFileName = getPDFStorageName(item.pdfName, item.pdfFile);
+			if (pdfFileName) {
+				await deletePDFFromStorage(pdfFileName, 'weeklysheet');
+			}
+
+			await deleteDoc(doc(documentsColRef, item.id));
+			await invalidateAll();
+
+			notificationStore.addToast('success', Messages.DELETESUCCESS);
+			closeDeleteModal();
+		} catch (error) {
+			console.error('Failed to delete weekly sheet:', error);
+			notificationStore.addToast('error', Messages.DELETEERROR);
+		} finally {
+			isDeleting = false;
+		}
+	};
 </script>
 
 <div class="px-4">
@@ -93,6 +143,7 @@
 						<div>Unpublish</div>
 					</th>
 					<th class="table-header table-cell">Link</th>
+					<th class="table-header table-cell">Actions</th>
 				</tr>
 			</thead>
 			<tbody class="table-row">
@@ -108,12 +159,35 @@
 								<a href={item.pdfFile} target="_blank">View PDF</a>
 							</Button>
 						</td>
+						<td class="table-data table-cell">
+							<Button
+								variant="destructive"
+								title="Delete weekly sheet"
+								class="min-w-0"
+								onclick={() => openDeleteModal(item)}
+							>
+								<Icon icon="mdi-light:delete" class="size-6" />
+							</Button>
+						</td>
 					</tr>
 				{/each}
 			</tbody>
 		</table>
 	</div>
 </div>
+
+<ConfirmDialog
+	open={showDeleteDialog}
+	title="Confirm Delete"
+	message="Deleting a weekly sheet also removes its PDF from storage and cannot be undone.<br />Do you really want to delete this item?"
+	confirmText={isDeleting ? 'Deleting…' : 'Delete'}
+	cancelText="Cancel"
+	confirmVariant="destructive"
+	onConfirm={handleDelete}
+	onCancel={closeDeleteModal}
+/>
+
+<ToastContainer />
 
 <style>
 	.locations-table {
@@ -122,6 +196,7 @@
 			minmax(150px, 1fr)
 			minmax(130px, 1fr)
 			minmax(130px, 1fr)
-			minmax(130px, 1fr);
+			minmax(130px, 1fr)
+			minmax(100px, auto);
 	}
 </style>

@@ -130,6 +130,53 @@ export const uploadPDF = async (newPdf: File, type: PDFType): Promise<ReturnType
 	return result;
 };
 
+/**
+ * Derives the storage filename for a PDF from a stored document.
+ *
+ * Newer documents store the storage filename in `pdfName`. Older ones only have
+ * the download URL in `pdfFile`, so fall back to parsing the name out of it.
+ * Returns null when neither yields a usable name.
+ */
+export const getPDFStorageName = (pdfName?: string | null, pdfFile?: string | null): string | null => {
+	if (pdfName) return pdfName;
+	if (!pdfFile) return null;
+
+	try {
+		// Download URLs encode the full path, e.g. /o/documents%2Fweeklysheet%2Fsheet.pdf
+		const path = new URL(pdfFile).pathname;
+		const encoded = path.split('/o/')[1];
+		if (!encoded) return null;
+		const decoded = decodeURIComponent(encoded);
+		return decoded.split('/').pop() || null;
+	} catch {
+		// Not a URL — treat a bare filename as the name itself
+		return pdfFile.includes('/') ? pdfFile.split('/').pop() || null : pdfFile;
+	}
+};
+
+/**
+ * Deletes a PDF from storage. Mirrors the path built by uploadPDF.
+ *
+ * A missing file (already deleted, or never uploaded) is not treated as an
+ * error: the caller's goal is that the file is gone, and it is.
+ *
+ * @throws Any Firebase Storage error other than object-not-found
+ */
+export const deletePDFFromStorage = async (pdfFileName: string, type: PDFType): Promise<void> => {
+	if (!pdfFileName || !type) return;
+
+	const storageRef = ref(storage, `${type === 'documents' ? '' : 'documents'}/${type}/${pdfFileName}`);
+
+	try {
+		await deleteObject(storageRef);
+	} catch (error: unknown) {
+		if (error instanceof Error && 'code' in error && (error as { code: string }).code === 'storage/object-not-found') {
+			return;
+		}
+		throw error;
+	}
+};
+
 export const listAllImages = async () => {
 	try {
 		const imagesRef = ref(storage, 'images');

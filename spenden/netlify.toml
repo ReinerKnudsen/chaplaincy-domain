@@ -1,0 +1,15 @@
+# Eigene Netlify-Site für spenden.anglicanbonncologne.de.
+# In Netlify als zweite Site auf dasselbe Repo anlegen, Base directory = "spenden".
+
+[build]
+	# Kein Build-Schritt: statisches HTML, keine Dependencies.
+	publish = "."
+	# Baut nur neu, wenn sich in diesem Ordner etwas geändert hat.
+	ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ."
+
+[[headers]]
+	for = "/*"
+	[headers.values]
+		X-Frame-Options = "DENY"
+		X-Content-Type-Options = "nosniff"
+		Referrer-Policy = "strict-origin-when-cross-origin"

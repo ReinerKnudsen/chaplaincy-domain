@@ -13,7 +13,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- Add: Standalone donation page for `spenden.anglicanbonncologne.de` in `spenden/`. Static single page, bilingual (EN/DE) with a flag toggle, amount presets and a free amount, linking out to betterplace.org. Deployed as its own Netlify site from this repo; no build step and no third-party requests, so no cookie banner is needed.
 
 ### Changed
 

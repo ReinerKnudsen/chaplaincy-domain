@@ -1,13 +1,14 @@
 import { fail } from '@sveltejs/kit';
 import { Resend } from 'resend';
 import type { Actions, RequestEvent } from './$types';
+import { PRIVATE_RECAPTCHA_SECRET_KEY, PRIVATE_RESEND_API_KEY } from '$env/static/private';
 
 // reCaptcha validation function
 const validateRecaptcha = async (token: string): Promise<{ success: boolean; score?: number; error?: string }> => {
-	const secretKey = import.meta.env.VITE_RECAPTCHA_SECRET_KEY;
+	const secretKey = PRIVATE_RECAPTCHA_SECRET_KEY;
 
 	if (!secretKey) {
-		console.error('VITE_RECAPTCHA_SECRET_KEY not found in environment variables');
+		console.error('PRIVATE_RECAPTCHA_SECRET_KEY not found in environment variables');
 		return { success: false, error: 'Server configuration error' };
 	}
 
@@ -46,7 +47,7 @@ const validateRecaptcha = async (token: string): Promise<{ success: boolean; sco
 	}
 };
 
-const resend = new Resend('re_AJG7e4FU_LCBrEcUTstVSRZaWjfXjjTvF');
+const resend = new Resend(PRIVATE_RESEND_API_KEY);
 
 const sendEmail = async (options: {
 	from: string;

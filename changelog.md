@@ -17,12 +17,17 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
-- Docs: Add `CLAUDE.md` with commands, architecture, conventions and the git/release workflow for AI-assisted development.
+-
 
 ### Fixed
 
 -
 
+## [8.2.1] - 2026-09-30
+
+### Changed
+
+- Docs: Add `CLAUDE.md` with commands, architecture, conventions and the git/release workflow for AI-assisted development.
 ## [8.2.0] - 2026-09-01
 
 ### Added

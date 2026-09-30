@@ -21,7 +21,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
--
+- Security: The contact form no longer hardcodes the Resend API key (the old key has been revoked). It and the reCAPTCHA secret are now read server-side from `PRIVATE_RESEND_API_KEY` and `PRIVATE_RECAPTCHA_SECRET_KEY` via `$env/static/private` (previously `VITE_RECAPTCHA_SECRET_KEY`).
 
 ## [8.2.0] - 2026-09-01
 

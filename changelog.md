@@ -21,7 +21,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
--
+- Fix: The PR changelog workflow failed to install `@octokit/rest` on Node 20. A transitive dependency now requires Node >= 22, and `engine-strict=true` turns that mismatch into a hard error. The workflow runs on Node 22.
 
 ## [8.2.4] - 2026-11-01
 

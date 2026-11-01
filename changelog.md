@@ -23,6 +23,41 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 -
 
+## [9.0.0] - 2026-11-01
+
+### Fixed
+
+- Remove: `firebase-functions` from the app's dependencies. It is a Cloud Functions package that belongs to `functions/`, where it is already declared, and nothing in `src/` imports it — the client uses `firebase/functions` from the `firebase` SDK instead. It dragged in `firebase-admin@14`, which requires Node 22 and broke the Netlify build.
+- Security: Applied `npm audit fix` to the app and to `functions/`. Vulnerabilities drop from 57 to 29 in the app (critical and 12 of 16 high resolved) and from 40 to 29 in functions (all critical and high resolved). Lockfiles only — no version ranges in `package.json` changed.
+## [8.2.6] - 2026-11-01
+
+### Changed
+
+- Git hooks now live in `.githooks/` under version control instead of `.git/hooks/`, which is never committed. `npm install` points git at them automatically; `npm run setup:hooks` does it manually. The pre-commit hook opens the changelog in VS Code rather than Windsurf, and no longer errors out when no editor CLI is present.
+## [8.2.5] - 2026-11-01
+
+### Fixed
+
+- Fix: The PR changelog workflow failed to install `@octokit/rest` on Node 20. A transitive dependency now requires Node >= 22, and `engine-strict=true` turns that mismatch into a hard error. The workflow runs on Node 22.
+## [8.2.4] - 2026-11-01
+
+### Fixed
+
+- Fix: Newsletter signups silently did nothing when reCAPTCHA had not finished initialising — the token call threw, the submission was cancelled, and no opt-in mail was ever sent. Both forms now wait via `grecaptcha.ready()`, and the signup form shows a message instead of failing silently.
+## [8.2.3] - 2026-11-01
+
+### Fixed
+
+- Security: The contact form no longer hardcodes the Resend API key (the old key has been revoked). It and the reCAPTCHA secret are now read server-side from `PRIVATE_RESEND_API_KEY` and `PRIVATE_RECAPTCHA_SECRET_KEY` via `$env/static/private` (previously `VITE_RECAPTCHA_SECRET_KEY`).
+- Security: The newsletter signup is now protected against bot submissions with a honeypot field and reCAPTCHA v3, matching the contact form. It previously accepted any request that carried an email address, which is how fake signups reached Brevo.
+- Security: Removed the unused public `/api/subscribe` endpoint. It forwarded unauthenticated requests straight to Brevo with no spam protection and was not called from anywhere in the app.
+- The newsletter signup now rejects malformed email addresses server-side instead of passing them to Brevo. The check uses a pattern without super-linear backtracking (flagged by SonarQube), so a long hostile input cannot stall the request.
+- Security: The contact form no longer hardcodes the Resend API key (the old key has been revoked). It and the reCAPTCHA secret are now read server-side from `PRIVATE_RESEND_API_KEY` and `PRIVATE_RECAPTCHA_SECRET_KEY` via `$env/static/private` (previously `VITE_RECAPTCHA_SECRET_KEY`).
+## [8.2.1] - 2026-09-30
+
+### Changed
+
+- Docs: Add `CLAUDE.md` with commands, architecture, conventions and the git/release workflow for AI-assisted development.
 ## [8.2.0] - 2026-09-01
 
 ### Added

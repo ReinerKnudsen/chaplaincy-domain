@@ -51,7 +51,32 @@
 
 	let { form }: Props = $props();
 
+	const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+	let signupError = $state('');
+
+	const loadRecaptcha = () => {
+		if (typeof window !== 'undefined' && !window['grecaptcha']) {
+			const script = document.createElement('script');
+			script.src = `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`;
+			document.head.appendChild(script);
+		}
+	};
+
+	// The script loads asynchronously, so grecaptcha may not be initialised yet
+	// when the form is submitted. grecaptcha.ready() resolves once it is.
+	const getRecaptchaToken = async (): Promise<string> => {
+		const grecaptcha = window['grecaptcha'];
+		if (!grecaptcha) {
+			throw new Error('reCaptcha script not loaded');
+		}
+
+		await new Promise<void>((resolve) => grecaptcha.ready(resolve));
+		return grecaptcha.execute(SITE_KEY, { action: 'newsletter_signup' });
+	};
+
 	onMount(async () => {
+		loadRecaptcha();
+
 		await loadItems(CollectionType.News);
 		await loadItems(CollectionType.FutureEvents);
 		await loadItems(CollectionType.Notices);
@@ -253,7 +278,33 @@
 		<div class="mt-4 mb-10 px-10 text-lg">
 			We provide you with the latest news from our chaplaincy and the diocese in our regular email news.
 
-			<form method="POST" action="?/subscribe" use:enhance class="flex w-full flex-col space-y-6">
+			<form
+				method="POST"
+				action="?/subscribe"
+				class="flex w-full flex-col space-y-6"
+				use:enhance={async ({ formData, cancel }) => {
+					// Attach a reCaptcha token before the request leaves the browser.
+					signupError = '';
+					try {
+						formData.append('recaptcha_token', await getRecaptchaToken());
+					} catch (error) {
+						// Cancelling silently would look like nothing happened, so say so.
+						console.error('reCaptcha failed:', error);
+						signupError = 'Security check could not be completed. Please reload the page and try again.';
+						cancel();
+					}
+				}}
+			>
+				<!-- Honeypot field - hidden from humans but visible to bots -->
+				<input
+					type="text"
+					name="website"
+					class="absolute -left-9999px opacity-0"
+					tabindex="-1"
+					autocomplete="off"
+					aria-hidden="true"
+				/>
+
 				<div class="my-8 flex flex-col gap-4 md:gap-8 lg:flex-row">
 					<div class="flex flex-1 flex-col space-y-2">
 						<label for="firstName">First Name</label>
@@ -284,9 +335,9 @@
 						{form.message}
 					</div>
 				{/if}
-				{#if form?.error}
+				{#if signupError || form?.error}
 					<div class="rounded-lg border-2 border-red-700 p-4 text-red-800">
-						{form.message}
+						{signupError || form?.message}
 					</div>
 				{/if}
 			</form>

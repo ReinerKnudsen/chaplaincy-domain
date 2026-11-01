@@ -19,7 +19,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # @octokit/rest pulls in content-type@3, which requires Node >= 22.
+          # .npmrc sets engine-strict=true, so on Node 20 the install fails
+          # outright rather than warning.
+          node-version: '22'
           cache: 'npm'
 
       - name: Install Octokit

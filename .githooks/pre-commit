@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# Check if changelog.md is staged for commit
+if ! git diff --cached --name-only | grep -q "^changelog.md$"; then
+    echo "🚨 Changelog not updated!"
+
+    # Open changelog in the current VS Code window (passing "." avoids a new
+    # workspace). Skipped when the CLI is unavailable, e.g. when committing
+    # from a terminal or agent without VS Code on PATH.
+    if command -v code >/dev/null 2>&1; then
+        echo "📝 Opening changelog.md in VS Code for you to edit..."
+        code . changelog.md
+    else
+        echo "📝 Please open changelog.md and add an entry."
+    fi
+
+    echo ""
+    echo "✏️  Please update the changelog, save it, then run:"
+    echo "   git add changelog.md"
+    echo "   git commit"
+    echo ""
+    echo "🛑 Commit blocked until changelog is updated."
+    exit 1
+fi
+
+echo "✅ Changelog updated - proceeding with commit"
+exit 0

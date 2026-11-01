@@ -21,7 +21,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
--
+- Security: Applied `npm audit fix` to the app and to `functions/`. Vulnerabilities drop from 57 to 29 in the app (critical and 12 of 16 high resolved) and from 40 to 29 in functions (all critical and high resolved). Lockfiles only — no version ranges in `package.json` changed.
 
 ## [8.2.6] - 2026-11-01
 

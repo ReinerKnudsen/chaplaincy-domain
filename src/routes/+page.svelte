@@ -51,7 +51,19 @@
 
 	let { form }: Props = $props();
 
+	const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
+	const loadRecaptcha = () => {
+		if (typeof window !== 'undefined' && !window['grecaptcha']) {
+			const script = document.createElement('script');
+			script.src = `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`;
+			document.head.appendChild(script);
+		}
+	};
+
 	onMount(async () => {
+		loadRecaptcha();
+
 		await loadItems(CollectionType.News);
 		await loadItems(CollectionType.FutureEvents);
 		await loadItems(CollectionType.Notices);
@@ -253,7 +265,35 @@
 		<div class="mt-4 mb-10 px-10 text-lg">
 			We provide you with the latest news from our chaplaincy and the diocese in our regular email news.
 
-			<form method="POST" action="?/subscribe" use:enhance class="flex w-full flex-col space-y-6">
+			<form
+				method="POST"
+				action="?/subscribe"
+				class="flex w-full flex-col space-y-6"
+				use:enhance={async ({ formData, cancel }) => {
+					// Attach a reCaptcha token before the request leaves the browser.
+					try {
+						const token = await window['grecaptcha'].execute(SITE_KEY, {
+							action: 'newsletter_signup',
+						});
+						formData.append('recaptcha_token', token);
+						return;
+					} catch (error) {
+						console.error('reCaptcha failed:', error);
+						cancel();
+						return;
+					}
+				}}
+			>
+				<!-- Honeypot field - hidden from humans but visible to bots -->
+				<input
+					type="text"
+					name="website"
+					class="absolute -left-9999px opacity-0"
+					tabindex="-1"
+					autocomplete="off"
+					aria-hidden="true"
+				/>
+
 				<div class="my-8 flex flex-col gap-4 md:gap-8 lg:flex-row">
 					<div class="flex flex-1 flex-col space-y-2">
 						<label for="firstName">First Name</label>

@@ -52,6 +52,7 @@
 	let { form }: Props = $props();
 
 	const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+	let signupError = $state('');
 
 	const loadRecaptcha = () => {
 		if (typeof window !== 'undefined' && !window['grecaptcha']) {
@@ -59,6 +60,18 @@
 			script.src = `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`;
 			document.head.appendChild(script);
 		}
+	};
+
+	// The script loads asynchronously, so grecaptcha may not be initialised yet
+	// when the form is submitted. grecaptcha.ready() resolves once it is.
+	const getRecaptchaToken = async (): Promise<string> => {
+		const grecaptcha = window['grecaptcha'];
+		if (!grecaptcha) {
+			throw new Error('reCaptcha script not loaded');
+		}
+
+		await new Promise<void>((resolve) => grecaptcha.ready(resolve));
+		return grecaptcha.execute(SITE_KEY, { action: 'newsletter_signup' });
 	};
 
 	onMount(async () => {
@@ -271,16 +284,14 @@
 				class="flex w-full flex-col space-y-6"
 				use:enhance={async ({ formData, cancel }) => {
 					// Attach a reCaptcha token before the request leaves the browser.
+					signupError = '';
 					try {
-						const token = await window['grecaptcha'].execute(SITE_KEY, {
-							action: 'newsletter_signup',
-						});
-						formData.append('recaptcha_token', token);
-						return;
+						formData.append('recaptcha_token', await getRecaptchaToken());
 					} catch (error) {
+						// Cancelling silently would look like nothing happened, so say so.
 						console.error('reCaptcha failed:', error);
+						signupError = 'Security check could not be completed. Please reload the page and try again.';
 						cancel();
-						return;
 					}
 				}}
 			>
@@ -324,9 +335,9 @@
 						{form.message}
 					</div>
 				{/if}
-				{#if form?.error}
+				{#if signupError || form?.error}
 					<div class="rounded-lg border-2 border-red-700 p-4 text-red-800">
-						{form.message}
+						{signupError || form?.message}
 					</div>
 				{/if}
 			</form>

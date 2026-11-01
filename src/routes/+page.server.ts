@@ -13,7 +13,11 @@ const RECAPTCHA_THRESHOLD = 0.5;
 
 // Deliberately permissive: this only rejects input that cannot be an address.
 // Deciding whether an address is real is the double opt-in mail's job.
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//
+// The domain part excludes '.' from the label class so each label has exactly
+// one way to match. Allowing dots in both halves of `x.y` lets the engine try
+// every split on failure, which is quadratic on hostile input.
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/;
 
 const validateRecaptcha = async (token: string): Promise<{ success: boolean; error?: string }> => {
 	if (!PRIVATE_RECAPTCHA_SECRET_KEY) {

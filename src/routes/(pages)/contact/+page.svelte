@@ -26,6 +26,18 @@
 		}
 	};
 
+	// The script loads asynchronously, so grecaptcha may not be initialised yet
+	// when the form is submitted. grecaptcha.ready() resolves once it is.
+	const getRecaptchaToken = async (): Promise<string> => {
+		const grecaptcha = window['grecaptcha'];
+		if (!grecaptcha) {
+			throw new Error('reCaptcha script not loaded');
+		}
+
+		await new Promise<void>((resolve) => grecaptcha.ready(resolve));
+		return grecaptcha.execute(SITE_KEY, { action: 'contact_form' });
+	};
+
 	onMount(() => {
 		loadRecaptcha();
 	});
@@ -45,11 +57,7 @@
 			isLoading = true;
 			// Get reCaptcha token before submitting
 			try {
-				const token = await window['grecaptcha'].execute(SITE_KEY, {
-					action: 'contact_form',
-				});
-				// Add token to form data
-				formData.append('recaptcha_token', token);
+				formData.append('recaptcha_token', await getRecaptchaToken());
 				// Let form submit normally
 				isLoading = false;
 				return;

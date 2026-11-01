@@ -23,6 +23,11 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 - Fix: The PR changelog workflow failed to install `@octokit/rest` on Node 20. A transitive dependency now requires Node >= 22, and `engine-strict=true` turns that mismatch into a hard error. The workflow runs on Node 22.
 
+## [8.2.4] - 2026-11-01
+
+### Fixed
+
+- Fix: Newsletter signups silently did nothing when reCAPTCHA had not finished initialising — the token call threw, the submission was cancelled, and no opt-in mail was ever sent. Both forms now wait via `grecaptcha.ready()`, and the signup form shows a message instead of failing silently.
 ## [8.2.3] - 2026-11-01
 
 ### Fixed

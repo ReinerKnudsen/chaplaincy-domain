@@ -17,7 +17,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- Git hooks now live in `.githooks/` under version control instead of `.git/hooks/`, which is never committed. `npm install` points git at them automatically; `npm run setup:hooks` does it manually. The pre-commit hook opens the changelog in VS Code rather than Windsurf, and no longer errors out when no editor CLI is present.
 
 ### Fixed
 

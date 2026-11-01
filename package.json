@@ -1,6 +1,6 @@
 {
 	"name": "chaplaincy-domain",
-	"version": "8.2.6",
+	"version": "9.0.0",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",

@@ -26,6 +26,9 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 - Security: Removed the unused public `/api/subscribe` endpoint. It forwarded unauthenticated requests straight to Brevo with no spam protection and was not called from anywhere in the app.
 - The newsletter signup now rejects malformed email addresses server-side instead of passing them to Brevo.
 
+### Fixed
+
+- Security: The contact form no longer hardcodes the Resend API key (the old key has been revoked). It and the reCAPTCHA secret are now read server-side from `PRIVATE_RESEND_API_KEY` and `PRIVATE_RECAPTCHA_SECRET_KEY` via `$env/static/private` (previously `VITE_RECAPTCHA_SECRET_KEY`).
 ## [8.2.1] - 2026-09-30
 
 ### Changed

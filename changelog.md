@@ -24,6 +24,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
+- Release automation failed on every merge into `dev` since the SvelteKit 3 upgrade: its `npm ci` ran on npm 10, which cannot resolve `runed`'s optional kit peer (EUSAGE). The changelog script only uses Node built-ins, so the install step is dropped. No version was released for #470 and #471; the next merge releases them together.
 - News drafts were public immediately. `initialNews` and `initialDomainEvent` set `publishDateTime` (and for events `unpublishDateTime`) to the time the module loaded, so a saved draft carried a past publish timestamp, was derived as `public` and shown on `/news`; event drafts showed up as `unpublished`. Both now start as `null` and only get a timestamp on publish. Found by the new E2E suite.
 - The teaser text was never suggested for a new news item or event: `prepareSlugText` checked `slug?.trim().length === 0`, which is `undefined` while the slug is still `null`.
 - Upgrade npm to 11.6.0 as the first step of the Netlify build command. npm 10, bundled with Node 22.17, mis-resolves the optional `@sveltejs/kit` peer dependency of `runed` and fails `npm ci` with EUSAGE, demanding kit 2.70.4 although the project is on kit 3. The lockfile is in sync; npm 11 installs it cleanly. Setting `NPM_VERSION` alone did not take effect.

@@ -24,7 +24,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
--
+- Pinned `NPM_VERSION` to 11.6.0 for the Netlify build. npm 10, bundled with Node 22.17, mis-resolves the optional `@sveltejs/kit` peer dependency of `runed` and fails `npm ci` with EUSAGE, demanding kit 2.70.4 although the project is on kit 3. The lockfile is in sync; npm 11 installs it cleanly.
 
 ## [10.0.0] - 2026-11-16
 

@@ -2,8 +2,8 @@ import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import {
 	PRIVATE_BREVO_API_KEY,
-	PRIVATE_BREVO_REDIRECTION_URL,
-	PRIVATE_BREVO_LIST,
+	BREVO_REDIRECTION_URL,
+	BREVO_LIST,
 	PRIVATE_RECAPTCHA_SECRET_KEY,
 } from '$env/static/private';
 
@@ -114,10 +114,10 @@ export const actions = {
 			},
 			body: JSON.stringify({
 				attributes: { FirstName: firstName, LastName: lastName },
-				includeListIds: [+PRIVATE_BREVO_LIST],
+				includeListIds: [+BREVO_LIST],
 				email: email,
 				templateId: 9,
-				redirectionUrl: PRIVATE_BREVO_REDIRECTION_URL,
+				redirectionUrl: BREVO_REDIRECTION_URL,
 			}),
 		};
 

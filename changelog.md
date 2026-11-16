@@ -17,7 +17,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- Remove: Dead SMTP configuration. `app.d.ts` still declared `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` and `SMTP_FROM`, none of which is read anywhere, and `smtp-client` sat in dependencies without being imported. Mail goes through Resend; the contact form and the Brevo webhook both read `NOTIFICATION_TO`.
 
 ### Fixed
 

@@ -28,6 +28,17 @@ jobs:
           VITE_APPID: ${{ secrets.VITE_APPID }}
           E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+          # Declared in src/env.ts, so SvelteKit refuses to start without them.
+          # The tests never call these services, so placeholders are enough.
+          PRIVATE_ANTHROPIC_API_KEY: e2e-placeholder
+          PRIVATE_BREVO_API_KEY: e2e-placeholder
+          PRIVATE_BREVO_WEBHOOK_SECRET: e2e-placeholder
+          PRIVATE_RECAPTCHA_SECRET_KEY: e2e-placeholder
+          PRIVATE_RESEND_API_KEY: e2e-placeholder
+          BREVO_LIST: '0'
+          BREVO_REDIRECTION_URL: http://localhost:5173
+          NOTIFICATION_TO: e2e@example.invalid
+          NOTIFICATION_FROM: e2e@example.invalid
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:

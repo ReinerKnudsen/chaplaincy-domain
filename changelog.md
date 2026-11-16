@@ -13,7 +13,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
-- Test: Playwright E2E suite in `tests/`, split into the projects `public` (every page renders, navigation on desktop and mobile, news/event detail pages), `auth` (login, logout, wrong password, admin guard) and `admin` (publish, draft, schedule and delete news; publish and validate events; unsaved-changes guard). Runs against the dev Firebase project; test data is titled `[E2E]` and removed by the tests and a global teardown. Credentials come from `E2E_EMAIL` / `E2E_PASSWORD` instead of being hard-coded. The CI workflow now runs on `dev` and `main` with the Firebase config and test account from GitHub secrets. Delete buttons in the news and events admin tables got an accessible name. See `tests/README.md`.
+- Test: Playwright E2E suite in `tests/`, split into the projects `public` (every page renders, navigation on desktop and mobile, news/event detail pages), `auth` (login, logout, wrong password, admin guard) and `admin` (publish, draft, schedule and delete news; publish and validate events; unsaved-changes guard). Runs against the dev Firebase project; test data is titled `[E2E]` and removed by the tests and a global teardown. Credentials come from `E2E_EMAIL` / `E2E_PASSWORD` instead of being hard-coded. The CI workflow now runs on `dev` and `main` with the Firebase config and test account from GitHub secrets; the server-side variables from `src/env.ts` get placeholders there, since the tests never call those services. Delete buttons in the news and events admin tables got an accessible name. See `tests/README.md`.
 
 ### Changed
 

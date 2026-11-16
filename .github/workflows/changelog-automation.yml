@@ -24,10 +24,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      # No npm ci: scripts/update-changelog.js only uses Node built-ins (fs, path).
+      # Installing the app's dependencies here broke the release when npm 10
+      # (bundled with Node 22) could not resolve runed's optional kit peer.
 
       - name: Run changelog automation
         id: changelog

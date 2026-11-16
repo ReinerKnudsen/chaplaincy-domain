@@ -47,8 +47,8 @@
 		"prettier": "^3.8.0",
 		"prettier-plugin-svelte": "^3.4.1",
 		"prettier-plugin-tailwindcss": "^0.6.12",
-		"svelte": "^5.57.1",
-		"svelte-check": "^4.0.5",
+		"svelte": "^5.57.2",
+		"svelte-check": "^4.7.5",
 		"svelte-preprocess": "^6.0.3",
 		"tailwind-merge": "^3.3.1",
 		"tailwind-variants": "^1.0.0",
@@ -67,8 +67,7 @@
 		"minimatch": "^10.2.1",
 		"devalue": "^5.8.1",
 		"protobufjs": "^7.5.6",
-		"@protobufjs/utf8": "^1.1.1",
-		"cookie": "^0.7.2"
+		"@protobufjs/utf8": "^1.1.1"
 	},
 	"dependencies": {
 		"@anthropic-ai/sdk": "^0.96.0",

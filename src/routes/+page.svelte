@@ -33,13 +33,11 @@
 	import type { Service } from '$lib/types';
 
 	// Manually convert the services object into an array with proper typing
-	const servicesArray = servicesData.services.map(
-		(service): Service => ({
-			...service,
-			place_address: service.place_address?.replace(/\n/g, '<br>') ?? '',
-			mode: service.mode as 'onsite' | 'online',
-		})
-	);
+	const servicesArray = servicesData.services.map((service): Service => ({
+		...service,
+		place_address: service.place_address?.replace(/\n/g, '<br>') ?? '',
+		mode: service.mode as 'onsite' | 'online',
+	}));
 
 	let user = $derived($authStore.user);
 	let loading = $state(true);

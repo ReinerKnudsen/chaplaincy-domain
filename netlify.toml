@@ -4,5 +4,9 @@
 	ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ."
 [build.environment]
 	NODE_VERSION = "20.19.0"
+	# PRIVATE_* values legitimately appear in the server bundle — that code runs
+	# inside the Netlify function and is never served to browsers. Scanning stays
+	# on for the client bundle, where a leak would actually expose them.
+	SECRETS_SCAN_OMIT_PATHS = ".svelte-kit/output/server/**,.netlify/server/**,.netlify/functions-internal/**"
 [build.processing]
   skip_processing = false

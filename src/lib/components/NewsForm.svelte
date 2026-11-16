@@ -177,7 +177,7 @@
 			thisNews = { ...thisNews, slug: '' };
 			return;
 		}
-		if (thisNews.slug?.trim().length === 0) {
+		if (!thisNews.slug?.trim()) {
 			const parsedText = await marked.parse(thisNews.text);
 			const slugText = cleanText(parsedText).slice(0, MAX_SLUG_TEXT);
 			thisNews = { ...thisNews, slug: slugText };

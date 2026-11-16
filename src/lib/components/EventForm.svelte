@@ -263,7 +263,7 @@
 			thisEvent = { ...thisEvent, slug: '' };
 			return;
 		}
-		if (thisEvent.slug?.trim().length === 0) {
+		if (!thisEvent.slug?.trim()) {
 			const parsedText = await marked.parse(thisEvent.description);
 			thisEvent = { ...thisEvent, slug: cleanText(parsedText).slice(0, MAX_SLUG_TEXT) };
 		}

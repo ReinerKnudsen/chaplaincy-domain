@@ -8,11 +8,5 @@
 	# inside the Netlify function and is never served to browsers. Scanning stays
 	# on for the client bundle, where a leak would actually expose them.
 	SECRETS_SCAN_OMIT_PATHS = ".svelte-kit/output/server/**,.netlify/server/**,.netlify/functions-internal/**"
-	# Not secrets, and each matches text that has to stay in the repo:
-	#   PRIVATE_BREVO_LIST          the list id "8" — a single digit matches
-	#                               timestamps, hashes and version strings
-	#   PRIVATE_NOTIFICATION_TO   an address published in the Impressum
-	#   PRIVATE_NOTIFICATION_FROM the visible From: of the notification mail
-	SECRETS_SCAN_OMIT_KEYS = "PRIVATE_BREVO_LIST,PRIVATE_NOTIFICATION_TO,PRIVATE_NOTIFICATION_FROM"
 [build.processing]
   skip_processing = false

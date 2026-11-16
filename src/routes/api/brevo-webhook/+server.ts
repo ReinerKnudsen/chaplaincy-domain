@@ -4,8 +4,8 @@ import type { RequestHandler } from './$types';
 import {
 	PRIVATE_BREVO_WEBHOOK_SECRET,
 	PRIVATE_RESEND_API_KEY,
-	PRIVATE_NOTIFICATION_TO,
-	PRIVATE_NOTIFICATION_FROM,
+	NOTIFICATION_TO,
+	NOTIFICATION_FROM,
 } from '$env/static/private';
 
 /**
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({ received: true, notified: false });
 	}
 
-	if (!PRIVATE_RESEND_API_KEY || !PRIVATE_NOTIFICATION_TO || !PRIVATE_NOTIFICATION_FROM) {
+	if (!PRIVATE_RESEND_API_KEY || !NOTIFICATION_TO || !NOTIFICATION_FROM) {
 		// The event is already in the log above, so this is not fatal.
 		console.error('Brevo webhook: cannot send notification — Resend key, sender or recipient missing');
 		return json({ received: true, notified: false });
@@ -120,8 +120,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		const resend = new Resend(PRIVATE_RESEND_API_KEY);
 
 		await resend.emails.send({
-			from: PRIVATE_NOTIFICATION_FROM,
-			to: PRIVATE_NOTIFICATION_TO,
+			from: NOTIFICATION_FROM,
+			to: NOTIFICATION_TO,
 			subject,
 			text,
 			html,

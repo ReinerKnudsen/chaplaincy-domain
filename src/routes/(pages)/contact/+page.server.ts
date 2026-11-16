@@ -1,7 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import { Resend } from 'resend';
 import type { Actions, RequestEvent } from './$types';
-import { PRIVATE_RECAPTCHA_SECRET_KEY, PRIVATE_RESEND_API_KEY, PRIVATE_NOTIFICATION_TO } from '$env/static/private';
+import { PRIVATE_RECAPTCHA_SECRET_KEY, PRIVATE_RESEND_API_KEY, NOTIFICATION_TO } from '$env/static/private';
 
 // reCaptcha validation function
 const validateRecaptcha = async (token: string): Promise<{ success: boolean; score?: number; error?: string }> => {
@@ -119,7 +119,7 @@ export const actions = {
 		try {
 			await sendEmail({
 				from: 'Anglican Chaplaincy Website<contact@anglicanbonncologne.de>',
-				to: PRIVATE_NOTIFICATION_TO,
+				to: NOTIFICATION_TO,
 				subject: `Contact Form: ${subject}`,
 				text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
 				html: `<h2>New Contact Form Submission</h2>

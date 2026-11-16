@@ -52,8 +52,12 @@ cd functions && npm run deploy   # Firebase Cloud Functions (separate package, C
 - **Toasts**: `notificationStore.addToast(type, message)`; the component must render a
   `<ToastContainer>`. User-facing strings go in `src/lib/utils/messages.ts`.
 - `validateEventData()` returns `true` when validation **failed**.
-- **Env vars**: `VITE_*` is public (bundled for the client), `PRIVATE_*` is server-only via
-  `$env/static/private`. New secrets must be `PRIVATE_*`.
+- **Env vars**: `VITE_*` is public and bundled for the client. Everything else is server-only via
+  `$env/static/private` — SvelteKit's `privatePrefix` is empty, so the prefix is convention, not
+  mechanism. `PRIVATE_*` is reserved for actual secrets (API keys, tokens) and those are also
+  flagged as secrets in the Netlify UI; server-side values that are not secret (list ids, email
+  addresses, redirect URLs) carry no prefix. Keeping the two apart stops Netlify's secrets scanner
+  from failing builds over values that are published anyway.
 - Svelte/TS patterns used in this project are documented in `docs/patterns.md`; add new ones there.
 
 ## Git and release workflow

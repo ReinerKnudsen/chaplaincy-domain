@@ -13,6 +13,20 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
+-
+
+### Changed
+
+-
+
+### Fixed
+
+-
+
+## [9.1.0] - 2026-11-16
+
+### Added
+
 - Add: Webhook endpoint at `/api/brevo-webhook` that emails a notification when Brevo reports a spam complaint, hard bounce, block or invalid address. Authenticated with a bearer token; recipient and sender are configurable via `NOTIFICATION_TO` and `NOTIFICATION_FROM`. Setup instructions in `src/routes/api/brevo-webhook/README.md`.
 
 ### Changed
@@ -21,6 +35,8 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
+- Remove: `json-server` from dependencies. Nothing imports it, the `db.json` it was meant to serve has not existed since early in the project, and it was the only package demanding Node >= 22.12 — which failed the Netlify install on Node 20.
+- Fix: Reverted the SvelteKit 3 upgrade (#463). It raised `@sveltejs/kit`, `adapter-netlify` and `adapter-auto` across major versions without TypeScript or Svelte, so `npm ci` failed on Netlify with ERESOLVE. SvelteKit 3 also drops `svelte.config.js` and replaces `$env/static/private`, which needs a planned migration rather than a dependency bump.
 - Fix: Removed the hardcoded fallback recipient from the contact form. It embedded a private address in the repository; the address now comes from `NOTIFICATION_TO`.
 - Fix: Netlify's secrets scanning failed the build. Real `PRIVATE_*` values appear in the server bundle by design — that code runs inside the Netlify function and is never served to browsers — so the server output paths are exempt while scanning stays on for the client bundle.
 

@@ -13,7 +13,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
--
+- Add: Webhook endpoint at `/api/brevo-webhook` that emails a notification when Brevo reports a spam complaint, hard bounce, block or invalid address. Authenticated with a bearer token; recipient and sender are configurable via `PRIVATE_WEBHOOK_NOTIFY_TO` and `PRIVATE_WEBHOOK_NOTIFY_FROM`. Setup instructions in `src/routes/api/brevo-webhook/README.md`.
 
 ### Changed
 

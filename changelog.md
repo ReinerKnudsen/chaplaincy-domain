@@ -21,6 +21,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Fixed
 
+- Remove: `json-server` from dependencies. Nothing imports it, the `db.json` it was meant to serve has not existed since early in the project, and it was the only package demanding Node >= 22.12 — which failed the Netlify install on Node 20.
 - Fix: Reverted the SvelteKit 3 upgrade (#463). It raised `@sveltejs/kit`, `adapter-netlify` and `adapter-auto` across major versions without TypeScript or Svelte, so `npm ci` failed on Netlify with ERESOLVE. SvelteKit 3 also drops `svelte.config.js` and replaces `$env/static/private`, which needs a planned migration rather than a dependency bump.
 - Changed: `PRIVATE_*` now marks actual secrets only. Server-side values that are not secret — `BREVO_LIST`, `BREVO_REDIRECTION_URL`, `NOTIFICATION_TO`, `NOTIFICATION_FROM` — dropped the prefix. SvelteKit reads them the same way; the prefix was never what made them server-only.
 - Fix: Removed the hardcoded fallback recipient from the contact form. It embedded a private address in the repository and collided with Netlify's secrets scanning; the address now comes from `PRIVATE_NOTIFICATION_TO`.

@@ -13,6 +13,20 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
+-
+
+### Changed
+
+-
+
+### Fixed
+
+-
+
+## [11.0.0] - 2026-11-16
+
+### Added
+
 - Test: Playwright E2E suite in `tests/`, split into the projects `public` (every page renders, navigation on desktop and mobile, news/event detail pages), `auth` (login, logout, wrong password, admin guard) and `admin` (publish, draft, schedule and delete news; publish and validate events; unsaved-changes guard). Runs against the dev Firebase project; test data is titled `[E2E]` and removed by the tests and a global teardown. Credentials come from `E2E_EMAIL` / `E2E_PASSWORD` instead of being hard-coded. The CI workflow now runs on `dev` and `main` with the Firebase config and test account from GitHub secrets; the server-side variables from `src/env.ts` get placeholders there, since the tests never call those services. Delete buttons in the news and events admin tables got an accessible name. See `tests/README.md`.
 
 ### Changed
@@ -28,7 +42,6 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 - News drafts were public immediately. `initialNews` and `initialDomainEvent` set `publishDateTime` (and for events `unpublishDateTime`) to the time the module loaded, so a saved draft carried a past publish timestamp, was derived as `public` and shown on `/news`; event drafts showed up as `unpublished`. Both now start as `null` and only get a timestamp on publish. Found by the new E2E suite.
 - The teaser text was never suggested for a new news item or event: `prepareSlugText` checked `slug?.trim().length === 0`, which is `undefined` while the slug is still `null`.
 - Upgrade npm to 11.6.0 as the first step of the Netlify build command. npm 10, bundled with Node 22.17, mis-resolves the optional `@sveltejs/kit` peer dependency of `runed` and fails `npm ci` with EUSAGE, demanding kit 2.70.4 although the project is on kit 3. The lockfile is in sync; npm 11 installs it cleanly. Setting `NPM_VERSION` alone did not take effect.
-
 ## [10.0.0] - 2026-11-16
 
 ### Changed

@@ -15,8 +15,8 @@ complete record even when no mail goes out.
 | Variable                       | Purpose                                                            |
 | ------------------------------ | ------------------------------------------------------------------ |
 | `PRIVATE_BREVO_WEBHOOK_SECRET` | Bearer token Brevo must send. Without it the endpoint returns 503. |
-| `PRIVATE_WEBHOOK_NOTIFY_TO`    | Where notifications go.                                            |
-| `PRIVATE_WEBHOOK_NOTIFY_FROM`  | Sender; falls back to `news@anglicanbonncologne.de`.               |
+| `PRIVATE_NOTIFICATION_TO`      | Where notifications go.                                            |
+| `PRIVATE_NOTIFICATION_FROM`    | Sender; falls back to `news@anglicanbonncologne.de`.               |
 | `PRIVATE_RESEND_API_KEY`       | Already used by the contact form.                                  |
 
 All four must also be set in the Netlify UI, or the deployed endpoint cannot
@@ -58,7 +58,7 @@ curl -X POST https://www.anglicanbonncologne.de/api/brevo-webhook \
   -d '{"event":"spam","email":"test@example.com","date":"2026-11-16 10:00:00","tags":["optin"]}'
 ```
 
-Expect `{"received":true,"notified":true}` and a mail at `PRIVATE_WEBHOOK_NOTIFY_TO`.
+Expect `{"received":true,"notified":true}` and a mail at `PRIVATE_NOTIFICATION_TO`.
 Without the header the same call returns 401.
 
 ## Why it always answers 200

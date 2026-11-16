@@ -4,8 +4,8 @@ import type { RequestHandler } from './$types';
 import {
 	PRIVATE_BREVO_WEBHOOK_SECRET,
 	PRIVATE_RESEND_API_KEY,
-	PRIVATE_WEBHOOK_NOTIFY_TO,
-	PRIVATE_WEBHOOK_NOTIFY_FROM,
+	PRIVATE_NOTIFICATION_TO,
+	PRIVATE_NOTIFICATION_FROM,
 } from '$env/static/private';
 
 /**
@@ -37,8 +37,6 @@ interface BrevoEvent {
 	subject?: string;
 	reason?: string;
 }
-
-const DEFAULT_FROM = 'Chaplaincy Website <news@anglicanbonncologne.de>';
 
 const isNotifyEvent = (event: string | undefined): event is NotifyEvent =>
 	!!event && (NOTIFY_EVENTS as readonly string[]).includes(event);
@@ -111,9 +109,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({ received: true, notified: false });
 	}
 
-	if (!PRIVATE_RESEND_API_KEY || !PRIVATE_WEBHOOK_NOTIFY_TO) {
+	if (!PRIVATE_RESEND_API_KEY || !PRIVATE_NOTIFICATION_TO || !PRIVATE_NOTIFICATION_FROM) {
 		// The event is already in the log above, so this is not fatal.
-		console.error('Brevo webhook: cannot send notification — Resend key or recipient missing');
+		console.error('Brevo webhook: cannot send notification — Resend key, sender or recipient missing');
 		return json({ received: true, notified: false });
 	}
 
@@ -122,8 +120,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		const resend = new Resend(PRIVATE_RESEND_API_KEY);
 
 		await resend.emails.send({
-			from: PRIVATE_WEBHOOK_NOTIFY_FROM || DEFAULT_FROM,
-			to: PRIVATE_WEBHOOK_NOTIFY_TO,
+			from: PRIVATE_NOTIFICATION_FROM,
+			to: PRIVATE_NOTIFICATION_TO,
 			subject,
 			text,
 			html,

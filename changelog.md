@@ -17,6 +17,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
+- Remove: `react`, `react-dom` and `scheduler` from the lockfile. They arrived as an optional peer of `@react-email/render` (a Resend dependency) and nothing imports them.
 - Migrated to SvelteKit 3: configuration moved from `svelte.config.js` into the `sveltekit()` Vite plugin, environment variables are declared in `src/env.ts`, and the `cookie` override was dropped so kit 3 can use `cookie@2`. The `$lib` alias is kept rather than rewriting 306 imports to `#lib`.
 - Raised dependencies to the versions SvelteKit 3 requires: kit ^3.2.0, adapter-auto ^8.0.1, adapter-netlify ^7.0.1, TypeScript ^6.0.0, Svelte ^5.57.1. Migration in progress.
 

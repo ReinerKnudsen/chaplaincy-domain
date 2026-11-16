@@ -27,15 +27,19 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
-- Add: Webhook endpoint at `/api/brevo-webhook` that emails a notification when Brevo reports a spam complaint, hard bounce, block or invalid address. Authenticated with a bearer token; recipient and sender are configurable via `PRIVATE_WEBHOOK_NOTIFY_TO` and `PRIVATE_WEBHOOK_NOTIFY_FROM`. Setup instructions in `src/routes/api/brevo-webhook/README.md`.
+- Add: Webhook endpoint at `/api/brevo-webhook` that emails a notification when Brevo reports a spam complaint, hard bounce, block or invalid address. Authenticated with a bearer token; recipient and sender are configurable via `NOTIFICATION_TO` and `NOTIFICATION_FROM`. Setup instructions in `src/routes/api/brevo-webhook/README.md`.
+
+### Changed
+
+- `PRIVATE_*` now marks actual secrets only, and those are the variables flagged as secrets in the Netlify UI. Server-side values that are not secret — `BREVO_LIST`, `BREVO_REDIRECTION_URL`, `NOTIFICATION_TO`, `NOTIFICATION_FROM` — dropped the prefix. SvelteKit reads them the same way; the prefix was convention, never the mechanism keeping them server-side.
 
 ### Fixed
 
 - Remove: `json-server` from dependencies. Nothing imports it, the `db.json` it was meant to serve has not existed since early in the project, and it was the only package demanding Node >= 22.12 — which failed the Netlify install on Node 20.
 - Fix: Reverted the SvelteKit 3 upgrade (#463). It raised `@sveltejs/kit`, `adapter-netlify` and `adapter-auto` across major versions without TypeScript or Svelte, so `npm ci` failed on Netlify with ERESOLVE. SvelteKit 3 also drops `svelte.config.js` and replaces `$env/static/private`, which needs a planned migration rather than a dependency bump.
-- Changed: `PRIVATE_*` now marks actual secrets only. Server-side values that are not secret — `BREVO_LIST`, `BREVO_REDIRECTION_URL`, `NOTIFICATION_TO`, `NOTIFICATION_FROM` — dropped the prefix. SvelteKit reads them the same way; the prefix was never what made them server-only.
-- Fix: Removed the hardcoded fallback recipient from the contact form. It embedded a private address in the repository and collided with Netlify's secrets scanning; the address now comes from `PRIVATE_NOTIFICATION_TO`.
-- Fix: Netlify's secrets scanning failed the build. `PRIVATE_*` values appear in the server bundle by design — that code runs inside the Netlify function and is never served to browsers — so the server output paths are now exempt while scanning stays on for the client bundle. `PRIVATE_BREVO_LIST` is exempt by key because its value is the single digit "8", which matches timestamps and hashes everywhere.
+- Fix: Removed the hardcoded fallback recipient from the contact form. It embedded a private address in the repository; the address now comes from `NOTIFICATION_TO`.
+- Fix: Netlify's secrets scanning failed the build. Real `PRIVATE_*` values appear in the server bundle by design — that code runs inside the Netlify function and is never served to browsers — so the server output paths are exempt while scanning stays on for the client bundle.
+
 ## [9.0.0] - 2026-11-01
 
 ### Fixed

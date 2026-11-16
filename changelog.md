@@ -13,11 +13,21 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Added
 
-- Add: Webhook endpoint at `/api/brevo-webhook` that emails a notification when Brevo reports a spam complaint, hard bounce, block or invalid address. Authenticated with a bearer token; recipient and sender are configurable via `PRIVATE_WEBHOOK_NOTIFY_TO` and `PRIVATE_WEBHOOK_NOTIFY_FROM`. Setup instructions in `src/routes/api/brevo-webhook/README.md`.
+-
 
 ### Changed
 
 -
+
+### Fixed
+
+-
+
+## [9.1.0] - 2026-11-16
+
+### Added
+
+- Add: Webhook endpoint at `/api/brevo-webhook` that emails a notification when Brevo reports a spam complaint, hard bounce, block or invalid address. Authenticated with a bearer token; recipient and sender are configurable via `PRIVATE_WEBHOOK_NOTIFY_TO` and `PRIVATE_WEBHOOK_NOTIFY_FROM`. Setup instructions in `src/routes/api/brevo-webhook/README.md`.
 
 ### Fixed
 
@@ -26,8 +36,6 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 - Changed: `PRIVATE_*` now marks actual secrets only. Server-side values that are not secret — `BREVO_LIST`, `BREVO_REDIRECTION_URL`, `NOTIFICATION_TO`, `NOTIFICATION_FROM` — dropped the prefix. SvelteKit reads them the same way; the prefix was never what made them server-only.
 - Fix: Removed the hardcoded fallback recipient from the contact form. It embedded a private address in the repository and collided with Netlify's secrets scanning; the address now comes from `PRIVATE_NOTIFICATION_TO`.
 - Fix: Netlify's secrets scanning failed the build. `PRIVATE_*` values appear in the server bundle by design — that code runs inside the Netlify function and is never served to browsers — so the server output paths are now exempt while scanning stays on for the client bundle. `PRIVATE_BREVO_LIST` is exempt by key because its value is the single digit "8", which matches timestamps and hashes everywhere.
--
-
 ## [9.0.0] - 2026-11-01
 
 ### Fixed

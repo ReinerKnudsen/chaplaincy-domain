@@ -224,6 +224,7 @@
 									<Button
 										variant="destructive"
 										title="Delete Item"
+										aria-label="Delete item"
 										class="min-w-0 "
 										onclick={() => openDeleteModal(item.id)}><Icon icon="mdi-light:delete" class="size-6" /></Button
 									>

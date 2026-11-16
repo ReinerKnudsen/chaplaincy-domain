@@ -20,3 +20,4 @@ document
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+/tests/.auth/

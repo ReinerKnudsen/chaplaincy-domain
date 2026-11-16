@@ -46,10 +46,10 @@ export interface DomainEvent {
 	condition?: string | null;
 	publishdate: string | null;
 	publishtime: string | null;
-	publishDateTime: Timestamp;
+	publishDateTime: Timestamp | null;
 	unpublishdate: string | null;
 	unpublishtime: string | null;
-	unpublishDateTime: Timestamp;
+	unpublishDateTime: Timestamp | null;
 	comments?: string | null;
 	image?: string | null;
 	imageAlt?: string | null;
@@ -79,11 +79,11 @@ export const initialDomainEvent: DomainEvent = {
 	joinOnline: false,
 	condition: null,
 	publishdate: null,
-	publishDateTime: Timestamp.fromDate(new Date()),
+	publishDateTime: null, // set on publish; a draft has none
 	publishtime: null,
 	unpublishdate: null,
 	unpublishtime: null,
-	unpublishDateTime: Timestamp.fromDate(new Date()),
+	unpublishDateTime: null,
 	comments: null,
 	image: null,
 	imageAlt: null,
@@ -107,7 +107,7 @@ export interface News {
 	slug: string | null;
 	publishdate: string | null;
 	publishtime: string | null;
-	publishDateTime: Timestamp;
+	publishDateTime: Timestamp | null;
 	comments: string | null;
 	image?: string | null;
 	imageAlt?: string | null;
@@ -131,7 +131,7 @@ export const initialNews: News = {
 	slug: null,
 	publishdate: null,
 	publishtime: null,
-	publishDateTime: Timestamp.fromDate(new Date()),
+	publishDateTime: null, // set on publish; a draft has none
 	comments: null,
 	image: null,
 	imageAlt: null,
@@ -369,14 +369,18 @@ export const loadItems = async (type: CollectionType): Promise<void> => {
 			const now = new Date().getTime(); // Gets milliseconds since epoch
 			const filteredItems = items.filter((item) => {
 				const publishTime =
-					item.data.publishDateTime?.seconds * 1000 ||
+					(item.data.publishDateTime?.seconds ?? 0) * 1000 ||
 					new Date(`${item.data.publishDate} ${item.data.publishTime}`).getTime();
 
 				return publishTime && publishTime < now;
 			});
 			const currentItems = filteredItems.sort((a, b) => {
-				const dateA = new Date(a.data.publishDateTime?.seconds * 1000 || `${a.data.publishDate} ${a.data.publishTime}`);
-				const dateB = new Date(b.data.publishDateTime?.seconds * 1000 || `${b.data.publishDate} ${b.data.publishTime}`);
+				const dateA = new Date(
+					(a.data.publishDateTime?.seconds ?? 0) * 1000 || `${a.data.publishDate} ${a.data.publishTime}`
+				);
+				const dateB = new Date(
+					(b.data.publishDateTime?.seconds ?? 0) * 1000 || `${b.data.publishDate} ${b.data.publishTime}`
+				);
 				return dateB.getTime() - dateA.getTime();
 			});
 			CurrentNewsItemsStore.set(currentItems);

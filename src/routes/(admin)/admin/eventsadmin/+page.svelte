@@ -224,8 +224,12 @@
 							<td class="table-data table-cell">{item.data.publishdate}</td>
 							<td class="table-data table-cell">
 								<div class="flex flex-row gap-2">
-									<Button variant="destructive" class="min-w-0" onclick={() => openDeleteModal(item.id)}
-										><Icon icon="mdi-light:delete" class="size-6" /></Button
+									<Button
+										variant="destructive"
+										title="Delete Item"
+										aria-label="Delete item"
+										class="min-w-0"
+										onclick={() => openDeleteModal(item.id)}><Icon icon="mdi-light:delete" class="size-6" /></Button
 									>
 									<Button
 										variant="default"

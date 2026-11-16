@@ -99,8 +99,7 @@
 <div class="px-4 max-w-3xl">
 	<h1>Import Prayers</h1>
 	<p class="text-muted-foreground mb-6 text-sm">
-		Upload a JSON file or paste JSON content. Existing entries with the same date will be
-		overwritten.
+		Upload a JSON file or paste JSON content. Existing entries with the same date will be overwritten.
 	</p>
 
 	<div class="mb-6">
@@ -137,8 +136,9 @@
 
 	{#if parsedEntries.length > 0}
 		<div class="mb-6 rounded-lg border border-green-300 bg-green-50 p-3 text-sm text-green-700">
-			{parsedEntries.length} valid entries ready to import
-			({parsedEntries[0].date} – {parsedEntries[parsedEntries.length - 1].date})
+			{parsedEntries.length} valid entries ready to import ({parsedEntries[0].date} – {parsedEntries[
+				parsedEntries.length - 1
+			].date})
 		</div>
 	{/if}
 

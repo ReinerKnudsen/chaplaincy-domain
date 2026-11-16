@@ -57,11 +57,7 @@
 
 		<div class="mb-6">
 			<label class="mb-2 block font-medium" for="prayer-text">Prayer</label>
-			<textarea
-				id="prayer-text"
-				bind:value={prayerText}
-				rows={8}
-				class="w-full rounded-lg border p-3 text-sm"
+			<textarea id="prayer-text" bind:value={prayerText} rows={8} class="w-full rounded-lg border p-3 text-sm"
 			></textarea>
 		</div>
 

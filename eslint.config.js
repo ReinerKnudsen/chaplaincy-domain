@@ -64,7 +64,9 @@ export default tseslint.config(
 	{
 		rules: {
 			'no-console': ['error', { allow: ['warn', 'error'] }],
-			quotes: ['error', 'single'],
+			// avoidEscape lets a string that contains an apostrophe use double
+			// quotes instead of escaping — matching what Prettier produces.
+			quotes: ['error', 'single', { avoidEscape: true }],
 		},
 	},
 

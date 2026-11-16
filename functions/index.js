@@ -133,7 +133,7 @@ exports.updateUserProfile = functions.https.onCall(async (data, context) => {
 exports.listUsers = functions.https.onCall((data, context) => {
 	// Check if the user is an admin or if there are no users yet
 	if (!context.auth || context.auth.token.role !== 'admin') {
-		// We might allow listing if we're doing the first-time setup, 
+		// We might allow listing if we're doing the first-time setup,
 		// but usually listUsers should be admin-only.
 		throw new functions.https.HttpsError('permission-denied', 'Only admins can list users');
 	}
@@ -183,9 +183,8 @@ exports.getCountOfAdmins = functions.https.onCall(async (data, context) => {
 	if (!context.auth) {
 		throw new functions.https.HttpsError('unauthenticated', 'The function must be called while authenticated.');
 	}
-	
+
 	const admins = await admin.auth().listUsers(1000);
 	const adminCount = admins.users.filter((user) => user.customClaims && user.customClaims.role === 'admin').length;
 	return { count: adminCount };
 });
-

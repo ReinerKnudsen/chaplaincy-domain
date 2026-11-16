@@ -65,7 +65,7 @@
 				notificationStore.addToast('success', Messages.UPDATESUCCESS, TOAST_DURATION);
 				goto('/admin/useradmin');
 			} catch (error) {
-				console.error('Couldn\'t update user profile: ', error);
+				console.error("Couldn't update user profile: ", error);
 				notificationStore.addToast('error', Messages.UPDATEERROR, 0);
 			}
 		}

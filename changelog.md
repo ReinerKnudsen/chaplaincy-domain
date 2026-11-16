@@ -17,7 +17,7 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- Raised dependencies to the versions SvelteKit 3 requires: kit ^3.2.0, adapter-auto ^8.0.1, adapter-netlify ^7.0.1, TypeScript ^6.0.0, Svelte ^5.57.1. Migration in progress.
 
 ### Fixed
 

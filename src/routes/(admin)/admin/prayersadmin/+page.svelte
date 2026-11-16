@@ -30,17 +30,14 @@
 		return '';
 	};
 
-	const truncate = (text: string, max = 160): string =>
-		text.length > max ? text.slice(0, max) + '…' : text;
+	const truncate = (text: string, max = 160): string => (text.length > max ? text.slice(0, max) + '…' : text);
 </script>
 
 <div class="px-4">
 	<h1>Prayers</h1>
 	<div class="mb-6 flex items-center justify-between">
 		<p class="text-muted-foreground text-sm">{data.prayers.length} entries</p>
-		<Button variant="primary" size="lg" onclick={() => goto('/admin/prayersadmin/import')}>
-			Import JSON
-		</Button>
+		<Button variant="primary" size="lg" onclick={() => goto('/admin/prayersadmin/import')}>Import JSON</Button>
 	</div>
 
 	<table class="admin-table prayers-table">

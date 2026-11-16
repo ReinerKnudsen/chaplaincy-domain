@@ -17,11 +17,14 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 ### Changed
 
--
+- Remove: `react`, `react-dom` and `scheduler` from the lockfile. They arrived as an optional peer of `@react-email/render` (a Resend dependency) and nothing imports them.
+- Raised Node to 22.17 for the Netlify build, the changelog workflow and `engines`. SvelteKit 3 requires it, and `.npmrc` sets `engine-strict`, so Node 20 would fail the install outright. `functions/` stays on Node 20 — Firebase Cloud Functions run in their own runtime.
+- Migrated to SvelteKit 3: configuration moved from `svelte.config.js` into the `sveltekit()` Vite plugin, environment variables are declared in `src/env.ts`, and the `cookie` override was dropped so kit 3 can use `cookie@2`. The `$lib` alias is kept rather than rewriting 306 imports to `#lib`.
+- Raised dependencies to the versions SvelteKit 3 requires: kit ^3.2.0, adapter-auto ^8.0.1, adapter-netlify ^7.0.1, TypeScript ^6.0.0, Svelte ^5.57.1. Migration in progress.
 
 ### Fixed
 
--
+- Upgrade npm to 11.6.0 as the first step of the Netlify build command. npm 10, bundled with Node 22.17, mis-resolves the optional `@sveltejs/kit` peer dependency of `runed` and fails `npm ci` with EUSAGE, demanding kit 2.70.4 although the project is on kit 3. The lockfile is in sync; npm 11 installs it cleanly. Setting `NPM_VERSION` alone did not take effect.
 
 ## [10.0.0] - 2026-11-16
 
@@ -51,21 +54,25 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 
 - Remove: `firebase-functions` from the app's dependencies. It is a Cloud Functions package that belongs to `functions/`, where it is already declared, and nothing in `src/` imports it — the client uses `firebase/functions` from the `firebase` SDK instead. It dragged in `firebase-admin@14`, which requires Node 22 and broke the Netlify build.
 - Security: Applied `npm audit fix` to the app and to `functions/`. Vulnerabilities drop from 57 to 29 in the app (critical and 12 of 16 high resolved) and from 40 to 29 in functions (all critical and high resolved). Lockfiles only — no version ranges in `package.json` changed.
+
 ## [8.2.6] - 2026-11-01
 
 ### Changed
 
 - Git hooks now live in `.githooks/` under version control instead of `.git/hooks/`, which is never committed. `npm install` points git at them automatically; `npm run setup:hooks` does it manually. The pre-commit hook opens the changelog in VS Code rather than Windsurf, and no longer errors out when no editor CLI is present.
+
 ## [8.2.5] - 2026-11-01
 
 ### Fixed
 
 - Fix: The PR changelog workflow failed to install `@octokit/rest` on Node 20. A transitive dependency now requires Node >= 22, and `engine-strict=true` turns that mismatch into a hard error. The workflow runs on Node 22.
+
 ## [8.2.4] - 2026-11-01
 
 ### Fixed
 
 - Fix: Newsletter signups silently did nothing when reCAPTCHA had not finished initialising — the token call threw, the submission was cancelled, and no opt-in mail was ever sent. Both forms now wait via `grecaptcha.ready()`, and the signup form shows a message instead of failing silently.
+
 ## [8.2.3] - 2026-11-01
 
 ### Fixed
@@ -75,22 +82,26 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 - Security: Removed the unused public `/api/subscribe` endpoint. It forwarded unauthenticated requests straight to Brevo with no spam protection and was not called from anywhere in the app.
 - The newsletter signup now rejects malformed email addresses server-side instead of passing them to Brevo. The check uses a pattern without super-linear backtracking (flagged by SonarQube), so a long hostile input cannot stall the request.
 - Security: The contact form no longer hardcodes the Resend API key (the old key has been revoked). It and the reCAPTCHA secret are now read server-side from `PRIVATE_RESEND_API_KEY` and `PRIVATE_RECAPTCHA_SECRET_KEY` via `$env/static/private` (previously `VITE_RECAPTCHA_SECRET_KEY`).
+
 ## [8.2.1] - 2026-09-30
 
 ### Changed
 
 - Docs: Add `CLAUDE.md` with commands, architecture, conventions and the git/release workflow for AI-assisted development.
+
 ## [8.2.0] - 2026-09-01
 
 ### Added
 
 - Add: Delete weekly sheets directly from the admin list. Removes both the Firestore document and the PDF from storage, behind a confirmation dialog.
+
 ## [8.1.7] - 2026-08-03
 
 ### Fixed
 
 - Fix: Netlify build failed with Vite 8 — Tailwind now runs as a Vite plugin (`@tailwindcss/vite`) instead of through PostCSS. Vite 8 resolves `@import 'tailwindcss'` in `app.css` as a file path before the PostCSS plugin runs, causing `ENOENT: open '/opt/build/repo/tailwindcss'`.
 - Fix: Netlify now builds with `npm ci` instead of `npm install`, so deploys install exactly the versions pinned in `package-lock.json` rather than silently picking up newer ones.
+
 ## [8.1.6] - 2026-08-03
 
 ### Changed
@@ -100,32 +111,38 @@ Patch: Any other tag or no tag → bumps patch version (1.0.0 → 1.0.1)
 ### Fixed
 
 - Safeguarding "Learn More" link now points to the correct page
+
 ## [8.1.5] - 2026-08-03
 
 ### Changed
 
 - Moved Safeguarding section up and adjusted all backgrounds
+
 ## [8.1.4] - 2026-06-07
 
 ### Fixed
 
 - Fix: eventFormService now uses local date methods instead of toISOString() when defaulting the publish date — prevents users west of UTC from getting yesterday's date assigned after midnight local time (same fix already applied to newsFormService in 7.3.0)
+
 ## [8.1.3] - 2026-06-07
 
 ### Fixed
 
 - Fix: removed non-null assertions on enddate/endtime when defaulting the unpublish date — if either field is null, buildTimeStamp no longer receives null and produces an Invalid Date that corrupts Firestore documents
+
 ## [8.1.2] - 2026-06-07
 
 ### Fixed
 
 - Fix: events with a start date of today were incorrectly rejected with "start date cannot be in the past" — the check now compares dates at midnight rather than against the current wall-clock time
+
 ## [8.1.1] - 2026-06-07
 
 ### Fixed
 
 - Fix: uploadImage in fileService no longer silently swallows Firebase errors — errors now propagate to callers so upload failures are correctly surfaced as error toasts to the user
 - Removed redundant double-null-check in uploadNewsImage and uploadEventImage
+
 ## [8.1.0] - 2026-06-06
 
 ### Added

@@ -1,9 +1,14 @@
 [build]
-	command = "npm ci && npm run build"
+	command = "npm i -g npm@11.6.0 && npm ci && npm run build"
 	publish = "build"
 	ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ."
 [build.environment]
-	NODE_VERSION = "20.19.0"
+	NODE_VERSION = "22.17.0"
+	# npm 10 (Node 22.17's bundled version) mis-resolves the optional peer
+	# dependency "@sveltejs/kit" of runed/bits-ui and then fails `npm ci` with
+	# EUSAGE, demanding kit 2.70.4 although the project is on kit 3. npm 11
+	# resolves the same lockfile cleanly. NPM_VERSION alone did not take
+	# effect here, so the upgrade runs as the first step of build.command.
 	# PRIVATE_* values legitimately appear in the server bundle — that code runs
 	# inside the Netlify function and is never served to browsers. Scanning stays
 	# on for the client bundle, where a leak would actually expose them.
